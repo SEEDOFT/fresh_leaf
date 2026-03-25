@@ -1,4 +1,22 @@
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    - getx_module/**
+    - android/**
+    - ios/**
+    - linux/**
+    - macos/**
+    - web/**
+    - windows/**
+    - test/**
+    - build/**
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_const_declarations: true
+
 formatter:
   trailing_commas: preserve

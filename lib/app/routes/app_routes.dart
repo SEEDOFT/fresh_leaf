@@ -1,0 +1,13 @@
+class AppRoutes {
+  AppRoutes._();
+
+  static const onboarding = '/onboarding';
+  static const login = '/login';
+  static const register = '/register';
+  static const dashboard = '/dashboard';
+  static const home = '/home';
+  static const search = '/search';
+  static const aiAssistant = '/ai_assistant';
+  static const orders = '/orders';
+  static const profile = '/profile';
+}

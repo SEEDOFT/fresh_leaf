@@ -1,16 +1,22 @@
 name: fresh_leaf
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
   sdk: ^3.8.1
 
 dependencies:
+  dio: ^5.9.2
   flutter:
     sdk: flutter
+  flutter_dotenv: ^6.0.0
+  flutter_svg: ^2.2.3
   get: ^4.7.3
   intl: ^0.20.2
+  smooth_page_indicator: ^1.1.0
+  google_generative_ai: ^0.4.7
+  get_storage: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +25,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/svg/
+    - lib/env/.env.local
+    - lib/env/.env.prod
+    - assets/ai_context/

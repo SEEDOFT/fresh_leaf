@@ -1,1 +1,1 @@
-Hello auth!
+Hello register!

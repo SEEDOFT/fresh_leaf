@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/ai_assistant/widgets/ai_assistant_widget.dart';
+import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/app_bar.dart';
+import 'package:get/get.dart';
+import '../controllers/ai_assistant_controller.dart';
+
+class AiAssistantView extends GetView<AiAssistantController> {
+  const AiAssistantView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                appBar(),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                      top: 16,
+                      bottom: 120,
+                    ),
+                    children: [
+                      Obx(
+                        () => Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (final message in controller.messages)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: message.isUser
+                                    ? AiAssistantWidget.buildUserMessage(
+                                        controller,
+                                        message.text,
+                                      )
+                                    : AiAssistantWidget.buildAIMessage(
+                                        controller,
+                                        message.text,
+                                        message.isStreaming,
+                                      ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                AiAssistantWidget.buildComposer(controller),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

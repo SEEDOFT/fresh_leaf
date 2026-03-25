@@ -1,0 +1,35 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+
+class GeminiAiChatService {
+  late final GenerativeModel _model;
+  late final ChatSession _chat;
+
+  GeminiAiChatService() {
+    _model = GenerativeModel(
+      model: 'gemini-2.5-flash',
+      apiKey: dotenv.env['GEMINI_API_KEY']!,
+    );
+    _chat = _model.startChat();
+  }
+
+  Future<String> sendMessage(String message) async {
+    try {
+      final response = await _chat.sendMessage(Content.text(message));
+      return response.text ?? 'No response';
+    } catch (e) {
+      return 'Error: $e';
+    }
+  }
+
+  Stream<String> streamResponse(String prompt) async* {
+    final content = [Content.text(prompt)];
+    final stream = _model.generateContentStream(content);
+
+    await for (final chunk in stream) {
+      if (chunk.text != null) {
+        yield chunk.text!;
+      }
+    }
+  }
+}
