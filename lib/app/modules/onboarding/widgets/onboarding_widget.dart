@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:fresh_leaf/core/constants/svg_assets.dart';
 
 // Logo Widget
 class OnboardingLogo extends StatelessWidget {

@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class DashboardWidget {
-  DashboardWidget._();
+class BuildNavIcon extends StatelessWidget {
+  const BuildNavIcon({
+    super.key,
+    required this.svgAsset,
+    required this.isSelected,
+  });
 
-  // Build Svg Icon for Bottom Navigation Bar
-  static Widget buildIcon(String asset, bool isSelected) {
+  final String svgAsset;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: SvgPicture.asset(
-        asset,
+        svgAsset,
         colorFilter: ColorFilter.mode(
           isSelected
               ? const Color(0xFF1A3C14) // selected color

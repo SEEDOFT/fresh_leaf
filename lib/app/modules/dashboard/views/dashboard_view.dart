@@ -49,43 +49,42 @@ class DashboardView extends GetView<DashboardController> {
                 unselectedItemColor: const Color(
                   0xFF1D1B19,
                 ).withValues(alpha: 0.7),
-                elevation:
-                    0, // remove default shadow since DecoratedBox handles it
+                elevation: 0,
                 currentIndex: controller.currentIndex.value,
                 onTap: (index) => controller.changeIndex(index),
                 items: [
                   BottomNavigationBarItem(
-                    icon: DashboardWidget.buildIcon(
-                      SvgAssets.home,
-                      controller.currentIndex.value == 0,
+                    icon: BuildNavIcon(
+                      svgAsset: SvgAssets.home,
+                      isSelected: controller.currentIndex.value == 0,
                     ),
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    icon: DashboardWidget.buildIcon(
-                      SvgAssets.search,
-                      controller.currentIndex.value == 1,
+                    icon: BuildNavIcon(
+                      svgAsset: SvgAssets.cart,
+                      isSelected: controller.currentIndex.value == 1,
                     ),
-                    label: 'Search',
+                    label: 'Cart',
                   ),
                   BottomNavigationBarItem(
-                    icon: DashboardWidget.buildIcon(
-                      SvgAssets.gemini,
-                      controller.currentIndex.value == 2,
+                    icon: BuildNavIcon(
+                      svgAsset: SvgAssets.gemini,
+                      isSelected: controller.currentIndex.value == 2,
                     ),
                     label: 'AI Assistant',
                   ),
                   BottomNavigationBarItem(
-                    icon: DashboardWidget.buildIcon(
-                      SvgAssets.order,
-                      controller.currentIndex.value == 3,
+                    icon: BuildNavIcon(
+                      svgAsset: SvgAssets.order,
+                      isSelected: controller.currentIndex.value == 3,
                     ),
                     label: 'Orders',
                   ),
                   BottomNavigationBarItem(
-                    icon: DashboardWidget.buildIcon(
-                      SvgAssets.profile,
-                      controller.currentIndex.value == 4,
+                    icon: BuildNavIcon(
+                      svgAsset: SvgAssets.profile,
+                      isSelected: controller.currentIndex.value == 4,
                     ),
                     label: 'Profile',
                   ),

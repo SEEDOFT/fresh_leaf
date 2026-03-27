@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_widget.dart';
 import 'package:fresh_leaf/app/modules/product_list/controllers/product_list_controller.dart';
@@ -9,9 +10,9 @@ class ProductListView extends GetView<ProductListController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundCream,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.backgroundCream,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
@@ -35,21 +36,51 @@ class ProductListView extends GetView<ProductListController> {
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
                   ),
                 )
-              : GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: controller.products.length,
-                  itemBuilder: (context, index) {
-                    final product = controller.products[index];
-                    return ProductListItemWidget(
-                      product: product,
-                      onTap: () {
-                        Get.toNamed('/product_detail', arguments: product);
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    final screenWidth = MediaQuery.of(context).size.width;
+
+                    final int crossAxisCount;
+                    final double itemHeight;
+                    if (screenWidth < 360) {
+                      crossAxisCount = 1;
+                      itemHeight = 260;
+                    } else if (screenWidth < 700) {
+                      crossAxisCount = 2;
+                      itemHeight = 285;
+                    } else if (screenWidth < 1024) {
+                      crossAxisCount = 3;
+                      itemHeight = 305;
+                    } else {
+                      crossAxisCount = 4;
+                      itemHeight = 320;
+                    }
+
+                    const double spacing = 16;
+                    const double horizontalPadding = 32; // 16 + 16
+                    final double itemWidth =
+                        (constraints.maxWidth -
+                                horizontalPadding -
+                                (crossAxisCount - 1) * spacing) /
+                            crossAxisCount;
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(16),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        childAspectRatio: itemWidth / itemHeight,
+                        crossAxisSpacing: spacing,
+                        mainAxisSpacing: spacing,
+                      ),
+                      itemCount: controller.products.length,
+                      itemBuilder: (context, index) {
+                        final product = controller.products[index];
+                        return ProductListItemWidget(
+                          product: product,
+                          onTap: () {
+                            Get.toNamed('/product_detail', arguments: product);
+                          },
+                        );
                       },
                     );
                   },

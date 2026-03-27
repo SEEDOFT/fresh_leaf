@@ -21,39 +21,45 @@ class AiAssistantView extends GetView<AiAssistantController> {
               children: [
                 const AiAssistantAppBar(),
                 Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: 16,
-                      bottom: 120,
-                    ),
-                    children: [
-                      Obx(
-                        () => Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            for (final message in controller.messages)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: message.isUser
-                                    ? AiAssistantWidget.buildUserMessage(
-                                        controller,
-                                        message.text,
-                                      )
-                                    : AiAssistantWidget.buildAIMessage(
-                                        controller,
-                                        message.text,
-                                        message.isStreaming,
-                                      ),
-                              ),
-                          ],
+                  child: Obx(
+                    () {
+                      if (controller.messages.isEmpty) {
+                        return const AiAssistantEmptyState();
+                      }
+
+                      return ListView(
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          top: 16,
+                          bottom: 120,
                         ),
-                      ),
-                    ],
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              for (final message in controller.messages)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 16),
+                                  child: message.isUser
+                                      ? AiAssistantUserMessage(
+                                          controller: controller,
+                                          text: message.text,
+                                        )
+                                      : AiAssistantMessage(
+                                          controller: controller,
+                                          text: message.text,
+                                          isStreaming: message.isStreaming,
+                                        ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
-                AiAssistantWidget.buildComposer(controller),
+                AiAssistantComposer(controller: controller),
               ],
             ),
           ),

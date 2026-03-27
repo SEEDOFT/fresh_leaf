@@ -30,12 +30,17 @@ class LoginController extends GetxController {
     try {
       final apiClient = Get.find<ApiClient>();
       final storageService = Get.find<StorageService>();
-      final newPhoneNumber = phoneController.text.trim();
+
+      var phone = phoneController.text.trim();
+      if (phone.startsWith('0')) {
+        phone = phone.substring(1);
+        phoneController.text = phone;
+      }
 
       final response = await apiClient.postRequest(
         ApiEndpoints.login,
         data: {
-          'phone_number': newPhoneNumber,
+          'phone_number': '+855$phone',
           'password': passwordController.text,
         },
       );
@@ -48,7 +53,8 @@ class LoginController extends GetxController {
       if (apiResponse.isSuccess ||
           response.statusCode == 200 ||
           apiResponse.status.code == '200') {
-        final dataMap = (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
+        final dataMap =
+            (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
         final token = dataMap['access_token'];
         await storageService.saveToken(token);
         apiClient.updateAuthToken(token);

@@ -6,7 +6,7 @@ class GeminiAiChatService {
   late final ChatSession _chat;
 
   GeminiAiChatService() {
-    final apiKey = AppConfig.geminiApiKey;
+    const apiKey = AppConfig.geminiApiKey;
     if (apiKey.isEmpty) {
       throw Exception('GEMINI_API_KEY not found in environment');
     }

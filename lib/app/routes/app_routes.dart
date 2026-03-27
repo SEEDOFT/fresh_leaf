@@ -6,7 +6,7 @@ class AppRoutes {
   static const register = '/register';
   static const dashboard = '/dashboard';
   static const home = '/home';
-  static const search = '/search';
+  static const cart = '/cart';
   static const aiAssistant = '/ai_assistant';
   static const orders = '/orders';
   static const profile = '/profile';

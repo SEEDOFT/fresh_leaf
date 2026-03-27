@@ -9,31 +9,39 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const HomeAppBarWidget(),
-              const SizedBox(height: 24),
-              const HomeHeroCardWidget(),
-              const SizedBox(height: 32),
-              HomeCategoriesWidget(categories: controller.categories),
-              const SizedBox(height: 24),
-              const HomeAIBannerWidget(),
-              const SizedBox(height: 32),
-              const HomeSectionHeaderWidget(
-                title: 'Picked This Morning',
-                subtitle: 'Straight from our local partner farms',
-              ),
-              const SizedBox(height: 16),
-              HomeHorizontalProductsWidget(
-                pickedThisMorning: controller.pickedThisMorning,
-              ),
-            ],
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const HomeAppBarWidget(),
+                const SizedBox(height: 18),
+                HomeSearchBarWidget(
+                  onChanged: controller.updateSearchQuery,
+                ),
+                const SizedBox(height: 24),
+                const HomeHeroCardWidget(),
+                const SizedBox(height: 32),
+                HomeCategoriesWidget(categories: controller.categories),
+                const SizedBox(height: 24),
+                const HomeSectionHeaderWidget(
+                  title: 'Picked This Morning',
+                  subtitle: 'Straight from our local partner farms',
+                ),
+                const SizedBox(height: 16),
+                Obx(
+                  () => HomeHorizontalProductsWidget(
+                    pickedThisMorning: controller.filteredPickedThisMorning,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

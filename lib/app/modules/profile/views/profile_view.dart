@@ -64,9 +64,9 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                 ],
               ),
-              ProfileSectionCard(
+              const ProfileSectionCard(
                 title: 'Support',
-                children: const [
+                children: [
                   ProfileTile(
                     icon: Icons.support_agent,
                     title: 'Help Center',

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  final searchQuery = ''.obs;
+
   // Mock Data
   final categories = [
     {'icon': 'leaf', 'title': 'Leafy\nGreens'},
@@ -27,4 +29,27 @@ class HomeController extends GetxController {
       'badge': 'LIMITED',
     },
   ].obs;
+
+  List<Map<String, dynamic>> get filteredPickedThisMorning {
+    final query = searchQuery.value.trim().toLowerCase();
+    if (query.isEmpty) {
+      return pickedThisMorning.cast<Map<String, dynamic>>();
+    }
+
+    return pickedThisMorning
+        .where((item) {
+          final title = (item['title'] ?? '').toString().toLowerCase();
+          final subtitle = (item['subtitle'] ?? '').toString().toLowerCase();
+          final badge = (item['badge'] ?? '').toString().toLowerCase();
+          return title.contains(query) ||
+              subtitle.contains(query) ||
+              badge.contains(query);
+        })
+        .cast<Map<String, dynamic>>()
+        .toList();
+  }
+
+  void updateSearchQuery(String value) {
+    searchQuery.value = value;
+  }
 }

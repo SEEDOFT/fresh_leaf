@@ -136,6 +136,36 @@ class HomeAppBarWidget extends StatelessWidget {
   }
 }
 
+class HomeSearchBarWidget extends StatelessWidget {
+  const HomeSearchBarWidget({
+    super.key,
+    required this.onChanged,
+  });
+
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: TextField(
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          hintText: 'Search vegetables, mushrooms, citrus...',
+          prefixIcon: const Icon(Icons.search, color: AppColors.textLight),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // Hero Card Widget
 class HomeHeroCardWidget extends StatelessWidget {
   const HomeHeroCardWidget({super.key});
@@ -449,6 +479,44 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (pickedThisMorning.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Column(
+            children: [
+              Icon(
+                Icons.search_off_outlined,
+                color: AppColors.textLight,
+              ),
+              SizedBox(height: 10),
+              Text(
+                'No matching products found',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textDark,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'Try another keyword.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textLight,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
       height: 280,
       child: ListView.separated(

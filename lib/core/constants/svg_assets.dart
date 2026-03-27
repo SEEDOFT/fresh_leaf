@@ -7,4 +7,5 @@ class SvgAssets {
   static const String home = 'assets/svg/home.svg';
   static const String order = 'assets/svg/order.svg';
   static const String profile = 'assets/svg/profile.svg';
+  static const String cart = 'assets/svg/cart.svg';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/login/widgets/login_widget.dart';
+import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import '../controllers/login_controller.dart';
 
@@ -10,16 +11,25 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: const Scaffold(
-        backgroundColor: Color(0xFFFDF6E3), // AppColors.backgroundCream
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.backgroundCream,
         body: SafeArea(
-          child: Stack(
+          child: Column(
             children: [
-              // 1. Background Hero Image & Logo
-              BackgroundHeroWidget(),
-
-              // 2. White Form Card (Overlapping)
-              LoginFormWidget(),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: LoginFormContent(
+                        controller: controller,
+                        constraints: constraints,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),

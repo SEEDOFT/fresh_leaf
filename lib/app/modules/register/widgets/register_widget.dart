@@ -83,7 +83,7 @@ class RegisterFormContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(heroRadius),
             child: SizedBox(
               height: heroHeight,
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width,
               child: Image.network(
                 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000',
                 fit: BoxFit.cover,
@@ -116,8 +116,7 @@ class RegisterFormContent extends StatelessWidget {
               SizedBox(height: fieldGap),
               RegisterWidget.buildInputField(
                 label: 'PHONE NUMBER',
-                hint: '123 424 123',
-                prefixText: '+855',
+                hint: '023 424 123',
                 textController: controller.phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -170,7 +169,10 @@ class RegisterFormContent extends StatelessWidget {
                       : controller.signUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.darkGreen,
-                    minimumSize: Size(double.infinity, buttonHeight),
+                    minimumSize: Size(
+                      MediaQuery.of(context).size.width,
+                      buttonHeight,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),

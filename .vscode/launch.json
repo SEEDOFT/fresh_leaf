@@ -13,16 +13,20 @@
             ]
         },
         {
-            "name": "fresh_leaf (profile mode)",
+            "name": "fresh_leaf (build apk)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "args": [
+                "flutter build apk --obfuscate --split-debug-info=./debug-info --dart-define-from-file=.env.prod.json"
+            ],
         },
         {
             "name": "fresh_leaf (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "args": [
+                "flutter build apk --obfuscate --split-debug-info=./debug-info --dart-define-from-file=.env.prod.json"
+            ],
         }
     ]
 }

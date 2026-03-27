@@ -1,16 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 
-class AiAssistantWidget {
-  AiAssistantWidget._();
+class AiAssistantEmptyState extends StatelessWidget {
+  const AiAssistantEmptyState({super.key});
 
-  // Build user message
-  static Widget buildUserMessage(
-    AiAssistantController controller,
-    String text,
-  ) {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 28),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.auto_awesome,
+              size: 44,
+              color: AppColors.accentBrown,
+            ),
+            SizedBox(height: 14),
+            Text(
+              'Welcome to FreshLeaf AI',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textDark,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Ask about inventory, pricing, or product insights to get started.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                height: 1.4,
+                color: AppColors.textLight,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AiAssistantUserMessage extends StatelessWidget {
+  const AiAssistantUserMessage({
+    super.key,
+    required this.controller,
+    required this.text,
+  });
+
+  final AiAssistantController controller;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 40),
       child: Align(
@@ -60,16 +107,25 @@ class AiAssistantWidget {
       ),
     );
   }
+}
 
-  static Widget buildAIMessage(
-    AiAssistantController controller,
-    String text,
-    bool isStreaming,
-  ) {
+class AiAssistantMessage extends StatelessWidget {
+  const AiAssistantMessage({
+    super.key,
+    required this.controller,
+    required this.text,
+    required this.isStreaming,
+  });
+
+  final AiAssistantController controller;
+  final String text;
+  final bool isStreaming;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // AI Avatar
         Container(
           padding: const EdgeInsets.all(10),
           decoration: const BoxDecoration(
@@ -79,8 +135,6 @@ class AiAssistantWidget {
           child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
         ),
         const SizedBox(width: 12),
-
-        // AI Content Box
         Expanded(
           child: Container(
             padding: const EdgeInsets.all(20),
@@ -96,7 +150,6 @@ class AiAssistantWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -136,8 +189,6 @@ class AiAssistantWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-
-                // Text Response
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -163,26 +214,6 @@ class AiAssistantWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                // Horizontal Product List
-                // SizedBox(
-                //   height: 190,
-                //   child: Obx(
-                //     () => ListView.separated(
-                //       scrollDirection: Axis.horizontal,
-                //       itemCount: controller.suggestedBundles.length,
-                //       separatorBuilder: (_, _) => const SizedBox(width: 12),
-                //       itemBuilder: (context, index) {
-                //         final bundle = controller.suggestedBundles[index];
-                //         return buildProductCard(
-                //           bundle['image']!,
-                //           bundle['title']!,
-                //           bundle['items']!,
-                //         );
-                //       },
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -190,8 +221,24 @@ class AiAssistantWidget {
       ],
     );
   }
+}
 
-  static Widget buildProductCard(String imageUrl, String title, String items) {
+class AiAssistantProductCard extends StatelessWidget {
+  const AiAssistantProductCard({
+    super.key,
+    required this.imageUrl,
+    required this.title,
+    required this.items,
+  });
+
+  final String imageUrl;
+  final String title;
+  final String items;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
       width: 140,
       padding: const EdgeInsets.all(12),
@@ -214,7 +261,7 @@ class AiAssistantWidget {
             child: Image.network(
               imageUrl,
               height: 90,
-              width: double.infinity,
+              width: screenWidth,
               fit: BoxFit.cover,
             ),
           ),
@@ -242,8 +289,18 @@ class AiAssistantWidget {
       ),
     );
   }
+}
 
-  static Widget buildComposer(AiAssistantController controller) {
+class AiAssistantComposer extends StatelessWidget {
+  const AiAssistantComposer({
+    super.key,
+    required this.controller,
+  });
+
+  final AiAssistantController controller;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(

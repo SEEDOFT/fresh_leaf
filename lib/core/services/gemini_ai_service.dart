@@ -5,7 +5,7 @@ class GeminiAiService {
   late final GenerativeModel _model;
 
   GeminiAiService() {
-    final apiKey = AppConfig.geminiApiKey;
+    const apiKey = AppConfig.geminiApiKey;
     if (apiKey.isEmpty) {
       throw Exception('GEMINI_API_KEY not found in environment');
     }

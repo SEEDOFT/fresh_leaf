@@ -16,8 +16,8 @@ import 'package:fresh_leaf/app/modules/product_list/bindings/product_list_bindin
 import 'package:fresh_leaf/app/modules/product_list/views/product_list_view.dart';
 import 'package:fresh_leaf/app/modules/register/bindings/register_binding.dart';
 import 'package:fresh_leaf/app/modules/register/views/register_view.dart';
-import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
-import 'package:fresh_leaf/app/modules/search/views/search_view.dart';
+import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
+import 'package:fresh_leaf/app/modules/cart/views/cart_view.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:fresh_leaf/app/modules/onboarding/views/onboarding_view.dart';
@@ -53,9 +53,9 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
-      name: AppRoutes.search,
-      page: () => const SearchView(),
-      binding: SearchBinding(),
+      name: AppRoutes.cart,
+      page: () => const CartView(),
+      binding: CartBinding(),
     ),
     GetPage(
       name: AppRoutes.aiAssistant,

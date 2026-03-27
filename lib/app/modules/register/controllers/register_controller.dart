@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -58,6 +57,7 @@ class RegisterController extends GetxController {
       return;
     }
 
+    FocusManager.instance.primaryFocus?.unfocus();
     isLoading.value = true;
     try {
       final apiClient = Get.find<ApiClient>();
@@ -68,7 +68,7 @@ class RegisterController extends GetxController {
         data: {
           'first_name': firstNameController.text,
           'last_name': lastNameController.text,
-          'phone_number': phone,
+          'phone_number': '+855$phone',
           'password': passwordController.text,
           'password_confirmation': passwordController.text,
         },
