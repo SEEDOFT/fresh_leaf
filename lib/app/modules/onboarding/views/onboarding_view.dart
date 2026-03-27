@@ -10,7 +10,8 @@ class OnboardingView extends GetView<OnboardingController> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final pageHeight = media.size.height * 0.52; // keep content comfortably centered
+    final pageHeight =
+        media.size.height * 0.52; // keep content comfortably centered
 
     return Scaffold(
       backgroundColor: const Color(0xFFFBF8F2),
@@ -19,15 +20,24 @@ class OnboardingView extends GetView<OnboardingController> {
           children: [
             // Skip
             Positioned(
-              top: 12,
+              top: MediaQuery.of(context).padding.top - 10,
               right: 16,
               child: TextButton(
-                onPressed: () => controller.skip(),
+                onPressed: controller.skip,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
                 child: const Text(
                   'Skip',
                   style: TextStyle(
-                    color: Color(0xFF1E3616),
-                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
                 ),
               ),

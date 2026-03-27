@@ -46,12 +46,6 @@ class OnboardingController extends GetxController {
   }
 
   void _goForward() {
-    final storage = Get.find<StorageService>();
-    final token = storage.token;
-    if (token != null && token.isNotEmpty) {
-      Get.offAllNamed(AppRoutes.dashboard);
-    } else {
-      Get.offAllNamed(AppRoutes.login);
-    }
+    Get.offAllNamed(AppRoutes.login);
   }
 }

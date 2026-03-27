@@ -5,6 +5,8 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/user_profile.dart';
 
 class LoginController extends GetxController {
   final phoneController = TextEditingController();
@@ -38,17 +40,24 @@ class LoginController extends GetxController {
         },
       );
 
-      if (response.statusCode == 200 ||
-          response.data['status']['code'] == 200 ||
-          response.data['status']['success'] == true) {
-        final token = response.data['access_token'];
+      final apiResponse = ApiResponse.fromResponse(
+        response.data,
+        (json) => json,
+      );
+
+      if (apiResponse.isSuccess ||
+          response.statusCode == 200 ||
+          apiResponse.status.code == '200') {
+        final dataMap = (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
+        final token = dataMap['access_token'];
         await storageService.saveToken(token);
         apiClient.updateAuthToken(token);
+        storageService.setUserProfile(UserProfile.fromMap(apiResponse.data));
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
         Get.snackbar(
           'Error',
-          'Login failed: ${response.data['status']['message']}',
+          'Login failed: ${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
         );
       }
     } catch (e) {

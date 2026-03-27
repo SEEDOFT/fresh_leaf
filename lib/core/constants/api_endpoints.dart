@@ -4,6 +4,12 @@ class ApiEndpoints {
   static const String register = '/auth/register';
   static const String logout = '/auth/logout';
 
+  // User
+  static const String userProfile = '/users/profile';
+  static const String userUpdateProfile = '/users/update-profile';
+  static const String userAddresses = '/users/addresses';
+  static const String userAddress = '/users/addresses/{id}';
+
   // Products
   static const String products = '/products';
   static const String productById = '/products/{id}';
@@ -20,12 +26,6 @@ class ApiEndpoints {
   static const String orders = '/orders';
   static const String orderById = '/orders/{id}';
   static const String orderCancel = '/orders/{id}/cancel';
-
-  // User
-  static const String userProfile = '/user/profile';
-  static const String userUpdateProfile = '/user/update-profile';
-  static const String userAddresses = '/user/addresses';
-  static const String userAddress = '/user/addresses/{id}';
 
   // AI Assistant
   static const String aiSuggestions = '/ai/suggestions';

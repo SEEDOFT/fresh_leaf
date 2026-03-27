@@ -1,9 +1,8 @@
 /// Centralized build-time configuration.
 ///
-/// Values are injected via `--dart-define` / `--dart-define-from-file`.
+/// Values are injected via `--dart-define-from-file`.
 /// Example:
-/// flutter run --dart-define=API_URL=https://api.freshleaf.dev
-/// flutter run --dart-define=GEMINI_API_KEY=your_key_here
+/// flutter run --dart-define-from-file=.env.local.json
 class AppConfig {
   AppConfig._();
 

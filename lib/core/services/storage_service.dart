@@ -6,24 +6,19 @@ class StorageService extends GetxService {
   StorageService({GetStorage? box}) : _box = box ?? GetStorage();
 
   final GetStorage _box;
-  static const _tokenKey = 'auth_token';
-  static const _userKey = 'user_profile';
+  static const _tokenKey = 'access_token';
   static const _onboardingSeenKey = 'onboarding_seen';
 
   String? _token;
-  UserProfile? _user;
   bool _onboardingSeen = false;
+  UserProfile? _userProfile;
 
   String? get token => _token;
-  UserProfile? get user => _user;
   bool get onboardingSeen => _onboardingSeen;
+  UserProfile? get userProfile => _userProfile;
 
   Future<void> init() async {
     _token = _box.read<String?>(_tokenKey);
-    final storedUser = _box.read<Map<String, dynamic>?>(_userKey);
-    if (storedUser != null) {
-      _user = UserProfile.fromMap(storedUser);
-    }
     _onboardingSeen = _box.read<bool>(_onboardingSeenKey) ?? false;
   }
 
@@ -36,21 +31,16 @@ class StorageService extends GetxService {
     }
   }
 
-  Future<void> saveUser(UserProfile? user) async {
-    _user = user;
-    if (user == null) {
-      await _box.remove(_userKey);
-    } else {
-      await _box.write(_userKey, user.toMap());
-    }
+  // In-memory only user profile (not persisted)
+  void setUserProfile(UserProfile? profile) {
+    _userProfile = profile;
   }
 
   Future<void> clear() async {
     _token = null;
-    _user = null;
     _onboardingSeen = false;
+    _userProfile = null;
     await _box.remove(_tokenKey);
-    await _box.remove(_userKey);
     await _box.remove(_onboardingSeenKey);
   }
 

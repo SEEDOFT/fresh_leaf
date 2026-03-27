@@ -9,23 +9,33 @@ class RegisterView extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.backgroundCream,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new),
-            onPressed: Get.back,
-          ),
-        ),
         backgroundColor: AppColors.bgCream,
         body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) => RegisterFormContent(
-              controller: controller,
-              constraints: constraints,
-            ),
+          child: Column(
+            children: [
+              // Compact app ba
+              // Form content fills the rest and scrolls only when needed
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      padding: EdgeInsets.only(
+                        bottom: media.viewInsets.bottom + 12,
+                      ),
+                      child: RegisterFormContent(
+                        controller: controller,
+                        constraints: constraints,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),

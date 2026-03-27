@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_pages.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
-import 'package:fresh_leaf/core/models/user_profile.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,26 +37,26 @@ Future<String> _determineInitialRoute() async {
   final api = Get.find<ApiClient>();
   final token = storage.token;
   final seenOnboarding = storage.onboardingSeen;
+  storage.init();
 
   if (token == null || token.isEmpty) {
     return seenOnboarding ? AppRoutes.login : AppRoutes.onboarding;
   }
 
+  api.updateAuthToken(token);
+
   try {
     final response = await api.getRequest(
       ApiEndpoints.userProfile,
     );
-    final data = response.data;
-    final success =
-        response.statusCode == 200 ||
-        (data is Map && (data['status']['success'] == true));
-    if (success && data != null) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data as Map);
-      final profileMap = (data['data'] ?? data) as Map<String, dynamic>;
-      final user = UserProfile.fromMap(profileMap);
-      await storage.saveUser(user);
+    final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      response.data,
+      (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
+    );
+
+    if (apiResponse.isSuccess || response.statusCode == 200) {
+      // Set the instance of UserProfile into memory
+      storage.setUserProfile(UserProfile.fromMap(apiResponse.data));
       return AppRoutes.dashboard;
     }
   } catch (_) {

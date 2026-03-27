@@ -38,27 +38,22 @@ class OnboardingInfoCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
+      child: const Row(
         children: [
           // Leaf Logo
           SizedBox(
             height: 48,
             width: 48,
             child: CircleAvatar(
-              backgroundColor: const Color(0xFFC4EEB5),
-              child: SvgPicture.asset(
-                SvgAssets.leaf,
-                height: 18,
-                width: 18,
-                colorFilter: const ColorFilter.mode(
-                  Color(0xFF1E3616),
-                  BlendMode.srcIn,
-                ),
+              backgroundColor: Color(0xFFC4EEB5),
+              child: Icon(
+                Icons.eco,
+                size: 18,
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          const Column(
+          SizedBox(width: 16),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
