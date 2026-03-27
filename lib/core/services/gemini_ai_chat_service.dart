@@ -1,14 +1,18 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:fresh_leaf/core/config/app_config.dart';
 
 class GeminiAiChatService {
   late final GenerativeModel _model;
   late final ChatSession _chat;
 
   GeminiAiChatService() {
+    final apiKey = AppConfig.geminiApiKey;
+    if (apiKey.isEmpty) {
+      throw Exception('GEMINI_API_KEY not found in environment');
+    }
     _model = GenerativeModel(
       model: 'gemini-2.5-flash',
-      apiKey: dotenv.env['GEMINI_API_KEY']!,
+      apiKey: apiKey,
     );
     _chat = _model.startChat();
   }

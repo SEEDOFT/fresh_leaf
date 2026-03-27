@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
-import 'package:fresh_leaf/shared/widgets/app_bar.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 
@@ -18,20 +17,22 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              appBar(),
+              const HomeAppBarWidget(),
               const SizedBox(height: 24),
-              HomeWidget.buildHeroCard(),
+              const HomeHeroCardWidget(),
               const SizedBox(height: 32),
-              HomeWidget.buildCategories(controller),
+              HomeCategoriesWidget(categories: controller.categories),
               const SizedBox(height: 24),
-              HomeWidget.buildAIBanner(),
+              const HomeAIBannerWidget(),
               const SizedBox(height: 32),
-              HomeWidget.buildSectionHeader(
-                'Picked This Morning',
-                'Straight from our local partner farms',
+              const HomeSectionHeaderWidget(
+                title: 'Picked This Morning',
+                subtitle: 'Straight from our local partner farms',
               ),
               const SizedBox(height: 16),
-              HomeWidget.buildHorizontalProducts(controller),
+              HomeHorizontalProductsWidget(
+                pickedThisMorning: controller.pickedThisMorning,
+              ),
             ],
           ),
         ),

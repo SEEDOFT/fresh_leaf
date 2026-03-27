@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/widgets/ai_assistant_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
-import 'package:fresh_leaf/shared/widgets/app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/ai_assistant_app_bar.dart';
 import 'package:get/get.dart';
 import '../controllers/ai_assistant_controller.dart';
 
@@ -19,7 +19,7 @@ class AiAssistantView extends GetView<AiAssistantController> {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               children: [
-                appBar(),
+                const AiAssistantAppBar(),
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.only(

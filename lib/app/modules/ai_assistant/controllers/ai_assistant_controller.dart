@@ -22,6 +22,7 @@ class AiAssistantController extends GetxController {
     _loadInventory();
   }
 
+  // Load inventory from file
   Future<void> _loadInventory() async {
     try {
       _inventoryContext = await rootBundle.loadString(
@@ -32,6 +33,7 @@ class AiAssistantController extends GetxController {
     }
   }
 
+  // Send message to AI
   Future<void> sendMessage() async {
     final prompt = inputController.text.trim();
     if (prompt.isEmpty || isLoading.value) return;
@@ -101,6 +103,11 @@ class AiAssistantController extends GetxController {
 
   void _persistMessages() {
     _storage.saveMessages(messages.toList());
+  }
+
+  Future<void> clearHistory() async {
+    messages.clear();
+    await _storage.clearMessages();
   }
 }
 

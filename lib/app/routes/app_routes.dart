@@ -10,4 +10,6 @@ class AppRoutes {
   static const aiAssistant = '/ai_assistant';
   static const orders = '/orders';
   static const profile = '/profile';
+  static const productDetail = '/product_detail';
+  static const productList = '/product_list';
 }

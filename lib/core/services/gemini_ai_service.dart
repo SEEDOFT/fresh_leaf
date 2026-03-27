@@ -1,12 +1,12 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:fresh_leaf/core/config/app_config.dart';
 
 class GeminiAiService {
   late final GenerativeModel _model;
 
   GeminiAiService() {
-    final apiKey = dotenv.env['GEMINI_API_KEY'];
-    if (apiKey == null) {
+    final apiKey = AppConfig.geminiApiKey;
+    if (apiKey.isEmpty) {
       throw Exception('GEMINI_API_KEY not found in environment');
     }
     _model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);

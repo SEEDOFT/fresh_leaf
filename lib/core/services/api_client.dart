@@ -1,17 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fresh_leaf/core/constants/app_constants.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:get/get.dart' hide Response;
 
 class ApiClient extends GetxService {
   ApiClient({required this.storageService}) {
     dio = Dio(
       BaseOptions(
-        baseUrl: AppConstants.apiBaseUrl,
-        connectTimeout: AppConstants.connectTimeout,
-        receiveTimeout: AppConstants.receiveTimeout,
-        sendTimeout: AppConstants.receiveTimeout,
+        baseUrl: AppConfig.apiUrl,
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 20),
+        sendTimeout: const Duration(seconds: 20),
         headers: const {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

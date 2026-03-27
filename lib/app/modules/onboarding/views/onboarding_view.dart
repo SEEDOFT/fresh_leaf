@@ -9,11 +9,29 @@ class OnboardingView extends GetView<OnboardingController> {
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final pageHeight = media.size.height * 0.52; // keep content comfortably centered
+
     return Scaffold(
       backgroundColor: const Color(0xFFFBF8F2),
       body: SafeArea(
         child: Stack(
           children: [
+            // Skip
+            Positioned(
+              top: 12,
+              right: 16,
+              child: TextButton(
+                onPressed: () => controller.skip(),
+                child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    color: Color(0xFF1E3616),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
             // Background Image
             Positioned(
               top: 0,
@@ -39,21 +57,23 @@ class OnboardingView extends GetView<OnboardingController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
-                  OnboardingWidget.buildLogo(),
+                  const SizedBox(height: 28),
+                  const OnboardingLogo(),
 
                   // 1. PageView for the text content
-                  Expanded(
+                  SizedBox(
+                    height: pageHeight,
                     child: PageView.builder(
                       controller: controller.pageController,
                       onPageChanged: controller.currentPage.call,
                       itemCount: 3,
                       itemBuilder: (context, index) {
-                        return OnboardingWidget.buildTextContent(index);
+                        return OnboardingTextContent(index: index);
                       },
                     ),
                   ),
-                  // 2. Action Button controlled by GetX
+                  const SizedBox(height: 18),
+                  // 2. Action Button controlled by GetX (closer to content)
                   Obx(
                     () => SizedBox(
                       height: 68,
@@ -89,7 +109,7 @@ class OnboardingView extends GetView<OnboardingController> {
                   ),
                   const SizedBox(height: 16),
                   // Info Card
-                  OnboardingWidget.buildInfoCard(),
+                  const OnboardingInfoCard(),
                   const SizedBox(height: 16),
 
                   // 3. Smooth Page Indicator

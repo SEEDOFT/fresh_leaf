@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
 
-class OnboardingWidget {
-  // Logo
-  static Widget buildLogo() {
+// Logo Widget
+class OnboardingLogo extends StatelessWidget {
+  const OnboardingLogo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Container(width: 8, height: 32, color: Colors.white),
@@ -20,9 +23,14 @@ class OnboardingWidget {
       ],
     );
   }
+}
 
-  // Info Card
-  static Widget buildInfoCard() {
+// Info Card Widget
+class OnboardingInfoCard extends StatelessWidget {
+  const OnboardingInfoCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 98,
       padding: const EdgeInsets.all(16),
@@ -67,9 +75,16 @@ class OnboardingWidget {
       ),
     );
   }
+}
 
-  // Text Content
-  static Widget buildTextContent(int index) {
+// Text Content Widget
+class OnboardingTextContent extends StatelessWidget {
+  const OnboardingTextContent({super.key, required this.index});
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,

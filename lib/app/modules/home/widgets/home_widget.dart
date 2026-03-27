@@ -1,12 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
+import 'package:get/get.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
 
-class HomeWidget {
-  HomeWidget._();
+// Utility class for image loading with skeleton/error handling
+class ImageHelper {
+  static Widget buildNetworkImage({
+    required String url,
+    double? height,
+    double? width,
+    BorderRadius? borderRadius,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    return ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.zero,
+      child: Image.network(
+        url,
+        height: height,
+        width: width,
+        fit: fit,
+        loadingBuilder: (context, child, progress) {
+          if (progress == null) return child;
+          return ImageHelper.skeletonBox(
+            height: height,
+            width: width,
+            borderRadius: borderRadius,
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return ImageHelper.skeletonBox(
+            height: height,
+            width: width,
+            borderRadius: borderRadius,
+            child: const Icon(
+              Icons.broken_image,
+              color: AppColors.textLight,
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-  // Build App Bar
-  static Widget buildAppBar() {
+  static Widget skeletonBox({
+    double? height,
+    double? width,
+    BorderRadius? borderRadius,
+    Widget? child,
+  }) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: AppColors.cardLight,
+        borderRadius: borderRadius ?? BorderRadius.zero,
+      ),
+      child: child == null ? null : Center(child: child),
+    );
+  }
+}
+
+// App Bar Widget
+class HomeAppBarWidget extends StatelessWidget {
+  const HomeAppBarWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
@@ -74,8 +134,14 @@ class HomeWidget {
       ),
     );
   }
+}
 
-  static Widget buildHeroCard() {
+// Hero Card Widget
+class HomeHeroCardWidget extends StatelessWidget {
+  const HomeHeroCardWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: SizedBox(
@@ -84,7 +150,7 @@ class HomeWidget {
           borderRadius: BorderRadius.circular(24),
           child: Stack(
             children: [
-              buildNetworkImage(
+              ImageHelper.buildNetworkImage(
                 url:
                     'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=1000',
                 height: 240,
@@ -175,8 +241,19 @@ class HomeWidget {
       ),
     );
   }
+}
 
-  static Widget buildCategories(HomeController controller) {
+// Categories Widget
+class HomeCategoriesWidget extends StatelessWidget {
+  const HomeCategoriesWidget({
+    super.key,
+    required this.categories,
+  });
+
+  final List<dynamic> categories;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -193,12 +270,15 @@ class HomeWidget {
                   color: AppColors.textDark,
                 ),
               ),
-              Text(
-                'View All',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primaryGreen.withValues(alpha: 0.7),
+              GestureDetector(
+                onTap: () => Get.toNamed(AppRoutes.productList),
+                child: Text(
+                  'View All',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primaryGreen.withValues(alpha: 0.7),
+                  ),
                 ),
               ),
             ],
@@ -210,10 +290,10 @@ class HomeWidget {
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             scrollDirection: Axis.horizontal,
-            itemCount: controller.categories.length,
+            itemCount: categories.length,
             separatorBuilder: (_, _) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
-              final cat = controller.categories[index];
+              final cat = categories[index];
               return Container(
                 width: 80,
                 decoration: BoxDecoration(
@@ -251,8 +331,14 @@ class HomeWidget {
       ],
     );
   }
+}
 
-  static Widget buildAIBanner() {
+// AI Banner Widget
+class HomeAIBannerWidget extends StatelessWidget {
+  const HomeAIBannerWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
@@ -302,8 +388,21 @@ class HomeWidget {
       ),
     );
   }
+}
 
-  static Widget buildSectionHeader(String title, String? subtitle) {
+// Section Header Widget
+class HomeSectionHeaderWidget extends StatelessWidget {
+  const HomeSectionHeaderWidget({
+    super.key,
+    required this.title,
+    this.subtitle,
+  });
+
+  final String title;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -320,7 +419,7 @@ class HomeWidget {
           if (subtitle != null) ...[
             const SizedBox(height: 4),
             Text(
-              subtitle,
+              subtitle!,
               style: const TextStyle(fontSize: 14, color: AppColors.textLight),
             ),
           ],
@@ -328,135 +427,179 @@ class HomeWidget {
       ),
     );
   }
+}
 
-  static Widget buildHorizontalProducts(HomeController controller) {
+// Horizontal Products Widget
+class HomeHorizontalProductsWidget extends StatelessWidget {
+  const HomeHorizontalProductsWidget({
+    super.key,
+    required this.pickedThisMorning,
+  });
+
+  final List<dynamic> pickedThisMorning;
+
+  double _parsePrice(dynamic price) {
+    if (price is num) return price.toDouble();
+    if (price is String) {
+      final cleaned = price.replaceAll(RegExp(r'[^0-9\\.]'), '');
+      return double.tryParse(cleaned) ?? 0.0;
+    }
+    return 0.0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 280,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         scrollDirection: Axis.horizontal,
-        itemCount: controller.pickedThisMorning.length,
+        itemCount: pickedThisMorning.length,
         separatorBuilder: (_, _) => const SizedBox(width: 16),
         itemBuilder: (context, index) {
-          final item = controller.pickedThisMorning[index];
-          return Container(
-            width: 200,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    buildNetworkImage(
-                      url: item['image']!,
-                      height: 140,
-                      width: 200,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(24),
-                      ),
-                    ),
-                    Positioned(
-                      top: 12,
-                      left: 12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.accentLime,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          item['badge']!,
-                          style: const TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textDark,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          final item = pickedThisMorning[index];
+          return GestureDetector(
+            onTap: () {
+              final product = ProductInfo(
+                title: item['title'] ?? '',
+                subtitle: item['subtitle'] ?? '',
+                description:
+                    item['description'] ??
+                    'Seasonal pick straight from partner farms. Packed for freshness and ready for your favorite recipes.',
+                imageUrl: item['image'] ?? '',
+                tags: List<String>.from(item['tags'] ?? ['Organic', 'Fresh']),
+                price: _parsePrice(item['price']),
+                origin: item['origin'] ?? 'Local farm',
+                harvest: item['harvest'] ?? 'Harvested this week',
+                storage: item['storage'] ?? 'Refrigerate to extend freshness',
+              );
+              Get.toNamed(AppRoutes.productDetail, arguments: product);
+            },
+            child: Container(
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              item['title']!,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                      ImageHelper.buildNetworkImage(
+                        url: item['image']!,
+                        height: 140,
+                        width: 200,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(24),
+                        ),
+                      ),
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                          Text(
-                            item['price']!,
+                          decoration: BoxDecoration(
+                            color: AppColors.accentLime,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            item['badge']!,
                             style: const TextStyle(
+                              fontSize: 9,
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        item['subtitle']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textLight,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardLight,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add,
-                              size: 16,
                               color: AppColors.textDark,
                             ),
-                            SizedBox(width: 4),
-                            Text(
-                              'Add to Cart',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                                color: AppColors.textDark,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                item['title']!,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text(
+                              item['price']!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          item['subtitle']!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textLight,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            color: AppColors.cardLight,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add,
+                                size: 16,
+                                color: AppColors.textDark,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                'Add to Cart',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  color: AppColors.textDark,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
       ),
     );
   }
+}
 
-  static Widget buildStaplesGrid() {
+// Staples Grid Widget
+class HomeStaplesGridWidget extends StatelessWidget {
+  const HomeStaplesGridWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
@@ -469,78 +612,87 @@ class HomeWidget {
               decoration: BoxDecoration(
                 color: Colors.grey[300], // Background color fallback
                 borderRadius: BorderRadius.circular(24),
-                image: const DecorationImage(
-                  image: NetworkImage(
-                    'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
-                  ), // Replace with Eggs image
-                  fit: BoxFit.cover,
-                ),
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black38,
-                      Colors.transparent,
-                      Colors.black38,
-                    ],
+              child: Stack(
+                children: [
+                  ImageHelper.buildNetworkImage(
+                    url:
+                        'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
+                    height: 280,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Pasture Raised\nEggs',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          'Dozen, Large',
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Column(
-                        children: [
-                          Text(
-                            'Re-order',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            '\$6.50',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textLight,
-                            ),
-                          ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black38,
+                          Colors.transparent,
+                          Colors.black38,
                         ],
                       ),
                     ),
-                  ],
-                ),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Pasture Raised\nEggs',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              'Dozen, Large',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Column(
+                            children: [
+                              Text(
+                                'Re-order',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                '\$6.50',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textLight,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -649,8 +801,14 @@ class HomeWidget {
       ),
     );
   }
+}
 
-  static Widget buildFarmerCard() {
+// Farmer Card Widget
+class HomeFarmerCardWidget extends StatelessWidget {
+  const HomeFarmerCardWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
@@ -659,16 +817,16 @@ class HomeWidget {
           color: AppColors.cardLight,
           borderRadius: BorderRadius.circular(32),
         ),
-        child: Column(
+        child: const Column(
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 40,
               backgroundImage: NetworkImage(
                 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
               ), // Replace with farmer image
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               'FEATURED FARMER',
               style: TextStyle(
                 fontSize: 10,
@@ -677,8 +835,8 @@ class HomeWidget {
                 color: AppColors.textLight,
               ),
             ),
-            const SizedBox(height: 4),
-            const Text(
+            SizedBox(height: 4),
+            Text(
               'Meet Miller\'s Organic',
               style: TextStyle(
                 fontSize: 20,
@@ -686,8 +844,8 @@ class HomeWidget {
                 color: AppColors.textDark,
               ),
             ),
-            const SizedBox(height: 12),
-            const Text(
+            SizedBox(height: 12),
+            Text(
               'Supplying our community with pesticide-free heirloom produce since 1994. Every bunch of kale helps support local biodiversity.',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -696,13 +854,19 @@ class HomeWidget {
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                buildChip(Icons.check_circle, 'Carbon Neutral'),
-                const SizedBox(width: 8),
-                buildChip(Icons.local_shipping, '12 Miles Away'),
+                HomeChipWidget(
+                  icon: Icons.check_circle,
+                  label: 'Carbon Neutral',
+                ),
+                SizedBox(width: 8),
+                HomeChipWidget(
+                  icon: Icons.local_shipping,
+                  label: '12 Miles Away',
+                ),
               ],
             ),
           ],
@@ -710,8 +874,21 @@ class HomeWidget {
       ),
     );
   }
+}
 
-  static Widget buildChip(IconData icon, String label) {
+// Chip Widget
+class HomeChipWidget extends StatelessWidget {
+  const HomeChipWidget({
+    super.key,
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -732,60 +909,6 @@ class HomeWidget {
           ),
         ],
       ),
-    );
-  }
-
-  static Widget buildNetworkImage({
-    required String url,
-    double? height,
-    double? width,
-    BorderRadius? borderRadius,
-    BoxFit fit = BoxFit.cover,
-  }) {
-    return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.zero,
-      child: Image.network(
-        url,
-        height: height,
-        width: width,
-        fit: fit,
-        loadingBuilder: (context, child, progress) {
-          if (progress == null) return child;
-          return skeletonBox(
-            height: height,
-            width: width,
-            borderRadius: borderRadius,
-          );
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return skeletonBox(
-            height: height,
-            width: width,
-            borderRadius: borderRadius,
-            child: const Icon(
-              Icons.broken_image,
-              color: AppColors.textLight,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  static Widget skeletonBox({
-    double? height,
-    double? width,
-    BorderRadius? borderRadius,
-    Widget? child,
-  }) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: BoxDecoration(
-        color: AppColors.cardLight,
-        borderRadius: borderRadius ?? BorderRadius.zero,
-      ),
-      child: child == null ? null : Center(child: child),
     );
   }
 }

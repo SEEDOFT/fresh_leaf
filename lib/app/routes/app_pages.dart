@@ -10,6 +10,10 @@ import 'package:fresh_leaf/app/modules/orders/bindings/orders_binding.dart';
 import 'package:fresh_leaf/app/modules/orders/views/orders_view.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_view.dart';
+import 'package:fresh_leaf/app/modules/product_detail/bindings/product_detail_binding.dart';
+import 'package:fresh_leaf/app/modules/product_detail/views/product_detail_view.dart';
+import 'package:fresh_leaf/app/modules/product_list/bindings/product_list_binding.dart';
+import 'package:fresh_leaf/app/modules/product_list/views/product_list_view.dart';
 import 'package:fresh_leaf/app/modules/register/bindings/register_binding.dart';
 import 'package:fresh_leaf/app/modules/register/views/register_view.dart';
 import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
@@ -67,6 +71,16 @@ class AppPages {
       name: AppRoutes.profile,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.productDetail,
+      page: () => const ProductDetailView(),
+      binding: ProductDetailBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.productList,
+      page: () => const ProductListView(),
+      binding: ProductListBinding(),
     ),
   ];
 }

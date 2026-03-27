@@ -6,45 +6,54 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 class AiAssistantWidget {
   AiAssistantWidget._();
 
+  // Build user message
   static Widget buildUserMessage(
     AiAssistantController controller,
     String text,
   ) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Container(
-        margin: const EdgeInsets.only(left: 40),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: const BoxDecoration(
-          color: AppColors.primaryGreen,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-            bottomLeft: Radius.circular(24),
-            bottomRight: Radius.circular(6),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+    return Padding(
+      padding: const EdgeInsets.only(left: 40),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-              text,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                height: 1.4,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 6),
             IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
               iconSize: 16,
               onPressed: () => controller.copyText(text),
-              icon: const Icon(Icons.copy, color: Colors.white70),
+              icon: const Icon(Icons.copy, color: AppColors.textLight),
               tooltip: 'Copy',
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: const BoxDecoration(
+                  color: AppColors.primaryGreen,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(6),
+                  ),
+                ),
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    height: 1.4,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
