@@ -12,4 +12,8 @@ class AppRoutes {
   static const profile = '/profile';
   static const productDetail = '/product_detail';
   static const productList = '/product_list';
+  static const orderDetail = '/order_detail';
+  static const personalDetails = '/personal_details';
+  static const securitySettings = '/security_settings';
+  static const addresses = '/addresses';
 }

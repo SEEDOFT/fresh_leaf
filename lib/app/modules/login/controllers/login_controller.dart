@@ -13,7 +13,6 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
   final isLoading = false.obs;
 
-  // Observable for password visibility
   var isPasswordVisible = false.obs;
 
   void togglePasswordVisibility() {

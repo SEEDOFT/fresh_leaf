@@ -11,10 +11,10 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
-lib/env/.env.local
-lib/env/.env.prod
 .env.local.json
 .env.prod.json
+.env.local
+.env.prod
 
 # IntelliJ related
 *.iml

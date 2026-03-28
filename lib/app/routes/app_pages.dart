@@ -8,8 +8,16 @@ import 'package:fresh_leaf/app/modules/ai_assistant/bindings/ai_assistant_bindin
 import 'package:fresh_leaf/app/modules/ai_assistant/views/ai_assistant_view.dart';
 import 'package:fresh_leaf/app/modules/orders/bindings/orders_binding.dart';
 import 'package:fresh_leaf/app/modules/orders/views/orders_view.dart';
+import 'package:fresh_leaf/app/modules/order_detail/bindings/order_detail_binding.dart';
+import 'package:fresh_leaf/app/modules/order_detail/views/order_detail_view.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_addresses_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_personal_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_security_view.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_addresses_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_personal_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_security_binding.dart';
 import 'package:fresh_leaf/app/modules/product_detail/bindings/product_detail_binding.dart';
 import 'package:fresh_leaf/app/modules/product_detail/views/product_detail_view.dart';
 import 'package:fresh_leaf/app/modules/product_list/bindings/product_list_binding.dart';
@@ -68,9 +76,29 @@ class AppPages {
       binding: OrdersBinding(),
     ),
     GetPage(
+      name: AppRoutes.orderDetail,
+      page: () => const OrderDetailView(),
+      binding: OrderDetailBinding(),
+    ),
+    GetPage(
       name: AppRoutes.profile,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.personalDetails,
+      page: () => const PersonalDetailsView(),
+      binding: ProfilePersonalBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.securitySettings,
+      page: () => const SecuritySettingsView(),
+      binding: ProfileSecurityBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.addresses,
+      page: () => const AddressesView(),
+      binding: ProfileAddressesBinding(),
     ),
     GetPage(
       name: AppRoutes.productDetail,

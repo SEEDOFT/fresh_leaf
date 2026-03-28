@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/routes/app_pages.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
+import 'package:fresh_leaf/core/services/permission_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,6 +14,7 @@ import 'package:fresh_leaf/core/models/api_response.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   await GetStorage.init();
   await _initServices();
   final initialRoute = await _determineInitialRoute();
@@ -34,19 +37,18 @@ Future<void> _initServices() async {
 // Decide start screen based on token + profile
 Future<String> _determineInitialRoute() async {
   final storage = Get.find<StorageService>();
-  final api = Get.find<ApiClient>();
+  final apiClient = Get.find<ApiClient>();
   final token = storage.token;
   final seenOnboarding = storage.onboardingSeen;
-  storage.init();
 
   if (token == null || token.isEmpty) {
     return seenOnboarding ? AppRoutes.login : AppRoutes.onboarding;
   }
 
-  api.updateAuthToken(token);
+  apiClient.updateAuthToken(token);
 
   try {
-    final response = await api.getRequest(
+    final response = await apiClient.getRequest(
       ApiEndpoints.userProfile,
     );
     final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
@@ -66,16 +68,37 @@ Future<String> _determineInitialRoute() async {
   return seenOnboarding ? AppRoutes.login : AppRoutes.onboarding;
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key, required this.initialRoute});
 
   final String initialRoute;
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestStartupPermissions();
+    });
+  }
+
+  Future<void> _requestStartupPermissions() async {
+    try {
+      await PermissionService.requestAll();
+    } catch (_) {
+      // Permission requests are best-effort; the app still works without this.
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: initialRoute,
+      initialRoute: widget.initialRoute,
       getPages: AppPages.pages,
     );
   }

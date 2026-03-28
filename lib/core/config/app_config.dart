@@ -2,7 +2,7 @@
 ///
 /// Values are injected via `--dart-define-from-file`.
 /// Example:
-/// flutter run --dart-define-from-file=.env.local.json
+/// flutter run --dart-define-from-file=.env.local
 class AppConfig {
   AppConfig._();
 

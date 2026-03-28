@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/profile_widget.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -28,14 +29,14 @@ class ProfileView extends GetView<ProfileController> {
                     icon: Icons.person_outline,
                     title: 'Personal Details',
                     subtitle: controller.email.value,
-                    onTap: () {},
+                    onTap: () => Get.toNamed(AppRoutes.personalDetails),
                   ),
                   const Divider(height: 16),
                   ProfileTile(
                     icon: Icons.lock_outline,
                     title: 'Security',
-                    subtitle: 'Password & 2FA',
-                    onTap: () {},
+                    subtitle: 'Password',
+                    onTap: () => Get.toNamed(AppRoutes.securitySettings),
                   ),
                 ],
               ),
@@ -46,14 +47,14 @@ class ProfileView extends GetView<ProfileController> {
                     icon: Icons.shopping_bag_outlined,
                     title: 'Orders',
                     subtitle: 'Track and reorder',
-                    onTap: () => Get.toNamed('/orders'),
+                    onTap: () => Get.toNamed(AppRoutes.orders),
                   ),
                   const Divider(height: 16),
                   ProfileTile(
                     icon: Icons.location_on_outlined,
                     title: 'Addresses',
                     subtitle: 'Manage delivery locations',
-                    onTap: () {},
+                    onTap: () => Get.toNamed(AppRoutes.addresses),
                   ),
                   const Divider(height: 16),
                   ProfileTile(

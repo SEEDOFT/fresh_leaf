@@ -50,6 +50,7 @@ class AiAssistantView extends GetView<AiAssistantController> {
                                           controller: controller,
                                           text: message.text,
                                           isStreaming: message.isStreaming,
+                                          highlightImportant: true,
                                         ),
                                 ),
                             ],

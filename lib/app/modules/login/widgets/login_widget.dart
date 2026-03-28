@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/login_controller.dart';
 
@@ -75,8 +76,12 @@ class LoginFormContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final keyboardVisible = media.viewInsets.bottom > 0;
-    final double scale = (constraints.maxHeight / 780).clamp(0.82, 1.0).toDouble();
-    final double heroHeight = (constraints.maxHeight * 0.42).clamp(230.0, 360.0).toDouble();
+    final double scale = (constraints.maxHeight / 780)
+        .clamp(0.82, 1.0)
+        .toDouble();
+    final double heroHeight = (constraints.maxHeight * 0.42)
+        .clamp(230.0, 360.0)
+        .toDouble();
     final double horizontalPadding = (24 * scale).clamp(20, 24).toDouble();
     final double formTopPadding = (24 * scale).clamp(16, 24).toDouble();
     final double formBottomPadding = keyboardVisible ? 16 : 24;
@@ -197,7 +202,9 @@ class LoginFormContent extends StatelessWidget {
               const SizedBox(height: 36),
               Obx(
                 () => ElevatedButton(
-                  onPressed: controller.isLoading.value ? null : controller.login,
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : controller.login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryDarkGreen,
                     minimumSize: const Size(double.infinity, 56),
@@ -212,7 +219,9 @@ class LoginFormContent extends StatelessWidget {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         )
                       : const Row(
@@ -237,11 +246,11 @@ class LoginFormContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Center(
-                child: GestureDetector(
-                  onTap: () => Get.toNamed('/register'),
-                  child: RichText(
-                    text: const TextSpan(
+            Center(
+              child: GestureDetector(
+                onTap: () => Get.toNamed(AppRoutes.register),
+                child: RichText(
+                  text: const TextSpan(
                       style: TextStyle(color: Colors.black87, fontSize: 14),
                       children: [
                         TextSpan(text: 'New to FreshLeaf? '),

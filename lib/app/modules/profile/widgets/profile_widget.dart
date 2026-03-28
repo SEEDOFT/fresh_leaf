@@ -4,7 +4,11 @@ import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileSectionCard extends StatelessWidget {
-  const ProfileSectionCard({super.key, required this.title, required this.children});
+  const ProfileSectionCard({
+    super.key,
+    required this.title,
+    required this.children,
+  });
   final String title;
   final List<Widget> children;
 
@@ -77,7 +81,9 @@ class ProfileTile extends StatelessWidget {
               subtitle!,
               style: const TextStyle(color: AppColors.textLight, fontSize: 12),
             ),
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: AppColors.textLight),
+      trailing:
+          trailing ??
+          const Icon(Icons.chevron_right, color: AppColors.textLight),
       onTap: onTap,
     );
   }
@@ -171,7 +177,9 @@ class ProfileStatsCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Obx(
                   () => Text(
-                    controller.phone.value.isEmpty ? '—' : controller.phone.value,
+                    controller.phone.value.isEmpty
+                        ? '—'
+                        : controller.phone.value,
                     style: const TextStyle(
                       color: AppColors.textLight,
                       fontSize: 13,
@@ -215,7 +223,11 @@ class ProfileStatsCard extends StatelessWidget {
 }
 
 class ProfileLogoutButton extends StatelessWidget {
-  const ProfileLogoutButton({super.key, required this.onTap, required this.isLoading});
+  const ProfileLogoutButton({
+    super.key,
+    required this.onTap,
+    required this.isLoading,
+  });
   final VoidCallback onTap;
   final bool isLoading;
 
@@ -249,6 +261,39 @@ class ProfileLogoutButton extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+      ),
+    );
+  }
+}
+
+class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const ProfileAppBar({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: AppColors.backgroundCream,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          size: 20,
+          color: AppColors.textDark,
+        ),
+        onPressed: Get.back,
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: AppColors.textDark,
+          fontWeight: FontWeight.w700,
+          fontSize: 16,
+        ),
       ),
     );
   }

@@ -28,7 +28,7 @@ class RegisterController extends GetxController {
   }
 
   void nextPage() {
-    Get.offNamed('/login');
+    Get.offNamed(AppRoutes.login);
   }
 
   void signUp() async {
