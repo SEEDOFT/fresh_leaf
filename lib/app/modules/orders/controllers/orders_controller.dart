@@ -48,7 +48,7 @@ class OrdersController extends GetxController {
       const Duration(seconds: 2),
       () => {
         isLoading.value = false,
-        orders.value = [
+        orders.value = const [
           Order(
             id: 'ORD001',
             date: 'Jan 15, 2026',

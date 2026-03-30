@@ -9,7 +9,14 @@ class DashboardView extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
+    final navBackgroundColor = scheme.surface;
+    final navSelectedColor = scheme.primary;
+    final navUnselectedColor = scheme.onSurfaceVariant.withValues(alpha: 0.78);
+
     return Scaffold(
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: Obx(
           () => IndexedStack(
@@ -21,7 +28,7 @@ class DashboardView extends GetView<DashboardController> {
       bottomNavigationBar: Obx(
         () => DecoratedBox(
           decoration: BoxDecoration(
-            color: const Color(0xFFFEF8F3),
+            color: navBackgroundColor,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(24),
             ),
@@ -39,14 +46,19 @@ class DashboardView extends GetView<DashboardController> {
             ),
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
-              backgroundColor: const Color(0xFFFEF8F3),
-              selectedItemColor: const Color(0xFF1A3C14),
-              selectedIconTheme: const IconThemeData(
-                color: Color(0xFF1A3C14),
+              backgroundColor: navBackgroundColor,
+              selectedItemColor: navSelectedColor,
+              selectedIconTheme: IconThemeData(color: navSelectedColor),
+              unselectedItemColor: navUnselectedColor,
+              selectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
               ),
-              unselectedItemColor: const Color(
-                0xFF1D1B19,
-              ).withValues(alpha: 0.7),
+              unselectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+              showUnselectedLabels: true,
               elevation: 0,
               currentIndex: controller.currentIndex.value,
               onTap: (index) => controller.changeIndex(index),
@@ -55,20 +67,26 @@ class DashboardView extends GetView<DashboardController> {
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.home,
                     isSelected: controller.currentIndex.value == 0,
+                    selectedColor: navSelectedColor,
+                    unselectedColor: navUnselectedColor,
                   ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
-                    svgAsset: SvgAssets.cart,
+                    svgAsset: SvgAssets.search,
                     isSelected: controller.currentIndex.value == 1,
+                    selectedColor: navSelectedColor,
+                    unselectedColor: navUnselectedColor,
                   ),
-                  label: 'Cart',
+                  label: 'Search',
                 ),
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.gemini,
                     isSelected: controller.currentIndex.value == 2,
+                    selectedColor: navSelectedColor,
+                    unselectedColor: navUnselectedColor,
                   ),
                   label: 'AI Assistant',
                 ),
@@ -76,6 +94,8 @@ class DashboardView extends GetView<DashboardController> {
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.order,
                     isSelected: controller.currentIndex.value == 3,
+                    selectedColor: navSelectedColor,
+                    unselectedColor: navUnselectedColor,
                   ),
                   label: 'Orders',
                 ),
@@ -83,6 +103,8 @@ class DashboardView extends GetView<DashboardController> {
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.profile,
                     isSelected: controller.currentIndex.value == 4,
+                    selectedColor: navSelectedColor,
+                    unselectedColor: navUnselectedColor,
                   ),
                   label: 'Profile',
                 ),

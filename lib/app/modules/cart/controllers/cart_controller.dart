@@ -80,4 +80,31 @@ class CartController extends GetxController {
   void clearCart() {
     items.clear();
   }
+
+  void addOrIncrementItem({
+    required String title,
+    required String subtitle,
+    required String imageUrl,
+    required double price,
+  }) {
+    final index = items.indexWhere(
+      (item) => item.title == title && item.subtitle == subtitle,
+    );
+
+    if (index >= 0) {
+      final current = items[index];
+      items[index] = current.copyWith(quantity: current.quantity + 1);
+      return;
+    }
+
+    items.add(
+      CartItem(
+        title: title,
+        subtitle: subtitle,
+        imageUrl: imageUrl,
+        price: price,
+        quantity: 1,
+      ),
+    );
+  }
 }

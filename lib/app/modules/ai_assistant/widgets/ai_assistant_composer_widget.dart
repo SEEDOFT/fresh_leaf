@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
+import 'package:fresh_leaf/core/theme/app_colors.dart';
+
+class AiAssistantComposer extends StatelessWidget {
+  const AiAssistantComposer({
+    super.key,
+    required this.controller,
+  });
+
+  final AiAssistantController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller.inputController,
+              minLines: 1,
+              maxLines: 4,
+              decoration: InputDecoration(
+                hintText: 'Ask FreshLeaf anything...',
+                filled: true,
+                fillColor: scheme.surfaceContainerHighest,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Obx(
+            () => SizedBox(
+              height: 48,
+              width: 48,
+              child: ElevatedButton(
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.sendMessage,
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  shape: const CircleBorder(),
+                  backgroundColor: AppColors.primaryGreen,
+                  elevation: 0,
+                ),
+                child: controller.isLoading.value
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.send, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

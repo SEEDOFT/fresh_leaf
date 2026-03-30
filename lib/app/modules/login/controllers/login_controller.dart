@@ -30,16 +30,16 @@ class LoginController extends GetxController {
       final apiClient = Get.find<ApiClient>();
       final storageService = Get.find<StorageService>();
 
-      var phone = phoneController.text.trim();
-      if (phone.startsWith('0')) {
-        phone = phone.substring(1);
-        phoneController.text = phone;
+      final normalizedPhone = _normalizePhoneForApi(phoneController.text);
+      if (normalizedPhone.isEmpty) {
+        Get.snackbar('Error', 'Please enter a valid phone number');
+        return;
       }
 
       final response = await apiClient.postRequest(
         ApiEndpoints.login,
         data: {
-          'phone_number': '+855$phone',
+          'phone_number': normalizedPhone,
           'password': passwordController.text,
         },
       );
@@ -74,6 +74,30 @@ class LoginController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  String _normalizePhoneForApi(String rawValue) {
+    var raw = rawValue.trim().replaceAll(RegExp(r'[\s-]'), '');
+    if (raw.isEmpty) return '';
+
+    // Only Cambodia prefix is allowed.
+    if (raw.startsWith('+') && !raw.startsWith('+855')) {
+      return '';
+    }
+
+    if (raw.startsWith('+855')) {
+      raw = raw.substring(4);
+    } else if (raw.startsWith('855')) {
+      raw = raw.substring(3);
+    }
+
+    raw = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    if (raw.startsWith('0')) {
+      raw = raw.substring(1);
+    }
+
+    if (raw.isEmpty) return '';
+    return '+855$raw';
   }
 
   @override

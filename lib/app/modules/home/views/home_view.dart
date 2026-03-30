@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_widget.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 
@@ -9,11 +9,17 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.background,
+        backgroundColor: scaffoldBg,
+        floatingActionButton: const FloatingActionButton.extended(
+          onPressed: showCartPanel,
+          icon: Icon(Icons.shopping_cart_outlined),
+          label: Text('Cart'),
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -21,10 +27,6 @@ class HomeView extends GetView<HomeController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const HomeAppBarWidget(),
-                const SizedBox(height: 18),
-                HomeSearchBarWidget(
-                  onChanged: controller.updateSearchQuery,
-                ),
                 const SizedBox(height: 24),
                 const HomeHeroCardWidget(),
                 const SizedBox(height: 32),
@@ -35,11 +37,12 @@ class HomeView extends GetView<HomeController> {
                   subtitle: 'Straight from our local partner farms',
                 ),
                 const SizedBox(height: 16),
-                Obx(
-                  () => HomeHorizontalProductsWidget(
-                    pickedThisMorning: controller.filteredPickedThisMorning,
-                  ),
-                ),
+                Obx(() {
+                  final products = controller.pickedThisMorning.toList();
+                  return HomeHorizontalProductsWidget(
+                    pickedThisMorning: products,
+                  );
+                }),
               ],
             ),
           ),

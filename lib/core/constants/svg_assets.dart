@@ -1,4 +1,4 @@
-class SvgAssets {
+final class SvgAssets {
   SvgAssets._();
 
   static const String leaf = 'assets/svg/leaf.svg';

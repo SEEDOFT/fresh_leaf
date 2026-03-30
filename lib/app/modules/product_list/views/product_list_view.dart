@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_widget.dart';
 import 'package:fresh_leaf/app/modules/product_list/controllers/product_list_controller.dart';
@@ -9,21 +8,23 @@ class ProductListView extends GetView<ProductListController> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
-      backgroundColor: AppColors.backgroundCream,
+      backgroundColor: scaffoldBg,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundCream,
+        backgroundColor: scaffoldBg,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: Icon(Icons.arrow_back_ios_new, color: scheme.onSurface),
           onPressed: Get.back,
         ),
-        title: const Text(
+        title: Text(
           'All Products',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: scheme.onSurface,
           ),
         ),
         centerTitle: false,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/orders/widgets/orders_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/orders_controller.dart';
 
 class OrdersView extends GetView<OrdersController> {
@@ -10,8 +9,9 @@ class OrdersView extends GetView<OrdersController> {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: Column(
           children: [

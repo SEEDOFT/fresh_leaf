@@ -1,7 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/user_profile.dart';
+import 'package:fresh_leaf/core/models/user_address.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/permission_service.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
@@ -18,22 +25,11 @@ class ProfileAddressesController extends GetxController {
   final RxBool isSearching = false.obs;
   final RxBool isReverseLoading = false.obs;
   final RxBool isLocating = false.obs;
+  final RxBool isSavingAddress = false.obs;
+  final RxBool isLoadingAddresses = false.obs;
 
   final RxList<LocationSearchItem> searchResults = <LocationSearchItem>[].obs;
-  final RxList<AddressItem> savedAddresses = <AddressItem>[
-    const AddressItem(
-      label: 'Home',
-      line1: '123 Riverside St',
-      line2: 'Phnom Penh',
-      phone: '+855 12 345 678',
-    ),
-    const AddressItem(
-      label: 'Farm Hub',
-      line1: '45 Organic Way',
-      line2: 'Siem Reap',
-      phone: '+855 98 765 432',
-    ),
-  ].obs;
+  final RxList<UserAddress> savedAddresses = <UserAddress>[].obs;
 
   late final Dio _dio;
 
@@ -55,6 +51,7 @@ class ProfileAddressesController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    fetchSavedAddresses(showError: false);
     // Ask permission and center map on first open if available.
     locateUser(silent: true);
   }
@@ -186,23 +183,121 @@ class ProfileAddressesController extends GetxController {
   }
 
   Future<void> saveCurrentAddress() async {
+    if (isSavingAddress.value) return;
+    isSavingAddress.value = true;
+
     final point = selectedPoint.value;
-    final label = selectedLabel.value.trim();
+    try {
+      final payload = _buildAddressPayload(point);
+      final api = Get.find<ApiClient>();
+      final response = await api.postRequest(
+        ApiEndpoints.userAddresses,
+        data: payload,
+      );
 
-    savedAddresses.insert(
-      0,
-      AddressItem(
-        label: 'Pinned Location',
-        line1: label.isEmpty ? 'Selected location' : label,
-        line2: _formatCoords(point),
-        phone: '+855 12 345 678',
-      ),
+      final apiResponse = ApiResponse.fromResponse<dynamic>(
+        response.data,
+        (json) => json,
+      );
+
+      if (!apiResponse.isSuccess && response.statusCode != 201) {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Unable to save address',
+        );
+      }
+
+      await fetchSavedAddresses(showError: false);
+
+      Get.snackbar(
+        'Address saved',
+        apiResponse.status.message.isNotEmpty
+            ? apiResponse.status.message
+            : 'Selected location added to your address list',
+      );
+    } catch (e) {
+      final message = e is DioException
+          ? e.response?.data?['status']?['message']?.toString() ??
+                'Unable to save address'
+          : 'Unable to save address';
+      Get.snackbar('Save failed', message);
+    } finally {
+      isSavingAddress.value = false;
+    }
+  }
+
+  Future<void> fetchSavedAddresses({bool showError = true}) async {
+    if (isLoadingAddresses.value) return;
+    isLoadingAddresses.value = true;
+
+    try {
+      final api = Get.find<ApiClient>();
+      final response = await api.getRequest(ApiEndpoints.userAddresses);
+      final apiResponse = ApiResponse.fromResponse<dynamic>(
+        response.data,
+        (json) => json,
+      );
+
+      if (!apiResponse.isSuccess && response.statusCode != 200) {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          message: 'Unable to fetch addresses',
+        );
+      }
+
+      final items = _extractAddressMaps(apiResponse.data)
+          .map(UserAddress.fromMap)
+          .toList();
+      savedAddresses.assignAll(items);
+    } catch (e) {
+      if (showError) {
+        final message = e is DioException
+            ? e.response?.data?['status']?['message']?.toString() ??
+                  'Unable to load addresses'
+            : 'Unable to load addresses';
+        Get.snackbar('Fetch failed', message);
+      }
+    } finally {
+      isLoadingAddresses.value = false;
+    }
+  }
+
+  Future<void> openEditAddress(int index) async {
+    if (index < 0 || index >= savedAddresses.length) return;
+    final current = savedAddresses[index];
+
+    final result = await Get.toNamed(
+      AppRoutes.addressesEdit,
+      arguments: {
+        'index': index,
+        'label': current.label,
+        'line1': current.line1,
+        'line2': current.line2,
+        'phone': current.phone,
+        'latitude': current.latitude,
+        'longitude': current.longitude,
+      },
     );
 
-    Get.snackbar(
-      'Address saved',
-      'Selected location added to your address list',
-    );
+    if (result is Map<String, dynamic>) {
+      savedAddresses[index] = current.copyWith(
+        label: result['label']?.toString(),
+        addressLine1: result['line1']?.toString(),
+        addressLine2: result['line2']?.toString(),
+        phone: result['phone']?.toString(),
+        lat: _toDouble(result['latitude']),
+        long: _toDouble(result['longitude']),
+      );
+      savedAddresses.refresh();
+      Get.snackbar('Updated', 'Address updated successfully');
+    }
+  }
+
+  double? _toDouble(Object? value) {
+    if (value is num) return value.toDouble();
+    return double.tryParse(value?.toString() ?? '');
   }
 
   Future<void> _reverseGeocode(LatLng point) async {
@@ -233,20 +328,81 @@ class ProfileAddressesController extends GetxController {
   String _formatCoords(LatLng point) {
     return '${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}';
   }
-}
 
-class AddressItem {
-  const AddressItem({
-    required this.label,
-    required this.line1,
-    required this.line2,
-    required this.phone,
-  });
+  Map<String, dynamic> _buildAddressPayload(LatLng point) {
+    final labelText = selectedLabel.value.trim();
+    final parts = labelText
+        .split(',')
+        .map((part) => part.trim())
+        .where((part) => part.isNotEmpty)
+        .toList();
 
-  final String label;
-  final String line1;
-  final String line2;
-  final String phone;
+    final storage = Get.find<StorageService>();
+    final profile = storage.userProfile;
+    final recipientName = _resolveRecipientName(profile);
+    final city = _resolveCity(parts);
+    final province = _resolveProvince(parts);
+    final postalCode = _resolvePostalCode(labelText);
+
+    return {
+      'label': parts.isNotEmpty ? 'Home' : 'Pinned Location',
+      'recipient_name': recipientName,
+      'phone': _resolvePhone(profile),
+      'address_line_1': parts.isNotEmpty ? parts.first : 'Selected location',
+      'address_line_2': parts.length > 1 ? parts[1] : '',
+      'city': city,
+      'province': province,
+      'postal_code': postalCode,
+      'lat': point.latitude,
+      'long': point.longitude,
+    };
+  }
+
+  String _resolveRecipientName(UserProfile? profile) {
+    if (profile == null) return 'Fresh Leaf User';
+    final value = '${profile.firstName} ${profile.lastName}'.trim();
+    return value.isEmpty ? 'Fresh Leaf User' : value;
+  }
+
+  String _resolvePhone(UserProfile? profile) {
+    final value = profile?.phoneNumber.trim() ?? '';
+    if (value.isEmpty) return '0000000000';
+    return value;
+  }
+
+  String _resolveCity(List<String> parts) {
+    if (parts.length >= 3) return parts[parts.length - 3];
+    if (parts.length >= 2) return parts[parts.length - 2];
+    return 'Phnom Penh';
+  }
+
+  String _resolveProvince(List<String> parts) {
+    if (parts.length >= 2) return parts[parts.length - 2];
+    return 'Phnom Penh';
+  }
+
+  String _resolvePostalCode(String value) {
+    final match = RegExp(r'\b\d{4,6}\b').firstMatch(value);
+    return match?.group(0) ?? '12000';
+  }
+
+  List<Map<String, dynamic>> _extractAddressMaps(dynamic data) {
+    if (data is List) {
+      return data.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList();
+    }
+
+    if (data is Map<String, dynamic>) {
+      final nested = data['items'] ?? data['addresses'] ?? data['data'];
+      if (nested is List) {
+        return nested
+            .whereType<Map>()
+            .map((e) => e.cast<String, dynamic>())
+            .toList();
+      }
+    }
+
+    return const <Map<String, dynamic>>[];
+  }
 }
 
 class LocationSearchItem {
@@ -258,3 +414,5 @@ class LocationSearchItem {
   final String displayName;
   final LatLng point;
 }
+
+

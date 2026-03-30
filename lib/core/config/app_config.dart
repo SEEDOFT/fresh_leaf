@@ -3,7 +3,7 @@
 /// Values are injected via `--dart-define-from-file`.
 /// Example:
 /// flutter run --dart-define-from-file=.env.local
-class AppConfig {
+final class AppConfig {
   AppConfig._();
 
   static const apiUrl = String.fromEnvironment(

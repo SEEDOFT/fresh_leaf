@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/orders/models/order.dart';
 import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
+import 'package:fresh_leaf/core/services/pin_security_service.dart';
 
 class OrderDetailController extends GetxController {
   final Rxn<Order> order = Rxn<Order>();
+  final RxBool isCheckingAccess = true.obs;
 
   @override
   void onInit() {
@@ -15,6 +17,21 @@ class OrderDetailController extends GetxController {
       order.value = Order.fromMap(args);
     } else if (args is Map) {
       order.value = Order.fromMap(args.cast<String, dynamic>());
+    }
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    _verifyAccess();
+  }
+
+  Future<void> _verifyAccess() async {
+    isCheckingAccess.value = true;
+    final canOpen = await PinSecurityService.verifyOrderAccess();
+    isCheckingAccess.value = false;
+    if (!canOpen) {
+      Get.back();
     }
   }
 

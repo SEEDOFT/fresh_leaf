@@ -1,12 +1,19 @@
-class ApiEndpoints {
+final class ApiEndpoints {
+  ApiEndpoints._();
+
   // Auth
   static const String login = '/auth/login';
   static const String register = '/auth/register';
   static const String logout = '/auth/logout';
+  static const String updatePassword = '/auth/password/update';
+  static const String verifyPassword = '/auth/password/verify';
+  static const String setPin = '/auth/pin/set';
+  static const String updatePin = '/auth/pin/update';
+  static const String verifyPin = '/auth/pin/verify';
 
   // User
   static const String userProfile = '/users/profile';
-  static const String userUpdateProfile = '/users/update-profile';
+  static const String userUpdateProfile = '/users/profile';
   static const String userAddresses = '/users/addresses';
   static const String userAddress = '/users/addresses/{id}';
 

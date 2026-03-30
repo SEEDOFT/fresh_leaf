@@ -13,11 +13,21 @@ import 'package:fresh_leaf/app/modules/order_detail/views/order_detail_view.dart
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_addresses_view.dart';
-import 'package:fresh_leaf/app/modules/profile/views/profile_personal_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_address_edit_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_pin_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_pin_password_verify_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_personal_details_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_settings_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_security_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_wishlist_view.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_addresses_binding.dart';
-import 'package:fresh_leaf/app/modules/profile/bindings/profile_personal_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_address_edit_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_pin_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_pin_password_verify_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_personal_details_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_settings_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_security_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_wishlist_binding.dart';
 import 'package:fresh_leaf/app/modules/product_detail/bindings/product_detail_binding.dart';
 import 'package:fresh_leaf/app/modules/product_detail/views/product_detail_view.dart';
 import 'package:fresh_leaf/app/modules/product_list/bindings/product_list_binding.dart';
@@ -26,89 +36,163 @@ import 'package:fresh_leaf/app/modules/register/bindings/register_binding.dart';
 import 'package:fresh_leaf/app/modules/register/views/register_view.dart';
 import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
 import 'package:fresh_leaf/app/modules/cart/views/cart_view.dart';
+import 'package:fresh_leaf/app/modules/checkout/bindings/checkout_binding.dart';
+import 'package:fresh_leaf/app/modules/checkout/views/checkout_view.dart';
+import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
+import 'package:fresh_leaf/app/modules/search/views/search_view.dart';
+import 'package:fresh_leaf/app/middlewares/auth_middleware.dart';
+import 'package:fresh_leaf/app/middlewares/guest_middleware.dart';
+import 'package:fresh_leaf/app/middlewares/onboarding_middleware.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:fresh_leaf/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 
-class AppPages {
+final class AppPages {
   AppPages._();
+
+  static final List<GetMiddleware> _authOnly = <GetMiddleware>[
+    AuthMiddleware(priorityValue: 1),
+  ];
+  static final List<GetMiddleware> _guestOnly = <GetMiddleware>[
+    GuestMiddleware(priorityValue: 1),
+  ];
+  static final List<GetMiddleware> _onboardingOnly = <GetMiddleware>[
+    OnboardingMiddleware(priorityValue: 1),
+  ];
 
   static final pages = [
     GetPage(
       name: AppRoutes.onboarding,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+      middlewares: _onboardingOnly,
     ),
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginView(),
       binding: LoginBinding(),
+      middlewares: _guestOnly,
     ),
     GetPage(
       name: AppRoutes.register,
       page: () => const RegisterView(),
       binding: RegisterBinding(),
+      middlewares: _guestOnly,
     ),
     GetPage(
       name: AppRoutes.dashboard,
       page: () => const DashboardView(),
       binding: DashboardBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.home,
       page: () => const HomeView(),
       binding: HomeBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.search,
+      page: () => const SearchView(),
+      binding: SearchBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.cart,
       page: () => const CartView(),
       binding: CartBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.checkout,
+      page: () => const CheckoutView(),
+      binding: CheckoutBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.aiAssistant,
       page: () => const AiAssistantView(),
       binding: AiAssistantBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.orders,
       page: () => const OrdersView(),
       binding: OrdersBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.orderDetail,
       page: () => const OrderDetailView(),
       binding: OrderDetailBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.profile,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.personalDetails,
-      page: () => const PersonalDetailsView(),
-      binding: ProfilePersonalBinding(),
+      page: () => const ProfilePersonalDetailsView(),
+      binding: ProfilePersonalDetailsBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.settings,
+      page: () => const ProfileSettingsView(),
+      binding: ProfileSettingsBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.securitySettings,
       page: () => const SecuritySettingsView(),
       binding: ProfileSecurityBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.addresses,
       page: () => const AddressesView(),
       binding: ProfileAddressesBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.addressesEdit,
+      page: () => const ProfileAddressEditView(),
+      binding: ProfileAddressEditBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.pinSecurity,
+      page: () => const ProfilePinView(),
+      binding: ProfilePinBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.pinPasswordVerification,
+      page: () => const ProfilePinPasswordVerifyView(),
+      binding: ProfilePinPasswordVerifyBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.wishlist,
+      page: () => const ProfileWishlistView(),
+      binding: ProfileWishlistBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.productDetail,
       page: () => const ProductDetailView(),
       binding: ProductDetailBinding(),
+      middlewares: _authOnly,
     ),
     GetPage(
       name: AppRoutes.productList,
       page: () => const ProductListView(),
       binding: ProductListBinding(),
+      middlewares: _authOnly,
     ),
   ];
 }

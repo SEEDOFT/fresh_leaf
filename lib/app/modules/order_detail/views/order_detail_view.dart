@@ -3,8 +3,7 @@ import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/order_detail_controller.dart';
-import '../widgets/order_detail_item_card.dart';
-import '../widgets/order_summary_card.dart';
+import '../widgets/order_detail_widget.dart';
 
 class OrderDetailView extends GetView<OrderDetailController> {
   const OrderDetailView({super.key});
@@ -12,17 +11,19 @@ class OrderDetailView extends GetView<OrderDetailController> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final scheme = Theme.of(context).colorScheme;
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: scaffoldBg,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
             size: 18,
-            color: AppColors.textDark,
+            color: scheme.onSurface,
           ),
           onPressed: Get.back,
         ),
@@ -31,21 +32,29 @@ class OrderDetailView extends GetView<OrderDetailController> {
             controller.order.value == null
                 ? 'Order Details'
                 : 'Order ${controller.order.value!.id}',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w700,
-              color: AppColors.textDark,
+              color: scheme.onSurface,
               fontSize: 16,
             ),
           ),
         ),
       ),
       body: Obx(() {
+        if (controller.isCheckingAccess.value) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryGreen,
+            ),
+          );
+        }
+
         final order = controller.order.value;
         if (order == null) {
-          return const Center(
+          return Center(
             child: Text(
               'Order not found',
-              style: TextStyle(color: AppColors.textLight),
+              style: TextStyle(color: scheme.onSurfaceVariant),
             ),
           );
         }
@@ -55,12 +64,12 @@ class OrderDetailView extends GetView<OrderDetailController> {
           children: [
             OrderSummaryCard(order: order, width: screenWidth - 32),
             const SizedBox(height: 18),
-            const Text(
+            Text(
               'Ordered Items',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textDark,
+                color: scheme.onSurface,
               ),
             ),
             const SizedBox(height: 10),

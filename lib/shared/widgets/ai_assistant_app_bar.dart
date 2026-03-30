@@ -10,6 +10,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -32,7 +33,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -40,16 +41,16 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.textDark,
+                        color: scheme.onSurface,
                         letterSpacing: -0.3,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       'Produce-savvy assistant',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textLight,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -60,14 +61,14 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 IconButton(
                   tooltip: 'View history',
-                  icon: const Icon(Icons.history, color: AppColors.textDark),
+                  icon: Icon(Icons.history, color: scheme.onSurface),
                   onPressed: () => _showHistory(context),
                 ),
                 IconButton(
                   tooltip: 'Clear history',
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.delete_outline,
-                    color: AppColors.textDark,
+                    color: scheme.onSurface,
                   ),
                   onPressed: () async {
                     final confirmed = await _confirmClear(context);
@@ -94,14 +95,15 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) {
+        final modalScheme = Theme.of(context).colorScheme;
         return Obx(
           () => SizedBox(
             height: 360,
             child: _controller.messages.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'No chat history yet',
-                      style: TextStyle(color: AppColors.textLight),
+                      style: TextStyle(color: modalScheme.onSurfaceVariant),
                     ),
                   )
                 : ListView.separated(
@@ -122,12 +124,14 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: AppColors.textDark.withValues(alpha: 0.85),
+                            color: modalScheme.onSurface.withValues(
+                              alpha: 0.85,
+                            ),
                           ),
                         ),
                         subtitle: Text(
                           msg.isUser ? 'You' : 'AI',
-                          style: const TextStyle(color: AppColors.textLight),
+                          style: TextStyle(color: modalScheme.onSurfaceVariant),
                         ),
                         onTap: msg.text.isEmpty
                             ? null

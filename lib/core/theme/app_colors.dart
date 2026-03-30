@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-class AppColors {
+final class AppColors {
   AppColors._();
 
   // Primary palette

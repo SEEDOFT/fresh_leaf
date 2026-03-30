@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+
+class SearchSearchFieldWidget extends StatelessWidget {
+  const SearchSearchFieldWidget({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+    required this.onClear,
+    required this.query,
+  });
+
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onClear;
+  final String query;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: TextField(
+        controller: controller,
+        autofocus: false,
+        onChanged: onChanged,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          hintText: 'Search vegetables, mushrooms, citrus...',
+          prefixIcon: Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
+          suffixIcon: query.isEmpty
+              ? const SizedBox.shrink()
+              : IconButton(
+                  onPressed: onClear,
+                  icon: Icon(Icons.close_rounded, color: scheme.onSurfaceVariant),
+                ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+}

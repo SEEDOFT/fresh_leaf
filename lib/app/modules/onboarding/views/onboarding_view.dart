@@ -10,11 +10,13 @@ class OnboardingView extends GetView<OnboardingController> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     final pageHeight =
         media.size.height * 0.52; // keep content comfortably centered
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBF8F2),
+      backgroundColor: scaffoldBg,
       body: SafeArea(
         child: Stack(
           children: [
@@ -29,15 +31,15 @@ class OnboardingView extends GetView<OnboardingController> {
                     horizontal: 14,
                     vertical: 8,
                   ),
-                  backgroundColor: Colors.white,
+                  backgroundColor: scheme.surface,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Skip',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: scheme.onSurface,
                   ),
                 ),
               ),
@@ -58,6 +60,23 @@ class OnboardingView extends GetView<OnboardingController> {
                 child: Image.network(
                   'https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=1000',
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(color: scheme.surfaceContainerHighest);
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    final imageScheme = Theme.of(context).colorScheme;
+                    return Container(
+                      color: imageScheme.surfaceContainerHighest,
+                      child: Center(
+                        child: Icon(
+                          Icons.broken_image_rounded,
+                          color: imageScheme.onSurfaceVariant,
+                          size: 34,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -91,7 +110,7 @@ class OnboardingView extends GetView<OnboardingController> {
                         onPressed: controller.nextPage,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1A3C14),
-                          minimumSize: const Size(double.infinity, 64),
+                          minimumSize: Size(media.size.width, 64),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),

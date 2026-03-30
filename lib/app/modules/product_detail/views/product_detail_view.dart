@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/controllers/product_detail_controller.dart';
 import 'package:fresh_leaf/app/modules/product_detail/widgets/product_detail_widget.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 
 class ProductDetailView extends GetView<ProductDetailController> {
@@ -9,18 +8,20 @@ class ProductDetailView extends GetView<ProductDetailController> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: scaffoldBg,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: scaffoldBg,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textDark),
+          icon: Icon(Icons.arrow_back_ios_new, color: scheme.onSurface),
           onPressed: Get.back,
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.favorite_border, color: AppColors.textDark),
+            icon: Icon(Icons.favorite_border, color: scheme.onSurface),
             onPressed: () {},
           ),
         ],
@@ -41,8 +42,8 @@ class ProductDetailView extends GetView<ProductDetailController> {
               const SizedBox(height: 8),
               Text(
                 controller.subtitle,
-                style: const TextStyle(
-                  color: AppColors.textLight,
+                style: TextStyle(
+                  color: scheme.onSurfaceVariant,
                   fontSize: 14,
                 ),
               ),
@@ -55,21 +56,21 @@ class ProductDetailView extends GetView<ProductDetailController> {
                 storage: controller.storage,
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'About this item',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textDark,
+                  color: scheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 controller.description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   height: 1.6,
-                  color: AppColors.textLight,
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 24),

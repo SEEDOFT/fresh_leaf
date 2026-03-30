@@ -17,7 +17,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "flutter build apk --obfuscate --split-debug-info=./debug-info --dart-define-from-file=.env.prod.json"
+                "flutter build apk --obfuscate --split-debug-info=./debug-info --dart-define-from-file=.env.prod"
             ],
         },
         {
@@ -25,7 +25,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "flutter build apk --obfuscate --split-debug-info=./debug-info --dart-define-from-file=.env.prod.json"
+                "flutter build apk --obfuscate --split-debug-info=./debug-info --dart-define-from-file=.env.prod"
             ],
         }
     ]

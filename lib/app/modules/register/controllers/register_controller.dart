@@ -42,12 +42,8 @@ class RegisterController extends GetxController {
     }
 
     // Normalize phone: strip leading zero if present
-    var phone = phoneController.text.trim();
-    if (phone.startsWith('0')) {
-      phone = phone.substring(1);
-      phoneController.text = phone;
-    }
-    if (phone.isEmpty) {
+    final normalizedPhone = _normalizePhoneForApi(phoneController.text);
+    if (normalizedPhone.isEmpty) {
       Get.snackbar('Error', 'Please enter a valid phone number');
       return;
     }
@@ -68,7 +64,7 @@ class RegisterController extends GetxController {
         data: {
           'first_name': firstNameController.text,
           'last_name': lastNameController.text,
-          'phone_number': '+855$phone',
+          'phone_number': normalizedPhone,
           'password': passwordController.text,
           'password_confirmation': passwordController.text,
         },
@@ -103,6 +99,30 @@ class RegisterController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  String _normalizePhoneForApi(String rawValue) {
+    var raw = rawValue.trim().replaceAll(RegExp(r'[\s-]'), '');
+    if (raw.isEmpty) return '';
+
+    // Only Cambodia prefix is allowed.
+    if (raw.startsWith('+') && !raw.startsWith('+855')) {
+      return '';
+    }
+
+    if (raw.startsWith('+855')) {
+      raw = raw.substring(4);
+    } else if (raw.startsWith('855')) {
+      raw = raw.substring(3);
+    }
+
+    raw = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    if (raw.startsWith('0')) {
+      raw = raw.substring(1);
+    }
+
+    if (raw.isEmpty) return '';
+    return '+855$raw';
   }
 
   @override
