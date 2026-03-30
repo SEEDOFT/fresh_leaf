@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/register/widgets/register_widget.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import '../controllers/register_controller.dart';
 
@@ -9,18 +8,12 @@ class RegisterView extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.backgroundCream,
-          leading: IconButton(
-            onPressed: Get.back,
-            icon: const Icon(Icons.arrow_back_ios_new),
-          ),
-        ),
         resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.backgroundCream,
+        backgroundColor: scaffoldBg,
         body: SafeArea(
           child: Column(
             children: [
