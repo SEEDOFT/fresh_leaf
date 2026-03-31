@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class EmptyOrdersWidget extends StatelessWidget {
   const EmptyOrdersWidget({super.key});
@@ -19,7 +18,7 @@ class EmptyOrdersWidget extends StatelessWidget {
               width: 110,
               height: 110,
               decoration: BoxDecoration(
-                color: AppColors.cardLight,
+                color: scheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(28),
               ),
               child: Icon(
@@ -30,7 +29,7 @@ class EmptyOrdersWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'No orders yet',
+              'no_orders_yet'.tr,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -39,7 +38,7 @@ class EmptyOrdersWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Once you place your first basket, it will appear here.',
+              'no_orders_subtitle'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -50,7 +49,7 @@ class EmptyOrdersWidget extends StatelessWidget {
             ElevatedButton(
               onPressed: () => Get.toNamed(AppRoutes.home),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: scheme.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 26,
                   vertical: 12,
@@ -60,10 +59,10 @@ class EmptyOrdersWidget extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Start Shopping',
+              child: Text(
+                'start_shopping'.tr,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: scheme.onPrimary,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),

@@ -15,9 +15,14 @@ class RegisterWidget {
     List<TextInputFormatter>? inputFormatters,
   }) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final labelColor = scheme.onSurfaceVariant;
-    final borderColor = scheme.outline.withValues(alpha: 0.65);
-    final fillColor = scheme.surface;
+    final borderColor = isDark
+        ? scheme.outline.withValues(alpha: 0.95)
+        : scheme.outline.withValues(alpha: 0.65);
+    final fillColor = isDark
+        ? scheme.surfaceContainerHighest.withValues(alpha: 0.65)
+        : scheme.surface;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class HomeHeroCardWidget extends StatelessWidget {
   const HomeHeroCardWidget({super.key});
@@ -8,6 +9,18 @@ class HomeHeroCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final tagBackground = isDark
+        ? scheme.secondaryContainer
+        : AppColors.accentLime;
+    final tagForeground = isDark ? scheme.onSecondaryContainer : Colors.black;
+    final heroOverlayStart = isDark
+        ? Colors.black.withValues(alpha: 0.32)
+        : Colors.black12;
+    final heroOverlayEnd = isDark
+        ? scheme.surface.withValues(alpha: 0.88)
+        : AppColors.primaryGreen.withValues(alpha: 0.9);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: SizedBox(
@@ -28,8 +41,8 @@ class HomeHeroCardWidget extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black12,
-                      AppColors.primaryGreen.withValues(alpha: 0.9),
+                      heroOverlayStart,
+                      heroOverlayEnd,
                     ],
                   ),
                 ),
@@ -44,22 +57,22 @@ class HomeHeroCardWidget extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.accentLime,
+                        color: tagBackground,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        'LIMITED EDITION',
+                      child: Text(
+                        'limited_edition'.tr,
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: tagForeground,
                         ),
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Seasonal\nOrganic\nHarvest',
-                      style: TextStyle(
+                    Text(
+                      'seasonal_organic_harvest'.tr,
+                      style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
@@ -77,18 +90,18 @@ class HomeHeroCardWidget extends StatelessWidget {
                             color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
                               Text(
-                                'Explore Selection',
-                                style: TextStyle(
+                                'explore_selection'.tr,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,
                                 ),
                               ),
-                              SizedBox(width: 8),
-                              Icon(
+                              const SizedBox(width: 8),
+                              const Icon(
                                 Icons.arrow_forward,
                                 color: Colors.white,
                                 size: 16,

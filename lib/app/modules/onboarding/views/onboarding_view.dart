@@ -11,6 +11,7 @@ class OnboardingView extends GetView<OnboardingController> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     final pageHeight =
         media.size.height * 0.52; // keep content comfortably centered
@@ -20,30 +21,6 @@ class OnboardingView extends GetView<OnboardingController> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Skip
-            Positioned(
-              top: MediaQuery.of(context).padding.top - 10,
-              right: 16,
-              child: TextButton(
-                onPressed: controller.skip,
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                  backgroundColor: scheme.surface,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: Text(
-                  'Skip',
-                  style: TextStyle(
-                    color: scheme.onSurface,
-                  ),
-                ),
-              ),
-            ),
             // Background Image
             Positioned(
               top: 0,
@@ -80,6 +57,36 @@ class OnboardingView extends GetView<OnboardingController> {
                 ),
               ),
             ),
+            // Skip
+            Positioned(
+              top: 8,
+              right: 16,
+              child: Obx(
+                () => controller.isLastPage
+                    ? const SizedBox.shrink()
+                    : TextButton(
+                        onPressed: controller.skip,
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          backgroundColor: scheme.surface.withValues(
+                            alpha: 0.92,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          'skip'.tr,
+                          style: TextStyle(
+                            color: scheme.onSurface,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -109,7 +116,8 @@ class OnboardingView extends GetView<OnboardingController> {
                       child: ElevatedButton(
                         onPressed: controller.nextPage,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1A3C14),
+                          backgroundColor: scheme.primary,
+                          foregroundColor: scheme.onPrimary,
                           minimumSize: Size(media.size.width, 64),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -119,17 +127,19 @@ class OnboardingView extends GetView<OnboardingController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              controller.isLastPage ? 'Get Started' : 'Next',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              controller.isLastPage
+                                  ? 'get_started'.tr
+                                  : 'next'.tr,
+                              style: TextStyle(
+                                color: scheme.onPrimary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Icon(
+                            Icon(
                               Icons.arrow_forward,
-                              color: Colors.white,
+                              color: scheme.onPrimary,
                             ),
                           ],
                         ),
@@ -146,9 +156,11 @@ class OnboardingView extends GetView<OnboardingController> {
                     child: SmoothPageIndicator(
                       controller: controller.pageController,
                       count: 3,
-                      effect: const ExpandingDotsEffect(
-                        activeDotColor: Color(0xFF1E3616),
-                        dotColor: Colors.black12,
+                      effect: ExpandingDotsEffect(
+                        activeDotColor: scheme.primary,
+                        dotColor: isDark
+                            ? scheme.outline.withValues(alpha: 0.65)
+                            : scheme.outline.withValues(alpha: 0.35),
                         dotHeight: 8,
                         dotWidth: 8,
                         expansionFactor: 4,

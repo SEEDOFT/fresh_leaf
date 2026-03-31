@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProfileLogoutButton extends StatelessWidget {
   const ProfileLogoutButton({
@@ -18,7 +19,7 @@ class ProfileLogoutButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: scheme.onSurface,
+          backgroundColor: scheme.primary,
           minimumSize: Size(media.size.width, 52),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -26,18 +27,18 @@ class ProfileLogoutButton extends StatelessWidget {
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(scheme.onPrimary),
                 ),
               )
-            : const Text(
-                'Log out',
+            : Text(
+                'log_out'.tr,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: scheme.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

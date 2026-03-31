@@ -92,9 +92,7 @@ class UserProfile {
     if (value is num) return value != 0;
     if (value is String) {
       final normalized = value.trim().toLowerCase();
-      return normalized == 'true' ||
-          normalized == '1' ||
-          normalized == 'yes';
+      return normalized == 'true' || normalized == '1' || normalized == 'yes';
     }
     return false;
   }

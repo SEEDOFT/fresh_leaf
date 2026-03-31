@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_pin_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/profile_pin_controller.dart';
 
 class ProfilePinView extends GetView<ProfilePinController> {
@@ -16,7 +15,7 @@ class ProfilePinView extends GetView<ProfilePinController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: const ProfileAppBar(title: 'PIN Security'),
+      appBar: ProfileAppBar(title: 'pin_security'.tr),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Obx(
@@ -26,8 +25,8 @@ class ProfilePinView extends GetView<ProfilePinController> {
               const SizedBox(height: 14),
               Text(
                 controller.hasPin.value
-                    ? 'Use your current PIN to update it.'
-                    : 'Verify your password first before setting a new PIN.',
+                    ? 'use_current_pin_update'.tr
+                    : 'verify_password_before_pin'.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 13,
@@ -40,35 +39,41 @@ class ProfilePinView extends GetView<ProfilePinController> {
                   child: ElevatedButton.icon(
                     onPressed: controller.openSetPinWithPassword,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkGreen,
+                      backgroundColor: scheme.primary,
                       minimumSize: const Size(0, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                       elevation: 0,
                     ),
-                    icon: const Icon(Icons.lock_person_rounded),
-                    label: const Text(
-                      'Verify Password & Set PIN',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                    icon: Icon(
+                      Icons.lock_person_rounded,
+                      color: scheme.onPrimary,
+                    ),
+                    label: Text(
+                      'verify_password_set_pin'.tr,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: scheme.onPrimary,
+                      ),
                     ),
                   ),
                 ),
               ] else ...[
                 PinTextField(
-                  label: 'Current PIN',
+                  label: 'current_pin'.tr,
                   controller: controller.currentPinController,
                   inputFormatters: controller.pinInputFormatter,
                 ),
                 const SizedBox(height: 14),
                 PinTextField(
-                  label: 'New PIN',
+                  label: 'new_pin'.tr,
                   controller: controller.newPinController,
                   inputFormatters: controller.pinInputFormatter,
                 ),
                 const SizedBox(height: 14),
                 PinTextField(
-                  label: 'Confirm PIN',
+                  label: 'confirm_pin'.tr,
                   controller: controller.confirmPinController,
                   inputFormatters: controller.pinInputFormatter,
                 ),
@@ -80,7 +85,7 @@ class ProfilePinView extends GetView<ProfilePinController> {
                         ? null
                         : controller.updateExistingPin,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkGreen,
+                      backgroundColor: scheme.primary,
                       minimumSize: const Size(0, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -88,17 +93,20 @@ class ProfilePinView extends GetView<ProfilePinController> {
                       elevation: 0,
                     ),
                     child: controller.isSaving.value
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Colors.white,
+                              color: scheme.onPrimary,
                             ),
                           )
-                        : const Text(
-                            'Update PIN',
-                            style: TextStyle(fontWeight: FontWeight.w700),
+                        : Text(
+                            'update_pin'.tr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: scheme.onPrimary,
+                            ),
                           ),
                   ),
                 ),
@@ -108,17 +116,17 @@ class ProfilePinView extends GetView<ProfilePinController> {
                   child: OutlinedButton.icon(
                     onPressed: controller.openResetPinWithPassword,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.accentBrown,
-                      side: const BorderSide(color: AppColors.accentBrown),
+                      foregroundColor: scheme.secondary,
+                      side: BorderSide(color: scheme.secondary),
                       minimumSize: const Size(0, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
                     icon: const Icon(Icons.lock_reset_rounded),
-                    label: const Text(
-                      'Forgot PIN? Reset via Password',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                    label: Text(
+                      'forgot_pin_reset'.tr,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),

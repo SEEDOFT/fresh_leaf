@@ -1,4 +1,18 @@
 class UserAddress {
+  final String id;
+  final String label;
+  final String recipientName;
+  final String phone;
+  final String addressLine1;
+  final String addressLine2;
+  final String city;
+  final String province;
+  final String postalCode;
+  final double? lat;
+  final double? long;
+  final String createdAt;
+  final String updatedAt;
+
   const UserAddress({
     this.id = '',
     this.label = '',
@@ -14,20 +28,6 @@ class UserAddress {
     this.createdAt = '',
     this.updatedAt = '',
   });
-
-  final String id;
-  final String label;
-  final String recipientName;
-  final String phone;
-  final String addressLine1;
-  final String addressLine2;
-  final String city;
-  final String province;
-  final String postalCode;
-  final double? lat;
-  final double? long;
-  final String createdAt;
-  final String updatedAt;
 
   String get line1 => addressLine1;
 

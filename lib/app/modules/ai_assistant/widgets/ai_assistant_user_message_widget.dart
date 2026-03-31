@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class AiAssistantUserMessage extends StatelessWidget {
   const AiAssistantUserMessage({
@@ -15,6 +16,9 @@ class AiAssistantUserMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bubbleColor = isDark ? scheme.primary : AppColors.primaryGreen;
+    final textColor = isDark ? scheme.onPrimary : Colors.white;
     return Padding(
       padding: const EdgeInsets.only(left: 40),
       child: Align(
@@ -30,7 +34,7 @@ class AiAssistantUserMessage extends StatelessWidget {
               iconSize: 16,
               onPressed: () => controller.copyText(text),
               icon: Icon(Icons.copy, color: scheme.onSurfaceVariant),
-              tooltip: 'Copy',
+              tooltip: 'copy'.tr,
             ),
             const SizedBox(width: 8),
             Flexible(
@@ -39,9 +43,9 @@ class AiAssistantUserMessage extends StatelessWidget {
                   horizontal: 20,
                   vertical: 16,
                 ),
-                decoration: const BoxDecoration(
-                  color: AppColors.primaryGreen,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: bubbleColor,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
                     bottomLeft: Radius.circular(24),
@@ -50,8 +54,8 @@ class AiAssistantUserMessage extends StatelessWidget {
                 ),
                 child: Text(
                   text,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: textColor,
                     fontSize: 16,
                     height: 1.4,
                     fontWeight: FontWeight.w500,

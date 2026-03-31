@@ -12,7 +12,7 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: const ProfileAppBar(title: 'Wishlist'),
+      appBar: ProfileAppBar(title: 'wishlist'.tr),
       body: Obx(() {
         if (controller.items.isEmpty) {
           return const WishlistEmptyWidget();

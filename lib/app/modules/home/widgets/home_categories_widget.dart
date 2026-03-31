@@ -22,7 +22,7 @@ class HomeCategoriesWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Browse Categories',
+                'browse_categories'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -32,7 +32,7 @@ class HomeCategoriesWidget extends StatelessWidget {
               GestureDetector(
                 onTap: () => Get.toNamed(AppRoutes.productList),
                 child: Text(
-                  'View All',
+                  'view_all'.tr,
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -73,7 +73,7 @@ class HomeCategoriesWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      cat['title']!,
+                      (cat['title']?.toString() ?? '').tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,

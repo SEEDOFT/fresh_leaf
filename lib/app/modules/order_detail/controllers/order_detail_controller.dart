@@ -37,16 +37,16 @@ class OrderDetailController extends GetxController {
 
   ProductInfo toProductInfo(Map<String, dynamic> item) {
     return ProductInfo(
-      title: item['name'] as String? ?? 'Product',
-      subtitle: 'Fresh from our farms',
-      description: 'High-quality organic product from your order history.',
+      title: item['name'] as String? ?? 'product'.tr,
+      subtitle: 'order_product_subtitle'.tr,
+      description: 'order_product_description'.tr,
       imageUrl:
           'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000',
-      tags: const ['Organic', 'Fresh'],
+      tags: ['organic'.tr, 'fresh'.tr],
       price: (item['price'] as num?)?.toDouble() ?? 0.0,
-      origin: 'Local Farm',
-      harvest: 'Spring 2026',
-      storage: 'Refrigerate',
+      origin: 'local_farm'.tr,
+      harvest: 'harvest_spring_2026'.tr,
+      storage: 'refrigerate'.tr,
     );
   }
 }

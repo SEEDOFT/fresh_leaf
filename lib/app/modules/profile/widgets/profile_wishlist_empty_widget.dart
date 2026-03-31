@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class WishlistEmptyWidget extends StatelessWidget {
   const WishlistEmptyWidget({super.key});
@@ -14,7 +14,7 @@ class WishlistEmptyWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: scheme.surface,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.grayBorder),
+          border: Border.all(color: scheme.outline),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -22,7 +22,7 @@ class WishlistEmptyWidget extends StatelessWidget {
             Icon(Icons.favorite_border, color: scheme.onSurfaceVariant, size: 36),
             const SizedBox(height: 12),
             Text(
-              'Your wishlist is empty',
+              'wishlist_empty_title'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
@@ -31,7 +31,7 @@ class WishlistEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Save products you love and find them here.',
+              'wishlist_empty_subtitle'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,

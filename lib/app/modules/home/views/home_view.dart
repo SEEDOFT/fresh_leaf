@@ -15,35 +15,42 @@ class HomeView extends GetView<HomeController> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: scaffoldBg,
-        floatingActionButton: const FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: showCartPanel,
-          icon: Icon(Icons.shopping_cart_outlined),
-          label: Text('Cart'),
+          icon: const Icon(Icons.shopping_cart_outlined),
+          label: Text('cart'.tr),
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const HomeAppBarWidget(),
-                const SizedBox(height: 24),
-                const HomeHeroCardWidget(),
-                const SizedBox(height: 32),
-                HomeCategoriesWidget(categories: controller.categories),
-                const SizedBox(height: 24),
-                const HomeSectionHeaderWidget(
-                  title: 'Picked This Morning',
-                  subtitle: 'Straight from our local partner farms',
-                ),
-                const SizedBox(height: 16),
-                Obx(() {
-                  final products = controller.pickedThisMorning.toList();
-                  return HomeHorizontalProductsWidget(
-                    pickedThisMorning: products,
-                  );
-                }),
-              ],
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(milliseconds: 1500));
+
+              return controller.refreshHome();
+            },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HomeAppBarWidget(),
+                  const SizedBox(height: 24),
+                  const HomeHeroCardWidget(),
+                  const SizedBox(height: 32),
+                  HomeCategoriesWidget(categories: controller.categories),
+                  const SizedBox(height: 24),
+                  HomeSectionHeaderWidget(
+                    title: 'picked_this_morning'.tr,
+                    subtitle: 'picked_this_morning_subtitle'.tr,
+                  ),
+                  const SizedBox(height: 16),
+                  Obx(() {
+                    final products = controller.pickedThisMorning.toList();
+                    return HomeHorizontalProductsWidget(
+                      pickedThisMorning: products,
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ),

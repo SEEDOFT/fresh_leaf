@@ -7,6 +7,7 @@ import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 
 class LoginController extends GetxController {
   final phoneController = TextEditingController();
@@ -57,7 +58,7 @@ class LoginController extends GetxController {
         final token = dataMap['access_token'];
         await storageService.saveToken(token);
         apiClient.updateAuthToken(token);
-        storageService.setUserProfile(UserProfile.fromMap(apiResponse.data));
+        await _hydrateUserProfile(loginData: dataMap);
         Get.offAllNamed(AppRoutes.dashboard);
       } else {
         Get.snackbar(
@@ -65,10 +66,8 @@ class LoginController extends GetxController {
           'Login failed: ${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
         );
       }
-    } catch (e) {
-      final errorMsg = e is DioException
-          ? e.response?.data['status']['message'] ?? 'Network error'
-          : e.toString();
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data['status']['message'] ?? 'Network error';
 
       Get.snackbar('Error', 'Login failed: $errorMsg');
     } finally {
@@ -98,6 +97,66 @@ class LoginController extends GetxController {
 
     if (raw.isEmpty) return '';
     return '+855$raw';
+  }
+
+  Future<void> _hydrateUserProfile({
+    Map<String, dynamic>? loginData,
+  }) async {
+    final fallbackProfile = _extractProfileFromLoginPayload(loginData);
+
+    try {
+      final api = Get.find<ApiClient>();
+      final response = await api.getRequest(ApiEndpoints.userProfile);
+      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+        response.data,
+        (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
+      );
+
+      if (!apiResponse.isSuccess && response.statusCode != 200) {
+        if (fallbackProfile != null) {
+          _applyProfile(fallbackProfile);
+        }
+        return;
+      }
+
+      final profile = UserProfile.fromMap(apiResponse.data);
+      _applyProfile(profile);
+    } catch (_) {
+      if (fallbackProfile != null) {
+        _applyProfile(fallbackProfile);
+      }
+    }
+  }
+
+  UserProfile? _extractProfileFromLoginPayload(Map<String, dynamic>? loginData) {
+    if (loginData == null || loginData.isEmpty) return null;
+
+    final dynamic nestedUser = loginData['user'] ?? loginData['profile'];
+    if (nestedUser is Map<String, dynamic>) {
+      final profile = UserProfile.fromMap(nestedUser);
+      if (_hasMeaningfulProfile(profile)) {
+        return profile;
+      }
+    }
+
+    final profile = UserProfile.fromMap(loginData);
+    return _hasMeaningfulProfile(profile) ? profile : null;
+  }
+
+  bool _hasMeaningfulProfile(UserProfile profile) {
+    return profile.firstName.trim().isNotEmpty ||
+        profile.lastName.trim().isNotEmpty ||
+        profile.email.trim().isNotEmpty ||
+        profile.phoneNumber.trim().isNotEmpty;
+  }
+
+  void _applyProfile(UserProfile profile) {
+    final storage = Get.find<StorageService>();
+    storage.setUserProfile(profile);
+
+    if (Get.isRegistered<ProfileController>()) {
+      Get.find<ProfileController>().setProfile(profile);
+    }
   }
 
   @override

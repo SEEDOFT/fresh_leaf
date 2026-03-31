@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CheckoutSummaryCardWidget extends StatelessWidget {
   const CheckoutSummaryCardWidget({
@@ -30,37 +31,37 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
       ),
       child: Column(
         children: [
           _row(
-            'Subtotal',
+            'subtotal'.tr,
             subtotal,
             textColor: scheme.onSurface,
             mutedColor: scheme.onSurfaceVariant,
           ),
           const SizedBox(height: 8),
           _row(
-            'Delivery Fee',
+            'delivery_fee'.tr,
             deliveryFee,
             textColor: scheme.onSurface,
             mutedColor: scheme.onSurfaceVariant,
           ),
           const SizedBox(height: 8),
           _row(
-            'Discount',
+            'discount'.tr,
             -discount,
             textColor: scheme.onSurface,
             mutedColor: scheme.onSurfaceVariant,
             highlight: true,
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Divider(height: 1, color: AppColors.grayBorder),
+            child: Divider(height: 1, color: scheme.outline.withValues(alpha: 0.35)),
           ),
           _row(
-            'Total',
+            'total'.tr,
             total,
             textColor: scheme.onSurface,
             mutedColor: scheme.onSurfaceVariant,
@@ -72,7 +73,8 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: isPlacingOrder ? null : onPlaceOrder,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: scheme.primary,
+                foregroundColor: scheme.onPrimary,
                 minimumSize: const Size(0, 52),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -80,18 +82,17 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
                 elevation: 0,
               ),
               child: isPlacingOrder
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: scheme.onPrimary,
                       ),
                     )
-                  : const Text(
-                      'Place Order',
+                  : Text(
+                      'place_order'.tr,
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),
@@ -129,7 +130,7 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
           amountText,
           style: TextStyle(
             color: large
-                ? AppColors.primaryDarkGreen
+                ? textColor
                 : highlight
                 ? AppColors.success
                 : textColor,

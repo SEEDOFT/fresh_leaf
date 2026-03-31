@@ -37,7 +37,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'FreshLeaf AI',
+                      'freshleaf_ai'.tr,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
@@ -47,7 +47,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Produce-savvy assistant',
+                      'ai_assistant_subtitle'.tr,
                       style: TextStyle(
                         fontSize: 12,
                         color: scheme.onSurfaceVariant,
@@ -60,12 +60,12 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
             Row(
               children: [
                 IconButton(
-                  tooltip: 'View history',
+                  tooltip: 'view_history'.tr,
                   icon: Icon(Icons.history, color: scheme.onSurface),
                   onPressed: () => _showHistory(context),
                 ),
                 IconButton(
-                  tooltip: 'Clear history',
+                  tooltip: 'clear_history'.tr,
                   icon: Icon(
                     Icons.delete_outline,
                     color: scheme.onSurface,
@@ -102,7 +102,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: _controller.messages.isEmpty
                 ? Center(
                     child: Text(
-                      'No chat history yet',
+                      'no_chat_history_yet'.tr,
                       style: TextStyle(color: modalScheme.onSurfaceVariant),
                     ),
                   )
@@ -120,7 +120,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                               : AppColors.accentBrown,
                         ),
                         title: Text(
-                          msg.text.isEmpty ? '(streaming...)' : msg.text,
+                          msg.text.isEmpty ? 'streaming'.tr : msg.text,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -130,7 +130,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                         subtitle: Text(
-                          msg.isUser ? 'You' : 'AI',
+                          msg.isUser ? 'you'.tr : 'ai'.tr,
                           style: TextStyle(color: modalScheme.onSurfaceVariant),
                         ),
                         onTap: msg.text.isEmpty
@@ -153,18 +153,16 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
     return await showDialog<bool>(
           context: context,
           builder: (_) => AlertDialog(
-            title: const Text('Clear chat history?'),
-            content: const Text(
-              'This will remove all stored AI and user messages.',
-            ),
+            title: Text('clear_chat_history_title'.tr),
+            content: Text('clear_chat_history_body'.tr),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
+                child: Text('cancel'.tr),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Clear'),
+                child: Text('clear'.tr),
               ),
             ],
           ),

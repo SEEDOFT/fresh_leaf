@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
@@ -29,10 +30,7 @@ final class AppBootstrap {
 
     Get.put<StorageService>(storage, permanent: true);
     Get.put<SecureConfigService>(secureConfig, permanent: true);
-    Get.put<ApiClient>(
-      ApiClient(storageService: storage),
-      permanent: true,
-    );
+    Get.put<ApiClient>(ApiClient(storageService: storage), permanent: true);
     Get.put<AiChatStorageService>(AiChatStorageService(), permanent: true);
     Get.put<AppSettingsController>(
       AppSettingsController(storageService: storage),
@@ -47,7 +45,9 @@ final class AppBootstrap {
     final seenOnboarding = storage.onboardingSeen;
 
     if (token == null || token.isEmpty) {
-      return seenOnboarding ? AppRoutes.login : AppRoutes.onboarding;
+      if (!seenOnboarding) return AppRoutes.onboarding;
+      final hasInternet = await NetworkService.hasInternetConnection();
+      return hasInternet ? AppRoutes.login : AppRoutes.networkCheck;
     }
 
     apiClient.updateAuthToken(token);
@@ -68,6 +68,8 @@ final class AppBootstrap {
     }
 
     await storage.saveToken(null);
-    return seenOnboarding ? AppRoutes.login : AppRoutes.onboarding;
+    if (!seenOnboarding) return AppRoutes.onboarding;
+    final hasInternet = await NetworkService.hasInternetConnection();
+    return hasInternet ? AppRoutes.login : AppRoutes.networkCheck;
   }
 }

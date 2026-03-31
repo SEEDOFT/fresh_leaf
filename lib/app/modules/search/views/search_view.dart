@@ -21,7 +21,7 @@ class SearchView extends GetView<SearchController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Search',
+                  'search'.tr,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
@@ -30,7 +30,7 @@ class SearchView extends GetView<SearchController> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Find fresh products quickly',
+                  'search_subtitle'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 13,
@@ -57,7 +57,7 @@ class SearchView extends GetView<SearchController> {
                       itemBuilder: (context, index) {
                         final label = controller.quickTags[index];
                         return SearchFilterChipWidget(
-                          label: label,
+                          label: controller.displayLabelForTag(label),
                           isSelected: activeTag == label,
                           onTap: () => controller.changeTag(label),
                         );
@@ -68,7 +68,12 @@ class SearchView extends GetView<SearchController> {
                 const SizedBox(height: 14),
                 Obx(
                   () => Text(
-                    '${controller.results.length} result${controller.results.length == 1 ? '' : 's'}',
+                    (controller.results.length == 1
+                            ? 'results_one'
+                            : 'results_other')
+                        .trParams({
+                          'count': '${controller.results.length}',
+                        }),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,

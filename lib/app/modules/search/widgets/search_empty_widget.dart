@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchEmptyWidget extends StatelessWidget {
   const SearchEmptyWidget({super.key});
@@ -24,7 +25,7 @@ class SearchEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'No result found',
+              'no_result_found'.tr,
               style: TextStyle(
                 color: scheme.onSurface,
                 fontWeight: FontWeight.w800,
@@ -33,7 +34,7 @@ class SearchEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'Try another keyword or switch filters.',
+              'try_another_keyword'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: scheme.onSurfaceVariant,

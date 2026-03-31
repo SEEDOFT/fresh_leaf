@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/widgets/info_tile_widget.dart';
+import 'package:get/get.dart';
 
 class InfoTilesWidget extends StatelessWidget {
   const InfoTilesWidget({
@@ -19,21 +20,21 @@ class InfoTilesWidget extends StatelessWidget {
       children: [
         Expanded(
           child: InfoTileWidget(
-            title: 'Harvest',
+            title: 'harvest'.tr,
             value: harvest,
             icon: Icons.eco_outlined,
           ),
         ),
         Expanded(
           child: InfoTileWidget(
-            title: 'Origin',
+            title: 'origin'.tr,
             value: origin,
             icon: Icons.place_outlined,
           ),
         ),
         Expanded(
           child: InfoTileWidget(
-            title: 'Storage',
+            title: 'storage'.tr,
             value: storage,
             icon: Icons.kitchen_outlined,
           ),

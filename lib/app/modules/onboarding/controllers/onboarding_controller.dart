@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 
 class OnboardingController extends GetxController {
@@ -10,10 +11,10 @@ class OnboardingController extends GetxController {
 
   bool get isLastPage => currentPage.value == 2;
 
-  void nextPage() {
+  void nextPage() async {
     if (isLastPage) {
       _markSeen();
-      _goForward();
+      await _goForward();
     } else {
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -22,9 +23,9 @@ class OnboardingController extends GetxController {
     }
   }
 
-  void skip() {
+  void skip() async {
     _markSeen();
-    _goForward();
+    await _goForward();
   }
 
   @override
@@ -45,13 +46,14 @@ class OnboardingController extends GetxController {
     storage.saveOnboardingSeen(true);
   }
 
-  void _goForward() {
+  Future<void> _goForward() async {
     final storage = Get.find<StorageService>();
     final token = storage.token;
     if (token != null && token.isNotEmpty) {
       Get.offAllNamed(AppRoutes.dashboard);
     } else {
-      Get.offAllNamed(AppRoutes.login);
+      final hasInternet = await NetworkService.hasInternetConnection();
+      Get.offAllNamed(hasInternet ? AppRoutes.login : AppRoutes.networkCheck);
     }
   }
 }

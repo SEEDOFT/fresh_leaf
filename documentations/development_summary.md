@@ -154,6 +154,9 @@ This prevents broken UI when remote image URLs fail.
 
 Current environment setup is `dart-define` based (JSON define file), not `flutter_dotenv`.
 - Example launch config uses `--dart-define-from-file=.env.local.json`
+- Khmer font bundled: **Noto Sans Khmer** (`assets/fonts/noto_sans_khmer`) and used as `fontFamilyFallback` for Khmer locale.
+- Theme colors are centralized in `AppColors` (light + dark, including chip/scrim/shadow).
+- Splash screen added with branded logo (`assets/logo/fresh_leaf.png`) and gradient background; launch route is resolved via `LaunchRouteService` + `ProfileSyncMiddleware`.
 
 ---
 
@@ -245,3 +248,12 @@ sequenceDiagram
     ProfileController-->>User: show invalid/cancel feedback
   end
 ```
+
+---
+
+## 13) Recent updates (March 2026)
+- Added `ProfileSyncMiddleware` to refresh `/users/profile` once per session after auth.
+- Replaced manual timer debounce in address search with GetX `debounce` worker.
+- Centralized dark chip/input/switch colors in `AppColors`.
+- Integrated Noto Sans Khmer across themes for Khmer UI rendering.
+- Added modern splash screen route using the new branded logo.

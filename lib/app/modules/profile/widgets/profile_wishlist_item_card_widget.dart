@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class WishlistItemCard extends StatelessWidget {
   const WishlistItemCard({
@@ -22,7 +23,7 @@ class WishlistItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline),
       ),
       child: Row(
         children: [
@@ -76,10 +77,10 @@ class WishlistItemCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   '\$${item.price.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.primaryDarkGreen,
+                    color: scheme.primary,
                   ),
                 ),
               ],
@@ -111,9 +112,12 @@ class WishlistItemCard extends StatelessWidget {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Add',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                child: Text(
+                  'add'.tr,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],

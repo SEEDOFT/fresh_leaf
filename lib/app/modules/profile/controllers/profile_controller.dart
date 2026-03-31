@@ -31,10 +31,10 @@ class ProfileController extends GetxController {
     } else {
       final tokenPresent = storage.token?.isNotEmpty == true;
       if (tokenPresent) {
-        userName.value = 'FreshLeaf Member';
+        userName.value = 'member_placeholder'.tr;
         email.value = '—';
         phone.value = '—';
-        memberSince.value = 'Active';
+        memberSince.value = 'active_member'.tr;
       }
     }
   }
@@ -61,7 +61,7 @@ class ProfileController extends GetxController {
       );
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
-        Get.snackbar('Error', 'Unable to refresh profile');
+        Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
         return;
       }
 
@@ -70,7 +70,7 @@ class ProfileController extends GetxController {
       storage.setUserProfile(profile);
       setProfile(profile);
     } catch (_) {
-      Get.snackbar('Error', 'Unable to refresh profile');
+      Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     }
   }
 
@@ -87,7 +87,7 @@ class ProfileController extends GetxController {
       final api = Get.find<ApiClient>();
       await api.postRequest(ApiEndpoints.logout);
     } catch (e) {
-      Get.snackbar('Error', 'Cannot logout');
+      Get.snackbar('logout_failed'.tr, 'unable_logout'.tr);
     }
 
     final storage = Get.find<StorageService>();

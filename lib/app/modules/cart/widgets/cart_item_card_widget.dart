@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CartItemCardWidget extends StatelessWidget {
   const CartItemCardWidget({
@@ -26,10 +26,10 @@ class CartItemCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: scheme.shadow.withValues(alpha: 0.15),
             blurRadius: 14,
             offset: const Offset(0, 8),
           ),
@@ -87,10 +87,10 @@ class CartItemCardWidget extends StatelessWidget {
                     IconButton(
                       onPressed: onRemove,
                       splashRadius: 18,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close_rounded,
                         size: 20,
-                        color: AppColors.textMuted,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -148,14 +148,14 @@ class CartItemCardWidget extends StatelessWidget {
                       children: [
                         Text(
                           '\$${itemTotal.toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w900,
-                            color: AppColors.primaryDarkGreen,
+                            color: scheme.primary,
                           ),
                         ),
                         Text(
-                          '\$${item.price.toStringAsFixed(2)} each',
+                          '\$${item.price.toStringAsFixed(2)} ${'each'.tr}',
                           style: TextStyle(
                             fontSize: 11,
                             color: scheme.onSurfaceVariant,
@@ -196,7 +196,7 @@ class _QtyButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: scheme.surface,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.grayBorder),
+          border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
         ),
         child: Icon(
           icon,

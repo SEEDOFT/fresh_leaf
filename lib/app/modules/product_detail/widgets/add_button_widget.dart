@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class AddButtonWidget extends StatelessWidget {
   const AddButtonWidget({
@@ -14,10 +14,12 @@ class AddButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
         minimumSize: Size(media.size.width, 56),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
@@ -27,18 +29,18 @@ class AddButtonWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Add to cart',
+          Text(
+            'add_to_cart'.tr,
             style: TextStyle(
-              color: Colors.white,
+              color: scheme.onPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
           ),
           Text(
             '\$${total.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: scheme.onPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
             ),

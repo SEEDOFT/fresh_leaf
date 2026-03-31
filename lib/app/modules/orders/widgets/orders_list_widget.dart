@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 import '../models/order.dart';
 import 'order_item_widget.dart';
 
@@ -19,7 +19,7 @@ class OrdersListWidget extends StatelessWidget {
     if (groupedOrders.isEmpty) {
       return Center(
         child: Text(
-          'No orders in this status',
+          'no_orders_in_status'.tr,
           style: TextStyle(
             color: scheme.onSurfaceVariant,
             fontWeight: FontWeight.w600,
@@ -44,7 +44,7 @@ class OrdersListWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SectionHeader(title: section),
+              _SectionHeader(title: _translateSection(section)),
               const SizedBox(height: 10),
               ...sectionOrders.map(
                 (order) => Padding(
@@ -60,6 +60,19 @@ class OrdersListWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _translateSection(String section) {
+    switch (section) {
+      case 'Today':
+        return 'today'.tr;
+      case 'This Week':
+        return 'this_week'.tr;
+      case 'This Month':
+        return 'this_month'.tr;
+      default:
+        return 'earlier'.tr;
+    }
   }
 }
 
@@ -82,10 +95,10 @@ class _SectionHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        const Expanded(
+        Expanded(
           child: Divider(
             thickness: 1,
-            color: AppColors.grayBorder,
+            color: scheme.outline.withValues(alpha: 0.35),
           ),
         ),
       ],

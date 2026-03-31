@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileStatsCard extends StatelessWidget {
@@ -86,7 +85,7 @@ class ProfileStatsCard extends StatelessWidget {
                 Obx(
                   () => Text(
                     controller.userName.value.isEmpty
-                        ? 'FreshLeaf Member'
+                        ? 'member_placeholder'.tr
                         : controller.userName.value,
                     style: TextStyle(
                       fontSize: 18,
@@ -111,8 +110,10 @@ class ProfileStatsCard extends StatelessWidget {
                 Obx(
                   () => Text(
                     controller.memberSince.value.isEmpty
-                        ? 'Active member'
-                        : 'Member since ${controller.memberSince.value}',
+                        ? 'active_member'.tr
+                        : 'member_since'.trParams({
+                            'date': controller.memberSince.value,
+                          }),
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
                       fontSize: 12,
@@ -125,14 +126,14 @@ class ProfileStatsCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.accentLime,
+              color: scheme.secondaryContainer,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Text(
-              'Organic Club',
+            child: Text(
+              'organic_club'.tr,
               style: TextStyle(
                 fontWeight: FontWeight.w800,
-                color: Colors.black,
+                color: scheme.onSecondaryContainer,
                 fontSize: 12,
               ),
             ),

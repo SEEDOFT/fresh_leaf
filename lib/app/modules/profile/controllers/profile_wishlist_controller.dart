@@ -47,12 +47,15 @@ class ProfileWishlistController extends GetxController {
 
   void removeItem(WishlistItem item) {
     items.remove(item);
-    Get.snackbar('Removed', '${item.title} removed from wishlist');
+    Get.snackbar(
+      'removed'.tr,
+      'removed_from_wishlist'.trParams({'title': item.title}),
+    );
   }
 
   void addToCart(WishlistItem item) {
     if (!Get.isRegistered<CartController>()) {
-      Get.snackbar('Unavailable', 'Cart is not ready yet. Please try again.');
+      Get.snackbar('unavailable'.tr, 'cart_not_ready'.tr);
       return;
     }
 
@@ -63,6 +66,9 @@ class ProfileWishlistController extends GetxController {
       imageUrl: item.imageUrl,
       price: item.price,
     );
-    Get.snackbar('Added to cart', '${item.title} added to your cart');
+    Get.snackbar(
+      'added_to_cart'.tr,
+      'added_to_cart_message'.trParams({'title': item.title}),
+    );
   }
 }

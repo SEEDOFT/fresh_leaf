@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_pin_password_verify_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_pin_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 
 class ProfilePinPasswordVerifyView
@@ -35,7 +34,7 @@ class ProfilePinPasswordVerifyView
                       const SizedBox(height: 14),
                       Text(
                         controller.isPasswordVerified.value
-                            ? 'Password verified. Continue with PIN setup.'
+                            ? 'password_verified_continue_pin'.tr
                             : controller.subtitle,
                         style: TextStyle(
                           color: scheme.onSurfaceVariant,
@@ -48,9 +47,9 @@ class ProfilePinPasswordVerifyView
                           controller: controller.passwordController,
                           obscureText: !controller.isPasswordVisible.value,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'password'.tr,
                             filled: true,
-                            fillColor: scheme.surface,
+                            fillColor: scheme.surfaceContainerHighest,
                             prefixIcon: Icon(
                               Icons.lock_outline_rounded,
                               color: scheme.onSurfaceVariant,
@@ -71,20 +70,20 @@ class ProfilePinPasswordVerifyView
                       ] else ...[
                         if (controller.isUpdateMode) ...[
                           PinTextField(
-                            label: 'Current PIN',
+                            label: 'current_pin'.tr,
                             controller: controller.currentPinController,
                             inputFormatters: controller.pinInputFormatter,
                           ),
                           const SizedBox(height: 14),
                         ],
                         PinTextField(
-                          label: 'New PIN',
+                          label: 'new_pin'.tr,
                           controller: controller.pinController,
                           inputFormatters: controller.pinInputFormatter,
                         ),
                         const SizedBox(height: 14),
                         PinTextField(
-                          label: 'Confirm PIN',
+                          label: 'confirm_pin'.tr,
                           controller: controller.confirmPinController,
                           inputFormatters: controller.pinInputFormatter,
                         ),
@@ -106,7 +105,7 @@ class ProfilePinPasswordVerifyView
                           ? controller.submit
                           : controller.verifyPasswordFirst,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkGreen,
+                        backgroundColor: scheme.primary,
                         minimumSize: Size(screenWidth, 52),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -114,20 +113,20 @@ class ProfilePinPasswordVerifyView
                         elevation: 0,
                       ),
                       child: controller.isLoading.value
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: scheme.onPrimary,
                               ),
                             )
                           : Text(
                               controller.isPasswordVerified.value
                                   ? controller.actionTitle
-                                  : 'Verify Password',
-                              style: const TextStyle(
-                                color: Colors.white,
+                                  : 'verify_password'.tr,
+                              style: TextStyle(
+                                color: scheme.onPrimary,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),

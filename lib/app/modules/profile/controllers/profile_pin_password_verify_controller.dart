@@ -22,25 +22,25 @@ class ProfilePinPasswordVerifyController extends GetxController {
   bool get isUpdateMode => mode.value == 'update';
 
   String get screenTitle {
-    if (isResetMode) return 'Reset PIN';
-    if (isUpdateMode) return 'Update PIN';
-    return 'Set PIN';
+    if (isResetMode) return 'reset_pin'.tr;
+    if (isUpdateMode) return 'update_pin'.tr;
+    return 'set_pin'.tr;
   }
 
   String get actionTitle {
-    if (isResetMode) return 'Reset PIN';
-    if (isUpdateMode) return 'Update PIN';
-    return 'Set PIN';
+    if (isResetMode) return 'reset_pin'.tr;
+    if (isUpdateMode) return 'update_pin'.tr;
+    return 'set_pin'.tr;
   }
 
   String get subtitle {
     if (isResetMode) {
-      return 'Verify password first, then choose a new PIN.';
+      return 'verify_then_choose_new_pin'.tr;
     }
     if (isUpdateMode) {
-      return 'Verify password first, then provide current PIN to update.';
+      return 'verify_then_provide_current_pin'.tr;
     }
-    return 'Verify password before setting your PIN.';
+    return 'verify_before_setting_pin'.tr;
   }
 
   @override
@@ -65,23 +65,26 @@ class ProfilePinPasswordVerifyController extends GetxController {
     final confirmPin = confirmPinController.text.trim();
 
     if (!isPasswordVerified.value) {
-      Get.snackbar('Verification required', 'Please verify password first.');
+      Get.snackbar(
+        'verification_required'.tr,
+        'verify_password_first_message'.tr,
+      );
       return;
     }
     if (pin.isEmpty || confirmPin.isEmpty) {
-      Get.snackbar('Missing fields', 'Please complete all fields.');
+      Get.snackbar('missing_fields'.tr, 'complete_all_fields'.tr);
       return;
     }
     if (isUpdateMode && currentPin.isEmpty) {
-      Get.snackbar('Missing fields', 'Please enter your current PIN.');
+      Get.snackbar('missing_fields'.tr, 'enter_current_pin_message'.tr);
       return;
     }
     if (pin.length < 4) {
-      Get.snackbar('Invalid PIN', 'PIN must be at least 4 digits.');
+      Get.snackbar('invalid_pin'.tr, 'pin_min_length'.tr);
       return;
     }
     if (pin != confirmPin) {
-      Get.snackbar('PIN mismatch', 'PIN and confirmation must match.');
+      Get.snackbar('pin_mismatch'.tr, 'pin_confirmation_match'.tr);
       return;
     }
 
@@ -112,7 +115,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
     if (isLoading.value) return;
     final password = passwordController.text.trim();
     if (password.isEmpty) {
-      Get.snackbar('Missing password', 'Please enter your password.');
+      Get.snackbar('missing_password'.tr, 'enter_password'.tr);
       return;
     }
 
@@ -123,7 +126,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
 
       _verifiedPassword = password;
       isPasswordVerified.value = true;
-      Get.snackbar('Verified', 'Password verified successfully.');
+      Get.snackbar('verified'.tr, 'password_verified_success'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -155,22 +158,25 @@ class ProfilePinPasswordVerifyController extends GetxController {
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
-          'Verification failed',
+          'verification_failed'.tr,
           apiResponse.status.message.isNotEmpty
               ? apiResponse.status.message
-              : 'Password verification failed',
+              : 'password_verification_failed'.tr,
         );
         return false;
       }
       return true;
     } on DioException catch (e) {
       Get.snackbar(
-        'Verification failed',
-        _extractApiMessage(e, fallback: 'Password verification failed'),
+        'verification_failed'.tr,
+        _extractApiMessage(e, fallback: 'password_verification_failed'.tr),
       );
       return false;
     } catch (_) {
-      Get.snackbar('Verification failed', 'Password verification failed');
+      Get.snackbar(
+        'verification_failed'.tr,
+        'password_verification_failed'.tr,
+      );
       return false;
     }
   }
@@ -193,22 +199,22 @@ class ProfilePinPasswordVerifyController extends GetxController {
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
-          'Set PIN failed',
+          'set_pin_failed'.tr,
           apiResponse.status.message.isNotEmpty
               ? apiResponse.status.message
-              : 'Unable to set PIN',
+              : 'unable_set_pin'.tr,
         );
         return false;
       }
       return true;
     } on DioException catch (e) {
       Get.snackbar(
-        'Set PIN failed',
-        _extractApiMessage(e, fallback: 'Unable to set PIN'),
+        'set_pin_failed'.tr,
+        _extractApiMessage(e, fallback: 'unable_set_pin'.tr),
       );
       return false;
     } catch (_) {
-      Get.snackbar('Set PIN failed', 'Unable to set PIN');
+      Get.snackbar('set_pin_failed'.tr, 'unable_set_pin'.tr);
       return false;
     }
   }
@@ -236,22 +242,22 @@ class ProfilePinPasswordVerifyController extends GetxController {
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
-          'Update PIN failed',
+          'update_pin_failed'.tr,
           apiResponse.status.message.isNotEmpty
               ? apiResponse.status.message
-              : 'Unable to update PIN',
+              : 'unable_update_pin'.tr,
         );
         return false;
       }
       return true;
     } on DioException catch (e) {
       Get.snackbar(
-        'Update PIN failed',
-        _extractApiMessage(e, fallback: 'Unable to update PIN'),
+        'update_pin_failed'.tr,
+        _extractApiMessage(e, fallback: 'unable_update_pin'.tr),
       );
       return false;
     } catch (_) {
-      Get.snackbar('Update PIN failed', 'Unable to update PIN');
+      Get.snackbar('update_pin_failed'.tr, 'unable_update_pin'.tr);
       return false;
     }
   }
@@ -298,7 +304,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
     final setOk = await _setPin(pin, confirmPin);
     if (setOk) return true;
 
-    Get.snackbar('Reset PIN failed', 'Unable to reset PIN');
+    Get.snackbar('reset_pin_failed'.tr, 'unable_update_pin'.tr);
     return false;
   }
 

@@ -20,7 +20,7 @@ class ProductListView extends GetView<ProductListController> {
           onPressed: Get.back,
         ),
         title: Text(
-          'All Products',
+          'all_products'.tr,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

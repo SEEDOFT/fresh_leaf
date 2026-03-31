@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/app.dart';
 import 'package:fresh_leaf/core/bootstrap/app_bootstrap.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/services/launch_route_service.dart';
+import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,5 +13,9 @@ Future<void> main() async {
   ]);
 
   final initialRoute = await AppBootstrap.initialize();
-  runApp(FreshLeafApp(initialRoute: initialRoute));
+  Get.put<LaunchRouteService>(
+    LaunchRouteService(initialRoute),
+    permanent: true,
+  );
+  runApp(const FreshLeafApp(initialRoute: AppRoutes.splash));
 }

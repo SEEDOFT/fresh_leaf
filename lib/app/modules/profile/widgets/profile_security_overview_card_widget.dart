@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class SecurityOverviewCard extends StatelessWidget {
   const SecurityOverviewCard({super.key});
@@ -12,7 +12,7 @@ class SecurityOverviewCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline),
       ),
       child: Row(
         children: [
@@ -27,7 +27,7 @@ class SecurityOverviewCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Security Settings',
+                  'security_settings'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -36,7 +36,7 @@ class SecurityOverviewCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Update your password and enable extra protection for your account.',
+                  'security_settings_subtitle'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,

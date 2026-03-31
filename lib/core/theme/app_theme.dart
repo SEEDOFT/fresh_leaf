@@ -21,13 +21,14 @@ final class AppTheme {
       onSurface: AppColors.textDark,
       onSurfaceVariant: AppColors.textLight,
       outline: AppColors.grayBorder,
-      shadow: Color(0x33000000),
-      scrim: Color(0x40000000),
+      shadow: AppColors.shadow,
+      scrim: AppColors.scrim,
     );
 
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamilyFallback: const ['NotoSansKhmer'],
       scaffoldBackgroundColor: AppColors.backgroundCream,
       primaryColor: AppColors.primary,
       colorScheme: lightScheme,
@@ -137,19 +138,35 @@ final class AppTheme {
   }
 
   static ThemeData get darkTheme {
+    const darkScheme = ColorScheme.dark(
+      primary: AppColors.darkPrimary,
+      onPrimary: AppColors.darkOnPrimary,
+      primaryContainer: AppColors.darkPrimaryContainer,
+      onPrimaryContainer: AppColors.darkOnPrimaryContainer,
+      secondary: AppColors.darkSecondary,
+      onSecondary: AppColors.darkOnSecondary,
+      secondaryContainer: AppColors.darkSecondaryContainer,
+      onSecondaryContainer: AppColors.darkOnSecondaryContainer,
+      error: AppColors.darkError,
+      onError: AppColors.darkOnError,
+      surface: AppColors.darkSurface,
+      onSurface: AppColors.darkOnSurface,
+      onSurfaceVariant: AppColors.darkOnSurfaceVariant,
+      outline: AppColors.darkOutline,
+      shadow: AppColors.darkShadow,
+      scrim: AppColors.darkScrim,
+    );
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: const Color(0xFF111713),
-      colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF7AB46A),
-        secondary: Color(0xFFD3A98B),
-        surface: Color(0xFF1A221D),
-        error: Color(0xFFF26B60),
-      ),
+      fontFamilyFallback: const ['NotoSansKhmer'],
+      scaffoldBackgroundColor: AppColors.darkScaffold,
+      colorScheme: darkScheme,
+      primaryColor: darkScheme.primary,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: Color(0xFFEAECE8),
+        foregroundColor: Color(0xFFE8EFE7),
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Color(0xFF111713),
@@ -157,19 +174,89 @@ final class AppTheme {
           statusBarBrightness: Brightness.dark,
         ),
       ),
+      textTheme: const TextTheme(
+        headlineLarge: TextStyle(color: Color(0xFFE8EFE7)),
+        headlineMedium: TextStyle(color: Color(0xFFE8EFE7)),
+        headlineSmall: TextStyle(color: Color(0xFFE8EFE7)),
+        titleLarge: TextStyle(color: Color(0xFFE8EFE7)),
+        titleMedium: TextStyle(color: Color(0xFFE8EFE7)),
+        titleSmall: TextStyle(color: Color(0xFFE8EFE7)),
+        bodyLarge: TextStyle(color: Color(0xFFE8EFE7)),
+        bodyMedium: TextStyle(color: Color(0xFFE8EFE7)),
+        bodySmall: TextStyle(color: Color(0xFFB6C2B6)),
+        labelLarge: TextStyle(color: Color(0xFFE8EFE7)),
+        labelMedium: TextStyle(color: Color(0xFFB6C2B6)),
+        labelSmall: TextStyle(color: Color(0xFFB6C2B6)),
+      ),
       cardTheme: CardThemeData(
-        color: const Color(0xFF1A221D),
+        color: darkScheme.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: darkScheme.primary,
+          foregroundColor: darkScheme.onPrimary,
+          disabledBackgroundColor: darkScheme.primary.withValues(alpha: 0.35),
+          disabledForegroundColor: darkScheme.onPrimary.withValues(alpha: 0.8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          elevation: 0,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: darkScheme.primary,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: darkScheme.primary,
+          side: BorderSide(color: darkScheme.outline),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.darkChipBackground,
+        selectedColor: darkScheme.primary.withValues(alpha: 0.32),
+        disabledColor: AppColors.darkChipDisabled,
+        side: BorderSide.none,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        labelStyle: TextStyle(color: darkScheme.onSurface),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return darkScheme.onPrimary;
+          return darkScheme.onSurfaceVariant;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return darkScheme.primary;
+          return AppColors.darkSwitchTrack;
+        }),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFF1A221D),
+        fillColor: AppColors.darkInputFill,
+        hintStyle: TextStyle(color: darkScheme.onSurfaceVariant),
+        labelStyle: TextStyle(color: darkScheme.onSurfaceVariant),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: darkScheme.outline),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: darkScheme.primary, width: 1.4),
         ),
       ),
     );

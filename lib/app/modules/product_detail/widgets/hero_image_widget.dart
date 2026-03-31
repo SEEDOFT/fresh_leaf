@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class HeroImageWidget extends StatelessWidget {
   const HeroImageWidget({
@@ -49,15 +49,15 @@ class HeroImageWidget extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.accentLime.withValues(alpha: 0.9),
+                  color: scheme.secondaryContainer.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Text(
-                  'ORGANIC',
+                child: Text(
+                  'organic'.tr.toUpperCase(),
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: Colors.black,
+                    color: scheme.onSecondaryContainer,
                   ),
                 ),
               ),

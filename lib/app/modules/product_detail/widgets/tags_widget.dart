@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TagsWidget extends StatelessWidget {
   const TagsWidget({
@@ -23,7 +24,7 @@ class TagsWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
-                tag,
+                tag.tr,
                 style: TextStyle(
                   fontSize: 12,
                   color: scheme.onSurface,

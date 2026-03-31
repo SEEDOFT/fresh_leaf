@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class PinToggleCard extends StatelessWidget {
   const PinToggleCard({
@@ -19,7 +19,7 @@ class PinToggleCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline),
       ),
       child: Row(
         children: [
@@ -28,7 +28,7 @@ class PinToggleCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Require PIN for Orders',
+                  'require_pin_orders'.tr,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -37,7 +37,7 @@ class PinToggleCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Ask for PIN before opening order details.',
+                  'ask_pin_order_details'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 12,
@@ -50,7 +50,7 @@ class PinToggleCard extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeTrackColor: scheme.primary,
-            activeColor: Colors.white,
+            activeColor: scheme.onPrimary,
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchSearchFieldWidget extends StatelessWidget {
   const SearchSearchFieldWidget({
@@ -28,7 +29,7 @@ class SearchSearchFieldWidget extends StatelessWidget {
         onChanged: onChanged,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
-          hintText: 'Search vegetables, mushrooms, citrus...',
+          hintText: 'search_hint'.tr,
           prefixIcon: Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
           suffixIcon: query.isEmpty
               ? const SizedBox.shrink()

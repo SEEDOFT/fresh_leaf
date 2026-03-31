@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class QuantityRowWidget extends StatelessWidget {
   const QuantityRowWidget({
@@ -18,7 +19,7 @@ class QuantityRowWidget extends StatelessWidget {
     return Row(
       children: [
         Text(
-          'Quantity',
+          'quantity'.tr,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,

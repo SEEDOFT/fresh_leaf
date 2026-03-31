@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class OnboardingTextContent extends StatelessWidget {
   const OnboardingTextContent({super.key, required this.index});
@@ -8,6 +9,7 @@ class OnboardingTextContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -15,15 +17,17 @@ class OnboardingTextContent extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFDE2D3),
+            color: isDark
+                ? scheme.secondaryContainer.withValues(alpha: 0.8)
+                : const Color(0xFFFDE2D3),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Text(
-            'THE DIGITAL LARDER',
+          child: Text(
+            'onboarding_badge'.tr,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF8B5E3C),
+              color: isDark ? scheme.onSecondaryContainer : const Color(0xFF8B5E3C),
             ),
           ),
         ),
@@ -38,11 +42,11 @@ class OnboardingTextContent extends StatelessWidget {
             ),
             children: [
               TextSpan(
-                text: 'Freshness\n',
+                text: '${'onboarding_title_top'.tr}\n',
                 style: TextStyle(color: scheme.onSurface),
               ),
               TextSpan(
-                text: 'Delivered.',
+                text: 'onboarding_title_bottom'.tr,
                 style: TextStyle(color: scheme.primary),
               ),
             ],
@@ -50,7 +54,7 @@ class OnboardingTextContent extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Sourcing the finest seasonal produce directly from boutique organic farms to your kitchen.',
+          'onboarding_subtitle'.tr,
           style: TextStyle(
             fontSize: 16,
             color: scheme.onSurfaceVariant,

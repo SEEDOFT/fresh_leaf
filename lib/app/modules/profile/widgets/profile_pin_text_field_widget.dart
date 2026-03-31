@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class PinTextField extends StatelessWidget {
   const PinTextField({
@@ -37,17 +37,17 @@ class PinTextField extends StatelessWidget {
           obscureText: true,
           obscuringCharacter: '•',
           decoration: InputDecoration(
-            hintText: 'Enter 6 digits',
+            hintText: 'enter_6_digits'.tr,
             hintStyle: TextStyle(color: scheme.onSurfaceVariant),
             filled: true,
-            fillColor: scheme.surface,
+            fillColor: scheme.surfaceContainerHighest,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
               vertical: 12,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: BorderSide(color: scheme.outline),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

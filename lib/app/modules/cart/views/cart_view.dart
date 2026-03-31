@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/widgets/cart_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 
@@ -13,6 +12,7 @@ class CartView extends GetView<CartController> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final scheme = Theme.of(context).colorScheme;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
     void handleCheckout() {
@@ -32,7 +32,7 @@ class CartView extends GetView<CartController> {
               width: 220,
               height: 220,
               decoration: BoxDecoration(
-                color: AppColors.accentLime.withValues(alpha: 0.18),
+                color: scheme.primaryContainer.withValues(alpha: 0.26),
                 shape: BoxShape.circle,
               ),
             ),
@@ -44,7 +44,7 @@ class CartView extends GetView<CartController> {
               width: 200,
               height: 200,
               decoration: BoxDecoration(
-                color: AppColors.accentPeach.withValues(alpha: 0.55),
+                color: scheme.secondaryContainer.withValues(alpha: 0.42),
                 shape: BoxShape.circle,
               ),
             ),

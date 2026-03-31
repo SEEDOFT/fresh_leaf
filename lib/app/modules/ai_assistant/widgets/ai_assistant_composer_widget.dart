@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class AiAssistantComposer extends StatelessWidget {
   const AiAssistantComposer({
@@ -24,7 +23,7 @@ class AiAssistantComposer extends StatelessWidget {
               minLines: 1,
               maxLines: 4,
               decoration: InputDecoration(
-                hintText: 'Ask FreshLeaf anything...',
+                hintText: 'ai_prompt_hint'.tr,
                 filled: true,
                 fillColor: scheme.surfaceContainerHighest,
                 contentPadding: const EdgeInsets.symmetric(
@@ -50,19 +49,23 @@ class AiAssistantComposer extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   shape: const CircleBorder(),
-                  backgroundColor: AppColors.primaryGreen,
+                  backgroundColor: scheme.primary,
                   elevation: 0,
                 ),
                 child: controller.isLoading.value
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 18,
                         height: 18,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Colors.white,
+                          color: scheme.onPrimary,
                         ),
                       )
-                    : const Icon(Icons.send, color: Colors.white, size: 20),
+                    : Icon(
+                        Icons.send,
+                        color: scheme.onPrimary,
+                        size: 20,
+                      ),
               ),
             ),
           ),

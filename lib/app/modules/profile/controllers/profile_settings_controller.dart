@@ -26,7 +26,7 @@ class ProfileSettingsController extends GetxController {
 
   Future<void> clearAiHistory() async {
     await _chatStorage.clearMessages();
-    Get.snackbar('Done', 'chat_history_cleared'.tr);
+    Get.snackbar('success'.tr, 'chat_history_cleared'.tr);
   }
 
   Future<void> openDeviceSettings() async {

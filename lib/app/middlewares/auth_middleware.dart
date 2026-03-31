@@ -16,10 +16,6 @@ class AuthMiddleware extends GetMiddleware {
     final storage = Get.find<StorageService>();
     final hasToken = storage.token?.isNotEmpty == true;
     if (hasToken) return null;
-
-    final target = storage.onboardingSeen
-        ? AppRoutes.login
-        : AppRoutes.onboarding;
-    return RouteSettings(name: target);
+    return const RouteSettings(name: AppRoutes.login);
   }
 }

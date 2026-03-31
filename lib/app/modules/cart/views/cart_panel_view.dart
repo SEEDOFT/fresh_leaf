@@ -12,18 +12,28 @@ Future<void> showCartPanel() async {
   await Get.generalDialog(
     barrierDismissible: true,
     barrierLabel: 'Cart',
-    barrierColor: Colors.black.withValues(alpha: 0.35),
+    barrierColor: Get.theme.colorScheme.scrim.withValues(alpha: 0.5),
     transitionDuration: const Duration(milliseconds: 260),
     pageBuilder: (context, animation, secondaryAnimation) {
-      return const Align(
-        alignment: Alignment.centerRight,
-        child: FractionallySizedBox(
-          widthFactor: 0.92,
-          child: ClipRRect(
-            borderRadius: BorderRadius.horizontal(
-              left: Radius.circular(26),
+      return Dismissible(
+        key: const ValueKey('cart-panel-dismissible'),
+        direction: DismissDirection.startToEnd,
+        dismissThresholds: const <DismissDirection, double>{
+          DismissDirection.startToEnd: 0.18,
+        },
+        movementDuration: const Duration(milliseconds: 220),
+        resizeDuration: null,
+        onDismissed: (_) => Get.back<void>(),
+        child: const Align(
+          alignment: Alignment.centerRight,
+          child: FractionallySizedBox(
+            widthFactor: 0.92,
+            child: ClipRRect(
+              borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(26),
+              ),
+              child: CartView(asPanel: true),
             ),
-            child: CartView(asPanel: true),
           ),
         ),
       );

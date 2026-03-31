@@ -27,35 +27,30 @@ class AiAssistantView extends GetView<AiAssistantController> {
                         return const AiAssistantEmptyState();
                       }
 
-                      return ListView(
+                      return ListView.separated(
+                        controller: controller.chatScrollController,
                         padding: const EdgeInsets.only(
                           left: 20,
                           right: 20,
                           top: 16,
                           bottom: 120,
                         ),
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              for (final message in controller.messages)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: message.isUser
-                                      ? AiAssistantUserMessage(
-                                          controller: controller,
-                                          text: message.text,
-                                        )
-                                      : AiAssistantMessage(
-                                          controller: controller,
-                                          text: message.text,
-                                          isStreaming: message.isStreaming,
-                                          highlightImportant: true,
-                                        ),
-                                ),
-                            ],
-                          ),
-                        ],
+                        itemCount: controller.messages.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) {
+                          final message = controller.messages[index];
+                          return message.isUser
+                              ? AiAssistantUserMessage(
+                                  controller: controller,
+                                  text: message.text,
+                                )
+                              : AiAssistantMessage(
+                                  controller: controller,
+                                  text: message.text,
+                                  isStreaming: message.isStreaming,
+                                  highlightImportant: true,
+                                );
+                        },
                       );
                     },
                   ),

@@ -8,24 +8,34 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final scaffoldBg = isDark
+        ? theme.colorScheme.surface
+        : theme.scaffoldBackgroundColor;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
+        backgroundColor: scaffoldBg,
         body: SafeArea(
-          child: Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: LoginFormContent(
-                    controller: controller,
-                    constraints: constraints,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
                   ),
-                );
-              },
-            ),
+                  child: IntrinsicHeight(
+                    child: LoginFormContent(
+                      controller: controller,
+                      constraints: constraints,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

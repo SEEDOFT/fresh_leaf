@@ -40,22 +40,28 @@ import 'package:fresh_leaf/app/modules/checkout/bindings/checkout_binding.dart';
 import 'package:fresh_leaf/app/modules/checkout/views/checkout_view.dart';
 import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
 import 'package:fresh_leaf/app/modules/search/views/search_view.dart';
+import 'package:fresh_leaf/app/modules/network_check/bindings/network_check_binding.dart';
+import 'package:fresh_leaf/app/modules/network_check/views/network_check_view.dart';
 import 'package:fresh_leaf/app/middlewares/auth_middleware.dart';
-import 'package:fresh_leaf/app/middlewares/guest_middleware.dart';
 import 'package:fresh_leaf/app/middlewares/onboarding_middleware.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:fresh_leaf/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/app/middlewares/profile_sync_middleware.dart';
+import 'package:fresh_leaf/app/modules/splash/bindings/splash_binding.dart';
+import 'package:fresh_leaf/app/modules/splash/views/splash_view.dart';
+import 'package:fresh_leaf/app/modules/notifications/bindings/notifications_binding.dart';
+import 'package:fresh_leaf/app/modules/notifications/views/notifications_view.dart';
+import 'package:fresh_leaf/app/modules/notifications/bindings/notification_detail_binding.dart';
+import 'package:fresh_leaf/app/modules/notifications/views/notification_detail_view.dart';
 
 final class AppPages {
   AppPages._();
 
   static final List<GetMiddleware> _authOnly = <GetMiddleware>[
     AuthMiddleware(priorityValue: 1),
-  ];
-  static final List<GetMiddleware> _guestOnly = <GetMiddleware>[
-    GuestMiddleware(priorityValue: 1),
+    ProfileSyncMiddleware(priorityValue: 2),
   ];
   static final List<GetMiddleware> _onboardingOnly = <GetMiddleware>[
     OnboardingMiddleware(priorityValue: 1),
@@ -63,22 +69,30 @@ final class AppPages {
 
   static final pages = [
     GetPage(
+      name: AppRoutes.splash,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),
+    GetPage(
       name: AppRoutes.onboarding,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
       middlewares: _onboardingOnly,
     ),
     GetPage(
+      name: AppRoutes.networkCheck,
+      page: () => const NetworkCheckView(),
+      binding: NetworkCheckBinding(),
+    ),
+    GetPage(
       name: AppRoutes.login,
       page: () => const LoginView(),
       binding: LoginBinding(),
-      middlewares: _guestOnly,
     ),
     GetPage(
       name: AppRoutes.register,
       page: () => const RegisterView(),
       binding: RegisterBinding(),
-      middlewares: _guestOnly,
     ),
     GetPage(
       name: AppRoutes.dashboard,
@@ -192,6 +206,18 @@ final class AppPages {
       name: AppRoutes.productList,
       page: () => const ProductListView(),
       binding: ProductListBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.notifications,
+      page: () => const NotificationsView(),
+      binding: NotificationsBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.notificationDetail,
+      page: () => const NotificationDetailView(),
+      binding: NotificationDetailBinding(),
       middlewares: _authOnly,
     ),
   ];

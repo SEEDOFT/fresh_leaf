@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class CheckoutItemRowWidget extends StatelessWidget {
   const CheckoutItemRowWidget({
@@ -20,7 +19,7 @@ class CheckoutItemRowWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
       ),
       child: Row(
         children: [
@@ -79,10 +78,10 @@ class CheckoutItemRowWidget extends StatelessWidget {
           ),
           Text(
             '\$${total.toStringAsFixed(2)}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,
-              color: AppColors.primaryDarkGreen,
+              color: scheme.primary,
             ),
           ),
         ],

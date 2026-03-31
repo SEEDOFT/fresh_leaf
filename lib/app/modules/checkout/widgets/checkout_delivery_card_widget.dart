@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CheckoutDeliveryCardWidget extends StatelessWidget {
   const CheckoutDeliveryCardWidget({
@@ -17,7 +17,7 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,12 +26,12 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: AppColors.accentPeach.withValues(alpha: 0.6),
+              color: scheme.secondaryContainer.withValues(alpha: 0.65),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.location_on_outlined,
-              color: AppColors.accentBrown,
+              color: scheme.secondary,
               size: 22,
             ),
           ),
@@ -41,7 +41,7 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Delivery Address',
+                  'delivery_address'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 12,
@@ -50,7 +50,7 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Organic Street 24, Phnom Penh',
+                  'default_delivery_address'.tr,
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontSize: 14,
@@ -59,7 +59,7 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  'Delivery window: 25-35 minutes',
+                  'delivery_window'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 12,
@@ -71,12 +71,12 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
           TextButton(
             onPressed: onChangeAddress,
             style: TextButton.styleFrom(
-              foregroundColor: AppColors.primaryDarkGreen,
+              foregroundColor: scheme.primary,
               padding: const EdgeInsets.symmetric(horizontal: 8),
             ),
-            child: const Text(
-              'Change',
-              style: TextStyle(
+            child: Text(
+              'change'.tr,
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),

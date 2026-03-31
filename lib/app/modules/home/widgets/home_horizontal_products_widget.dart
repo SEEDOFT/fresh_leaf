@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
 
 class HomeHorizontalProductsWidget extends StatelessWidget {
@@ -44,7 +43,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'No matching products found',
+                'no_matching_products'.tr,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: scheme.onSurface,
@@ -52,7 +51,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Try another keyword.',
+                'try_another_keyword_short'.tr,
                 style: TextStyle(
                   fontSize: 12,
                   color: scheme.onSurfaceVariant,
@@ -80,13 +79,16 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                 subtitle: item['subtitle'] ?? '',
                 description:
                     item['description'] ??
-                    'Seasonal pick straight from partner farms. Packed for freshness and ready for your favorite recipes.',
+                    'seasonal_pick_description'.tr,
                 imageUrl: item['image'] ?? '',
-                tags: List<String>.from(item['tags'] ?? ['Organic', 'Fresh']),
+                tags: List<String>.from(
+                  item['tags'] ?? ['organic'.tr, 'fresh'.tr],
+                ),
                 price: _parsePrice(item['price']),
-                origin: item['origin'] ?? 'Local farm',
-                harvest: item['harvest'] ?? 'Harvested this week',
-                storage: item['storage'] ?? 'Refrigerate to extend freshness',
+                origin: item['origin'] ?? 'local_farm'.tr,
+                harvest: item['harvest'] ?? 'harvested_this_week'.tr,
+                storage:
+                    item['storage'] ?? 'refrigerate_extend_freshness'.tr,
               );
               Get.toNamed(AppRoutes.productDetail, arguments: product);
             },
@@ -118,15 +120,15 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.accentLime,
+                            color: scheme.secondaryContainer,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            item['badge']!,
+                            item['badge']!.toString().tr,
                             style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
-                              color: scheme.onSurface,
+                              color: scheme.onSecondaryContainer,
                             ),
                           ),
                         ),
@@ -143,26 +145,28 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                item['title']!,
-                                style: const TextStyle(
+                                item['title']!.toString().tr,
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
+                                  color: scheme.onSurface,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             Text(
                               item['price']!,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
+                                color: scheme.primary,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          item['subtitle']!,
+                          item['subtitle']!.toString().tr,
                           style: TextStyle(
                             fontSize: 12,
                             color: scheme.onSurfaceVariant,
@@ -186,7 +190,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Add to Cart',
+                                'add_to_cart'.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,

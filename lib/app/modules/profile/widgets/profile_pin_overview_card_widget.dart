@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class PinOverviewCard extends StatelessWidget {
   const PinOverviewCard({super.key, required this.hasPin});
@@ -14,7 +14,7 @@ class PinOverviewCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline),
       ),
       child: Row(
         children: [
@@ -33,7 +33,7 @@ class PinOverviewCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'PIN Verification',
+                  'pin_verification'.tr,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -43,8 +43,8 @@ class PinOverviewCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   hasPin
-                      ? 'PIN is active. You can update it below.'
-                      : 'Set a PIN to protect sensitive actions.',
+                      ? 'pin_active_update'.tr
+                      : 'set_pin_protect'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,

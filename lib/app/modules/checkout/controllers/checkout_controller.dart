@@ -50,11 +50,12 @@ class CheckoutController extends GetxController {
     }
 
     Get.snackbar(
-      'Order Confirmed',
-      'Your order with $itemCount item${itemCount == 1 ? '' : 's'} is on the way.',
+      'order_confirmed'.tr,
+      (itemCount == 1 ? 'order_on_the_way_one' : 'order_on_the_way_other')
+          .trParams({'count': '$itemCount'}),
       snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.white,
-      colorText: Colors.black87,
+      backgroundColor: Get.theme.colorScheme.surface,
+      colorText: Get.theme.colorScheme.onSurface,
       borderRadius: 14,
       margin: const EdgeInsets.all(12),
     );

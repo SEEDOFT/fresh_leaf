@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_security_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_security_controller.dart';
 
@@ -18,7 +17,7 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: scaffoldBg,
-        appBar: const ProfileAppBar(title: 'Security'),
+        appBar: ProfileAppBar(title: 'security'.tr),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: Column(
@@ -31,8 +30,8 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                       const SizedBox(height: 14),
                       Text(
                         controller.isPasswordVerified.value
-                            ? 'Password verified. Continue with your new password.'
-                            : 'Verify your current password first before changing it.',
+                            ? 'password_verified_continue_new'.tr
+                            : 'verify_current_password_first'.tr,
                         style: TextStyle(
                           color: scheme.onSurfaceVariant,
                           fontSize: 13,
@@ -41,7 +40,7 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                       const SizedBox(height: 16),
                       if (!controller.isPasswordVerified.value) ...[
                         SecurityPasswordField(
-                          label: 'Current Password',
+                          label: 'current_password'.tr,
                           controller: controller.verifyPasswordController,
                           obscureText: !controller.isVerifyPasswordVisible.value,
                           onToggle: () => controller.isVerifyPasswordVisible.value =
@@ -49,7 +48,7 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                         ),
                       ] else ...[
                         SecurityPasswordField(
-                          label: 'New Password',
+                          label: 'new_password'.tr,
                           controller: controller.newPasswordController,
                           obscureText: !controller.isNewPasswordVisible.value,
                           onToggle: () => controller.isNewPasswordVisible.value =
@@ -57,7 +56,7 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                         ),
                         const SizedBox(height: 14),
                         SecurityPasswordField(
-                          label: 'Confirm New Password',
+                          label: 'confirm_new_password'.tr,
                           controller: controller.confirmPasswordController,
                           obscureText: !controller.isConfirmPasswordVisible.value,
                           onToggle: () =>
@@ -82,7 +81,7 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                           ? controller.updatePassword
                           : controller.verifyPasswordFirst,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkGreen,
+                        backgroundColor: scheme.primary,
                         minimumSize: Size(screenWidth, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -90,20 +89,20 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                         elevation: 0,
                       ),
                       child: controller.isLoading.value
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: scheme.onPrimary,
                               ),
                             )
                           : Text(
                               controller.isPasswordVerified.value
-                                  ? 'Update Password'
-                                  : 'Verify Password',
-                              style: const TextStyle(
-                                color: Colors.white,
+                                  ? 'update_password'.tr
+                                  : 'verify_password'.tr,
+                              style: TextStyle(
+                                color: scheme.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

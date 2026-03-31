@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_image_helper.dart';
+import 'package:get/get.dart';
 
 class ProductListItemWidget extends StatelessWidget {
   const ProductListItemWidget({
@@ -32,7 +32,7 @@ class ProductListItemWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: scheme.shadow.withValues(alpha: 0.16),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -59,7 +59,7 @@ class ProductListItemWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.title,
+                          product.title.tr,
                           style: TextStyle(
                             fontSize: compact ? 14 : 16,
                             fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class ProductListItemWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          product.subtitle,
+                          product.subtitle.tr,
                           style: TextStyle(
                             fontSize: compact ? 11 : 12,
                             color: scheme.onSurfaceVariant,
@@ -88,7 +88,7 @@ class ProductListItemWidget extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: compact ? 14 : 16,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryGreen,
+                                  color: scheme.primary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -101,7 +101,7 @@ class ProductListItemWidget extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.accentLime,
+                                color: scheme.secondaryContainer,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: ConstrainedBox(
@@ -110,14 +110,14 @@ class ProductListItemWidget extends StatelessWidget {
                                 ),
                                 child: Text(
                                   product.tags.isNotEmpty
-                                      ? product.tags.first
+                                      ? product.tags.first.tr
                                       : '',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: compact ? 9 : 10,
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.accentLime,
+                                    color: scheme.onSecondaryContainer,
                                   ),
                                 ),
                               ),

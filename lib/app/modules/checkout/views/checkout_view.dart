@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/checkout_controller.dart';
 import '../widgets/checkout_widget.dart';
 
@@ -28,7 +27,7 @@ class CheckoutView extends GetView<CheckoutController> {
           onPressed: Get.back,
         ),
         title: Text(
-          'Checkout',
+          'checkout'.tr,
           style: TextStyle(
             color: scheme.onSurface,
             fontWeight: FontWeight.w800,
@@ -60,13 +59,13 @@ class CheckoutView extends GetView<CheckoutController> {
               decoration: BoxDecoration(
                 color: scheme.surface,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.grayBorder),
+                border: Border.all(color: scheme.outline),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Order Items',
+                    'order_items'.tr,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
@@ -90,7 +89,7 @@ class CheckoutView extends GetView<CheckoutController> {
               decoration: BoxDecoration(
                 color: scheme.surface,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.grayBorder),
+                border: Border.all(color: scheme.outline),
               ),
               child: TextField(
                 controller: controller.noteController,
@@ -98,7 +97,7 @@ class CheckoutView extends GetView<CheckoutController> {
                 maxLines: 3,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Add delivery note (optional)',
+                  hintText: 'delivery_note_hint'.tr,
                   hintStyle: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 13,

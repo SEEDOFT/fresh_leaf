@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class SecuritySwitchTile extends StatefulWidget {
   const SecuritySwitchTile({super.key, required this.label, this.subtitle});
@@ -22,7 +21,7 @@ class _SecuritySwitchTileState extends State<SecuritySwitchTile> {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline),
       ),
       child: Row(
         children: [
@@ -52,7 +51,7 @@ class _SecuritySwitchTileState extends State<SecuritySwitchTile> {
           ),
           Switch(
             value: enabled,
-            activeColor: Colors.white,
+            activeColor: scheme.onPrimary,
             activeTrackColor: scheme.primary,
             onChanged: (v) => setState(() => enabled = v),
           ),

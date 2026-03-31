@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import '../controllers/order_detail_controller.dart';
 import '../widgets/order_detail_widget.dart';
 
@@ -30,7 +29,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
         title: Obx(
           () => Text(
             controller.order.value == null
-                ? 'Order Details'
+                ? 'order_details'.tr
                 : 'Order ${controller.order.value!.id}',
             style: TextStyle(
               fontWeight: FontWeight.w700,
@@ -42,9 +41,9 @@ class OrderDetailView extends GetView<OrderDetailController> {
       ),
       body: Obx(() {
         if (controller.isCheckingAccess.value) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(
-              color: AppColors.primaryGreen,
+              color: scheme.primary,
             ),
           );
         }
@@ -53,7 +52,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
         if (order == null) {
           return Center(
             child: Text(
-              'Order not found',
+              'order_not_found'.tr,
               style: TextStyle(color: scheme.onSurfaceVariant),
             ),
           );
@@ -65,7 +64,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
             OrderSummaryCard(order: order, width: screenWidth - 32),
             const SizedBox(height: 18),
             Text(
-              'Ordered Items',
+              'ordered_items'.tr,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
@@ -92,17 +91,17 @@ class OrderDetailView extends GetView<OrderDetailController> {
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.darkGreen,
+                  backgroundColor: scheme.primary,
+                  foregroundColor: scheme.onPrimary,
                   minimumSize: Size(screenWidth - 32, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Reorder Everything',
-                  style: TextStyle(
-                    color: Colors.white,
+                child: Text(
+                  'reorder_everything'.tr,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                   ),

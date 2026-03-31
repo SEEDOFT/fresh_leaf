@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class AiAssistantEmptyState extends StatelessWidget {
   const AiAssistantEmptyState({super.key});
@@ -20,7 +21,7 @@ class AiAssistantEmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             Text(
-              'Welcome to FreshLeaf AI',
+              'ai_empty_title'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24,
@@ -30,7 +31,7 @@ class AiAssistantEmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Ask about inventory, pricing, or product insights to get started.',
+              'ai_empty_subtitle'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,

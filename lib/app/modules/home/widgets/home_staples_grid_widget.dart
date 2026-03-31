@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class HomeStaplesGridWidget extends StatelessWidget {
   const HomeStaplesGridWidget({super.key});
@@ -8,6 +9,25 @@ class HomeStaplesGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final overlayTop = Colors.black.withValues(alpha: isDark ? 0.52 : 0.36);
+    final overlayBottom = Colors.black.withValues(alpha: isDark ? 0.52 : 0.36);
+    final chipBackground = isDark
+        ? scheme.surfaceContainerHighest.withValues(alpha: 0.82)
+        : Colors.white;
+    final chipPrimaryText = isDark ? scheme.onSurface : Colors.black;
+    final chipMutedText = isDark ? scheme.onSurfaceVariant : Colors.black54;
+    final cardPeach = isDark
+        ? scheme.secondaryContainer.withValues(alpha: 0.75)
+        : AppColors.accentPeach;
+    final cardLime = isDark
+        ? scheme.primaryContainer.withValues(alpha: 0.65)
+        : AppColors.accentLime;
+    final ctaDark = isDark ? scheme.surface : Colors.black;
+    final ctaDarkText = isDark ? scheme.onSurface : Colors.white;
+    final cardText = isDark ? scheme.onSurface : Colors.black;
+    final cardSubText = isDark ? scheme.onSurfaceVariant : Colors.black;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
@@ -17,7 +37,7 @@ class HomeStaplesGridWidget extends StatelessWidget {
             child: Container(
               height: 280,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: scheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Stack(
@@ -33,13 +53,13 @@ class HomeStaplesGridWidget extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black38,
+                          overlayTop,
                           Colors.transparent,
-                          Colors.black38,
+                          overlayBottom,
                         ],
                       ),
                     ),
@@ -48,21 +68,21 @@ class HomeStaplesGridWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Column(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Pasture Raised\nEggs',
-                              style: TextStyle(
+                              'pasture_raised_eggs'.tr,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
                             ),
                             Text(
-                              'Dozen, Large',
+                              'dozen_large'.tr,
                               style: TextStyle(
-                                color: Colors.white70,
+                                color: Colors.white.withValues(alpha: 0.85),
                                 fontSize: 12,
                               ),
                             ),
@@ -74,23 +94,24 @@ class HomeStaplesGridWidget extends StatelessWidget {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: chipBackground,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Column(
+                          child: Column(
                             children: [
                               Text(
-                                'Re-order',
+                                'reorder'.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
+                                  color: chipPrimaryText,
                                 ),
                               ),
                               Text(
                                 '\$6.50',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.black54,
+                                  color: chipMutedText,
                                 ),
                               ),
                             ],
@@ -110,25 +131,25 @@ class HomeStaplesGridWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.accentPeach,
+                    color: cardPeach,
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Whole Milk',
+                      Text(
+                        'whole_milk'.tr,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.black,
+                          color: cardText,
                         ),
                       ),
-                      const Text(
-                        'Glass Bottle, 1L',
+                      Text(
+                        'glass_bottle_1l'.tr,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.black,
+                          color: cardSubText,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -138,13 +159,13 @@ class HomeStaplesGridWidget extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: ctaDark,
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Text(
-                          'Add \$4.20',
+                        child: Text(
+                          'add_price'.trParams({'price': '\$4.20'}),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: ctaDarkText,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -157,25 +178,25 @@ class HomeStaplesGridWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.accentLime,
+                    color: cardLime,
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Sourdough\nLoaf',
+                      Text(
+                        'sourdough_loaf'.tr,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.black,
+                          color: cardText,
                         ),
                       ),
-                      const Text(
-                        'Artisan Baked',
+                      Text(
+                        'artisan_baked'.tr,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.black,
+                          color: cardSubText,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -185,13 +206,13 @@ class HomeStaplesGridWidget extends StatelessWidget {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: ctaDark,
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Text(
-                          'Add \$7.50',
+                        child: Text(
+                          'add_price'.trParams({'price': '\$7.50'}),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: ctaDarkText,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),

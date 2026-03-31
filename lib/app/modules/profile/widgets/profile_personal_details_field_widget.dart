@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class PersonalDetailsField extends StatelessWidget {
   const PersonalDetailsField({
@@ -36,7 +35,7 @@ class PersonalDetailsField extends StatelessWidget {
           keyboardType: keyboard,
           decoration: InputDecoration(
             filled: true,
-            fillColor: scheme.surface,
+            fillColor: scheme.surfaceContainerHighest,
             prefixIcon: Icon(icon, size: 18, color: scheme.onSurfaceVariant),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
@@ -44,7 +43,7 @@ class PersonalDetailsField extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: BorderSide(color: scheme.outline),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

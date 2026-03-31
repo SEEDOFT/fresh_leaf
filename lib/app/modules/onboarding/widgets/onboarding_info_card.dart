@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class OnboardingInfoCard extends StatelessWidget {
   const OnboardingInfoCard({super.key});
@@ -6,6 +7,7 @@ class OnboardingInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 98,
       padding: const EdgeInsets.all(16),
@@ -15,14 +17,17 @@ class OnboardingInfoCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             height: 48,
             width: 48,
             child: CircleAvatar(
-              backgroundColor: Color(0xFFC4EEB5),
+              backgroundColor: isDark
+                  ? scheme.primaryContainer
+                  : const Color(0xFFC4EEB5),
               child: Icon(
                 Icons.eco,
                 size: 18,
+                color: isDark ? scheme.onPrimaryContainer : scheme.primary,
               ),
             ),
           ),
@@ -31,7 +36,7 @@ class OnboardingInfoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Ethically Sourced',
+                'ethically_sourced'.tr,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -39,7 +44,7 @@ class OnboardingInfoCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '100% Carbon Neutral Delivery',
+                'carbon_neutral_delivery'.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 13,

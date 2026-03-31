@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TitleRowWidget extends StatelessWidget {
   const TitleRowWidget({
@@ -23,7 +24,7 @@ class TitleRowWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                title.tr,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w900,
@@ -33,7 +34,7 @@ class TitleRowWidget extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                origin,
+                origin.tr,
                 style: TextStyle(
                   fontSize: 13,
                   color: scheme.onSurfaceVariant,

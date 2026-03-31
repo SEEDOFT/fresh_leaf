@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CheckoutPaymentMethodsWidget extends StatelessWidget {
   const CheckoutPaymentMethodsWidget({
@@ -21,13 +21,13 @@ class CheckoutPaymentMethodsWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Payment Method',
+            'payment_method'.tr,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,
@@ -47,13 +47,13 @@ class CheckoutPaymentMethodsWidget extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: selectedMethod == method
-                        ? AppColors.accentLime.withValues(alpha: 0.22)
+                        ? scheme.primaryContainer.withValues(alpha: 0.55)
                         : scheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: selectedMethod == method
-                          ? AppColors.primaryDarkGreen
-                          : AppColors.grayBorder,
+                          ? scheme.primary
+                          : scheme.outline.withValues(alpha: 0.35),
                     ),
                   ),
                   child: Row(
@@ -63,13 +63,13 @@ class CheckoutPaymentMethodsWidget extends StatelessWidget {
                             ? Icons.radio_button_checked
                             : Icons.radio_button_unchecked,
                         color: selectedMethod == method
-                            ? AppColors.primaryDarkGreen
+                            ? scheme.primary
                             : scheme.onSurfaceVariant,
                         size: 18,
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        method,
+                        _displayLabel(method).tr,
                         style: TextStyle(
                           color: scheme.onSurface,
                           fontSize: 13,
@@ -85,5 +85,16 @@ class CheckoutPaymentMethodsWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _displayLabel(String method) {
+    switch (method) {
+      case 'Cash on Delivery':
+        return 'cash_on_delivery';
+      case 'Credit/Debit Card':
+        return 'credit_debit_card';
+      default:
+        return method;
+    }
   }
 }

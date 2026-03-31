@@ -17,6 +17,7 @@ class DashboardView extends GetView<DashboardController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Obx(
           () => IndexedStack(
@@ -34,7 +35,7 @@ class DashboardView extends GetView<DashboardController> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
+                color: scheme.shadow.withValues(alpha: 0.20),
                 blurRadius: 20,
                 offset: const Offset(0, -4),
               ),
@@ -70,7 +71,7 @@ class DashboardView extends GetView<DashboardController> {
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
-                  label: 'Home',
+                  label: 'home'.tr,
                 ),
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
@@ -79,7 +80,7 @@ class DashboardView extends GetView<DashboardController> {
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
-                  label: 'Search',
+                  label: 'search'.tr,
                 ),
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
@@ -88,7 +89,7 @@ class DashboardView extends GetView<DashboardController> {
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
-                  label: 'AI Assistant',
+                  label: 'ai_assistant'.tr,
                 ),
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
@@ -97,7 +98,7 @@ class DashboardView extends GetView<DashboardController> {
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
-                  label: 'Orders',
+                  label: 'orders'.tr,
                 ),
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
@@ -106,7 +107,7 @@ class DashboardView extends GetView<DashboardController> {
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
-                  label: 'Profile',
+                  label: 'profile'.tr,
                 ),
               ],
             ),

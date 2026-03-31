@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class SecurityPasswordField extends StatefulWidget {
   const SecurityPasswordField({
@@ -47,14 +46,14 @@ class _SecurityPasswordFieldState extends State<SecurityPasswordField> {
           decoration: InputDecoration(
             hintText: '••••••••',
             filled: true,
-            fillColor: scheme.surface,
+            fillColor: scheme.surfaceContainerHighest,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
               vertical: 12,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.grayBorder),
+              borderSide: BorderSide(color: scheme.outline),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

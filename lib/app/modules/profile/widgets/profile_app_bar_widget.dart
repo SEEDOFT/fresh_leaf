@@ -27,8 +27,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: TextStyle(
           color: scheme.onSurface,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
+          fontWeight: FontWeight.w800,
         ),
       ),
     );

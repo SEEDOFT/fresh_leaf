@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
+import 'package:get/get.dart';
 
 class SearchProductCardWidget extends StatelessWidget {
   const SearchProductCardWidget({
@@ -36,7 +37,7 @@ class SearchProductCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item['title']?.toString() ?? '',
+                      (item['title']?.toString() ?? '').tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -46,7 +47,7 @@ class SearchProductCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      item['subtitle']?.toString() ?? '',
+                      (item['subtitle']?.toString() ?? '').tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

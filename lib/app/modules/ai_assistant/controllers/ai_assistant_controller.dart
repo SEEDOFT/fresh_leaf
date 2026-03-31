@@ -12,6 +12,7 @@ class AiAssistantController extends GetxController {
 
   final RxBool isLoading = false.obs;
   final TextEditingController inputController = TextEditingController();
+  final ScrollController chatScrollController = ScrollController();
 
   String? _inventoryContext;
 
@@ -20,6 +21,12 @@ class AiAssistantController extends GetxController {
     super.onInit();
     _hydrateMessages();
     _loadInventory();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    _scheduleAutoScroll(animated: false);
   }
 
   // Load inventory from file
@@ -44,11 +51,13 @@ class AiAssistantController extends GetxController {
 
     messages.add(ChatMessage(text: prompt, isUser: true));
     _persistMessages();
+    _scheduleAutoScroll();
     inputController.clear();
 
     messages.add(const ChatMessage(text: '', isUser: false, isStreaming: true));
     final int aiIndex = messages.length - 1;
     _persistMessages();
+    _scheduleAutoScroll();
 
     isLoading.value = true;
     try {
@@ -61,9 +70,11 @@ class AiAssistantController extends GetxController {
           isStreaming: true,
         );
         _persistMessages();
+        _scheduleAutoScroll(animated: false);
       }
       messages[aiIndex] = messages[aiIndex].copyWith(isStreaming: false);
       _persistMessages();
+      _scheduleAutoScroll();
     } catch (e) {
       messages[aiIndex] = ChatMessage(
         text: 'Error: $e',
@@ -71,6 +82,7 @@ class AiAssistantController extends GetxController {
         isStreaming: false,
       );
       _persistMessages();
+      _scheduleAutoScroll();
     } finally {
       isLoading.value = false;
     }
@@ -80,8 +92,8 @@ class AiAssistantController extends GetxController {
     Clipboard.setData(ClipboardData(text: text));
     if (text.isNotEmpty) {
       Get.snackbar(
-        'Copied',
-        'Message copied to clipboard',
+        'copied'.tr,
+        'message_copied'.tr,
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 1),
       );
@@ -91,6 +103,7 @@ class AiAssistantController extends GetxController {
   @override
   void onClose() {
     inputController.dispose();
+    chatScrollController.dispose();
     super.onClose();
   }
 
@@ -99,6 +112,22 @@ class AiAssistantController extends GetxController {
     if (loaded.isNotEmpty) {
       messages.assignAll(loaded);
     }
+  }
+
+  void _scheduleAutoScroll({bool animated = true}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!chatScrollController.hasClients) return;
+      final target = chatScrollController.position.maxScrollExtent;
+      if (animated) {
+        chatScrollController.animateTo(
+          target,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+        );
+      } else {
+        chatScrollController.jumpTo(target);
+      }
+    });
   }
 
   void _persistMessages() {

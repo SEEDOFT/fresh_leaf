@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CartSummaryWidget extends StatelessWidget {
   const CartSummaryWidget({
@@ -32,10 +33,10 @@ class CartSummaryWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: scheme.shadow.withValues(alpha: 0.16),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -53,7 +54,7 @@ class CartSummaryWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Delivery in 25-35 min',
+                  'delivery_eta'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,
@@ -62,7 +63,8 @@ class CartSummaryWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  '$itemCount item${itemCount == 1 ? '' : 's'}',
+                  (itemCount == 1 ? 'items_count_one' : 'items_count_other')
+                      .trParams({'count': '$itemCount'}),
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,
@@ -73,35 +75,42 @@ class CartSummaryWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             _summaryRow(
-              'Subtotal',
+              'subtotal'.tr,
               subtotal,
               textColor: scheme.onSurface,
               mutedColor: scheme.onSurfaceVariant,
+              primaryColor: scheme.primary,
             ),
             const SizedBox(height: 8),
             _summaryRow(
-              'Delivery',
+              'delivery'.tr,
               deliveryFee,
               textColor: scheme.onSurface,
               mutedColor: scheme.onSurfaceVariant,
+              primaryColor: scheme.primary,
             ),
             const SizedBox(height: 8),
             _summaryRow(
-              'Discount',
+              'discount'.tr,
               -discount,
               textColor: scheme.onSurface,
               mutedColor: scheme.onSurfaceVariant,
+              primaryColor: scheme.primary,
               isDiscount: true,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Divider(height: 1, color: AppColors.grayBorder),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Divider(
+                height: 1,
+                color: scheme.outline.withValues(alpha: 0.35),
+              ),
             ),
             _summaryRow(
-              'Total',
+              'total'.tr,
               grandTotal,
               textColor: scheme.onSurface,
               mutedColor: scheme.onSurfaceVariant,
+              primaryColor: scheme.primary,
               emphasize: true,
             ),
             const SizedBox(height: 14),
@@ -110,16 +119,16 @@ class CartSummaryWidget extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onCheckout,
                 icon: const Icon(Icons.lock_rounded, size: 18),
-                label: const Text(
-                  'Proceed to Checkout',
-                  style: TextStyle(
+                label: Text(
+                  'proceed_to_checkout'.tr,
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGreen,
+                  backgroundColor: scheme.primary,
+                  foregroundColor: scheme.onPrimary,
                   minimumSize: const Size(0, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -139,11 +148,12 @@ class CartSummaryWidget extends StatelessWidget {
     double amount, {
     required Color textColor,
     required Color mutedColor,
+    required Color primaryColor,
     bool emphasize = false,
     bool isDiscount = false,
   }) {
     final amountColor = emphasize
-        ? AppColors.primaryDarkGreen
+        ? primaryColor
         : isDiscount
         ? AppColors.success
         : textColor;

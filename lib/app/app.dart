@@ -6,6 +6,7 @@ import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
 import 'package:fresh_leaf/core/localization/app_translations.dart';
 import 'package:fresh_leaf/core/services/permission_service.dart';
 import 'package:fresh_leaf/core/theme/app_theme.dart';
+import 'package:fresh_leaf/core/widgets/app_shell_scaffold.dart';
 import 'package:get/get.dart';
 
 class FreshLeafApp extends StatefulWidget {
@@ -70,6 +71,12 @@ class _FreshLeafAppState extends State<FreshLeafApp> {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: appSettings.themeMode.value,
+            builder: (context, child) {
+              if (child == null) {
+                return const SizedBox.shrink();
+              }
+              return AppShellScaffold(child: child);
+            },
             translations: AppTranslations(),
             locale: appSettings.locale.value,
             fallbackLocale: const Locale('en'),

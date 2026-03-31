@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
-
+import 'package:get/get.dart';
 class OrdersFilterBar extends StatelessWidget {
   const OrdersFilterBar({
     super.key,
@@ -34,15 +33,15 @@ class OrdersFilterBar extends StatelessWidget {
                 color: active ? scheme.primary : scheme.surface,
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
-                  color: active ? scheme.primary : AppColors.grayBorder,
+                  color: active ? scheme.primary : scheme.outline,
                 ),
               ),
               child: Text(
-                filter,
+                _labelForFilter(filter),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: active ? Colors.white : scheme.onSurfaceVariant,
+                  color: active ? scheme.onPrimary : scheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -52,5 +51,16 @@ class OrdersFilterBar extends StatelessWidget {
         itemCount: filters.length,
       ),
     );
+  }
+
+  String _labelForFilter(String filter) {
+    switch (filter) {
+      case 'Processing':
+        return 'processing'.tr;
+      case 'Delivered':
+        return 'delivered'.tr;
+      default:
+        return 'tag_all'.tr;
+    }
   }
 }

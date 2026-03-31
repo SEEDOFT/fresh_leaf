@@ -42,14 +42,14 @@ class ProfilePinController extends GetxController {
     );
     if (result == true) {
       await _setPinState(true);
-      Get.snackbar('Success', 'PIN configured successfully.');
+      Get.snackbar('success'.tr, 'pin_configured_success'.tr);
     }
   }
 
   Future<void> updateExistingPin() async {
     if (isSaving.value) return;
     if (!hasPin.value) {
-      Get.snackbar('PIN not set', 'Please set your PIN first.');
+      Get.snackbar('pin_not_set'.tr, 'set_pin_first'.tr);
       return;
     }
 
@@ -58,15 +58,15 @@ class ProfilePinController extends GetxController {
     final confirmPin = confirmPinController.text.trim();
 
     if (currentPin.isEmpty || newPin.isEmpty || confirmPin.isEmpty) {
-      Get.snackbar('Missing fields', 'Please complete all PIN fields.');
+      Get.snackbar('missing_fields'.tr, 'complete_all_pin_fields'.tr);
       return;
     }
     if (newPin.length < 4) {
-      Get.snackbar('Invalid PIN', 'PIN must be at least 4 digits.');
+      Get.snackbar('invalid_pin'.tr, 'pin_min_length'.tr);
       return;
     }
     if (newPin != confirmPin) {
-      Get.snackbar('PIN mismatch', 'PIN and confirmation must match.');
+      Get.snackbar('pin_mismatch'.tr, 'pin_confirmation_match'.tr);
       return;
     }
 
@@ -109,10 +109,10 @@ class ProfilePinController extends GetxController {
 
       if (!updated) {
         Get.snackbar(
-          'Update PIN failed',
+          'update_pin_failed'.tr,
           lastResponse?.status.message.isNotEmpty == true
               ? lastResponse!.status.message
-              : 'Unable to update PIN',
+              : 'unable_update_pin'.tr,
         );
         return;
       }
@@ -120,18 +120,18 @@ class ProfilePinController extends GetxController {
       await _setPinState(true);
       _clearPinInputs();
       Get.snackbar(
-        'Success',
+        'success'.tr,
         lastResponse?.status.message.isNotEmpty == true
             ? lastResponse!.status.message
-            : 'PIN updated successfully',
+            : 'pin_updated_success'.tr,
       );
     } on DioException catch (e) {
       Get.snackbar(
-        'Update PIN failed',
-        _extractApiMessage(e, fallback: 'Unable to update PIN'),
+        'update_pin_failed'.tr,
+        _extractApiMessage(e, fallback: 'unable_update_pin'.tr),
       );
     } catch (_) {
-      Get.snackbar('Update PIN failed', 'Unable to update PIN');
+      Get.snackbar('update_pin_failed'.tr, 'unable_update_pin'.tr);
     } finally {
       isSaving.value = false;
     }
@@ -144,7 +144,7 @@ class ProfilePinController extends GetxController {
     );
     if (result == true) {
       await _setPinState(true);
-      Get.snackbar('Success', 'PIN reset successfully.');
+      Get.snackbar('success'.tr, 'pin_reset_success'.tr);
     }
   }
 

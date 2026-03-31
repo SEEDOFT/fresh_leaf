@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 import '../models/order.dart';
 
 class OrderItemWidget extends StatelessWidget {
@@ -13,12 +13,13 @@ class OrderItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final borderColor = scheme.outline.withValues(alpha: 0.4);
     final badgeBg = _delivered
-        ? AppColors.accentLime.withValues(alpha: 0.25)
-        : AppColors.accentPeach.withValues(alpha: 0.35);
+        ? scheme.primaryContainer.withValues(alpha: 0.6)
+        : scheme.secondaryContainer.withValues(alpha: 0.6);
     final badgeText = _delivered
-        ? AppColors.primaryDarkGreen
-        : AppColors.accentBrown;
+        ? scheme.primary
+        : scheme.secondary;
 
     return GestureDetector(
       onTap: onTap,
@@ -28,11 +29,11 @@ class OrderItemWidget extends StatelessWidget {
           color: scheme.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.grayBorder.withValues(alpha: 0.7),
+            color: borderColor,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: scheme.shadow.withValues(alpha: 0.16),
               blurRadius: 14,
               offset: const Offset(0, 7),
             ),
@@ -53,7 +54,7 @@ class OrderItemWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    order.status,
+                    _translatedStatus,
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -97,10 +98,10 @@ class OrderItemWidget extends StatelessWidget {
               children: [
                 Text(
                   '\$${order.total.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.primaryDarkGreen,
+                    color: scheme.primary,
                   ),
                 ),
                 const Spacer(),
@@ -116,7 +117,7 @@ class OrderItemWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        'View',
+                        'view'.tr,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
@@ -192,7 +193,12 @@ class OrderItemWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 6),
           child: Text(
-            '+${order.items.length - previewCount} more item(s)',
+            ((order.items.length - previewCount) == 1
+                    ? 'more_items_one'
+                    : 'more_items_other')
+                .trParams({
+                  'count': '${order.items.length - previewCount}',
+                }),
             style: TextStyle(
               fontSize: 12,
               color: mutedColor,
@@ -203,5 +209,16 @@ class OrderItemWidget extends StatelessWidget {
       );
     }
     return rows;
+  }
+
+  String get _translatedStatus {
+    switch (order.status) {
+      case 'Delivered':
+        return 'delivered'.tr;
+      case 'Processing':
+        return 'processing'.tr;
+      default:
+        return order.status;
+    }
   }
 }

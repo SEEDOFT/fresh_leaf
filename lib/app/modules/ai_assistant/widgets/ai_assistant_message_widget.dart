@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class AiAssistantMessage extends StatelessWidget {
   const AiAssistantMessage({
@@ -19,23 +20,29 @@ class AiAssistantMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accentColor = isDark ? scheme.primary : AppColors.accentBrown;
+    final accentForeground = isDark ? scheme.onPrimary : Colors.white;
+    final bubbleColor = isDark
+        ? scheme.surfaceContainerHighest.withValues(alpha: 0.92)
+        : scheme.surfaceContainerHighest;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: const BoxDecoration(
-            color: AppColors.accentBrown,
+          decoration: BoxDecoration(
+            color: accentColor,
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+          child: Icon(Icons.auto_awesome, color: accentForeground, size: 20),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerHighest,
+              color: bubbleColor,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(6),
                 topRight: Radius.circular(24),
@@ -49,21 +56,21 @@ class AiAssistantMessage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Text(
-                          'AI ANALYZING LARDER',
+                          'ai_analyzing_larder'.tr,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w900,
-                            color: AppColors.accentBrown,
+                            color: accentColor,
                             letterSpacing: 1.5,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Icon(
                           Icons.more_horiz,
-                          color: AppColors.accentBrown,
+                          color: accentColor,
                           size: 20,
                         ),
                       ],
@@ -76,11 +83,11 @@ class AiAssistantMessage extends StatelessWidget {
                       ),
                       iconSize: 16,
                       onPressed: () => controller.copyText(text),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.copy,
-                        color: AppColors.accentBrown,
+                        color: accentColor,
                       ),
-                      tooltip: 'Copy',
+                      tooltip: 'copy'.tr,
                     ),
                   ],
                 ),
@@ -101,14 +108,14 @@ class AiAssistantMessage extends StatelessWidget {
                       child: highlightImportant
                           ? _AiAssistantHighlightedText(
                               text: text.isEmpty && isStreaming
-                                  ? 'Thinking…'
+                                  ? 'thinking'.tr
                                   : text,
                             )
                           : Text(
-                              text.isEmpty && isStreaming ? 'Thinking…' : text,
+                              text.isEmpty && isStreaming ? 'thinking'.tr : text,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: scheme.onSurfaceVariant,
+                                color: scheme.onSurface,
                                 height: 1.5,
                               ),
                             ),
@@ -158,7 +165,12 @@ class _AiAssistantHighlightedText extends StatelessWidget {
     );
   }
 
-  static List<InlineSpan> parseBoldSpans(String line, TextStyle baseStyle) {
+  static List<InlineSpan> parseBoldSpans(
+    String line,
+    TextStyle baseStyle, {
+    required Color emphasisColor,
+    required Color valueColor,
+  }) {
     final spans = <InlineSpan>[];
     var start = 0;
 
@@ -167,6 +179,7 @@ class _AiAssistantHighlightedText extends StatelessWidget {
         _appendValueAwareSpans(
           input: line.substring(start, match.start),
           baseStyle: baseStyle,
+          valueColor: valueColor,
           spans: spans,
         );
       }
@@ -176,8 +189,9 @@ class _AiAssistantHighlightedText extends StatelessWidget {
         input: highlightedText,
         baseStyle: baseStyle.copyWith(
           fontWeight: FontWeight.w800,
-          color: AppColors.primaryDarkGreen,
+          color: emphasisColor,
         ),
+        valueColor: valueColor,
         spans: spans,
       );
       start = match.end;
@@ -187,6 +201,7 @@ class _AiAssistantHighlightedText extends StatelessWidget {
       _appendValueAwareSpans(
         input: line.substring(start),
         baseStyle: baseStyle,
+        valueColor: valueColor,
         spans: spans,
       );
     }
@@ -195,6 +210,7 @@ class _AiAssistantHighlightedText extends StatelessWidget {
       _appendValueAwareSpans(
         input: line,
         baseStyle: baseStyle,
+        valueColor: valueColor,
         spans: spans,
       );
     }
@@ -205,6 +221,7 @@ class _AiAssistantHighlightedText extends StatelessWidget {
   static void _appendValueAwareSpans({
     required String input,
     required TextStyle baseStyle,
+    required Color valueColor,
     required List<InlineSpan> spans,
   }) {
     var start = 0;
@@ -224,7 +241,7 @@ class _AiAssistantHighlightedText extends StatelessWidget {
         TextSpan(
           text: valueText,
           style: baseStyle.copyWith(
-            color: AppColors.accentBrown,
+            color: valueColor,
             fontWeight: baseStyle.fontWeight == FontWeight.w800
                 ? FontWeight.w800
                 : FontWeight.w700,
@@ -260,19 +277,28 @@ class _HighlightedLine extends StatelessWidget {
       return const SizedBox(height: 8);
     }
 
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isImportant = _AiAssistantHighlightedText._importantPrefixRegex
         .hasMatch(text.trim());
+    final importantColor = isDark ? scheme.primary : AppColors.primaryDarkGreen;
+    final valueColor = isDark ? scheme.secondary : AppColors.accentBrown;
 
     final baseStyle = TextStyle(
       fontSize: 16,
       height: 1.5,
       color: isImportant
-          ? AppColors.primaryDarkGreen
-          : Theme.of(context).colorScheme.onSurfaceVariant,
+          ? importantColor
+          : scheme.onSurface,
       fontWeight: isImportant ? FontWeight.w700 : FontWeight.w500,
     );
 
-    final spans = _AiAssistantHighlightedText.parseBoldSpans(text, baseStyle);
+    final spans = _AiAssistantHighlightedText.parseBoldSpans(
+      text,
+      baseStyle,
+      emphasisColor: importantColor,
+      valueColor: valueColor,
+    );
 
     final richLine = RichText(text: TextSpan(children: spans));
 
@@ -284,10 +310,14 @@ class _HighlightedLine extends StatelessWidget {
       width: maxWidth,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.accentLime.withValues(alpha: 0.22),
+        color: isDark
+            ? scheme.primary.withValues(alpha: 0.20)
+            : AppColors.accentLime.withValues(alpha: 0.22),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: AppColors.accentLime.withValues(alpha: 0.55),
+          color: isDark
+              ? scheme.primary.withValues(alpha: 0.45)
+              : AppColors.accentLime.withValues(alpha: 0.55),
         ),
       ),
       child: richLine,

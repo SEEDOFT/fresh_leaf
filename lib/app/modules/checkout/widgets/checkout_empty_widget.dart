@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 
 class CheckoutEmptyWidget extends StatelessWidget {
   const CheckoutEmptyWidget({super.key});
@@ -17,7 +16,7 @@ class CheckoutEmptyWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: scheme.surface,
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: AppColors.grayBorder),
+          border: Border.all(color: scheme.outline),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -37,7 +36,7 @@ class CheckoutEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             Text(
-              'Nothing to checkout',
+              'nothing_to_checkout'.tr,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -46,7 +45,7 @@ class CheckoutEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Your cart is currently empty. Add some fresh products first.',
+              'checkout_empty_subtitle'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: scheme.onSurfaceVariant,
@@ -58,17 +57,17 @@ class CheckoutEmptyWidget extends StatelessWidget {
             ElevatedButton(
               onPressed: Get.back,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: scheme.primary,
                 minimumSize: const Size(160, 46),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Back to Cart',
+              child: Text(
+                'back_to_cart'.tr,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: scheme.onPrimary,
                   fontWeight: FontWeight.w700,
                 ),
               ),

@@ -31,12 +31,14 @@ class SearchController extends GetxController {
     final tag = activeTag.value.toLowerCase();
 
     return source.where((item) {
-      final title = (item['title'] ?? '').toString().toLowerCase();
-      final subtitle = (item['subtitle'] ?? '').toString().toLowerCase();
-      final badge = (item['badge'] ?? '').toString().toLowerCase();
-      final origin = (item['origin'] ?? '').toString().toLowerCase();
+      final title = (item['title'] ?? '').toString().tr.toLowerCase();
+      final subtitle = (item['subtitle'] ?? '').toString().tr.toLowerCase();
+      final badge = (item['badge'] ?? '').toString().tr.toLowerCase();
+      final origin = (item['origin'] ?? '').toString().tr.toLowerCase();
       final tags = (item['tags'] is List)
-          ? (item['tags'] as List).map((e) => e.toString().toLowerCase()).join(' ')
+          ? (item['tags'] as List)
+                .map((e) => e.toString().tr.toLowerCase())
+                .join(' ')
           : '';
 
       final matchesQuery = q.isEmpty ||
@@ -63,6 +65,21 @@ class SearchController extends GetxController {
     activeTag.value = value;
   }
 
+  String displayLabelForTag(String value) {
+    switch (value) {
+      case 'Organic':
+        return 'tag_organic'.tr;
+      case 'Fresh':
+        return 'tag_fresh'.tr;
+      case 'Limited':
+        return 'tag_limited'.tr;
+      case 'Local':
+        return 'tag_local'.tr;
+      default:
+        return 'tag_all'.tr;
+    }
+  }
+
   void clearQuery() {
     textController.clear();
     query.value = '';
@@ -73,14 +90,14 @@ class SearchController extends GetxController {
       title: item['title']?.toString() ?? '',
       subtitle: item['subtitle']?.toString() ?? '',
       description: item['description']?.toString() ??
-          'Seasonal pick straight from partner farms. Packed for freshness and ready for your favorite recipes.',
+          'seasonal_pick_description'.tr,
       imageUrl: item['image']?.toString() ?? '',
-      tags: List<String>.from(item['tags'] ?? const ['Organic', 'Fresh']),
+      tags: List<String>.from(item['tags'] ?? ['organic'.tr, 'fresh'.tr]),
       price: _parsePrice(item['price']),
-      origin: item['origin']?.toString() ?? 'Local farm',
-      harvest: item['harvest']?.toString() ?? 'Harvested this week',
+      origin: item['origin']?.toString() ?? 'local_farm'.tr,
+      harvest: item['harvest']?.toString() ?? 'harvested_this_week'.tr,
       storage:
-          item['storage']?.toString() ?? 'Refrigerate to extend freshness',
+          item['storage']?.toString() ?? 'refrigerate_extend_freshness'.tr,
     );
     Get.toNamed(AppRoutes.productDetail, arguments: product);
   }

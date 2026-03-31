@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class OrderDetailItemCard extends StatelessWidget {
   const OrderDetailItemCard({
@@ -26,7 +26,7 @@ class OrderDetailItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.grayBorder),
+        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class OrderDetailItemCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item['name'] as String? ?? 'Product',
+                  item['name'] as String? ?? 'product'.tr,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -45,10 +45,10 @@ class OrderDetailItemCard extends StatelessWidget {
               ),
               Text(
                 '\$${total.toStringAsFixed(2)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primaryDarkGreen,
+                  color: scheme.primary,
                 ),
               ),
             ],
@@ -68,13 +68,13 @@ class OrderDetailItemCard extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: onOpenProduct,
               icon: const Icon(Icons.open_in_new, size: 15),
-              label: const Text(
-                'Open Product',
-                style: TextStyle(fontWeight: FontWeight.w700),
+              label: Text(
+                'open_product'.tr,
+                style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.darkGreen,
-                side: const BorderSide(color: AppColors.darkGreen),
+                foregroundColor: scheme.primary,
+                side: BorderSide(color: scheme.outline.withValues(alpha: 0.65)),
                 minimumSize: Size(width - 28, 40),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

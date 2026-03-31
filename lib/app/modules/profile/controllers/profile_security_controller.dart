@@ -22,7 +22,7 @@ class ProfileSecurityController extends GetxController {
     if (isLoading.value) return;
     final password = verifyPasswordController.text.trim();
     if (password.isEmpty) {
-      Get.snackbar('Missing password', 'Please enter your current password.');
+      Get.snackbar('missing_password'.tr, 'enter_current_password'.tr);
       return;
     }
 
@@ -41,24 +41,27 @@ class ProfileSecurityController extends GetxController {
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
-          'Verification failed',
+          'verification_failed'.tr,
           apiResponse.status.message.isNotEmpty
               ? apiResponse.status.message
-              : 'Password verification failed',
+              : 'password_verification_failed'.tr,
         );
         return;
       }
 
       _verifiedPassword = password;
       isPasswordVerified.value = true;
-      Get.snackbar('Verified', 'Password verified successfully.');
+      Get.snackbar('verified'.tr, 'password_verified_success'.tr);
     } on DioException catch (e) {
       Get.snackbar(
-        'Verification failed',
-        _extractApiMessage(e, fallback: 'Password verification failed'),
+        'verification_failed'.tr,
+        _extractApiMessage(e, fallback: 'password_verification_failed'.tr),
       );
     } catch (_) {
-      Get.snackbar('Verification failed', 'Password verification failed');
+      Get.snackbar(
+        'verification_failed'.tr,
+        'password_verification_failed'.tr,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -67,7 +70,10 @@ class ProfileSecurityController extends GetxController {
   Future<void> updatePassword() async {
     if (isLoading.value) return;
     if (!isPasswordVerified.value) {
-      Get.snackbar('Verification required', 'Please verify password first.');
+      Get.snackbar(
+        'verification_required'.tr,
+        'verify_password_first_message'.tr,
+      );
       return;
     }
 
@@ -75,15 +81,15 @@ class ProfileSecurityController extends GetxController {
     final confirmPassword = confirmPasswordController.text.trim();
 
     if (newPassword.isEmpty || confirmPassword.isEmpty) {
-      Get.snackbar('Missing fields', 'Please enter new password and confirm it.');
+      Get.snackbar('missing_fields'.tr, 'enter_new_password_confirm'.tr);
       return;
     }
     if (newPassword.length < 6) {
-      Get.snackbar('Weak password', 'Password must be at least 6 characters.');
+      Get.snackbar('weak_password'.tr, 'password_min_length'.tr);
       return;
     }
     if (newPassword != confirmPassword) {
-      Get.snackbar('Mismatch', 'New password and confirmation must match.');
+      Get.snackbar('mismatch'.tr, 'password_confirmation_match'.tr);
       return;
     }
 
@@ -99,7 +105,7 @@ class ProfileSecurityController extends GetxController {
       newPasswordController.clear();
       confirmPasswordController.clear();
       resetVerification(clearPasswordField: true);
-      Get.snackbar('Success', 'Password updated successfully.');
+      Get.snackbar('success'.tr, 'password_updated_success'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -160,17 +166,17 @@ class ProfileSecurityController extends GetxController {
           continue;
         }
         Get.snackbar(
-          'Update failed',
-          _extractApiMessage(e, fallback: 'Unable to update password'),
+          'update_failed'.tr,
+          _extractApiMessage(e, fallback: 'unable_update_password'.tr),
         );
         return false;
       } catch (_) {
-        Get.snackbar('Update failed', 'Unable to update password');
+        Get.snackbar('update_failed'.tr, 'unable_update_password'.tr);
         return false;
       }
     }
 
-    Get.snackbar('Update failed', 'Unable to update password');
+    Get.snackbar('update_failed'.tr, 'unable_update_password'.tr);
     return false;
   }
 

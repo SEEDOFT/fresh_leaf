@@ -22,6 +22,8 @@ final class AppColors {
   static const Color surfaceAlt = Color(0xFFF3EFE9);
   static const Color cardLight = Color(0xFFF3EFE9);
   static const Color overlay = Color(0x802E5321); // 50% primary overlay
+  static const Color shadow = Color(0x33000000);
+  static const Color scrim = Color(0x40000000);
 
   // Text & icon colors
   static const Color textDark = Color(0xFF1A1A1A);
@@ -47,6 +49,29 @@ final class AppColors {
 
   // Decorative / chips
   static const Color chipBackground = Color(0xFFFDE8DF);
+
+  // Dark palette & surfaces
+  static const Color darkPrimary = Color(0xFF7AB46A);
+  static const Color darkOnPrimary = Color(0xFF11200B);
+  static const Color darkPrimaryContainer = Color(0xFF224029);
+  static const Color darkOnPrimaryContainer = Color(0xFFD4F5C9);
+  static const Color darkSecondary = Color(0xFFD3A98B);
+  static const Color darkOnSecondary = Color(0xFF2B1B12);
+  static const Color darkSecondaryContainer = Color(0xFF4A3427);
+  static const Color darkOnSecondaryContainer = Color(0xFFF7DECA);
+  static const Color darkError = Color(0xFFF26B60);
+  static const Color darkOnError = Color(0xFF320A08);
+  static const Color darkSurface = Color(0xFF1A221D);
+  static const Color darkOnSurface = Color(0xFFE8EFE7);
+  static const Color darkOnSurfaceVariant = Color(0xFFB6C2B6);
+  static const Color darkOutline = Color(0xFF4A574D);
+  static const Color darkShadow = Color(0x66000000);
+  static const Color darkScrim = Color(0x99000000);
+  static const Color darkScaffold = Color(0xFF111713);
+  static const Color darkSwitchTrack = Color(0xFF37443B);
+  static const Color darkInputFill = Color(0xFF1F2923);
+  static const Color darkChipBackground = Color(0xFF223027);
+  static const Color darkChipDisabled = Color(0xFF2C3A31);
 
   // Legacy aliases (backward compatibility)
   static const Color primaryGreen = primary;

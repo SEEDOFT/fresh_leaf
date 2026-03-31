@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'register_input_field_widget.dart';
 
 class RegisterFormContent extends StatelessWidget {
@@ -19,6 +18,7 @@ class RegisterFormContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final keyboardVisible = media.viewInsets.bottom > 0;
     final double scale = (constraints.maxHeight / 805)
         .clamp(0.76, 1.0)
@@ -38,7 +38,7 @@ class RegisterFormContent extends StatelessWidget {
     final double blockGap = (showHero ? 15 * scale : 11 * scale)
         .clamp(9, 15)
         .toDouble();
-    final double heroHeight = (128 * scale).clamp(96, 146).toDouble();
+    final double heroHeight = (150 * scale).clamp(96, 146).toDouble();
     final double heroRadius = (20 * scale).clamp(16, 22).toDouble();
     final double heroGap = (13 * scale).clamp(10, 18).toDouble();
     final double fieldGap = (14 * scale).clamp(10, 15).toDouble();
@@ -56,7 +56,7 @@ class RegisterFormContent extends StatelessWidget {
         children: [
           SizedBox(height: topGap),
           Text(
-            'WELCOME TO THE LARDER',
+            'register_eyebrow'.tr,
             style: TextStyle(
               color: scheme.secondary,
               fontSize: eyebrowSize,
@@ -66,7 +66,7 @@ class RegisterFormContent extends StatelessWidget {
           ),
           SizedBox(height: headingSpacing),
           Text(
-            'Join the\nOrganic Circle',
+            'register_title'.tr,
             style: TextStyle(
               color: scheme.primary,
               fontSize: headingSize,
@@ -77,7 +77,7 @@ class RegisterFormContent extends StatelessWidget {
           ),
           SizedBox(height: subtitleGap),
           Text(
-            'Curated seasonal harvests from our fields directly to your kitchen.',
+            'register_subtitle'.tr,
             style: TextStyle(
               fontSize: subtitleSize,
               color: scheme.onSurfaceVariant,
@@ -91,26 +91,46 @@ class RegisterFormContent extends StatelessWidget {
               child: SizedBox(
                 height: heroHeight,
                 width: media.size.width,
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000',
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) {
-                    if (progress == null) return child;
-                    return Container(color: AppColors.cardLight);
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    final imageScheme = Theme.of(context).colorScheme;
-                    return Container(
-                      color: AppColors.cardLight,
-                      child: Center(
-                        child: Icon(
-                          Icons.broken_image_rounded,
-                          color: imageScheme.onSurfaceVariant,
-                          size: 28,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000',
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, progress) {
+                        if (progress == null) return child;
+                        return Container(color: scheme.surfaceContainerHighest);
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        final imageScheme = Theme.of(context).colorScheme;
+                        return Container(
+                          color: imageScheme.surfaceContainerHighest,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image_rounded,
+                              color: imageScheme.onSurfaceVariant,
+                              size: 28,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    if (isDark)
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: <Color>[
+                              Colors.transparent,
+                              const Color(0x4D000000),
+                              scheme.surface.withValues(alpha: 0.7),
+                            ],
+                            stops: const <double>[0.35, 0.7, 1.0],
+                          ),
                         ),
                       ),
-                    );
-                  },
+                  ],
                 ),
               ),
             ),
@@ -124,7 +144,7 @@ class RegisterFormContent extends StatelessWidget {
                   Expanded(
                     child: RegisterWidget.buildInputField(
                       context: context,
-                      label: 'FIRST NAME',
+                      label: 'first_name'.tr.toUpperCase(),
                       hint: 'Jane',
                       textController: controller.firstNameController,
                     ),
@@ -133,7 +153,7 @@ class RegisterFormContent extends StatelessWidget {
                   Expanded(
                     child: RegisterWidget.buildInputField(
                       context: context,
-                      label: 'LAST NAME',
+                      label: 'last_name'.tr.toUpperCase(),
                       hint: 'Doe',
                       textController: controller.lastNameController,
                     ),
@@ -143,7 +163,7 @@ class RegisterFormContent extends StatelessWidget {
               SizedBox(height: fieldGap),
               RegisterWidget.buildInputField(
                 context: context,
-                label: 'PHONE NUMBER',
+                label: 'phone_number'.tr.toUpperCase(),
                 hint: '012 345 678',
                 textController: controller.phoneController,
                 keyboardType: TextInputType.phone,
@@ -153,7 +173,7 @@ class RegisterFormContent extends StatelessWidget {
               Obx(
                 () => RegisterWidget.buildInputField(
                   context: context,
-                  label: 'PASSWORD',
+                  label: 'password'.tr.toUpperCase(),
                   hint: '••••••••',
                   textController: controller.passwordController,
                   obscureText: !controller.isPasswordVisible.value,
@@ -174,7 +194,7 @@ class RegisterFormContent extends StatelessWidget {
               Obx(
                 () => RegisterWidget.buildInputField(
                   context: context,
-                  label: 'PASSWORD CONFIRMATION',
+                  label: 'password_confirmation'.tr.toUpperCase(),
                   hint: '••••••••',
                   textController: controller.passwordConfirmController,
                   obscureText: !controller.isPasswordConfirmVisible.value,
@@ -198,7 +218,7 @@ class RegisterFormContent extends StatelessWidget {
                       ? null
                       : controller.signUp,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.darkGreen,
+                    backgroundColor: scheme.primary,
                     minimumSize: Size(
                       media.size.width,
                       buttonHeight,
@@ -209,34 +229,34 @@ class RegisterFormContent extends StatelessWidget {
                     elevation: 0,
                   ),
                   child: controller.isLoading.value
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
+                              scheme.onPrimary,
                             ),
                           ),
                         )
-                      : const Row(
+                      : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'SIGN UP',
+                              'sign_up'.tr.toUpperCase(),
                               style: TextStyle(
-                                color: Colors.white,
+                                color: scheme.onPrimary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 1.2,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             Icon(
                               Icons.arrow_upward,
-                              color: Colors.white,
+                              color: scheme.onPrimary,
                             ),
                           ],
                         ),
@@ -253,11 +273,9 @@ class RegisterFormContent extends StatelessWidget {
                         fontSize: 14,
                       ),
                       children: [
-                        const TextSpan(
-                          text: 'Already have an account?  ',
-                        ),
+                        TextSpan(text: '${'already_have_account'.tr}  '),
                         TextSpan(
-                          text: 'Login to FreshLeaf',
+                          text: 'login_here'.tr,
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             color: scheme.primary,

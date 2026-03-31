@@ -2,10 +2,12 @@ final class AppRoutes {
   AppRoutes._();
 
   static const onboarding = '/onboarding';
+  static const networkCheck = '/network_check';
   static const login = '/login';
   static const register = '/register';
   static const dashboard = '/dashboard';
   static const home = '/home';
+  static const splash = '/splash';
   static const search = '/search';
   static const cart = '/cart';
   static const checkout = '/checkout';
@@ -15,6 +17,8 @@ final class AppRoutes {
   static const productDetail = '/product_detail';
   static const productList = '/product_list';
   static const orderDetail = '/order_detail';
+  static const notifications = '/notifications';
+  static const notificationDetail = '/notification_detail';
   static const personalDetails = '/personal_details';
   static const settings = '/settings';
   static const securitySettings = '/security_settings';

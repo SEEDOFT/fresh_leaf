@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
@@ -5,7 +7,8 @@ import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart' hide Response, MultipartFile, FormData;
+import 'package:image_picker/image_picker.dart';
 import 'profile_controller.dart';
 
 class ProfilePersonalDetailsController extends GetxController {
@@ -13,6 +16,7 @@ class ProfilePersonalDetailsController extends GetxController {
   final lastName = ''.obs;
   final email = ''.obs;
   final image = ''.obs;
+  final pickedImagePath = ''.obs;
   final phone = ''.obs;
   final isSaving = false.obs;
   final firstNameController = TextEditingController();
@@ -54,13 +58,25 @@ class ProfilePersonalDetailsController extends GetxController {
     _syncTextControllers();
   }
 
+  Future<void> pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: source, imageQuality: 80);
+    if (file != null) {
+      pickedImagePath.value = file.path;
+    }
+  }
+
+  void clearPickedImage() {
+    pickedImagePath.value = '';
+  }
+
   Future<void> saveChanges() async {
     if (isSaving.value) return;
     FocusManager.instance.primaryFocus?.unfocus();
 
-    final payload = _buildUpdatePayload();
+    final payload = await _buildUpdatePayload();
     if (payload.isEmpty) {
-      Get.snackbar('No changes', 'Your profile is already up to date.');
+      Get.snackbar('no_changes'.tr, 'profile_up_to_date'.tr);
       return;
     }
 
@@ -85,7 +101,9 @@ class ProfilePersonalDetailsController extends GetxController {
         lastName:
             (mapData['last_name'] as String?) ?? lastNameController.text.trim(),
         email: (mapData['email'] as String?) ?? emailController.text.trim(),
-        image: (mapData['image'] as String?) ?? image.value,
+        image:
+            (mapData['image'] as String?) ??
+            (pickedImagePath.isNotEmpty ? pickedImagePath.value : image.value),
         phoneNumber:
             (mapData['phone_number'] as String?) ??
             _normalizePhoneForApi(phoneController.text),
@@ -107,17 +125,17 @@ class ProfilePersonalDetailsController extends GetxController {
       }
 
       Get.snackbar(
-        'Success',
+        'success'.tr,
         apiResponse.status.message.isNotEmpty
             ? apiResponse.status.message
-            : 'Profile updated successfully',
+            : 'profile_updated_success'.tr,
       );
     } catch (e) {
       final errorMsg = e is DioException
           ? e.response?.data?['status']?['message']?.toString() ??
-                'Failed to update profile'
-          : 'Failed to update profile';
-      Get.snackbar('Error', errorMsg);
+                'failed_update_profile'.tr
+          : 'failed_update_profile'.tr;
+      Get.snackbar('update_failed'.tr, errorMsg);
     } finally {
       isSaving.value = false;
     }
@@ -150,11 +168,11 @@ class ProfilePersonalDetailsController extends GetxController {
         Get.find<ProfileController>().setProfile(latestProfile);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Unable to refresh profile');
+      Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     }
   }
 
-  Map<String, dynamic> _buildUpdatePayload() {
+  Future<Map<String, dynamic>> _buildUpdatePayload() async {
     final payload = <String, dynamic>{};
 
     final nextFirstName = firstNameController.text.trim();
@@ -180,6 +198,12 @@ class ProfilePersonalDetailsController extends GetxController {
     }
     if (nextPhone != currentPhone && nextPhone.isNotEmpty) {
       payload['phone_number'] = nextPhone;
+    }
+    if (pickedImagePath.isNotEmpty) {
+      payload['image'] = await MultipartFile.fromFile(
+        pickedImagePath.value,
+        filename: pickedImagePath.value.split(Platform.pathSeparator).last,
+      );
     }
 
     return payload;
@@ -241,24 +265,30 @@ class ProfilePersonalDetailsController extends GetxController {
   }) async {
     final usePatch = partialPayload.length == 1;
     final requestPayload = usePatch ? partialPayload : fullPayload;
+    final hasFile = requestPayload.values.any(
+      (value) => value is MultipartFile,
+    );
+    final payloadData = hasFile
+        ? FormData.fromMap(requestPayload)
+        : requestPayload;
 
     try {
       if (usePatch) {
         return await api.patchRequest(
           ApiEndpoints.userUpdateProfile,
-          data: requestPayload,
+          data: payloadData,
         );
       }
       return await api.putRequest(
         ApiEndpoints.userUpdateProfile,
-        data: requestPayload,
+        data: payloadData,
       );
     } on DioException catch (e) {
       final code = e.response?.statusCode ?? 0;
       if (code == 404 || code == 405) {
         return api.postRequest(
           ApiEndpoints.userUpdateProfile,
-          data: requestPayload,
+          data: payloadData,
         );
       }
       rethrow;

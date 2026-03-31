@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class InfoTileWidget extends StatelessWidget {
   const InfoTileWidget({
@@ -22,7 +23,7 @@ class InfoTileWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: scheme.shadow.withValues(alpha: 0.14),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -47,7 +48,7 @@ class InfoTileWidget extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            value,
+            value.tr,
             style: TextStyle(
               fontSize: 12,
               color: scheme.onSurfaceVariant,

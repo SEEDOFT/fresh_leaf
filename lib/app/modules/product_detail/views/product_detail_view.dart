@@ -41,7 +41,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
               ),
               const SizedBox(height: 8),
               Text(
-                controller.subtitle,
+                controller.subtitle.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 14,
@@ -57,7 +57,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
               ),
               const SizedBox(height: 16),
               Text(
-                'About this item',
+                'about_this_item'.tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
@@ -66,7 +66,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
               ),
               const SizedBox(height: 8),
               Text(
-                controller.description,
+                controller.description.tr,
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.6,

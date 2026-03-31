@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CartEmptyWidget extends StatelessWidget {
   const CartEmptyWidget({super.key});
@@ -16,10 +16,10 @@ class CartEmptyWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: scheme.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.grayBorder),
+          border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: scheme.shadow.withValues(alpha: 0.15),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
@@ -33,17 +33,17 @@ class CartEmptyWidget extends StatelessWidget {
               height: 70,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.accentLime.withValues(alpha: 0.24),
+                color: scheme.primaryContainer.withValues(alpha: 0.55),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.shopping_cart_checkout_rounded,
                 size: 34,
-                color: AppColors.primaryDarkGreen,
+                color: scheme.primary,
               ),
             ),
             const SizedBox(height: 14),
             Text(
-              'Your cart is empty',
+              'cart_empty_title'.tr,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -52,7 +52,7 @@ class CartEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Add fresh products from Home to start a smarter, faster checkout.',
+              'cart_empty_subtitle'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,

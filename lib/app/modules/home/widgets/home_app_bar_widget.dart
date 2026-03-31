@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 
 class HomeAppBarWidget extends StatelessWidget {
   const HomeAppBarWidget({super.key});
@@ -22,12 +24,15 @@ class HomeAppBarWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Organic Farm,',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  Text(
+                    'home_location_name'.tr,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
-                    'CA',
+                    'home_location_region'.tr,
                     style: TextStyle(
                       fontSize: 12,
                       color: scheme.onSurface.withValues(alpha: 0.7),
@@ -48,7 +53,7 @@ class HomeAppBarWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                'Organic',
+                'home_brand_subtitle'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -58,15 +63,15 @@ class HomeAppBarWidget extends StatelessWidget {
             ],
           ),
           Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: scheme.surfaceContainerHighest,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.notifications_outlined,
-              size: 20,
-              color: scheme.onSurface,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+              icon: Icon(
+                Icons.notifications_outlined,
+                size: 22,
+                color: scheme.onSurface,
+              ),
+              onPressed: () => Get.toNamed(AppRoutes.notifications),
             ),
           ),
         ],

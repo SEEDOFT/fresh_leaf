@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:get/get.dart';
 
 class CartHeaderWidget extends StatelessWidget {
   const CartHeaderWidget({
@@ -22,7 +22,7 @@ class CartHeaderWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'My Cart',
+            'my_cart'.tr,
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w900,
@@ -41,10 +41,15 @@ class CartHeaderWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.grayBorder),
+                  border: Border.all(
+                    color: scheme.outline.withValues(alpha: 0.35),
+                  ),
                 ),
                 child: Text(
-                  '$itemCount item${itemCount == 1 ? '' : 's'} selected',
+                  (itemCount == 1
+                          ? 'items_selected_one'
+                          : 'items_selected_other')
+                      .trParams({'count': '$itemCount'}),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -56,12 +61,12 @@ class CartHeaderWidget extends StatelessWidget {
               TextButton.icon(
                 onPressed: hasItems ? onClear : null,
                 icon: const Icon(Icons.delete_outline_rounded, size: 18),
-                label: const Text(
-                  'Clear',
-                  style: TextStyle(fontWeight: FontWeight.w700),
+                label: Text(
+                  'clear'.tr,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.accentBrown,
+                  foregroundColor: scheme.secondary,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeSearchBarWidget extends StatelessWidget {
   const HomeSearchBarWidget({
@@ -27,7 +28,7 @@ class HomeSearchBarWidget extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Search vegetables, mushrooms, citrus...',
+                    'search_hint'.tr,
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
                       fontSize: 14,

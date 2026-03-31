@@ -7,6 +7,12 @@ class BackgroundHeroWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleColor = isDark ? Colors.white : AppColors.primaryDarkGreen;
+    final subtitleColor = isDark
+        ? Colors.white.withValues(alpha: 0.88)
+        : AppColors.primaryDarkGreen.withValues(alpha: 0.85);
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -35,12 +41,18 @@ class BackgroundHeroWidget extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.transparent,
-                AppColors.backgroundCream.withValues(alpha: 0.4),
-                AppColors.backgroundCream,
-              ],
-              stops: const [0.4, 0.75, 1.0],
+              colors: isDark
+                  ? <Color>[
+                      Colors.transparent,
+                      const Color(0xCC111713),
+                      scheme.surface,
+                    ]
+                  : <Color>[
+                      Colors.transparent,
+                      AppColors.backgroundCream.withValues(alpha: 0.4),
+                      AppColors.backgroundCream,
+                    ],
+              stops: const <double>[0.4, 0.75, 1.0],
             ),
           ),
         ),
@@ -50,13 +62,22 @@ class BackgroundHeroWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'FreshLeaf',
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.w900,
-                  color: AppColors.primaryDarkGreen,
+                  color: titleColor,
                   letterSpacing: -1,
+                  shadows: isDark
+                      ? const <Shadow>[
+                          Shadow(
+                            color: Color(0x73000000),
+                            offset: Offset(0, 1),
+                            blurRadius: 6,
+                          ),
+                        ]
+                      : null,
                 ),
               ),
               Text(
@@ -65,7 +86,16 @@ class BackgroundHeroWidget extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2,
-                  color: AppColors.primaryDarkGreen.withValues(alpha: 0.85),
+                  color: subtitleColor,
+                  shadows: isDark
+                      ? const <Shadow>[
+                          Shadow(
+                            color: Color(0x73000000),
+                            offset: Offset(0, 1),
+                            blurRadius: 5,
+                          ),
+                        ]
+                      : null,
                 ),
               ),
             ],
