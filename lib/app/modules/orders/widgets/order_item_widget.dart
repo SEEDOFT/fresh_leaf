@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/orders/models/order.dart';
 import 'package:get/get.dart';
-import '../models/order.dart';
 
 class OrderItemWidget extends StatelessWidget {
-  const OrderItemWidget({super.key, required this.order, this.onTap});
+  const OrderItemWidget({required this.order, super.key, this.onTap});
 
   final Order order;
   final VoidCallback? onTap;
@@ -17,9 +17,7 @@ class OrderItemWidget extends StatelessWidget {
     final badgeBg = _delivered
         ? scheme.primaryContainer.withValues(alpha: 0.6)
         : scheme.secondaryContainer.withValues(alpha: 0.6);
-    final badgeText = _delivered
-        ? scheme.primary
-        : scheme.secondary;
+    final badgeText = _delivered ? scheme.primary : scheme.secondary;
 
     return GestureDetector(
       onTap: onTap,

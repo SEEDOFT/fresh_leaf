@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/orders/models/order.dart';
+import 'package:fresh_leaf/app/modules/orders/widgets/order_item_widget.dart';
 import 'package:get/get.dart';
-import '../models/order.dart';
-import 'order_item_widget.dart';
 
 class OrdersListWidget extends StatelessWidget {
   const OrdersListWidget({
-    super.key,
     required this.groupedOrders,
+    super.key,
     this.onOrderTap,
   });
 

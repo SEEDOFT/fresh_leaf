@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 class OrdersFilterBar extends StatelessWidget {
   const OrdersFilterBar({
-    super.key,
     required this.filters,
     required this.selected,
     required this.onChanged,
+    super.key,
   });
 
   final List<String> filters;

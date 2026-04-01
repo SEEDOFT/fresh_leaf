@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/orders/controllers/orders_controller.dart';
 import 'package:fresh_leaf/app/modules/orders/widgets/orders_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import '../controllers/orders_controller.dart';
+import 'package:get/get.dart';
 
 class OrdersView extends GetView<OrdersController> {
   const OrdersView({super.key});
@@ -20,8 +20,8 @@ class OrdersView extends GetView<OrdersController> {
             Obx(
               () => OrdersFilterBar(
                 filters: controller.statusFilters,
-                selected: controller.selectedStatus.value,
-                onChanged: controller.changeStatusFilter,
+                selected: controller.selectedStatus,
+                onChanged: (status) => controller.selectedStatus = status,
               ),
             ),
             const SizedBox(height: 12),
@@ -37,10 +37,11 @@ class OrdersView extends GetView<OrdersController> {
                         switchOutCurve: Curves.easeInCubic,
                         child: OrdersListWidget(
                           key: ValueKey<String>(
-                            '${controller.selectedStatus.value}-${controller.filteredOrders.length}',
+                            '${controller.selectedStatus}'
+                            '-${controller.filteredOrders.length}',
                           ),
                           groupedOrders: controller.groupedFilteredOrders,
-                          onOrderTap: (order) => Get.toNamed(
+                          onOrderTap: (order) async => await Get.toNamed<void>(
                             AppRoutes.orderDetail,
                             arguments: order.toMap(),
                           ),

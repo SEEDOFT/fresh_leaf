@@ -1,18 +1,20 @@
+import 'package:fresh_leaf/app/modules/orders/models/order.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../models/order.dart';
 
 class OrdersController extends GetxController {
   static final DateFormat _dateFormat = DateFormat('MMM d, yyyy');
+  final RxBool isLoading = false.obs;
+  final RxList<Order> orders = <Order>[].obs;
+  final RxString _selectedStatus = 'All'.obs;
 
-  final isLoading = false.obs;
-  final orders = <Order>[].obs;
-  final selectedStatus = 'All'.obs;
+  String get selectedStatus => _selectedStatus.value;
+  set selectedStatus(String status) => _selectedStatus.value = status;
 
   List<String> get statusFilters => const ['All', 'Processing', 'Delivered'];
 
   List<Order> get filteredOrders {
-    final current = selectedStatus.value;
+    final current = _selectedStatus.value;
     if (current == 'All') return orders;
     return orders.where((o) => o.status == current).toList();
   }
@@ -85,14 +87,10 @@ class OrdersController extends GetxController {
     );
   }
 
-  void changeStatusFilter(String status) {
-    selectedStatus.value = status;
-  }
-
   DateTime _tryParseOrderDate(String input) {
     try {
       return _dateFormat.parse(input);
-    } catch (_) {
+    } on Exception catch (_) {
       return DateTime(1970);
     }
   }
