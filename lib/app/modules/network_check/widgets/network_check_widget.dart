@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class NetworkStatusIcon extends StatelessWidget {
   const NetworkStatusIcon({
-    super.key,
     required this.isOnline,
     required this.isChecking,
+    super.key,
   });
 
   final bool isOnline;

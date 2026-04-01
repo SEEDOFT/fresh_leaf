@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class NetworkCheckBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<NetworkCheckController>(() => NetworkCheckController());
+    Get.lazyPut<NetworkCheckController>(NetworkCheckController.new);
   }
 }

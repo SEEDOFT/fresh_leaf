@@ -3,8 +3,8 @@ import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:get/get.dart';
 
 class NetworkCheckController extends GetxController {
-  final isChecking = false.obs;
-  final isOnline = false.obs;
+  final RxBool isChecking = false.obs;
+  final RxBool isOnline = false.obs;
 
   @override
   void onInit() {
@@ -23,7 +23,7 @@ class NetworkCheckController extends GetxController {
     }
   }
 
-  void continueToLogin() {
+  Future<void> continueToLogin() async {
     if (!isOnline.value) {
       Get.snackbar(
         'no_internet_connection'.tr,
@@ -31,6 +31,6 @@ class NetworkCheckController extends GetxController {
       );
       return;
     }
-    Get.offAllNamed(AppRoutes.login);
+    await Get.offAllNamed<void>(AppRoutes.login);
   }
 }
