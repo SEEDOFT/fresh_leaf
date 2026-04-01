@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class OnboardingTextContent extends StatelessWidget {
-  const OnboardingTextContent({super.key, required this.index});
+  const OnboardingTextContent({required this.index, super.key});
 
   final int index;
 
@@ -27,7 +27,9 @@ class OnboardingTextContent extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
-              color: isDark ? scheme.onSecondaryContainer : const Color(0xFF8B5E3C),
+              color: isDark
+                  ? scheme.onSecondaryContainer
+                  : const Color(0xFF8B5E3C),
             ),
           ),
         ),

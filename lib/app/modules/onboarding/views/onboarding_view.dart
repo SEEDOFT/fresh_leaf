@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:fresh_leaf/app/modules/onboarding/widgets/onboarding_widget.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../controllers/onboarding_controller.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({super.key});
@@ -13,8 +13,7 @@ class OnboardingView extends GetView<OnboardingController> {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
-    final pageHeight =
-        media.size.height * 0.52; // keep content comfortably centered
+    final pageHeight = media.size.height * 0.52;
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -43,7 +42,7 @@ class OnboardingView extends GetView<OnboardingController> {
                   },
                   errorBuilder: (context, error, stackTrace) {
                     final imageScheme = Theme.of(context).colorScheme;
-                    return Container(
+                    return ColoredBox(
                       color: imageScheme.surfaceContainerHighest,
                       child: Center(
                         child: Icon(
@@ -89,7 +88,7 @@ class OnboardingView extends GetView<OnboardingController> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -164,7 +163,6 @@ class OnboardingView extends GetView<OnboardingController> {
                         dotHeight: 8,
                         dotWidth: 8,
                         expansionFactor: 4,
-                        spacing: 8,
                       ),
                     ),
                   ),
