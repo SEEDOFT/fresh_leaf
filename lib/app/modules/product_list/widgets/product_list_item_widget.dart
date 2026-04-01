@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
-import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_image_helper.dart';
+import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_image_widget.dart';
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:get/get.dart';
 
 class ProductListItemWidget extends StatelessWidget {
   const ProductListItemWidget({
-    super.key,
     required this.product,
     required this.onTap,
+    super.key,
   });
 
   final ProductInfo product;
@@ -16,7 +16,7 @@ class ProductListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
+    final textScale = MediaQuery.of(context).textScaler.scale(1);
     final compact = screenWidth < 360;
     final scheme = Theme.of(context).colorScheme;
 
@@ -43,7 +43,7 @@ class ProductListItemWidget extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: ProductListImageHelper.buildNetworkImage(
+                  child: ProductListImageWidget(
                     url: product.imageUrl,
                     width: cardWidth,
                     borderRadius: const BorderRadius.vertical(

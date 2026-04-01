@@ -1,9 +1,9 @@
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:get/get.dart';
-import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
 
 class ProductListController extends GetxController {
-  final isLoading = false.obs;
-  final products = <ProductInfo>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxList<ProductInfo> products = <ProductInfo>[].obs;
 
   @override
   void onInit() {
@@ -18,7 +18,7 @@ class ProductListController extends GetxController {
       const Duration(seconds: 1),
       () => {
         isLoading.value = false,
-        products.value = [
+        products.value = const [
           ProductInfo(
             title: 'product_heritage_carrots_title',
             subtitle: 'product_heritage_carrots_subtitle',
@@ -38,7 +38,7 @@ class ProductListController extends GetxController {
             imageUrl:
                 'https://images.unsplash.com/photo-1556911892-bbe3ff16d8ee?q=80&w=1000',
             tags: ['organic', 'tag_mushrooms'],
-            price: 8.00,
+            price: 8,
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'paper_bag',
@@ -62,7 +62,7 @@ class ProductListController extends GetxController {
             imageUrl:
                 'https://images.unsplash.com/photo-1582719478250-5cd631d3338c?q=80&w=1000',
             tags: ['organic', 'tag_fruit'],
-            price: 12.00,
+            price: 12,
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'cool_dry_place',
@@ -86,7 +86,7 @@ class ProductListController extends GetxController {
             imageUrl:
                 'https://images.unsplash.com/photo-1470747801570-32410980427?q=80&w=1000',
             tags: ['organic', 'tag_mushrooms'],
-            price: 15.00,
+            price: 15,
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'paper_bag',
@@ -98,7 +98,7 @@ class ProductListController extends GetxController {
             imageUrl:
                 'https://images.unsplash.com/photo-1509440159596-02490887734?q=80&w=1000',
             tags: ['organic', 'tag_bakery'],
-            price: 8.00,
+            price: 8,
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'bread_box',

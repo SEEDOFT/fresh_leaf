@@ -1,11 +1,9 @@
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/product_list/controllers/product_list_controller.dart';
+import 'package:get/get.dart';
 
 class ProductListBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ProductListController>(
-      () => ProductListController(),
-    );
+    Get.lazyPut<ProductListController>(ProductListController.new);
   }
 }

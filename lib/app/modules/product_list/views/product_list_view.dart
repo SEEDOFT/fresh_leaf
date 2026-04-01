@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_widget.dart';
 import 'package:fresh_leaf/app/modules/product_list/controllers/product_list_controller.dart';
+import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_widget.dart';
+import 'package:get/get.dart';
 
 class ProductListView extends GetView<ProductListController> {
   const ProductListView({super.key});
@@ -17,7 +17,7 @@ class ProductListView extends GetView<ProductListController> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: scheme.onSurface),
-          onPressed: Get.back,
+          onPressed: Get.back<void>,
         ),
         title: Text(
           'all_products'.tr,
@@ -59,11 +59,11 @@ class ProductListView extends GetView<ProductListController> {
 
                     const double spacing = 16;
                     const double horizontalPadding = 32; // 16 + 16
-                    final double itemWidth =
+                    final itemWidth =
                         (constraints.maxWidth -
-                                horizontalPadding -
-                                (crossAxisCount - 1) * spacing) /
-                            crossAxisCount;
+                            horizontalPadding -
+                            (crossAxisCount - 1) * spacing) /
+                        crossAxisCount;
 
                     return GridView.builder(
                       padding: const EdgeInsets.all(16),
@@ -78,8 +78,11 @@ class ProductListView extends GetView<ProductListController> {
                         final product = controller.products[index];
                         return ProductListItemWidget(
                           product: product,
-                          onTap: () {
-                            Get.toNamed('/product_detail', arguments: product);
+                          onTap: () async {
+                            await Get.toNamed<void>(
+                              '/product_detail',
+                              arguments: product,
+                            );
                           },
                         );
                       },
