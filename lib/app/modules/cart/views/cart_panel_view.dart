@@ -9,7 +9,7 @@ Future<void> showCartPanel() async {
     CartBinding().dependencies();
   }
 
-  await Get.generalDialog(
+  await Get.generalDialog<void>(
     barrierDismissible: true,
     barrierLabel: 'Cart',
     barrierColor: Get.theme.colorScheme.scrim.withValues(alpha: 0.5),

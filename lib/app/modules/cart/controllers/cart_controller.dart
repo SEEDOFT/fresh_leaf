@@ -47,7 +47,7 @@ class CartController extends GetxController {
       subtitle: 'Wild harvested, 200g',
       imageUrl:
           'https://images.unsplash.com/photo-1604544025999-4c8d550e0d5a?q=80&w=600',
-      price: 8.00,
+      price: 8,
       quantity: 1,
     ),
   ].obs;

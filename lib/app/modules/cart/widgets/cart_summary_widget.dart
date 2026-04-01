@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 
 class CartSummaryWidget extends StatelessWidget {
   const CartSummaryWidget({
-    super.key,
     required this.subtotal,
     required this.deliveryFee,
     required this.total,
     required this.itemCount,
     required this.width,
     required this.onCheckout,
+    super.key,
   });
 
   final double subtotal;

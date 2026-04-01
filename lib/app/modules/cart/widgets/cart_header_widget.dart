@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 class CartHeaderWidget extends StatelessWidget {
   const CartHeaderWidget({
-    super.key,
     required this.itemCount,
     required this.onClear,
+    super.key,
   });
 
   final int itemCount;

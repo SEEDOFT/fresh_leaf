@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/widgets/cart_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:get/get.dart';
-import '../controllers/cart_controller.dart';
 
 class CartView extends GetView<CartController> {
   const CartView({super.key, this.asPanel = false});
@@ -17,9 +17,9 @@ class CartView extends GetView<CartController> {
 
     void handleCheckout() {
       if (asPanel) {
-        Get.back();
+        Get.back<void>();
       }
-      Get.toNamed(AppRoutes.checkout);
+      Get.toNamed<void>(AppRoutes.checkout);
     }
 
     final content = SafeArea(

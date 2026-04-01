@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 
 class CartItemCardWidget extends StatelessWidget {
   const CartItemCardWidget({
-    super.key,
     required this.item,
     required this.onMinus,
     required this.onPlus,
     required this.onRemove,
+    super.key,
   });
 
   final CartItem item;
