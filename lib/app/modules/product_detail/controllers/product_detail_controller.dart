@@ -1,5 +1,5 @@
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:get/get.dart';
-import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
 
 class ProductDetailController extends GetxController {
   late final ProductInfo product;

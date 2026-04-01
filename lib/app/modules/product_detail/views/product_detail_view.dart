@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/controllers/product_detail_controller.dart';
-import 'package:fresh_leaf/app/modules/product_detail/widgets/product_detail_widget.dart';
+import 'package:fresh_leaf/app/modules/product_detail/widgets/product_detail_widgets.dart';
 import 'package:get/get.dart';
 
 class ProductDetailView extends GetView<ProductDetailController> {
@@ -17,7 +17,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new, color: scheme.onSurface),
-          onPressed: Get.back,
+          onPressed: () => Get.back<void>(),
         ),
         actions: [
           IconButton(

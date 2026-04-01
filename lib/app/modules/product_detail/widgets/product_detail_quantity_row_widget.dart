@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 class QuantityRowWidget extends StatelessWidget {
   const QuantityRowWidget({
-    super.key,
     required this.quantity,
     required this.onIncrement,
     required this.onDecrement,
+    super.key,
   });
 
   final int quantity;

@@ -3,8 +3,7 @@ import 'package:get/get.dart';
 
 class HeroImageWidget extends StatelessWidget {
   const HeroImageWidget({
-    super.key,
-    required this.imageUrl,
+    required this.imageUrl, super.key,
   });
 
   final String imageUrl;
@@ -27,7 +26,7 @@ class HeroImageWidget extends StatelessWidget {
                   return Container(color: scheme.surfaceContainerHighest);
                 },
                 errorBuilder: (context, error, stackTrace) {
-                  return Container(
+                  return ColoredBox(
                     color: scheme.surfaceContainerHighest,
                     child: Center(
                       child: Icon(

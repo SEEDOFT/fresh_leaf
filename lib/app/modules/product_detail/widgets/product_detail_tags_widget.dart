@@ -3,8 +3,7 @@ import 'package:get/get.dart';
 
 class TagsWidget extends StatelessWidget {
   const TagsWidget({
-    super.key,
-    required this.tags,
+    required this.tags, super.key,
   });
 
   final List<String> tags;
