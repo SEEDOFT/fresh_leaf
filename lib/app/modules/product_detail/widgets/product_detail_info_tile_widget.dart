@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 
 class InfoTileWidget extends StatelessWidget {
   const InfoTileWidget({
-    required this.title, required this.value, required this.icon, super.key,
+    required this.title,
+    required this.value,
+    required this.icon,
+    super.key,
   });
 
   final String title;

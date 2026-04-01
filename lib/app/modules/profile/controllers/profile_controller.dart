@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -9,13 +10,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ProfileController extends GetxController {
-  final isLoading = false.obs;
-
-  final userName = ''.obs;
-  final email = ''.obs;
-  final image = ''.obs;
-  final phone = ''.obs;
-  final memberSince = ''.obs;
+  final RxBool isLoading = false.obs;
+  final RxString userName = ''.obs;
+  final RxString email = ''.obs;
+  final RxString image = ''.obs;
+  final RxString phone = ''.obs;
+  final RxString memberSince = ''.obs;
 
   @override
   void onInit() {
@@ -29,7 +29,7 @@ class ProfileController extends GetxController {
     if (profile != null) {
       setProfile(profile);
     } else {
-      final tokenPresent = storage.token?.isNotEmpty == true;
+      final tokenPresent = storage.token?.isNotEmpty ?? false;
       if (tokenPresent) {
         userName.value = 'member_placeholder'.tr;
         email.value = '—';
@@ -54,8 +54,10 @@ class ProfileController extends GetxController {
   Future<void> refreshProfile() async {
     try {
       final api = Get.find<ApiClient>();
-      final response = await api.getRequest(ApiEndpoints.userProfile);
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final response = await api.getRequest(
+        ApiEndpoints.userProfile,
+      );
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
@@ -66,10 +68,14 @@ class ProfileController extends GetxController {
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      final storage = Get.find<StorageService>();
-      storage.setUserProfile(profile);
+      Get.find<StorageService>().setUserProfile(profile);
       setProfile(profile);
-    } catch (_) {
+    } on DioException catch (e) {
+      Get.snackbar(
+        'update_failed'.tr,
+        e.message ?? 'unable_refresh_profile'.tr,
+      );
+    } on Exception {
       Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     }
   }
@@ -77,7 +83,7 @@ class ProfileController extends GetxController {
   Future<void> openOrders() async {
     final canOpen = await PinSecurityService.verifyOrderAccess();
     if (!canOpen) return;
-    Get.toNamed(AppRoutes.orders);
+    await Get.toNamed<void>(AppRoutes.orders);
   }
 
   Future<void> logout() async {
@@ -86,13 +92,15 @@ class ProfileController extends GetxController {
     try {
       final api = Get.find<ApiClient>();
       await api.postRequest(ApiEndpoints.logout);
-    } catch (e) {
+    } on DioException catch (e) {
+      Get.snackbar('logout_failed'.tr, e.message ?? 'unable_logout'.tr);
+    } on Exception {
       Get.snackbar('logout_failed'.tr, 'unable_logout'.tr);
     }
 
     final storage = Get.find<StorageService>();
     await storage.clear();
-    Get.offAllNamed(AppRoutes.login);
+    await Get.offAllNamed<void>(AppRoutes.login);
     isLoading.value = false;
   }
 }

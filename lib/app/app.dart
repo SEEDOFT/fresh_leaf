@@ -11,8 +11,8 @@ import 'package:get/get.dart';
 
 class FreshLeafApp extends StatefulWidget {
   const FreshLeafApp({
-    super.key,
     required this.initialRoute,
+    super.key,
   });
 
   final String initialRoute;
@@ -33,7 +33,7 @@ class _FreshLeafAppState extends State<FreshLeafApp> {
   Future<void> _requestStartupPermissions() async {
     try {
       await PermissionService.requestAll();
-    } catch (_) {
+    } on Exception catch (_) {
       // best-effort only
     }
   }

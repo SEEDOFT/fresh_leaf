@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_security_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_security_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:get/get.dart';
-import '../controllers/profile_security_controller.dart';
 
 class SecuritySettingsView extends GetView<ProfileSecurityController> {
   const SecuritySettingsView({super.key});
@@ -42,23 +42,27 @@ class SecuritySettingsView extends GetView<ProfileSecurityController> {
                         SecurityPasswordField(
                           label: 'current_password'.tr,
                           controller: controller.verifyPasswordController,
-                          obscureText: !controller.isVerifyPasswordVisible.value,
-                          onToggle: () => controller.isVerifyPasswordVisible.value =
+                          obscureText:
                               !controller.isVerifyPasswordVisible.value,
+                          onToggle: () =>
+                              controller.isVerifyPasswordVisible.value =
+                                  !controller.isVerifyPasswordVisible.value,
                         ),
                       ] else ...[
                         SecurityPasswordField(
                           label: 'new_password'.tr,
                           controller: controller.newPasswordController,
                           obscureText: !controller.isNewPasswordVisible.value,
-                          onToggle: () => controller.isNewPasswordVisible.value =
-                              !controller.isNewPasswordVisible.value,
+                          onToggle: () =>
+                              controller.isNewPasswordVisible.value =
+                                  !controller.isNewPasswordVisible.value,
                         ),
                         const SizedBox(height: 14),
                         SecurityPasswordField(
                           label: 'confirm_new_password'.tr,
                           controller: controller.confirmPasswordController,
-                          obscureText: !controller.isConfirmPasswordVisible.value,
+                          obscureText:
+                              !controller.isConfirmPasswordVisible.value,
                           onToggle: () =>
                               controller.isConfirmPasswordVisible.value =
                                   !controller.isConfirmPasswordVisible.value,

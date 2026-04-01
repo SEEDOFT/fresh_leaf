@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 class PinToggleCard extends StatelessWidget {
   const PinToggleCard({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
   });
 
   final bool value;

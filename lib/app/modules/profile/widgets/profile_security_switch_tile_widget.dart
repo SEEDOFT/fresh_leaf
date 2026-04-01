@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SecuritySwitchTile extends StatefulWidget {
-  const SecuritySwitchTile({super.key, required this.label, this.subtitle});
+  const SecuritySwitchTile({required this.label, super.key, this.subtitle});
 
   final String label;
   final String? subtitle;

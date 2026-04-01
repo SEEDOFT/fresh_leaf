@@ -74,7 +74,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                     final confirmed = await _confirmClear(context);
                     if (confirmed) {
                       _controller.messages.clear();
-                      _controller.clearHistory();
+                      await _controller.clearHistory();
                     }
                   },
                 ),
@@ -88,7 +88,7 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   // Show Histories
   Future<void> _showHistory(BuildContext context) async {
-    await showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       shape: const RoundedRectangleBorder(

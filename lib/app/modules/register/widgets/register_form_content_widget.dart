@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
-import 'register_input_field_widget.dart';
+import 'package:fresh_leaf/app/modules/register/widgets/register_input_field_widget.dart';
+import 'package:get/get.dart';
 
 class RegisterFormContent extends StatelessWidget {
   const RegisterFormContent({
-    super.key,
     required this.controller,
     required this.constraints,
+    super.key,
   });
 
   final RegisterController controller;
@@ -20,41 +20,39 @@ class RegisterFormContent extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final keyboardVisible = media.viewInsets.bottom > 0;
-    final double scale = (constraints.maxHeight / 805)
-        .clamp(0.76, 1.0)
-        .toDouble();
-    final bool compact = constraints.maxHeight < 720;
+    final scale = (constraints.maxHeight / 805).clamp(0.76, 1.0);
+    final compact = constraints.maxHeight < 720;
 
-    final double verticalPadding = (keyboardVisible ? 11 : 18 * scale)
+    final verticalPadding = (keyboardVisible ? 11 : 18 * scale)
         .clamp(11, 18)
         .toDouble();
-    final double topGap = compact ? 5 : (12 * scale).clamp(5, 12).toDouble();
-    final double eyebrowSize = (11 * scale).clamp(9, 11).toDouble();
-    final double headingSpacing = (6 * scale).clamp(4, 9).toDouble();
-    final double headingSize = (33 * scale).clamp(27, 37).toDouble();
-    final double subtitleGap = (10 * scale).clamp(8, 12).toDouble();
-    final double subtitleSize = (14 * scale).clamp(12.8, 15).toDouble();
-    final bool showHero = constraints.maxHeight >= 620;
-    final double blockGap = (showHero ? 15 * scale : 11 * scale)
+    final topGap = compact ? 5 : (12 * scale).clamp(5, 12).toDouble();
+    final eyebrowSize = (11 * scale).clamp(9, 11).toDouble();
+    final headingSpacing = (6 * scale).clamp(4, 9).toDouble();
+    final headingSize = (33 * scale).clamp(27, 37).toDouble();
+    final subtitleGap = (10 * scale).clamp(8, 12).toDouble();
+    final subtitleSize = (14 * scale).clamp(12.8, 15).toDouble();
+    final showHero = constraints.maxHeight >= 620;
+    final blockGap = (showHero ? 15 * scale : 11 * scale)
         .clamp(9, 15)
         .toDouble();
-    final double heroHeight = (150 * scale).clamp(96, 146).toDouble();
-    final double heroRadius = (20 * scale).clamp(16, 22).toDouble();
-    final double heroGap = (13 * scale).clamp(10, 18).toDouble();
-    final double fieldGap = (14 * scale).clamp(10, 15).toDouble();
-    final double actionGap = (17 * scale).clamp(13, 20).toDouble();
-    final double buttonHeight = (54 * scale).clamp(49, 58).toDouble();
-    final double footerGap = (11 * scale).clamp(8, 13).toDouble();
+    final heroHeight = (150 * scale).clamp(96, 146).toDouble();
+    final heroRadius = (20 * scale).clamp(16, 22).toDouble();
+    final heroGap = (13 * scale).clamp(10, 18).toDouble();
+    final fieldGap = (14 * scale).clamp(10, 15).toDouble();
+    final actionGap = (17 * scale).clamp(13, 20).toDouble();
+    final buttonHeight = (54 * scale).clamp(49, 58).toDouble();
+    final footerGap = (11 * scale).clamp(8, 13).toDouble();
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 24.0,
+        horizontal: 24,
         vertical: verticalPadding,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: topGap),
+          SizedBox(height: topGap.toDouble()),
           Text(
             'register_eyebrow'.tr,
             style: TextStyle(
@@ -103,7 +101,7 @@ class RegisterFormContent extends StatelessWidget {
                       },
                       errorBuilder: (context, error, stackTrace) {
                         final imageScheme = Theme.of(context).colorScheme;
-                        return Container(
+                        return ColoredBox(
                           color: imageScheme.surfaceContainerHighest,
                           child: Center(
                             child: Icon(
@@ -126,7 +124,7 @@ class RegisterFormContent extends StatelessWidget {
                               const Color(0x4D000000),
                               scheme.surface.withValues(alpha: 0.7),
                             ],
-                            stops: const <double>[0.35, 0.7, 1.0],
+                            stops: const <double>[0.35, 0.7, 1],
                           ),
                         ),
                       ),

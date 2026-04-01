@@ -63,16 +63,14 @@ class HomeController extends GetxController {
       return pickedThisMorning.toList();
     }
 
-    return pickedThisMorning
-        .where((item) {
-          final title = item.title.toLowerCase();
-          final subtitle = item.subtitle.toLowerCase();
-          final badge = item.badge.toLowerCase();
-          return title.contains(query) ||
-              subtitle.contains(query) ||
-              badge.contains(query);
-        })
-        .toList();
+    return pickedThisMorning.where((item) {
+      final title = item.title.toLowerCase();
+      final subtitle = item.subtitle.toLowerCase();
+      final badge = item.badge.toLowerCase();
+      return title.contains(query) ||
+          subtitle.contains(query) ||
+          badge.contains(query);
+    }).toList();
   }
 
   Future<void> refreshHome() async {}

@@ -15,7 +15,7 @@ final class NetworkService {
       return true;
     } on SocketException {
       // Fall through to DNS-based check.
-    } catch (_) {
+    } on Exception catch (_) {
       // Fall through to DNS-based check.
     }
 
@@ -28,7 +28,7 @@ final class NetworkService {
       }
     } on SocketException {
       return false;
-    } catch (_) {
+    } on Exception catch (_) {
       return false;
     }
 

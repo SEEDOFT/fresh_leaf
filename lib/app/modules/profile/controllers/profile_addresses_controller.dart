@@ -25,7 +25,7 @@ class ProfileAddressesController extends GetxController {
     if (isRefreshing.value) return;
     isRefreshing.value = true;
     try {
-      await fetchSavedAddresses(showError: true);
+      await fetchSavedAddresses();
     } finally {
       isRefreshing.value = false;
     }
@@ -37,10 +37,12 @@ class ProfileAddressesController extends GetxController {
 
     try {
       final api = Get.find<ApiClient>();
-      final response = await api.getRequest(ApiEndpoints.userAddresses);
-      final apiResponse = ApiResponse.fromResponse<dynamic>(
+      final response = await api.getRequest(
+        ApiEndpoints.userAddresses,
+      );
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
-        (json) => json,
+        (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
@@ -55,9 +57,9 @@ class ProfileAddressesController extends GetxController {
         return;
       }
 
-      final items = _extractAddressMaps(apiResponse.data)
-          .map(UserAddress.fromMap)
-          .toList();
+      final items = _extractAddressMaps(
+        apiResponse.data,
+      ).map(UserAddress.fromMap).toList();
       savedAddresses.assignAll(items);
     } on DioException catch (e) {
       if (!showError) return;
@@ -65,7 +67,7 @@ class ProfileAddressesController extends GetxController {
         'fetch_failed'.tr,
         _extractErrorMessage(e, 'unable_load_addresses'.tr),
       );
-    } catch (_) {
+    } on Exception {
       if (!showError) return;
       Get.snackbar('fetch_failed'.tr, 'unable_load_addresses'.tr);
     } finally {
@@ -77,7 +79,7 @@ class ProfileAddressesController extends GetxController {
     final storage = Get.find<StorageService>();
     final profile = storage.userProfile;
 
-    final result = await Get.toNamed(
+    final result = await Get.toNamed<bool?>(
       AppRoutes.addressesEdit,
       arguments: {
         'mode': 'create',
@@ -92,13 +94,13 @@ class ProfileAddressesController extends GetxController {
       },
     );
 
-    if (result == true) {
+    if (result ?? false) {
       await fetchSavedAddresses(showError: false);
     }
   }
 
   Future<void> openEditAddress(UserAddress address) async {
-    final result = await Get.toNamed(
+    final result = await Get.toNamed<bool?>(
       AppRoutes.addressesEdit,
       arguments: {
         'mode': 'edit',
@@ -116,7 +118,7 @@ class ProfileAddressesController extends GetxController {
       },
     );
 
-    if (result == true) {
+    if (result ?? false) {
       await fetchSavedAddresses(showError: false);
     }
   }
@@ -164,7 +166,7 @@ class ProfileAddressesController extends GetxController {
         return;
       }
 
-      String message = 'deleted'.tr;
+      var message = 'deleted'.tr;
       final body = response.data;
       if (body is Map<String, dynamic>) {
         final statusMap = body['status'];
@@ -183,7 +185,7 @@ class ProfileAddressesController extends GetxController {
         'delete_failed'.tr,
         _extractErrorMessage(e, 'unable_delete_address'.tr),
       );
-    } catch (_) {
+    } on Exception {
       Get.snackbar('delete_failed'.tr, 'unable_delete_address'.tr);
     } finally {
       deletingAddressId.value = '';
@@ -192,16 +194,13 @@ class ProfileAddressesController extends GetxController {
 
   List<Map<String, dynamic>> _extractAddressMaps(dynamic data) {
     if (data is List) {
-      return data.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList();
+      return data.whereType<Map<String, dynamic>>().toList();
     }
 
     if (data is Map<String, dynamic>) {
       final nested = data['items'] ?? data['addresses'] ?? data['data'];
       if (nested is List) {
-        return nested
-            .whereType<Map>()
-            .map((e) => e.cast<String, dynamic>())
-            .toList();
+        return nested.whereType<Map<String, dynamic>>().toList();
       }
     }
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_pin_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_pin_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
-import '../controllers/profile_pin_controller.dart';
+import 'package:get/get.dart';
 
 class ProfilePinView extends GetView<ProfilePinController> {
   const ProfilePinView({super.key});

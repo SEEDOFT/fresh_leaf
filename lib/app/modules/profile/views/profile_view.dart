@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../controllers/profile_controller.dart';
-import '../widgets/profile_widget.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
+import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:get/get.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -14,11 +14,7 @@ class ProfileView extends GetView<ProfileController> {
       backgroundColor: scaffoldBg,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () async {
-            await Future.delayed(const Duration(milliseconds: 1500));
-
-            return controller.refreshProfile();
-          },
+          onRefresh: controller.refreshProfile,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(
               parent: BouncingScrollPhysics(),
@@ -38,22 +34,25 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.person_outline,
                       title: 'personal_details'.tr,
                       subtitle: controller.email.value,
-                      onTap: () => Get.toNamed(AppRoutes.personalDetails),
+                      onTap: () async =>
+                          await Get.toNamed<void>(AppRoutes.personalDetails),
                     ),
                     const Divider(height: 16),
                     ProfileTile(
                       icon: Icons.lock_outline,
                       title: 'security'.tr,
                       subtitle: 'password'.tr,
-                      onTap: () => Get.toNamed(AppRoutes.securitySettings),
+                      onTap: () async =>
+                          await Get.toNamed<void>(AppRoutes.securitySettings),
                     ),
                     const Divider(height: 16),
                     ProfileTile(
-                    icon: Icons.pin_outlined,
-                    title: 'pin_security'.tr,
-                    subtitle: 'pin_security_subtitle'.tr,
-                    onTap: () => Get.toNamed(AppRoutes.pinSecurity),
-                  ),
+                      icon: Icons.pin_outlined,
+                      title: 'pin_security'.tr,
+                      subtitle: 'pin_security_subtitle'.tr,
+                      onTap: () async =>
+                          await Get.toNamed<void>(AppRoutes.pinSecurity),
+                    ),
                   ],
                 ),
                 ProfileSectionCard(
@@ -63,7 +62,7 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.favorite_border,
                       title: 'wishlist'.tr,
                       subtitle: 'wishlist_subtitle'.tr,
-                      onTap: () => Get.toNamed(AppRoutes.wishlist),
+                      onTap: () async => await Get.toNamed(AppRoutes.wishlist),
                     ),
                     const Divider(height: 16),
                     ProfileTile(
@@ -77,7 +76,7 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.location_on_outlined,
                       title: 'addresses'.tr,
                       subtitle: 'addresses_subtitle'.tr,
-                      onTap: () => Get.toNamed(AppRoutes.addresses),
+                      onTap: () async => await Get.toNamed(AppRoutes.addresses),
                     ),
                     const Divider(height: 16),
                     ProfileTile(

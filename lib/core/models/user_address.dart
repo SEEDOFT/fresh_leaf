@@ -1,18 +1,6 @@
-class UserAddress {
-  final String id;
-  final String label;
-  final String recipientName;
-  final String phone;
-  final String addressLine1;
-  final String addressLine2;
-  final String city;
-  final String province;
-  final String postalCode;
-  final double? lat;
-  final double? long;
-  final String createdAt;
-  final String updatedAt;
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 
+class UserAddress {
   const UserAddress({
     this.id = '',
     this.label = '',
@@ -29,6 +17,48 @@ class UserAddress {
     this.updatedAt = '',
   });
 
+  factory UserAddress.fromMap(Map<String, dynamic> map) {
+    final line1 = formatToString(
+      map['address_line_1'] ?? map['line1'],
+    );
+    final line2 = formatToString(
+      map['address_line_2'] ?? map['line2'],
+    );
+
+    final rawLabel = formatToString(map['label']);
+    final safeLabel = rawLabel.isEmpty ? 'Address' : rawLabel;
+
+    return UserAddress(
+      id: formatToString(map['id']),
+      label: safeLabel,
+      recipientName: formatToString(map['recipient_name']),
+      phone: formatToString(map['phone']),
+      addressLine1: line1,
+      addressLine2: line2,
+      city: formatToString(map['city']),
+      province: formatToString(map['province']),
+      postalCode: formatToString(map['postal_code']),
+      lat: toDouble(map['lat'] ?? map['latitude']),
+      long: toDouble(map['long'] ?? map['longitude']),
+      createdAt: formatToString(map['created_at']),
+      updatedAt: formatToString(map['updated_at']),
+    );
+  }
+
+  final String id;
+  final String label;
+  final String recipientName;
+  final String phone;
+  final String addressLine1;
+  final String addressLine2;
+  final String city;
+  final String province;
+  final String postalCode;
+  final double? lat;
+  final double? long;
+  final String createdAt;
+  final String updatedAt;
+
   String get line1 => addressLine1;
 
   String get line2 {
@@ -38,29 +68,6 @@ class UserAddress {
 
   double? get latitude => lat;
   double? get longitude => long;
-
-  factory UserAddress.fromMap(Map<String, dynamic> map) {
-    final line1 =
-        map['address_line_1']?.toString() ?? map['line1']?.toString() ?? '';
-    final line2 =
-        map['address_line_2']?.toString() ?? map['line2']?.toString() ?? '';
-
-    return UserAddress(
-      id: map['id']?.toString() ?? '',
-      label: map['label']?.toString() ?? 'Address',
-      recipientName: map['recipient_name']?.toString() ?? '',
-      phone: map['phone']?.toString() ?? '',
-      addressLine1: line1,
-      addressLine2: line2,
-      city: map['city']?.toString() ?? '',
-      province: map['province']?.toString() ?? '',
-      postalCode: map['postal_code']?.toString() ?? '',
-      lat: _parseDouble(map['lat'] ?? map['latitude']),
-      long: _parseDouble(map['long'] ?? map['longitude']),
-      createdAt: map['created_at']?.toString() ?? '',
-      updatedAt: map['updated_at']?.toString() ?? '',
-    );
-  }
 
   UserAddress copyWith({
     String? id,
@@ -107,10 +114,5 @@ class UserAddress {
       'lat': lat,
       'long': long,
     };
-  }
-
-  static double? _parseDouble(Object? value) {
-    if (value is num) return value.toDouble();
-    return double.tryParse(value?.toString() ?? '');
   }
 }

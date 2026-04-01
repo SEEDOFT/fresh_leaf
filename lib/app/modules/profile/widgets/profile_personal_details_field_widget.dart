@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class PersonalDetailsField extends StatelessWidget {
   const PersonalDetailsField({
-    super.key,
     required this.label,
     required this.icon,
     required this.controller,
+    super.key,
     this.keyboard,
   });
 

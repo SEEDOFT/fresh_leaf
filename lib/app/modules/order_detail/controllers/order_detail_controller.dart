@@ -1,5 +1,5 @@
-import 'package:fresh_leaf/app/modules/orders/models/order.dart';
-import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
+import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
 import 'package:get/get.dart';
 

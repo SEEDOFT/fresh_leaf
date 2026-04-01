@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/core/services/launch_route_service.dart';
+import 'package:get/get.dart';
 
 class SplashController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -30,7 +30,7 @@ class SplashController extends GetxController
     logoScale = TweenSequence([
       TweenSequenceItem(
         tween: Tween(
-          begin: 0.0,
+          begin: 0.00,
           end: 1.12,
         ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 55,
@@ -91,9 +91,8 @@ class SplashController extends GetxController
   }
 
   Future<void> _startFlow() async {
-    await Future.delayed(const Duration(milliseconds: 3400));
     final launch = Get.find<LaunchRouteService>();
-    Get.offAllNamed(launch.targetRoute);
+    await Get.offAllNamed<void>(launch.targetRoute);
   }
 
   @override

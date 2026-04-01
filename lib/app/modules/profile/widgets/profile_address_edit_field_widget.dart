@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 
 class ProfileAddressEditField extends StatelessWidget {
   const ProfileAddressEditField({
-    super.key,
     required this.label,
     required this.controller,
+    super.key,
     this.hintText = '',
     this.keyboardType,
     this.inputFormatters,

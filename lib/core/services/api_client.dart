@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart' hide Response;
-import 'dart:convert';
 
 class ApiClient extends GetxService {
   ApiClient({required this.storageService}) {
@@ -76,14 +77,14 @@ class ApiClient extends GetxService {
     storageService.saveToken(token);
   }
 
-  Future<Response<T>> getRequest<T>(
+  Future<Response<Map<String, dynamic>>> getRequest(
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
   }) {
-    return dio.get<T>(
+    return dio.get<Map<String, dynamic>>(
       path,
       queryParameters: queryParameters,
       options: options,
@@ -92,7 +93,7 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<T>> postRequest<T>(
+  Future<Response<Map<String, dynamic>>> postRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
@@ -101,7 +102,7 @@ class ApiClient extends GetxService {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) {
-    return dio.post<T>(
+    return dio.post<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -112,7 +113,7 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<T>> putRequest<T>(
+  Future<Response<Map<String, dynamic>>> putRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
@@ -121,7 +122,7 @@ class ApiClient extends GetxService {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) {
-    return dio.put<T>(
+    return dio.put<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -132,7 +133,7 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<T>> patchRequest<T>(
+  Future<Response<Map<String, dynamic>>> patchRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
@@ -141,7 +142,7 @@ class ApiClient extends GetxService {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) {
-    return dio.patch<T>(
+    return dio.patch<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -152,14 +153,14 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<T>> deleteRequest<T>(
+  Future<Response<Map<String, dynamic>>> deleteRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
   }) {
-    return dio.delete<T>(
+    return dio.delete<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,

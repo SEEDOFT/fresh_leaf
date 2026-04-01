@@ -28,7 +28,6 @@ class PinSecurityService {
             LengthLimitingTextInputFormatter(6),
           ],
           obscureText: true,
-          obscuringCharacter: '•',
           decoration: const InputDecoration(hintText: 'Enter PIN'),
         ),
         actions: [
@@ -59,7 +58,7 @@ class PinSecurityService {
         ApiEndpoints.verifyPin,
         data: {'pin': inputPin},
       );
-      final apiResponse = ApiResponse.fromResponse<dynamic>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => json,
       );
@@ -76,9 +75,8 @@ class PinSecurityService {
           e.response?.data?['status']?['message']?.toString() ??
           'Unable to verify PIN right now';
 
-      if (statusCode == 422 &&
-          message.toLowerCase().contains('not set')) {
-        await storage.savePinOrderVerification(false);
+      if (statusCode == 422 && message.toLowerCase().contains('not set')) {
+        await storage.savePinOrderVerification(enabled: false);
         Get.snackbar(
           'PIN not set',
           'Please set up your PIN in Profile > PIN Security.',
@@ -88,7 +86,7 @@ class PinSecurityService {
 
       Get.snackbar('Invalid PIN', message);
       return false;
-    } catch (_) {
+    } on Exception catch (_) {
       Get.snackbar('Invalid PIN', 'Unable to verify PIN right now');
       return false;
     }

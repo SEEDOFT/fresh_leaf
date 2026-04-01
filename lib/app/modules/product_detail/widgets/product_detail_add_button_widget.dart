@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 
 class AddButtonWidget extends StatelessWidget {
   const AddButtonWidget({
-    required this.total, required this.onPressed, super.key,
+    required this.total,
+    required this.onPressed,
+    super.key,
   });
 
   final double total;

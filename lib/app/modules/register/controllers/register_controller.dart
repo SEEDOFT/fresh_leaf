@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
   final firstNameController = TextEditingController();
@@ -13,11 +13,11 @@ class RegisterController extends GetxController {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
-  final isLoading = false.obs;
+  final RxBool isLoading = false.obs;
 
   // State
-  var isPasswordVisible = false.obs;
-  var isPasswordConfirmVisible = false.obs;
+  RxBool isPasswordVisible = false.obs;
+  RxBool isPasswordConfirmVisible = false.obs;
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -27,11 +27,11 @@ class RegisterController extends GetxController {
     isPasswordConfirmVisible.value = !isPasswordConfirmVisible.value;
   }
 
-  void nextPage() {
-    Get.offNamed(AppRoutes.login);
+  Future<void> nextPage() async {
+    await Get.offNamed<void>(AppRoutes.login);
   }
 
-  void signUp() async {
+  Future<void> signUp() async {
     if (firstNameController.text.isEmpty ||
         lastNameController.text.isEmpty ||
         phoneController.text.isEmpty ||
@@ -80,22 +80,22 @@ class RegisterController extends GetxController {
           apiResponse.status.code == '201') {
         final dataMap =
             (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
-        final token = dataMap['access_token'] ?? dataMap['token'];
+        final token = dataMap['access_token'] as String;
         await storageService.saveToken(token);
         apiClient.updateAuthToken(token);
-        Get.offAllNamed(AppRoutes.login);
+        await Get.offAllNamed<void>(AppRoutes.login);
       } else {
         Get.snackbar(
           'Error',
-          'Registration failed: ${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
+          'Registration failed: '
+              '${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
         );
       }
-    } catch (e) {
-      final errorMsg = e is DioException
-          ? e.response?.data['status']['message'] ?? 'Network error'
-          : e.toString();
-
-      Get.snackbar('Error', 'Registration failed: $errorMsg');
+    } on DioException catch (e) {
+      Get.snackbar(
+        'Error',
+        'Registration failed: ${e.response?.data['status']['message']}',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -116,7 +116,7 @@ class RegisterController extends GetxController {
       raw = raw.substring(3);
     }
 
-    raw = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    raw = raw.replaceAll(RegExp('[^0-9]'), '');
     if (raw.startsWith('0')) {
       raw = raw.substring(1);
     }

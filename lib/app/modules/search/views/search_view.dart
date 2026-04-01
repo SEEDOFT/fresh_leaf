@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide SearchController;
+import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';
 import 'package:fresh_leaf/app/modules/search/widgets/search_widget.dart';
 import 'package:get/get.dart';
-import '../controllers/search_controller.dart';
 
 class SearchView extends GetView<SearchController> {
   const SearchView({super.key});
@@ -40,8 +40,8 @@ class SearchView extends GetView<SearchController> {
                 Obx(
                   () => SearchSearchFieldWidget(
                     controller: controller.textController,
-                    query: controller.query.value,
-                    onChanged: controller.updateQuery,
+                    query: controller.query,
+                    onChanged: (value) => controller.query = value,
                     onClear: controller.clearQuery,
                   ),
                 ),
@@ -49,7 +49,7 @@ class SearchView extends GetView<SearchController> {
                 SizedBox(
                   height: 36,
                   child: Obx(() {
-                    final activeTag = controller.activeTag.value;
+                    final activeTag = controller.activeTag;
                     return ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: controller.quickTags.length,
@@ -59,7 +59,7 @@ class SearchView extends GetView<SearchController> {
                         return SearchFilterChipWidget(
                           label: controller.displayLabelForTag(label),
                           isSelected: activeTag == label,
-                          onTap: () => controller.changeTag(label),
+                          onTap: () => controller.activeTag = label,
                         );
                       },
                     );

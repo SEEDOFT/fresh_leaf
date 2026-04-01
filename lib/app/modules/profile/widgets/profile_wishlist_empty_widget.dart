@@ -19,7 +19,11 @@ class WishlistEmptyWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.favorite_border, color: scheme.onSurfaceVariant, size: 36),
+            Icon(
+              Icons.favorite_border,
+              color: scheme.onSurfaceVariant,
+              size: 36,
+            ),
             const SizedBox(height: 12),
             Text(
               'wishlist_empty_title'.tr,

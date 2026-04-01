@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 class ProfileLogoutButton extends StatelessWidget {
   const ProfileLogoutButton({
-    super.key,
     required this.onTap,
     required this.isLoading,
+    super.key,
   });
   final VoidCallback onTap;
   final bool isLoading;

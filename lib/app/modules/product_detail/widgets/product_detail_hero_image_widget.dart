@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 
 class HeroImageWidget extends StatelessWidget {
   const HeroImageWidget({
-    required this.imageUrl, super.key,
+    required this.imageUrl,
+    super.key,
   });
 
   final String imageUrl;

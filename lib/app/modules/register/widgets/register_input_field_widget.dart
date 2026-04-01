@@ -40,7 +40,6 @@ class RegisterWidget {
         TextField(
           controller: textController,
           obscureText: obscureText,
-          obscuringCharacter: '•',
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
           cursorColor: scheme.primary,

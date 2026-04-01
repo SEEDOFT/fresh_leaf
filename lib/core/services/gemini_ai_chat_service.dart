@@ -1,10 +1,7 @@
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiAiChatService {
-  late final GenerativeModel _model;
-  late final ChatSession _chat;
-
   GeminiAiChatService() {
     const apiKey = AppConfig.geminiApiKey;
     if (apiKey.isEmpty) {
@@ -17,11 +14,14 @@ class GeminiAiChatService {
     _chat = _model.startChat();
   }
 
+  late final GenerativeModel _model;
+  late final ChatSession _chat;
+
   Future<String> sendMessage(String message) async {
     try {
       final response = await _chat.sendMessage(Content.text(message));
       return response.text ?? 'No response';
-    } catch (e) {
+    } on Exception catch (e) {
       return 'Error: $e';
     }
   }

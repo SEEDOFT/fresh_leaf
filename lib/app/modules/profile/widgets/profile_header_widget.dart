@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import '../controllers/profile_controller.dart';
+import 'package:get/get.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.controller});
+  const ProfileHeader({required this.controller, super.key});
   final ProfileController controller;
 
   @override
@@ -37,7 +37,7 @@ class ProfileHeader extends StatelessWidget {
           ],
         ),
         InkWell(
-          onTap: () => Get.toNamed(AppRoutes.settings),
+          onTap: () async => await Get.toNamed<void>(AppRoutes.settings),
           borderRadius: BorderRadius.circular(999),
           child: Container(
             padding: const EdgeInsets.all(10),

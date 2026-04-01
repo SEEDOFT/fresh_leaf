@@ -1,9 +1,7 @@
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiAiService {
-  late final GenerativeModel _model;
-
   GeminiAiService() {
     const apiKey = AppConfig.geminiApiKey;
     if (apiKey.isEmpty) {
@@ -11,13 +9,14 @@ class GeminiAiService {
     }
     _model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
   }
+  late final GenerativeModel _model;
 
   Future<String> generateContent(String prompt) async {
     try {
       final content = [Content.text(prompt)];
       final response = await _model.generateContent(content);
       return response.text ?? 'No response from AI';
-    } catch (e) {
+    } on Exception catch (e) {
       return 'Error: $e';
     }
   }

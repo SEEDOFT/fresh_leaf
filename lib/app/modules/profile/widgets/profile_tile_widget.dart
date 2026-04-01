@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ProfileTile extends StatelessWidget {
   const ProfileTile({
-    super.key,
     required this.icon,
     required this.title,
+    super.key,
     this.subtitle,
     this.onTap,
     this.trailing,
@@ -43,8 +43,7 @@ class ProfileTile extends StatelessWidget {
               style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 12),
             ),
       trailing:
-          trailing ??
-          Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+          trailing ?? Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
       onTap: onTap,
     );
   }

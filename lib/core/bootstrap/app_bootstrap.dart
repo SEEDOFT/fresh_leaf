@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
@@ -28,14 +29,15 @@ final class AppBootstrap {
     final secureConfig = SecureConfigService();
     await secureConfig.init();
 
-    Get.put<StorageService>(storage, permanent: true);
-    Get.put<SecureConfigService>(secureConfig, permanent: true);
-    Get.put<ApiClient>(ApiClient(storageService: storage), permanent: true);
-    Get.put<AiChatStorageService>(AiChatStorageService(), permanent: true);
-    Get.put<AppSettingsController>(
-      AppSettingsController(storageService: storage),
-      permanent: true,
-    );
+    Get
+      ..put<StorageService>(storage, permanent: true)
+      ..put<SecureConfigService>(secureConfig, permanent: true)
+      ..put<ApiClient>(ApiClient(storageService: storage), permanent: true)
+      ..put<AiChatStorageService>(AiChatStorageService(), permanent: true)
+      ..put<AppSettingsController>(
+        AppSettingsController(storageService: storage),
+        permanent: true,
+      );
   }
 
   static Future<String> _resolveInitialRoute() async {
@@ -54,7 +56,7 @@ final class AppBootstrap {
 
     try {
       final response = await apiClient.getRequest(ApiEndpoints.userProfile);
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
@@ -63,7 +65,7 @@ final class AppBootstrap {
         storage.setUserProfile(UserProfile.fromMap(apiResponse.data));
         return AppRoutes.dashboard;
       }
-    } catch (_) {
+    } on DioException catch (_) {
       // Fall back to auth flow
     }
 

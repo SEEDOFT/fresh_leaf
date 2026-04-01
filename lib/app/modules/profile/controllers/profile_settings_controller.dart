@@ -20,8 +20,8 @@ class ProfileSettingsController extends GetxController {
     await appSettings.setLocale(value);
   }
 
-  Future<void> toggleNotification(bool enabled) async {
-    await appSettings.setNotificationsEnabled(enabled);
+  Future<void> toggleNotification({required bool enabled}) async {
+    await appSettings.setNotificationsEnabled(enabled: enabled);
   }
 
   Future<void> clearAiHistory() async {

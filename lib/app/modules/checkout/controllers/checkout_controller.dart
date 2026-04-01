@@ -43,7 +43,7 @@ class CheckoutController extends GetxController {
 
     if (Get.isRegistered<DashboardController>()) {
       Get.back<void>();
-      Get.find<DashboardController>().changeIndex(3);
+      Get.find<DashboardController>().currentIndex = 3;
     } else {
       await Get.offNamed<void>(AppRoutes.orders);
     }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_addresses_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_addresses_list_item_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/core/models/user_address.dart';
 import 'package:get/get.dart';
-import '../controllers/profile_addresses_controller.dart';
 
 class AddressesView extends GetView<ProfileAddressesController> {
   const AddressesView({super.key});
@@ -20,11 +20,7 @@ class AddressesView extends GetView<ProfileAddressesController> {
       body: SafeArea(
         child: Obx(
           () => RefreshIndicator(
-            onRefresh: () async {
-              await Future.delayed(const Duration(milliseconds: 1500));
-
-              return controller.refreshAddresses();
-            },
+            onRefresh: controller.refreshAddresses,
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(
                 parent: BouncingScrollPhysics(),

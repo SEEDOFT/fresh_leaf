@@ -1,11 +1,9 @@
+import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
 import 'package:get/get.dart';
-import '../controllers/register_controller.dart';
 
 class RegisterBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<RegisterController>(
-      () => RegisterController(),
-    );
+    Get.lazyPut<RegisterController>(RegisterController.new);
   }
 }

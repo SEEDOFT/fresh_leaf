@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class SecurityPasswordField extends StatefulWidget {
   const SecurityPasswordField({
-    super.key,
     required this.label,
+    super.key,
     this.controller,
     this.obscureText,
     this.onToggle,
@@ -42,7 +42,6 @@ class _SecurityPasswordFieldState extends State<SecurityPasswordField> {
         TextField(
           controller: widget.controller,
           obscureText: currentObscure,
-          obscuringCharacter: '•',
           decoration: InputDecoration(
             hintText: '••••••••',
             filled: true,

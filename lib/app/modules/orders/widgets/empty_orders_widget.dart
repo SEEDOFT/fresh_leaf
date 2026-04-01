@@ -47,7 +47,7 @@ class EmptyOrdersWidget extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => Get.toNamed(AppRoutes.home),
+              onPressed: () async => await Get.toNamed<void>(AppRoutes.home),
               style: ElevatedButton.styleFrom(
                 backgroundColor: scheme.primary,
                 padding: const EdgeInsets.symmetric(

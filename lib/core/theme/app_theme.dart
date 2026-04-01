@@ -8,7 +8,6 @@ final class AppTheme {
   static ThemeData get lightTheme {
     const lightScheme = ColorScheme.light(
       primary: AppColors.primary,
-      onPrimary: Colors.white,
       primaryContainer: AppColors.primaryLight,
       onPrimaryContainer: Colors.white,
       secondary: AppColors.secondary,
@@ -16,8 +15,6 @@ final class AppTheme {
       secondaryContainer: AppColors.chipBackground,
       onSecondaryContainer: AppColors.accentBrown,
       error: AppColors.error,
-      onError: Colors.white,
-      surface: AppColors.surface,
       onSurface: AppColors.textDark,
       onSurfaceVariant: AppColors.textLight,
       outline: AppColors.grayBorder,
@@ -233,7 +230,9 @@ final class AppTheme {
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return darkScheme.onPrimary;
+          if (states.contains(WidgetState.selected)) {
+            return darkScheme.onPrimary;
+          }
           return darkScheme.onSurfaceVariant;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {

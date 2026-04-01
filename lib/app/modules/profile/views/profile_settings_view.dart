@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_settings_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_settings_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:get/get.dart';
-
-import '../controllers/profile_settings_controller.dart';
 
 class ProfileSettingsView extends GetView<ProfileSettingsController> {
   const ProfileSettingsView({super.key});
@@ -88,7 +87,8 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
                     contentPadding: EdgeInsets.zero,
                     title: Text('notifications'.tr),
                     activeColor: scheme.primary,
-                    onChanged: controller.toggleNotification,
+                    onChanged: (value) =>
+                        controller.toggleNotification(enabled: value),
                   ),
                 ],
               ),

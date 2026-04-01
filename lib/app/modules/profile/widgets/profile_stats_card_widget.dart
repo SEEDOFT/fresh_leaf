@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:get/get.dart';
-import '../controllers/profile_controller.dart';
 
 class ProfileStatsCard extends StatelessWidget {
-  const ProfileStatsCard({super.key, required this.controller});
+  const ProfileStatsCard({required this.controller, super.key});
   final ProfileController controller;
 
   @override

@@ -1,4 +1,4 @@
-import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
+import 'package:fresh_leaf/core/models/ai_chat_message.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -8,16 +8,16 @@ class AiChatStorageService extends GetxService {
   final GetStorage _box;
   static const String _messagesKey = 'ai_messages';
 
-  List<ChatMessage> loadMessages() {
+  List<AiChatMessage> loadMessages() {
     final stored = _box.read<List<dynamic>>(_messagesKey);
     if (stored == null) return [];
     return stored
-        .whereType<Map>()
-        .map((e) => ChatMessage.fromMap(e.cast<String, dynamic>()))
+        .whereType<Map<dynamic, dynamic>>()
+        .map((e) => AiChatMessage.fromMap(e.cast<String, dynamic>()))
         .toList();
   }
 
-  Future<void> saveMessages(List<ChatMessage> messages) async {
+  Future<void> saveMessages(List<AiChatMessage> messages) async {
     final data = messages.map((m) => m.toMap()).toList();
     await _box.write(_messagesKey, data);
   }

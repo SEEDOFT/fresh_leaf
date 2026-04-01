@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class SettingsActionTile extends StatelessWidget {
   const SettingsActionTile({
-    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.onTap,
+    super.key,
   });
 
   final IconData icon;
@@ -32,7 +32,10 @@ class SettingsActionTile extends StatelessWidget {
         subtitle,
         style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
       ),
-      trailing: Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant),
+      trailing: Icon(
+        Icons.chevron_right_rounded,
+        color: scheme.onSurfaceVariant,
+      ),
       onTap: onTap,
     );
   }

@@ -5,15 +5,7 @@ import 'package:get/get.dart';
 /// Stores API keys, tokens, and other secrets in encrypted storage.
 class SecureConfigService extends GetxService {
   SecureConfigService({FlutterSecureStorage? storage})
-    : _storage =
-          storage ??
-          const FlutterSecureStorage(
-            aOptions: AndroidOptions(
-              keyCipherAlgorithm:
-                  KeyCipherAlgorithm.RSA_ECB_OAEPwithSHA_256andMGF1Padding,
-              storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
-            ),
-          );
+    : _storage = storage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
 

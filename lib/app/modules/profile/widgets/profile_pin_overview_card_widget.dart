@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PinOverviewCard extends StatelessWidget {
-  const PinOverviewCard({super.key, required this.hasPin});
+  const PinOverviewCard({required this.hasPin, super.key});
 
   final bool hasPin;
 
@@ -42,9 +42,7 @@ class PinOverviewCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  hasPin
-                      ? 'pin_active_update'.tr
-                      : 'set_pin_protect'.tr,
+                  hasPin ? 'pin_active_update'.tr : 'set_pin_protect'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,

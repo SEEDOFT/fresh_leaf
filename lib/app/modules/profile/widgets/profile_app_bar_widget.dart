@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ProfileAppBar({super.key, required this.title});
+  const ProfileAppBar({required this.title, super.key});
 
   final String title;
 
@@ -21,7 +21,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
           size: 20,
           color: scheme.onSurface,
         ),
-        onPressed: Get.back,
+        onPressed: Get.back<void>,
       ),
       title: Text(
         title,

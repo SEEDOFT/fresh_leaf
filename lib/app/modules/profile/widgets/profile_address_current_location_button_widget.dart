@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 class ProfileAddressCurrentLocationButton extends StatelessWidget {
   const ProfileAddressCurrentLocationButton({
-    super.key,
     required this.onTap,
     required this.isLoading,
+    super.key,
   });
 
   final VoidCallback onTap;

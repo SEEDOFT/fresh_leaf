@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 
 class PinTextField extends StatelessWidget {
   const PinTextField({
-    super.key,
     required this.label,
     required this.controller,
     required this.inputFormatters,
+    super.key,
   });
 
   final String label;
@@ -35,7 +35,6 @@ class PinTextField extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: inputFormatters,
           obscureText: true,
-          obscuringCharacter: '•',
           decoration: InputDecoration(
             hintText: 'enter_6_digits'.tr,
             hintStyle: TextStyle(color: scheme.onSurfaceVariant),

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class SearchFilterChipWidget extends StatelessWidget {
   const SearchFilterChipWidget({
-    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
+    super.key,
   });
 
   final String label;

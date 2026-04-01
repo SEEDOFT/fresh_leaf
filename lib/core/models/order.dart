@@ -1,3 +1,5 @@
+import 'package:fresh_leaf/shared/helpers/helper.dart';
+
 class Order {
   const Order({
     required this.id,
@@ -9,13 +11,12 @@ class Order {
 
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
-      id: map['id']?.toString() ?? '',
-      date: map['date']?.toString() ?? '',
-      total: (map['total'] as num?)?.toDouble() ?? 0,
-      status: map['status']?.toString() ?? '',
+      id: formatToString(map['id']),
+      date: formatToString(map['date']),
+      total: toDouble(map['total']),
+      status: formatToString(map['status']),
       items: (map['items'] as List? ?? const [])
-          .whereType<Map>()
-          .map((e) => e.cast<String, dynamic>())
+          .whereType<Map<String, dynamic>>()
           .toList(),
     );
   }

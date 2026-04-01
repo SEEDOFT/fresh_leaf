@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 class AppShellScaffold extends StatelessWidget {
   const AppShellScaffold({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;
-
   @override
   Widget build(BuildContext context) {
     final background = Theme.of(context).scaffoldBackgroundColor;

@@ -22,7 +22,10 @@ Widget appBar() {
                   children: [
                     const Text(
                       'Organic Farm,',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       'CA',

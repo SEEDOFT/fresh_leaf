@@ -1,8 +1,6 @@
-class ApiStatus {
-  final String code;
-  final bool success;
-  final String message;
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 
+class ApiStatus {
   const ApiStatus({
     required this.code,
     required this.success,
@@ -11,25 +9,30 @@ class ApiStatus {
 
   factory ApiStatus.fromMap(Map<String, dynamic> map) {
     return ApiStatus(
-      code: map['code']?.toString() ?? '',
-      success: map['success'] as bool? ?? false,
-      message: map['message']?.toString() ?? '',
+      code: formatToString(map['code']),
+      success: toBool(map['success']),
+      message: formatToString(map['message']),
     );
   }
+
+  final String code;
+  final bool success;
+  final String message;
+
+  Map<String, dynamic> toMap() => {
+    'code': code,
+    'success': success,
+    'message': message,
+  };
 }
 
 class ApiResponse<T> {
-  final ApiStatus status;
-  final T data;
-
   const ApiResponse({
     required this.status,
     required this.data,
   });
 
-  bool get isSuccess => status.success;
-
-  static ApiResponse<T> fromResponse<T>(
+  factory ApiResponse.fromResponse(
     dynamic responseData,
     T Function(dynamic json) parser,
   ) {
@@ -39,8 +42,13 @@ class ApiResponse<T> {
 
     final statusMap = responseData['status'] as Map<String, dynamic>? ?? {};
     final status = ApiStatus.fromMap(statusMap);
-    final data = parser(responseData['data']);
+    final parsedData = parser(responseData['data']);
 
-    return ApiResponse(status: status, data: data);
+    return ApiResponse(status: status, data: parsedData);
   }
+
+  final ApiStatus status;
+  final T data;
+
+  bool get isSuccess => status.success;
 }

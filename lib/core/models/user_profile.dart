@@ -1,13 +1,6 @@
-class UserProfile {
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String image;
-  final String phoneNumber;
-  final bool setPin;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 
+class UserProfile {
   const UserProfile({
     required this.firstName,
     required this.lastName,
@@ -25,16 +18,27 @@ class UserProfile {
         : map;
 
     return UserProfile(
-      firstName: _toString(source['first_name'] ?? source['firstName']),
-      lastName: _toString(source['last_name'] ?? source['lastName']),
-      email: _toString(source['email']),
-      image: _toString(source['image']),
-      phoneNumber: _toString(source['phone_number'] ?? source['phoneNumber']),
-      setPin: _toBool(source['set_pin'] ?? source['setPin']),
-      createdAt: _toDateTime(source['created_at'] ?? source['createdAt']),
-      updatedAt: _toDateTime(source['updated_at'] ?? source['updatedAt']),
+      firstName: formatToString(source['first_name'] ?? source['firstName']),
+      lastName: formatToString(source['last_name'] ?? source['lastName']),
+      email: formatToString(source['email']),
+      image: formatToString(source['image']),
+      phoneNumber: formatToString(
+        source['phone_number'] ?? source['phoneNumber'],
+      ),
+      setPin: toBool(source['set_pin'] ?? source['setPin']),
+      createdAt: toDateTime(source['created_at'] ?? source['createdAt']),
+      updatedAt: toDateTime(source['updated_at'] ?? source['updatedAt']),
     );
   }
+
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String image;
+  final String phoneNumber;
+  final bool setPin;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   UserProfile copyWith({
     String? firstName,
@@ -68,32 +72,4 @@ class UserProfile {
     'created_at': createdAt?.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
   };
-
-  static String _toString(dynamic value) {
-    if (value == null) return '';
-    return value.toString();
-  }
-
-  static DateTime? _toDateTime(dynamic value) {
-    if (value == null) return null;
-    if (value is DateTime) return value;
-    if (value is String) {
-      try {
-        return DateTime.parse(value);
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  }
-
-  static bool _toBool(dynamic value) {
-    if (value is bool) return value;
-    if (value is num) return value != 0;
-    if (value is String) {
-      final normalized = value.trim().toLowerCase();
-      return normalized == 'true' || normalized == '1' || normalized == 'yes';
-    }
-    return false;
-  }
 }

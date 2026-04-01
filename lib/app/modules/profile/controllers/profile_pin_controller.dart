@@ -14,20 +14,20 @@ class ProfilePinController extends GetxController {
   final newPinController = TextEditingController();
   final confirmPinController = TextEditingController();
 
-  final isSaving = false.obs;
-  final hasPin = false.obs;
+  final RxBool isSaving = false.obs;
+  final RxBool hasPin = false.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     final storage = Get.find<StorageService>();
     hasPin.value = storage.userProfile?.setPin ?? false;
 
     if (storage.pinOrderVerification) {
-      storage.savePinOrderVerification(false);
+      await storage.savePinOrderVerification(enabled: false);
     }
 
-    _syncPinStateFromProfile();
+    await _syncPinStateFromProfile();
   }
 
   List<TextInputFormatter> get pinInputFormatter => <TextInputFormatter>[
@@ -36,11 +36,11 @@ class ProfilePinController extends GetxController {
   ];
 
   Future<void> openSetPinWithPassword() async {
-    final result = await Get.toNamed(
+    final result = await Get.toNamed<bool?>(
       AppRoutes.pinPasswordVerification,
       arguments: const {'mode': 'set'},
     );
-    if (result == true) {
+    if (result ?? false) {
       await _setPinState(true);
       Get.snackbar('success'.tr, 'pin_configured_success'.tr);
     }
@@ -87,14 +87,14 @@ class ProfilePinController extends GetxController {
       ];
 
       ApiResponse<dynamic>? lastResponse;
-      bool updated = false;
+      var updated = false;
       for (final payload in payloads) {
         try {
           final response = await api.postRequest(
             ApiEndpoints.updatePin,
             data: payload,
           );
-          lastResponse = ApiResponse.fromResponse<dynamic>(
+          lastResponse = ApiResponse.fromResponse(
             response.data,
             (json) => json,
           );
@@ -110,7 +110,7 @@ class ProfilePinController extends GetxController {
       if (!updated) {
         Get.snackbar(
           'update_pin_failed'.tr,
-          lastResponse?.status.message.isNotEmpty == true
+          lastResponse?.status.message.isNotEmpty ?? false
               ? lastResponse!.status.message
               : 'unable_update_pin'.tr,
         );
@@ -121,7 +121,7 @@ class ProfilePinController extends GetxController {
       _clearPinInputs();
       Get.snackbar(
         'success'.tr,
-        lastResponse?.status.message.isNotEmpty == true
+        lastResponse?.status.message.isNotEmpty ?? false
             ? lastResponse!.status.message
             : 'pin_updated_success'.tr,
       );
@@ -130,7 +130,7 @@ class ProfilePinController extends GetxController {
         'update_pin_failed'.tr,
         _extractApiMessage(e, fallback: 'unable_update_pin'.tr),
       );
-    } catch (_) {
+    } on Exception {
       Get.snackbar('update_pin_failed'.tr, 'unable_update_pin'.tr);
     } finally {
       isSaving.value = false;
@@ -138,11 +138,11 @@ class ProfilePinController extends GetxController {
   }
 
   Future<void> openResetPinWithPassword() async {
-    final result = await Get.toNamed(
+    final result = await Get.toNamed<bool?>(
       AppRoutes.pinPasswordVerification,
       arguments: const {'mode': 'reset'},
     );
-    if (result == true) {
+    if (result ?? false) {
       await _setPinState(true);
       Get.snackbar('success'.tr, 'pin_reset_success'.tr);
     }
@@ -157,14 +157,16 @@ class ProfilePinController extends GetxController {
       storage.setUserProfile(profile.copyWith(setPin: value));
     }
 
-    await storage.savePinOrderVerification(false);
+    await storage.savePinOrderVerification(enabled: false);
   }
 
   Future<void> _syncPinStateFromProfile() async {
     try {
-      final api = Get.find<ApiClient>();
-      final response = await api.getRequest(ApiEndpoints.userProfile);
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(
+        ApiEndpoints.userProfile,
+      );
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
@@ -174,10 +176,11 @@ class ProfilePinController extends GetxController {
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      final storage = Get.find<StorageService>();
-      storage.setUserProfile(profile);
+      Get.find<StorageService>().setUserProfile(profile);
       hasPin.value = profile.setPin;
-    } catch (_) {
+    } on DioException {
+      // Keep current state from in-memory profile if request fails.
+    } on Exception {
       // Keep current state from in-memory profile if request fails.
     }
   }

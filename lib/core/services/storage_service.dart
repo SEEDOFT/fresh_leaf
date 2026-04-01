@@ -1,6 +1,6 @@
+import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:fresh_leaf/core/models/user_profile.dart';
 
 class StorageService extends GetxService {
   StorageService({GetStorage? box}) : _box = box ?? GetStorage();
@@ -28,6 +28,8 @@ class StorageService extends GetxService {
   String? get token => _token;
   bool get onboardingSeen => _onboardingSeen;
   UserProfile? get userProfile => _userProfile;
+  set userProfile(UserProfile? profile) => _userProfile = profile;
+
   String? get securityPin => _securityPin;
   bool get pinOrderVerification => _pinOrderVerification;
   String get themeMode => _themeMode;
@@ -55,9 +57,8 @@ class StorageService extends GetxService {
     }
   }
 
-  // In-memory only user profile (not persisted)
   void setUserProfile(UserProfile? profile) {
-    _userProfile = profile;
+    userProfile = profile;
   }
 
   Future<void> clear() async {
@@ -72,7 +73,7 @@ class StorageService extends GetxService {
     await _box.remove(_pinOrderVerificationKey);
   }
 
-  Future<void> saveOnboardingSeen(bool seen) async {
+  Future<void> saveOnboardingSeen({required bool seen}) async {
     _onboardingSeen = seen;
     await _box.write(_onboardingSeenKey, seen);
   }
@@ -86,7 +87,7 @@ class StorageService extends GetxService {
     }
   }
 
-  Future<void> savePinOrderVerification(bool enabled) async {
+  Future<void> savePinOrderVerification({required bool enabled}) async {
     _pinOrderVerification = enabled;
     await _box.write(_pinOrderVerificationKey, enabled);
   }
@@ -107,7 +108,7 @@ class StorageService extends GetxService {
     }
   }
 
-  Future<void> saveNotificationsEnabled(bool enabled) async {
+  Future<void> saveNotificationsEnabled({required bool enabled}) async {
     _notificationsEnabled = enabled;
     await _box.write(_notificationsEnabledKey, enabled);
   }

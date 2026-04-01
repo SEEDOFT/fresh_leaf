@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class SettingsCard extends StatelessWidget {
   const SettingsCard({
-    super.key,
     required this.children,
+    super.key,
   });
 
   final List<Widget> children;

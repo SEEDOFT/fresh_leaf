@@ -22,6 +22,7 @@ The project uses **modular GetX structure** (`bindings`, `controllers`, `views`,
 - GetStorage for local persistence
 - Flutter Map + OpenStreetMap for map/address picking
 - Geolocator + permission_handler for location permissions
+- Static analysis: **very_good_analysis** (follow its lints for any new code)
 
 ### App structure
 - `lib/app/modules/*` → feature modules
@@ -257,3 +258,16 @@ sequenceDiagram
 - Centralized dark chip/input/switch colors in `AppColors`.
 - Integrated Noto Sans Khmer across themes for Khmer UI rendering.
 - Added modern splash screen route using the new branded logo.
+
+---
+
+## 14) Widget structure rule (for all contributors/agents)
+
+- **No private nested widgets inside view files.** Every composable UI piece should live in its own file under the module’s `widgets/` folder.
+- **Barrel export per module.** Create a single `widgets_<module>.dart` (or `<module>_widgets.dart`) that exports all widgets in that folder. Views import only the barrel, not individual widgets.
+- **Preferred import style inside a module:** use relative paths (`../widgets/...`) instead of package imports to keep refactors cheap and avoid long package prefixes.
+- **Pattern to follow:**
+  1. Move `_SomeSection` / `_Card` / `_Item` classes out of the view into `widgets/some_section_widget.dart`.
+  2. Add to the module barrel file.
+  3. Update the view to import only the barrel.
+- **Exception:** Tiny constants or `typedef`s can stay in the view; anything with `build()` should be extracted.

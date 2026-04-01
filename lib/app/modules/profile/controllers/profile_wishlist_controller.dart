@@ -1,5 +1,5 @@
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:get/get.dart';
 
 class WishlistItem {
   const WishlistItem({
@@ -59,8 +59,7 @@ class ProfileWishlistController extends GetxController {
       return;
     }
 
-    final cart = Get.find<CartController>();
-    cart.addOrIncrementItem(
+    Get.find<CartController>().addOrIncrementItem(
       title: item.title,
       subtitle: item.subtitle,
       imageUrl: item.imageUrl,

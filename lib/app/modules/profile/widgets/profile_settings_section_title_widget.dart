@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class SettingsSectionTitle extends StatelessWidget {
   const SettingsSectionTitle({
-    super.key,
     required this.title,
     required this.subtitle,
+    super.key,
   });
 
   final String title;

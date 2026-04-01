@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 
 class SearchSearchFieldWidget extends StatelessWidget {
   const SearchSearchFieldWidget({
-    super.key,
     required this.controller,
     required this.onChanged,
     required this.onClear,
     required this.query,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -25,17 +25,22 @@ class SearchSearchFieldWidget extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        autofocus: false,
         onChanged: onChanged,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           hintText: 'search_hint'.tr,
-          prefixIcon: Icon(Icons.search_rounded, color: scheme.onSurfaceVariant),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: scheme.onSurfaceVariant,
+          ),
           suffixIcon: query.isEmpty
               ? const SizedBox.shrink()
               : IconButton(
                   onPressed: onClear,
-                  icon: Icon(Icons.close_rounded, color: scheme.onSurfaceVariant),
+                  icon: Icon(
+                    Icons.close_rounded,
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),

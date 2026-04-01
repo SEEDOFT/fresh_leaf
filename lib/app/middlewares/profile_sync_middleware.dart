@@ -1,12 +1,11 @@
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:get/get.dart';
 
-/// Ensures we have a fresh profile in memory whenever a protected route is opened.
 class ProfileSyncMiddleware extends GetMiddleware {
   ProfileSyncMiddleware({this.priorityValue = 0});
 
@@ -25,13 +24,13 @@ class ProfileSyncMiddleware extends GetMiddleware {
 
   Future<void> _syncProfile() async {
     final storage = Get.find<StorageService>();
-    final hasToken = storage.token?.isNotEmpty == true;
+    final hasToken = storage.token?.isNotEmpty ?? false;
     if (!hasToken) return;
 
     try {
       final apiClient = Get.find<ApiClient>();
       final response = await apiClient.getRequest(ApiEndpoints.userProfile);
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
@@ -41,7 +40,7 @@ class ProfileSyncMiddleware extends GetMiddleware {
         storage.setUserProfile(profile);
       }
       _syncedOnce = true;
-    } catch (_) {
+    } on Exception catch (_) {
       // If fetching fails, allow navigation; downstream screens can handle refresh errors.
     }
   }

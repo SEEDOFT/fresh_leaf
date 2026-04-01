@@ -39,7 +39,7 @@ class OnboardingController extends GetxController {
   }
 
   void _markSeen() {
-    Get.find<StorageService>().saveOnboardingSeen(true);
+    Get.find<StorageService>().saveOnboardingSeen(seen: true);
   }
 
   Future<void> _goForward() async {

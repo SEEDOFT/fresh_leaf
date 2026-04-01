@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 
 class WishlistItemCard extends StatelessWidget {
   const WishlistItemCard({
-    super.key,
     required this.item,
     required this.onRemove,
     required this.onAddToCart,
+    super.key,
   });
 
   final WishlistItem item;
@@ -105,7 +105,6 @@ class WishlistItemCard extends StatelessWidget {
                   minimumSize: const Size(0, 30),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
-                    vertical: 0,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),

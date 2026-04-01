@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_wishlist_widget.dart';
+import 'package:get/get.dart';
 
 class ProfileWishlistView extends GetView<ProfileWishlistController> {
   const ProfileWishlistView({super.key});

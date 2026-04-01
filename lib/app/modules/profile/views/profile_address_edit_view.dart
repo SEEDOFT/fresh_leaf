@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_address_edit_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_address_edit_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
-
-import '../controllers/profile_address_edit_controller.dart';
 
 class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
   const ProfileAddressEditView({super.key});
@@ -164,7 +163,7 @@ class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
                 ),
                 Positioned(
                   right: 16,
-                  top: buttonTop.toDouble(),
+                  top: buttonTop,
                   child: ProfileAddressCurrentLocationButton(
                     onTap: controller.locateUser,
                     isLoading: controller.isLocating.value,
@@ -257,7 +256,7 @@ class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
                                 keyboardType: TextInputType.phone,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9+]'),
+                                    RegExp('[0-9+]'),
                                   ),
                                 ],
                               ),

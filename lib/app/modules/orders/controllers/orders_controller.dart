@@ -1,4 +1,4 @@
-import 'package:fresh_leaf/app/modules/orders/models/order.dart';
+import 'package:fresh_leaf/core/models/order.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 

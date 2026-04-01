@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/orders/models/order.dart';
+import 'package:fresh_leaf/core/models/order.dart';
 import 'package:get/get.dart';
 
 class OrderSummaryCard extends StatelessWidget {

@@ -6,15 +6,17 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class ProfileSecurityController extends GetxController {
-  final verifyPasswordController = TextEditingController();
-  final newPasswordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final TextEditingController verifyPasswordController =
+      TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
-  final isLoading = false.obs;
-  final isVerifyPasswordVisible = false.obs;
-  final isNewPasswordVisible = false.obs;
-  final isConfirmPasswordVisible = false.obs;
-  final isPasswordVerified = false.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isVerifyPasswordVisible = false.obs;
+  final RxBool isNewPasswordVisible = false.obs;
+  final RxBool isConfirmPasswordVisible = false.obs;
+  final RxBool isPasswordVerified = false.obs;
 
   String _verifiedPassword = '';
 
@@ -34,7 +36,7 @@ class ProfileSecurityController extends GetxController {
         data: {'password': password},
       );
 
-      final apiResponse = ApiResponse.fromResponse<dynamic>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => json,
       );
@@ -57,7 +59,7 @@ class ProfileSecurityController extends GetxController {
         'verification_failed'.tr,
         _extractApiMessage(e, fallback: 'password_verification_failed'.tr),
       );
-    } catch (_) {
+    } on Exception catch (_) {
       Get.snackbar(
         'verification_failed'.tr,
         'password_verification_failed'.tr,
@@ -152,7 +154,7 @@ class ProfileSecurityController extends GetxController {
           ApiEndpoints.updatePassword,
           data: payload,
         );
-        final apiResponse = ApiResponse.fromResponse<dynamic>(
+        final apiResponse = ApiResponse.fromResponse(
           response.data,
           (json) => json,
         );
@@ -170,7 +172,7 @@ class ProfileSecurityController extends GetxController {
           _extractApiMessage(e, fallback: 'unable_update_password'.tr),
         );
         return false;
-      } catch (_) {
+      } on Exception catch (_) {
         Get.snackbar('update_failed'.tr, 'unable_update_password'.tr);
         return false;
       }

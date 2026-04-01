@@ -36,7 +36,7 @@ class LoginController extends GetxController {
         return;
       }
 
-      final response = await apiClient.postRequest<Map<String, dynamic>>(
+      final response = await apiClient.postRequest(
         ApiEndpoints.login,
         data: {
           'phone_number': normalizedPhone,
@@ -62,15 +62,14 @@ class LoginController extends GetxController {
       } else {
         Get.snackbar(
           'Error',
-          'Login failed: '
-          '${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
+          'Login failed: ${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
         );
       }
     } on DioException catch (e) {
-      final error = e.response?.data as Map<String, dynamic>;
-      final message = error['status']['message'] as String;
-
-      Get.snackbar('Error', 'Login failed: $message');
+      Get.snackbar(
+        'Error',
+        'Login failed: ${e.response?.data['status']['message']}',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -107,10 +106,10 @@ class LoginController extends GetxController {
 
     try {
       final api = Get.find<ApiClient>();
-      final response = await api.getRequest<Map<String, dynamic>>(
+      final response = await api.getRequest(
         ApiEndpoints.userProfile,
       );
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );

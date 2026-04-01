@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WishlistHeroCard extends StatelessWidget {
-  const WishlistHeroCard({super.key, required this.itemCount});
+  const WishlistHeroCard({required this.itemCount, super.key});
 
   final int itemCount;
 
@@ -46,9 +46,7 @@ class WishlistHeroCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            (itemCount == 1
-                    ? 'wishlist_saved_one'
-                    : 'wishlist_saved_other')
+            (itemCount == 1 ? 'wishlist_saved_one' : 'wishlist_saved_other')
                 .trParams({'count': '$itemCount'}),
             style: TextStyle(
               color: subtitleColor,

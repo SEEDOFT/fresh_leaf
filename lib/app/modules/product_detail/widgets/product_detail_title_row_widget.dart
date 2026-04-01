@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 
 class TitleRowWidget extends StatelessWidget {
   const TitleRowWidget({
-    required this.title, required this.origin, required this.total, super.key,
+    required this.title,
+    required this.origin,
+    required this.total,
+    super.key,
   });
 
   final String title;

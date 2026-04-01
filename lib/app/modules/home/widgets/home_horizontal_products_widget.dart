@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
-import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/home_product.dart';
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:get/get.dart';
 
 class HomeHorizontalProductsWidget extends StatelessWidget {
@@ -69,27 +69,27 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
               final product = ProductInfo(
                 title: item.title.tr,
                 subtitle: item.subtitle.tr,
-                description: (item.description.isEmpty
-                        ? 'seasonal_pick_description'
-                        : item.description)
-                    .tr,
+                description:
+                    (item.description.isEmpty
+                            ? 'seasonal_pick_description'
+                            : item.description)
+                        .tr,
                 imageUrl: item.image,
-                tags: (item.tags.isEmpty
-                        ? ['organic', 'fresh']
-                        : item.tags)
+                tags: (item.tags.isEmpty ? ['organic', 'fresh'] : item.tags)
                     .map((e) => e.tr)
                     .toList(),
                 price: item.priceValue,
-                origin:
-                    (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
-                harvest: (item.harvest.isEmpty
-                        ? 'harvested_this_week'
-                        : item.harvest)
-                    .tr,
-                storage: (item.storage.isEmpty
-                        ? 'refrigerate_extend_freshness'
-                        : item.storage)
-                    .tr,
+                origin: (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
+                harvest:
+                    (item.harvest.isEmpty
+                            ? 'harvested_this_week'
+                            : item.harvest)
+                        .tr,
+                storage:
+                    (item.storage.isEmpty
+                            ? 'refrigerate_extend_freshness'
+                            : item.storage)
+                        .tr,
               );
               await Get.toNamed<void>(
                 AppRoutes.productDetail,

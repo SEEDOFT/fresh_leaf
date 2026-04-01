@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_personal_details_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_personal_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:get/get.dart';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import '../controllers/profile_personal_details_controller.dart';
 
 class ProfilePersonalDetailsView
     extends GetView<ProfilePersonalDetailsController> {
@@ -29,11 +30,7 @@ class ProfilePersonalDetailsView
               children: [
                 Expanded(
                   child: RefreshIndicator(
-                    onRefresh: () async {
-                      await Future.delayed(const Duration(milliseconds: 1500));
-
-                      return controller.refreshProfile();
-                    },
+                    onRefresh: controller.refreshProfile,
                     child: ListView(
                       physics: const AlwaysScrollableScrollPhysics(
                         parent: BouncingScrollPhysics(),
@@ -145,7 +142,7 @@ class _AvatarBlock extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 54,
-                  backgroundColor: scheme.surfaceVariant,
+                  backgroundColor: scheme.surfaceContainerHighest,
                   backgroundImage: avatar,
                   child: avatar == null
                       ? Icon(
@@ -195,7 +192,7 @@ class _AvatarBlock extends StatelessWidget {
 
   void _showPickerSheet(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
@@ -205,20 +202,30 @@ class _AvatarBlock extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.photo_library_rounded,
-                  color: scheme.onSurfaceVariant),
-              title: Text('Pick from gallery', style: TextStyle(color: scheme.onSurface)),
+              leading: Icon(
+                Icons.photo_library_rounded,
+                color: scheme.onSurfaceVariant,
+              ),
+              title: Text(
+                'Pick from gallery',
+                style: TextStyle(color: scheme.onSurface),
+              ),
               onTap: () {
-                Get.back();
+                Get.back<void>();
                 controller.pickImage(ImageSource.gallery);
               },
             ),
             ListTile(
-              leading:
-                  Icon(Icons.photo_camera_rounded, color: scheme.onSurfaceVariant),
-              title: Text('Take a photo', style: TextStyle(color: scheme.onSurface)),
+              leading: Icon(
+                Icons.photo_camera_rounded,
+                color: scheme.onSurfaceVariant,
+              ),
+              title: Text(
+                'Take a photo',
+                style: TextStyle(color: scheme.onSurface),
+              ),
               onTap: () {
-                Get.back();
+                Get.back<void>();
                 controller.pickImage(ImageSource.camera);
               },
             ),

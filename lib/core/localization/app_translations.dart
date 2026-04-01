@@ -9,7 +9,8 @@ final class AppTranslations extends Translations {
     'onboarding_title_top': 'Freshness',
     'onboarding_title_bottom': 'Delivered.',
     'onboarding_subtitle':
-        'Sourcing the finest seasonal produce directly from boutique organic farms to your kitchen.',
+        'Sourcing the finest seasonal produce directly '
+        'from boutique organic farms to your kitchen.',
     'ethically_sourced': 'Ethically Sourced',
     'carbon_neutral_delivery': '100% Carbon Neutral Delivery',
     'welcome_back': 'Welcome back',
@@ -230,7 +231,8 @@ final class AppTranslations extends Translations {
         'Manage your saved addresses and choose where to receive orders.',
     'personal_information': 'Personal Information',
     'personal_information_subtitle':
-        'Keep your contact details up to date for delivery and order notifications.',
+        'Keep your contact details up to'
+        ' date for delivery and order notifications.',
     'save_changes': 'Save Changes',
     'email': 'Email',
     'phone': 'Phone',
@@ -430,7 +432,8 @@ final class AppTranslations extends Translations {
     'try_another_keyword_short': 'Try another keyword.',
     'add_to_cart': 'Add to Cart',
     'seasonal_pick_description':
-        'Seasonal pick straight from partner farms. Packed for freshness and ready for your favorite recipes.',
+        'Seasonal pick straight from partner farms.'
+        ' Packed for freshness and ready for your favorite recipes.',
     'harvested_this_week': 'Harvested this week',
     'refrigerate_extend_freshness': 'Refrigerate to extend freshness',
   };
@@ -443,7 +446,8 @@ final class AppTranslations extends Translations {
     'onboarding_title_top': 'ភាពស្រស់',
     'onboarding_title_bottom': 'ដឹកជូន។',
     'onboarding_subtitle':
-        'ជ្រើសរើសផលិតផលរដូវកាលល្អបំផុតពីកសិដ្ឋានសរីរាង្គដៃគូទៅកាន់ផ្ទះបាយរបស់អ្នកដោយផ្ទាល់។',
+        'ជ្រើសរើសផលិតផលរដូវកាលល្អបំផុតពីកសិដ្ឋានសរីរាង្គ'
+        'ដៃគូទៅកាន់ផ្ទះបាយរបស់អ្នកដោយផ្ទាល់។',
     'ethically_sourced': 'ប្រភពប្រកបដោយសីលធម៌',
     'carbon_neutral_delivery': 'ការដឹកជញ្ជូនអព្យាក្រឹតកាបូន 100%',
     'welcome_back': 'សូមស្វាគមន៍មកវិញ',
@@ -510,7 +514,8 @@ final class AppTranslations extends Translations {
     'product_heritage_carrots_title': 'ការ៉ុត Heritage',
     'product_heritage_carrots_subtitle': 'ចម្រុះពណ៌',
     'product_heritage_carrots_description':
-        'ការ៉ុតពូជបុរាណពណ៌ស្រស់ មានរសជាតិផ្អែមធម្មជាតិ និងប្រមូលផលនៅពេលស្រស់បំផុត',
+        'ការ៉ុតពូជបុរាណពណ៌ស្រស់ មានរសជាតិផ្អែមធម្មជាតិ'
+        ' និងប្រមូលផលនៅពេលស្រស់បំផុត',
     'product_golden_oysters_title': 'Golden Oysters',
     'product_golden_oysters_subtitle': 'ផ្សិតសម្រាប់ម្ហូបពិសេស',
     'product_golden_oysters_description':
@@ -664,7 +669,8 @@ final class AppTranslations extends Translations {
         'គ្រប់គ្រងអាសយដ្ឋានដែលបានរក្សាទុក និងជ្រើសរើសទីកន្លែងទទួលការបញ្ជាទិញ។',
     'personal_information': 'ព័ត៌មានផ្ទាល់ខ្លួន',
     'personal_information_subtitle':
-        'រក្សាព័ត៌មានទំនាក់ទំនងរបស់អ្នកឱ្យទាន់សម័យសម្រាប់ការដឹកជញ្ជូន និងការជូនដំណឹងអំពីការបញ្ជាទិញ។',
+        'រក្សាព័ត៌មានទំនាក់ទំនងរបស់អ្នកឱ្យទាន់សម័យសម្រាប់'
+        'ការដឹកជញ្ជូន និងការជូនដំណឹងអំពីការបញ្ជាទិញ។',
     'save_changes': 'រក្សាទុកការផ្លាស់ប្ដូរ',
     'email': 'អ៊ីមែល',
     'phone': 'ទូរស័ព្ទ',
@@ -867,7 +873,8 @@ final class AppTranslations extends Translations {
     'try_another_keyword_short': 'សាកល្បងពាក្យផ្សេងទៀត។',
     'add_to_cart': 'បន្ថែមទៅកន្ត្រក',
     'seasonal_pick_description':
-        'ជម្រើសរដូវកាលពីកសិដ្ឋានដៃគូ រក្សាភាពស្រស់ និងត្រៀមសម្រាប់មុខម្ហូបដែលអ្នកចូលចិត្ត។',
+        'ជម្រើសរដូវកាលពីកសិដ្ឋានដៃគូ រក្សាភាពស្រស់'
+        ' និងត្រៀមសម្រាប់មុខម្ហូបដែលអ្នកចូលចិត្ត។',
     'harvested_this_week': 'ប្រមូលផលក្នុងសប្តាហ៍នេះ',
     'refrigerate_extend_freshness': 'រក្សាទុកក្នុងទូទឹកកកដើម្បីរក្សាភាពស្រស់',
   };

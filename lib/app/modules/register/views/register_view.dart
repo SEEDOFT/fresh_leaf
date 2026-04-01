@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
 import 'package:fresh_leaf/app/modules/register/widgets/register_widget.dart';
 import 'package:get/get.dart';
-import '../controllers/register_controller.dart';
 
 class RegisterView extends GetView<RegisterController> {
   const RegisterView({super.key});

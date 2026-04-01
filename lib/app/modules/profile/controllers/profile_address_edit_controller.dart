@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -85,16 +87,20 @@ class ProfileAddressEditController extends GetxController {
 
   void _loadArguments() {
     final args = Get.arguments;
-    if (args is! Map) {
+    if (args is! Map<String, dynamic>) {
       _applyDefaults();
       return;
     }
 
-    final map = args.cast<String, dynamic>();
+    final map = args;
     isEditMode = map['mode']?.toString() == 'edit';
     addressId = map['id']?.toString() ?? '';
 
-    labelController.text = _resolve(map, 'label', fallback: 'address_label_home'.tr);
+    labelController.text = _resolve(
+      map,
+      'label',
+      fallback: 'address_label_home'.tr,
+    );
     recipientNameController.text = _resolve(map, 'recipient_name');
     phoneController.text = _resolve(map, 'phone');
     line1Controller.text = _resolve(map, 'address_line_1', alias: 'line1');
@@ -157,7 +163,7 @@ class ProfileAddressEditController extends GetxController {
 
     isSearching.value = true;
     try {
-      final response = await _dio.get(
+      final response = await _dio.get<dynamic>(
         '$_nominatimBaseUrl/search',
         queryParameters: {
           'q': query,
@@ -167,11 +173,10 @@ class ProfileAddressEditController extends GetxController {
         },
       );
 
-      final list = response.data;
-      if (list is List) {
-        final parsed = list
-            .whereType<Map>()
-            .map((raw) => raw.cast<String, dynamic>())
+      final data = response.data;
+      if (data is List) {
+        final parsed = data
+            .whereType<Map<String, dynamic>>()
             .map((item) {
               final lat = double.tryParse(item['lat']?.toString() ?? '');
               final lon = double.tryParse(item['lon']?.toString() ?? '');
@@ -189,7 +194,7 @@ class ProfileAddressEditController extends GetxController {
       } else {
         searchResults.clear();
       }
-    } catch (_) {
+    } on DioException catch (_) {
       searchResults.clear();
       Get.snackbar('search_failed'.tr, 'unable_search_location'.tr);
     } finally {
@@ -217,6 +222,7 @@ class ProfileAddressEditController extends GetxController {
     searchResults.clear();
   }
 
+  // ignore: use_setters_to_change_properties, document why: used as callback setter from sheet extent
   void onSheetExtentChanged(double extent) {
     sheetExtent.value = extent;
   }
@@ -242,14 +248,16 @@ class ProfileAddressEditController extends GetxController {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
 
       final point = LatLng(position.latitude, position.longitude);
       selectedPoint.value = point;
       mapController.move(point, 16);
       await _reverseGeocode(point);
-    } catch (_) {
+    } on Exception catch (_) {
       Get.snackbar('location_error'.tr, 'unable_get_current_location'.tr);
     } finally {
       isLocating.value = false;
@@ -271,15 +279,12 @@ class ProfileAddressEditController extends GetxController {
       final payload = _buildPayload();
       final api = Get.find<ApiClient>();
 
-      final Response<dynamic> response;
-      if (isEditMode && addressId.isNotEmpty) {
-        response = await _updateAddress(api, payload);
-      } else {
-        response = await api.postRequest(
-          ApiEndpoints.userAddresses,
-          data: payload,
-        );
-      }
+      final response = isEditMode && addressId.isNotEmpty
+          ? await _updateAddress(api, payload)
+          : await api.postRequest(
+              ApiEndpoints.userAddresses,
+              data: payload,
+            );
 
       final statusCode = response.statusCode ?? 0;
       final isHttpSuccess = statusCode == 200 || statusCode == 201;
@@ -288,7 +293,7 @@ class ProfileAddressEditController extends GetxController {
         return;
       }
 
-      String successMessage = isEditMode
+      var successMessage = isEditMode
           ? 'address_updated_success'.tr
           : 'address_created_success'.tr;
 
@@ -303,16 +308,18 @@ class ProfileAddressEditController extends GetxController {
         }
       }
 
-      Get.back(result: true);
-      Future<void>.microtask(() {
-        Get.snackbar('success'.tr, successMessage);
-      });
+      Get.back<bool?>(result: true);
+      unawaited(
+        Future<void>.microtask(
+          () => Get.snackbar('success'.tr, successMessage),
+        ),
+      );
     } on DioException catch (e) {
       Get.snackbar(
         'save_failed'.tr,
         _extractErrorMessage(e, 'unable_save_address'.tr),
       );
-    } catch (_) {
+    } on Exception {
       Get.snackbar('save_failed'.tr, 'unable_save_address'.tr);
     } finally {
       isSaving.value = false;
@@ -338,7 +345,7 @@ class ProfileAddressEditController extends GetxController {
   Future<void> deleteAddress() async {
     if (!isEditMode || addressId.isEmpty || isDeleting.value) return;
 
-      final confirmed =
+    final confirmed =
         await Get.dialog<bool>(
           AlertDialog(
             title: Text('delete_address_title'.tr),
@@ -364,9 +371,9 @@ class ProfileAddressEditController extends GetxController {
 
     isDeleting.value = true;
     try {
-      final api = Get.find<ApiClient>();
+      final apiClient = Get.find<ApiClient>();
       final path = ApiEndpoints.userAddress.replaceFirst('{id}', addressId);
-      final response = await api.deleteRequest(path);
+      final response = await apiClient.deleteRequest(path);
       final statusCode = response.statusCode ?? 0;
 
       if (statusCode != 200 && statusCode != 204) {
@@ -374,7 +381,7 @@ class ProfileAddressEditController extends GetxController {
         return;
       }
 
-      String message = 'deleted'.tr;
+      var message = 'deleted'.tr;
       final body = response.data;
       if (body is Map<String, dynamic>) {
         final status = body['status'];
@@ -386,14 +393,15 @@ class ProfileAddressEditController extends GetxController {
         }
       }
 
-      Get.snackbar('deleted'.tr, message);
-      Get.back(result: true);
+      Get
+        ..snackbar('deleted'.tr, message)
+        ..back<bool?>(result: true);
     } on DioException catch (e) {
       Get.snackbar(
         'delete_failed'.tr,
         _extractErrorMessage(e, 'unable_delete_address'.tr),
       );
-    } catch (_) {
+    } on Exception {
       Get.snackbar('delete_failed'.tr, 'unable_delete_address'.tr);
     } finally {
       isDeleting.value = false;
@@ -442,17 +450,17 @@ class ProfileAddressEditController extends GetxController {
   }
 
   String _sanitizePhone(String value) {
-    final normalized = value.trim().replaceAll(RegExp(r'[^0-9+]'), '');
+    final normalized = value.trim().replaceAll(RegExp('[^0-9+]'), '');
     if (normalized.startsWith('+')) {
-      return '+${normalized.substring(1).replaceAll(RegExp(r'[^0-9]'), '')}';
+      return '+${normalized.substring(1).replaceAll(RegExp('[^0-9]'), '')}';
     }
-    return normalized.replaceAll(RegExp(r'[^0-9]'), '');
+    return normalized.replaceAll(RegExp('[^0-9]'), '');
   }
 
   Future<void> _reverseGeocode(LatLng point) async {
     isReverseLoading.value = true;
     try {
-      final response = await _dio.get(
+      final response = await _dio.get<dynamic>(
         '$_nominatimBaseUrl/reverse',
         queryParameters: {
           'lat': point.latitude,
@@ -482,7 +490,7 @@ class ProfileAddressEditController extends GetxController {
       } else {
         selectedLabel.value = _formatCoords(point);
       }
-    } catch (_) {
+    } on Exception catch (_) {
       selectedLabel.value = _formatCoords(point);
     } finally {
       isReverseLoading.value = false;
@@ -530,7 +538,9 @@ class ProfileAddressEditController extends GetxController {
   }
 
   String _formatCoords(LatLng point) {
-    return '${point.latitude.toStringAsFixed(5)}, ${point.longitude.toStringAsFixed(5)}';
+    final latText = point.latitude.toStringAsFixed(5);
+    final lonText = point.longitude.toStringAsFixed(5);
+    return '$latText, $lonText';
   }
 
   double? _toDouble(Object? value) {

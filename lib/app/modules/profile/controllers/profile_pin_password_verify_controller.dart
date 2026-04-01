@@ -12,10 +12,10 @@ class ProfilePinPasswordVerifyController extends GetxController {
   final pinController = TextEditingController();
   final confirmPinController = TextEditingController();
 
-  final isLoading = false.obs;
-  final isPasswordVisible = false.obs;
-  final isPasswordVerified = false.obs;
-  final mode = 'set'.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isPasswordVisible = false.obs;
+  final RxBool isPasswordVerified = false.obs;
+  final RxString mode = 'set'.obs;
   String _verifiedPassword = '';
 
   bool get isResetMode => mode.value == 'reset';
@@ -151,7 +151,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         data: {'password': password},
       );
 
-      final apiResponse = ApiResponse.fromResponse<dynamic>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => json,
       );
@@ -172,7 +172,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         _extractApiMessage(e, fallback: 'password_verification_failed'.tr),
       );
       return false;
-    } catch (_) {
+    } on Exception catch (_) {
       Get.snackbar(
         'verification_failed'.tr,
         'password_verification_failed'.tr,
@@ -192,7 +192,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         },
       );
 
-      final apiResponse = ApiResponse.fromResponse<dynamic>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => json,
       );
@@ -213,7 +213,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         _extractApiMessage(e, fallback: 'unable_set_pin'.tr),
       );
       return false;
-    } catch (_) {
+    } on Exception catch (_) {
       Get.snackbar('set_pin_failed'.tr, 'unable_set_pin'.tr);
       return false;
     }
@@ -235,7 +235,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         },
       );
 
-      final apiResponse = ApiResponse.fromResponse<dynamic>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => json,
       );
@@ -256,7 +256,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         _extractApiMessage(e, fallback: 'unable_update_pin'.tr),
       );
       return false;
-    } catch (_) {
+    } on Exception catch (_) {
       Get.snackbar('update_pin_failed'.tr, 'unable_update_pin'.tr);
       return false;
     }
@@ -289,7 +289,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
           ApiEndpoints.updatePin,
           data: payload,
         );
-        final apiResponse = ApiResponse.fromResponse<dynamic>(
+        final apiResponse = ApiResponse.fromResponse(
           response.data,
           (json) => json,
         );

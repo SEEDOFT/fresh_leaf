@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 
 class ProfileAddressesListItem extends StatelessWidget {
   const ProfileAddressesListItem({
-    super.key,
     required this.address,
     required this.isDeleting,
     required this.onEdit,
     required this.onDelete,
+    super.key,
   });
 
   final UserAddress address;
@@ -20,9 +20,11 @@ class ProfileAddressesListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final subtitle = [address.city, address.province, address.postalCode]
-        .where((value) => value.trim().isNotEmpty)
-        .join(', ');
+    final subtitle = [
+      address.city,
+      address.province,
+      address.postalCode,
+    ].where((value) => value.trim().isNotEmpty).join(', ');
 
     return Container(
       width: media.size.width,
@@ -41,7 +43,10 @@ class ProfileAddressesListItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: scheme.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(999),

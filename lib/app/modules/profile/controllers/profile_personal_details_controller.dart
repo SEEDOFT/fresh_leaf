@@ -1,24 +1,24 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
-import 'package:get/get.dart' hide Response, MultipartFile, FormData;
+import 'package:get/get.dart' hide FormData, MultipartFile, Response;
 import 'package:image_picker/image_picker.dart';
-import 'profile_controller.dart';
 
 class ProfilePersonalDetailsController extends GetxController {
-  final firstName = ''.obs;
-  final lastName = ''.obs;
-  final email = ''.obs;
-  final image = ''.obs;
-  final pickedImagePath = ''.obs;
-  final phone = ''.obs;
-  final isSaving = false.obs;
+  final RxString firstName = ''.obs;
+  final RxString lastName = ''.obs;
+  final RxString email = ''.obs;
+  final RxString image = ''.obs;
+  final RxString pickedImagePath = ''.obs;
+  final RxString phone = ''.obs;
+  final RxBool isSaving = false.obs;
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
@@ -38,7 +38,7 @@ class ProfilePersonalDetailsController extends GetxController {
       _initialProfile = profile;
       setProfile(profile);
     } else {
-      final tokenPresent = storage.token?.isNotEmpty == true;
+      final tokenPresent = storage.token?.isNotEmpty ?? false;
       if (tokenPresent) {
         firstName.value = 'FreshLeaf';
         lastName.value = ' Member';
@@ -88,7 +88,7 @@ class ProfilePersonalDetailsController extends GetxController {
         partialPayload: payload,
         fullPayload: _buildFullUpdatePayload(),
       );
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
@@ -115,8 +115,7 @@ class ProfilePersonalDetailsController extends GetxController {
         updatedAt: _initialProfile?.updatedAt,
       );
 
-      final storage = Get.find<StorageService>();
-      storage.setUserProfile(mergedProfile);
+      Get.find<StorageService>().setUserProfile(mergedProfile);
       _initialProfile = mergedProfile;
       setProfile(mergedProfile);
 
@@ -130,12 +129,10 @@ class ProfilePersonalDetailsController extends GetxController {
             ? apiResponse.status.message
             : 'profile_updated_success'.tr,
       );
-    } catch (e) {
-      final errorMsg = e is DioException
-          ? e.response?.data?['status']?['message']?.toString() ??
-                'failed_update_profile'.tr
-          : 'failed_update_profile'.tr;
-      Get.snackbar('update_failed'.tr, errorMsg);
+    } on DioException catch (_) {
+      Get.snackbar('update_failed'.tr, 'failed_update_profile'.tr);
+    } on Exception {
+      Get.snackbar('update_failed'.tr, 'failed_update_profile'.tr);
     } finally {
       isSaving.value = false;
     }
@@ -144,8 +141,10 @@ class ProfilePersonalDetailsController extends GetxController {
   Future<void> refreshProfile() async {
     try {
       final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.userProfile);
-      final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
+      final response = await apiClient.getRequest(
+        ApiEndpoints.userProfile,
+      );
+      final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
       );
@@ -159,15 +158,14 @@ class ProfilePersonalDetailsController extends GetxController {
       }
 
       final latestProfile = UserProfile.fromMap(apiResponse.data);
-      final storage = Get.find<StorageService>();
-      storage.setUserProfile(latestProfile);
+      Get.find<StorageService>().setUserProfile(latestProfile);
       _initialProfile = latestProfile;
       setProfile(latestProfile);
 
       if (Get.isRegistered<ProfileController>()) {
         Get.find<ProfileController>().setProfile(latestProfile);
       }
-    } catch (e) {
+    } on DioException catch (_) {
       Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     }
   }
@@ -224,7 +222,7 @@ class ProfilePersonalDetailsController extends GetxController {
       raw = raw.substring(3);
     }
 
-    raw = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    raw = raw.replaceAll(RegExp('[^0-9]'), '');
     if (raw.startsWith('0')) {
       raw = raw.substring(1);
     }
@@ -253,8 +251,7 @@ class ProfilePersonalDetailsController extends GetxController {
       'last_name': lastNameController.text.trim(),
       'email': emailController.text.trim(),
       'phone_number': _normalizePhoneForApi(phoneController.text),
-    };
-    payload.removeWhere((key, value) => value.toString().trim().isEmpty);
+    }..removeWhere((key, value) => value.toString().trim().isEmpty);
     return payload;
   }
 

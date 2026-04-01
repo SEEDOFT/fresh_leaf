@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 
 class SearchProductCardWidget extends StatelessWidget {
   const SearchProductCardWidget({
-    super.key,
     required this.item,
     required this.onTap,
+    super.key,
   });
 
   final Map<String, dynamic> item;

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ProfileSectionCard extends StatelessWidget {
   const ProfileSectionCard({
-    super.key,
     required this.title,
     required this.children,
+    super.key,
   });
 
   final String title;

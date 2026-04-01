@@ -23,13 +23,10 @@ class AppSettingsController extends GetxController {
     switch (mode) {
       case 'light':
         themeMode.value = ThemeMode.light;
-        break;
       case 'dark':
         themeMode.value = ThemeMode.dark;
-        break;
       default:
         themeMode.value = ThemeMode.system;
-        break;
     }
 
     final langCode = _storageService.languageCode;
@@ -50,12 +47,12 @@ class AppSettingsController extends GetxController {
   Future<void> setLocale(Locale value) async {
     locale.value = value;
     await _storageService.saveLocale(value.languageCode, value.countryCode);
-    Get.updateLocale(value);
+    await Get.updateLocale(value);
   }
 
-  Future<void> setNotificationsEnabled(bool enabled) async {
+  Future<void> setNotificationsEnabled({required bool enabled}) async {
     notificationsEnabled.value = enabled;
-    await _storageService.saveNotificationsEnabled(enabled);
+    await _storageService.saveNotificationsEnabled(enabled: enabled);
   }
 
   String _mapThemeMode(ThemeMode mode) {
