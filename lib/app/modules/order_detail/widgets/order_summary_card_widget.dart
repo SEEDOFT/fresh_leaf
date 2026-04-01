@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 
 class OrderSummaryCard extends StatelessWidget {
   const OrderSummaryCard({
-    super.key,
     required this.order,
     required this.width,
+    super.key,
   });
 
   final Order order;

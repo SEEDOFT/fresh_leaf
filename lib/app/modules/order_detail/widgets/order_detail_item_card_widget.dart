@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 class OrderDetailItemCard extends StatelessWidget {
   const OrderDetailItemCard({
-    super.key,
     required this.item,
     required this.width,
     required this.onOpenProduct,
+    super.key,
   });
 
   final Map<String, dynamic> item;

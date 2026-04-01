@@ -1,7 +1,7 @@
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/orders/models/order.dart';
 import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
+import 'package:get/get.dart';
 
 class OrderDetailController extends GetxController {
   final Rxn<Order> order = Rxn<Order>();
@@ -31,7 +31,7 @@ class OrderDetailController extends GetxController {
     final canOpen = await PinSecurityService.verifyOrderAccess();
     isCheckingAccess.value = false;
     if (!canOpen) {
-      Get.back();
+      Get.back<void>();
     }
   }
 

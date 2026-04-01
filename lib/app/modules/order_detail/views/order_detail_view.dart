@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/order_detail/controllers/order_detail_controller.dart';
+import 'package:fresh_leaf/app/modules/order_detail/widgets/order_detail_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import '../controllers/order_detail_controller.dart';
-import '../widgets/order_detail_widget.dart';
+import 'package:get/get.dart';
 
 class OrderDetailView extends GetView<OrderDetailController> {
   const OrderDetailView({super.key});
@@ -24,7 +24,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
             size: 18,
             color: scheme.onSurface,
           ),
-          onPressed: Get.back,
+          onPressed: Get.back<void>,
         ),
         title: Obx(
           () => Text(
@@ -78,9 +78,12 @@ class OrderDetailView extends GetView<OrderDetailController> {
                 child: OrderDetailItemCard(
                   item: item,
                   width: screenWidth - 32,
-                  onOpenProduct: () {
+                  onOpenProduct: () async {
                     final product = controller.toProductInfo(item);
-                    Get.toNamed(AppRoutes.productDetail, arguments: product);
+                    await Get.toNamed<void>(
+                      AppRoutes.productDetail,
+                      arguments: product,
+                    );
                   },
                 ),
               ),
