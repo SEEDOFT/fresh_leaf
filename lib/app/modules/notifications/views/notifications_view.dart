@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
+import 'package:fresh_leaf/app/modules/notifications/widgets/notifications_widget.dart';
 import 'package:get/get.dart';
-import '../controllers/notifications_controller.dart';
-import '../widgets/notifications_filter_bar_widget.dart';
-import '../widgets/notifications_card_widget.dart';
-import '../widgets/notifications_empty_state_widget.dart';
 
 class NotificationsView extends GetView<NotificationsController> {
   const NotificationsView({super.key});
@@ -60,7 +58,7 @@ class NotificationsView extends GetView<NotificationsController> {
                           return NotificationCard(
                             item: item,
                             scheme: scheme,
-                            onTap: () => Get.toNamed(
+                            onTap: () async => await Get.toNamed<void>(
                               '/notification_detail',
                               arguments: item,
                             ),

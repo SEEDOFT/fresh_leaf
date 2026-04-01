@@ -1,5 +1,5 @@
+import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
 import 'package:get/get.dart';
-import 'notifications_controller.dart';
 
 class NotificationDetailController extends GetxController {
   late final NotificationItem item;
@@ -16,7 +16,7 @@ class NotificationDetailController extends GetxController {
         body: args['body']?.toString() ?? '',
         timeAgo: args['timeAgo']?.toString() ?? '',
         type: args['type']?.toString() ?? 'system',
-        unread: args['unread'] is bool ? args['unread'] : true,
+        unread: args['unread'] as bool,
       );
     } else {
       item = const NotificationItem(

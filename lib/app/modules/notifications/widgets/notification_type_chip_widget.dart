@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
 import 'package:get/get.dart';
-import '../controllers/notifications_controller.dart';
 
 class NotificationTypeChip extends StatelessWidget {
   const NotificationTypeChip({
-    super.key,
     required this.item,
     required this.scheme,
+    super.key,
   });
 
   final NotificationItem item;

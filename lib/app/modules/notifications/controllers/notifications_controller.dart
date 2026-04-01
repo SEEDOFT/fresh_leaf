@@ -16,18 +16,21 @@ class NotificationItem {
   final bool unread;
 
   NotificationItem copyWith({bool? unread}) => NotificationItem(
-        title: title,
-        body: body,
-        timeAgo: timeAgo,
-        type: type,
-        unread: unread ?? this.unread,
-      );
+    title: title,
+    body: body,
+    timeAgo: timeAgo,
+    type: type,
+    unread: unread ?? this.unread,
+  );
 }
 
 class NotificationsController extends GetxController {
   final RxList<NotificationItem> notifications = <NotificationItem>[].obs;
-  final RxString activeFilter = 'all'.obs;
+  final RxString _activeFilter = 'all'.obs;
   final RxBool isRefreshing = false.obs;
+
+  String get activeFilter => _activeFilter.value;
+  set activeFilter(String value) => _activeFilter.value = value;
 
   @override
   void onInit() {
@@ -66,16 +69,15 @@ class NotificationsController extends GetxController {
   }
 
   List<NotificationItem> get filtered {
-    if (activeFilter.value == 'all') return notifications;
+    if (_activeFilter.value == 'all') return notifications;
     return notifications
-        .where((n) => n.type == activeFilter.value)
+        .where((n) => n.type == _activeFilter.value)
         .toList(growable: false);
   }
 
   Future<void> refreshList() async {
     if (isRefreshing.value) return;
     isRefreshing.value = true;
-    await Future.delayed(const Duration(milliseconds: 900));
     isRefreshing.value = false;
   }
 
@@ -83,9 +85,5 @@ class NotificationsController extends GetxController {
     notifications.assignAll(
       notifications.map((n) => n.copyWith(unread: false)).toList(),
     );
-  }
-
-  void setFilter(String value) {
-    activeFilter.value = value;
   }
 }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../controllers/notifications_controller.dart';
+import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard({
-    super.key,
     required this.item,
     required this.scheme,
     required this.onTap,
+    super.key,
   });
   final NotificationItem item;
   final ColorScheme scheme;
@@ -115,7 +114,7 @@ class NotificationCard extends StatelessWidget {
         return scheme.secondaryContainer.withValues(alpha: 0.72);
       case 'system':
       default:
-        return scheme.surfaceVariant;
+        return scheme.surfaceContainerHighest;
     }
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NotificationsEmptyState extends StatelessWidget {
-  const NotificationsEmptyState({super.key, required this.scheme});
+  const NotificationsEmptyState({required this.scheme, super.key});
   final ColorScheme scheme;
 
   @override

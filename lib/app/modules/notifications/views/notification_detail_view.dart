@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
-import '../widgets/notification_type_chip_widget.dart';
+import 'package:fresh_leaf/app/modules/notifications/controllers/notification_detail_controller.dart';
+import 'package:fresh_leaf/app/modules/notifications/widgets/notification_type_chip_widget.dart';
 import 'package:get/get.dart';
-import '../controllers/notification_detail_controller.dart';
 
 class NotificationDetailView extends GetView<NotificationDetailController> {
   const NotificationDetailView({super.key});
@@ -65,7 +64,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
             ),
             const Spacer(),
             FilledButton.icon(
-              onPressed: Get.back,
+              onPressed: Get.back<void>,
               style: FilledButton.styleFrom(
                 backgroundColor: scheme.primary,
                 foregroundColor: scheme.onPrimary,

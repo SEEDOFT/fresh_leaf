@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
 import 'package:get/get.dart';
-import '../controllers/notifications_controller.dart';
 
 class NotificationsFilterBar extends StatelessWidget {
-  const NotificationsFilterBar({super.key, required this.controller});
+  const NotificationsFilterBar({required this.controller, super.key});
   final NotificationsController controller;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final filters = const [
+    final filters = [
       {'label': 'All', 'value': 'all', 'icon': Icons.inbox_outlined},
-      {'label': 'Orders', 'value': 'order', 'icon': Icons.local_shipping_outlined},
+      {
+        'label': 'Orders',
+        'value': 'order',
+        'icon': Icons.local_shipping_outlined,
+      },
       {'label': 'Promos', 'value': 'promo', 'icon': Icons.local_offer_outlined},
-      {'label': 'System', 'value': 'system', 'icon': Icons.settings_suggest_outlined},
+      {
+        'label': 'System',
+        'value': 'system',
+        'icon': Icons.settings_suggest_outlined,
+      },
     ];
     return Obx(
       () => SingleChildScrollView(
@@ -21,7 +29,7 @@ class NotificationsFilterBar extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: filters.map((f) {
-            final selected = controller.activeFilter.value == f['value'];
+            final selected = controller.activeFilter == f['value'];
             return Padding(
               padding: const EdgeInsets.only(right: 10),
               child: ChoiceChip(
@@ -29,14 +37,15 @@ class NotificationsFilterBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      f['icon'] as IconData,
+                      f['icon']! as IconData,
                       size: 16,
-                      color:
-                          selected ? scheme.onPrimary : scheme.onSurfaceVariant,
+                      color: selected
+                          ? scheme.onPrimary
+                          : scheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      f['label'] as String,
+                      f['label']! as String,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         color: selected
@@ -47,7 +56,8 @@ class NotificationsFilterBar extends StatelessWidget {
                   ],
                 ),
                 selected: selected,
-                onSelected: (_) => controller.setFilter(f['value'] as String),
+                onSelected: (_) =>
+                    controller.activeFilter = f['value']! as String,
                 selectedColor: scheme.primary,
                 backgroundColor: scheme.surface,
                 shape: RoundedRectangleBorder(
