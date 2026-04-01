@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/widgets/ai_assistant_widget.dart';
 import 'package:fresh_leaf/shared/widgets/ai_assistant_app_bar.dart';
 import 'package:get/get.dart';
-import '../controllers/ai_assistant_controller.dart';
 
 class AiAssistantView extends GetView<AiAssistantController> {
   const AiAssistantView({super.key});

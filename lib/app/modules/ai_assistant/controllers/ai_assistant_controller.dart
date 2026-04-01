@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fresh_leaf/core/models/ai_chat_message.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/gemini_ai_chat_service.dart';
 import 'package:get/get.dart';
 
 class AiAssistantController extends GetxController {
+  final RxBool isLoading = false.obs;
   final GeminiAiChatService _geminiService = GeminiAiChatService();
   final AiChatStorageService _storage = Get.find<AiChatStorageService>();
-
-  final RxList<ChatMessage> messages = <ChatMessage>[].obs;
-
-  final RxBool isLoading = false.obs;
+  final RxList<AiChatMessage> messages = <AiChatMessage>[].obs;
   final TextEditingController inputController = TextEditingController();
   final ScrollController chatScrollController = ScrollController();
 
@@ -35,7 +34,7 @@ class AiAssistantController extends GetxController {
       _inventoryContext = await rootBundle.loadString(
         'assets/ai_context/produce_inventory.md',
       );
-    } catch (_) {
+    } on Exception catch (_) {
       _inventoryContext = null;
     }
   }
@@ -49,24 +48,26 @@ class AiAssistantController extends GetxController {
         ? prompt
         : 'Store inventory:\n$_inventoryContext\n\nUser: $prompt\nAI:';
 
-    messages.add(ChatMessage(text: prompt, isUser: true));
+    messages.add(AiChatMessage(text: prompt, isUser: true));
     _persistMessages();
     _scheduleAutoScroll();
     inputController.clear();
 
-    messages.add(const ChatMessage(text: '', isUser: false, isStreaming: true));
-    final int aiIndex = messages.length - 1;
+    messages.add(
+      const AiChatMessage(text: '', isUser: false, isStreaming: true),
+    );
+    final aiIndex = messages.length - 1;
     _persistMessages();
     _scheduleAutoScroll();
 
     isLoading.value = true;
     try {
-      var buffer = '';
+      final buffer = StringBuffer();
       final stream = _geminiService.streamResponse(fullPrompt);
       await for (final chunk in stream) {
-        buffer += chunk;
+        buffer.write(chunk);
         messages[aiIndex] = messages[aiIndex].copyWith(
-          text: buffer,
+          text: buffer.toString(),
           isStreaming: true,
         );
         _persistMessages();
@@ -75,11 +76,10 @@ class AiAssistantController extends GetxController {
       messages[aiIndex] = messages[aiIndex].copyWith(isStreaming: false);
       _persistMessages();
       _scheduleAutoScroll();
-    } catch (e) {
-      messages[aiIndex] = ChatMessage(
+    } on Exception catch (e) {
+      messages[aiIndex] = AiChatMessage(
         text: 'Error: $e',
         isUser: false,
-        isStreaming: false,
       );
       _persistMessages();
       _scheduleAutoScroll();
@@ -137,39 +137,5 @@ class AiAssistantController extends GetxController {
   Future<void> clearHistory() async {
     messages.clear();
     await _storage.clearMessages();
-  }
-}
-
-class ChatMessage {
-  const ChatMessage({
-    required this.text,
-    required this.isUser,
-    this.isStreaming = false,
-  });
-
-  final String text;
-  final bool isUser;
-  final bool isStreaming;
-
-  ChatMessage copyWith({String? text, bool? isUser, bool? isStreaming}) {
-    return ChatMessage(
-      text: text ?? this.text,
-      isUser: isUser ?? this.isUser,
-      isStreaming: isStreaming ?? this.isStreaming,
-    );
-  }
-
-  Map<String, dynamic> toMap() => {
-    'text': text,
-    'isUser': isUser,
-    'isStreaming': isStreaming,
-  };
-
-  factory ChatMessage.fromMap(Map<String, dynamic> map) {
-    return ChatMessage(
-      text: map['text'] as String? ?? '',
-      isUser: map['isUser'] as bool? ?? false,
-      isStreaming: map['isStreaming'] as bool? ?? false,
-    );
   }
 }

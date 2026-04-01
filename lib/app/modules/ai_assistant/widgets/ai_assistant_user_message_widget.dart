@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 
 class AiAssistantUserMessage extends StatelessWidget {
   const AiAssistantUserMessage({
-    super.key,
     required this.controller,
     required this.text,
+    super.key,
   });
 
   final AiAssistantController controller;

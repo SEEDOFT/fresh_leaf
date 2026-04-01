@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
+import 'package:get/get.dart';
 
 class AiAssistantComposer extends StatelessWidget {
   const AiAssistantComposer({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final AiAssistantController controller;

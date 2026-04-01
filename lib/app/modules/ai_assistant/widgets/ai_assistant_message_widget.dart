@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 
 class AiAssistantMessage extends StatelessWidget {
   const AiAssistantMessage({
-    super.key,
     required this.controller,
     required this.text,
     required this.isStreaming,
+    super.key,
     this.highlightImportant = false,
   });
 
@@ -112,7 +112,9 @@ class AiAssistantMessage extends StatelessWidget {
                                   : text,
                             )
                           : Text(
-                              text.isEmpty && isStreaming ? 'thinking'.tr : text,
+                              text.isEmpty && isStreaming
+                                  ? 'thinking'.tr
+                                  : text,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: scheme.onSurface,
@@ -287,9 +289,7 @@ class _HighlightedLine extends StatelessWidget {
     final baseStyle = TextStyle(
       fontSize: 16,
       height: 1.5,
-      color: isImportant
-          ? importantColor
-          : scheme.onSurface,
+      color: isImportant ? importantColor : scheme.onSurface,
       fontWeight: isImportant ? FontWeight.w700 : FontWeight.w500,
     );
 

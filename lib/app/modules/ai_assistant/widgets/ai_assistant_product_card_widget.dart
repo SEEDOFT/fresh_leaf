@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class AiAssistantProductCard extends StatelessWidget {
   const AiAssistantProductCard({
-    super.key,
     required this.imageUrl,
     required this.title,
     required this.items,
+    super.key,
   });
 
   final String imageUrl;
