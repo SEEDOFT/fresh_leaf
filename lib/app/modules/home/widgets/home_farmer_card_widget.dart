@@ -35,7 +35,7 @@ class HomeFarmerCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Meet Miller\'s Organic',
+              "Meet Miller's Organic",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
@@ -44,7 +44,9 @@ class HomeFarmerCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Supplying our community with pesticide-free heirloom produce since 1994. Every bunch of kale helps support local biodiversity.',
+              'Supplying our community with pesticide-free heirloom '
+              'produce since 1994. Every bunch of kale helps support'
+              ' local biodiversity.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,

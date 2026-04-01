@@ -47,7 +47,6 @@ class HomeStaplesGridWidget extends StatelessWidget {
                         'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
                     height: 280,
                     width: media.size.width,
-                    fit: BoxFit.cover,
                     borderRadius: BorderRadius.circular(24),
                   ),
                   Container(
@@ -108,7 +107,7 @@ class HomeStaplesGridWidget extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '\$6.50',
+                                r'$6.50',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: chipMutedText,
@@ -163,7 +162,7 @@ class HomeStaplesGridWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
-                          'add_price'.trParams({'price': '\$4.20'}),
+                          'add_price'.trParams({'price': r'$4.20'}),
                           style: TextStyle(
                             color: ctaDarkText,
                             fontSize: 12,
@@ -210,7 +209,7 @@ class HomeStaplesGridWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
-                          'add_price'.trParams({'price': '\$7.50'}),
+                          'add_price'.trParams({'price': r'$7.50'}),
                           style: TextStyle(
                             color: ctaDarkText,
                             fontSize: 12,

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/models/home_category.dart';
+import 'package:get/get.dart';
 
 class HomeCategoriesWidget extends StatelessWidget {
   const HomeCategoriesWidget({
-    super.key,
     required this.categories,
+    super.key,
   });
 
-  final List<dynamic> categories;
+  final List<HomeCategory> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class HomeCategoriesWidget extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => Get.toNamed(AppRoutes.productList),
+                onTap: () async => await Get.toNamed(AppRoutes.productList),
                 child: Text(
                   'view_all'.tr,
                   style: TextStyle(
@@ -64,16 +65,12 @@ class HomeCategoriesWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      cat['icon'] == 'leaf'
-                          ? Icons.eco
-                          : (cat['icon'] == 'apple'
-                                ? Icons.apple
-                                : Icons.grass),
+                      _iconFor(cat.icon),
                       color: scheme.onSurface,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      (cat['title']?.toString() ?? '').tr,
+                      cat.titleKey.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
@@ -89,5 +86,18 @@ class HomeCategoriesWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  IconData _iconFor(HomeCategoryIcon icon) {
+    switch (icon) {
+      case HomeCategoryIcon.apple:
+        return Icons.apple;
+      case HomeCategoryIcon.mushroom:
+        return Icons.grass; // closest built-in
+      case HomeCategoryIcon.lemon:
+        return Icons.emoji_nature;
+      case HomeCategoryIcon.leaf:
+        return Icons.eco;
+    }
   }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class HomeNetworkImageWidget extends StatelessWidget {
   const HomeNetworkImageWidget({
-    super.key,
     required this.url,
+    super.key,
     this.height,
     this.width,
     this.borderRadius,

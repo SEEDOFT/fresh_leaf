@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:get/get.dart';
 
 class HomeAppBarWidget extends StatelessWidget {
   const HomeAppBarWidget({super.key});
@@ -42,6 +42,16 @@ class HomeAppBarWidget extends StatelessWidget {
               ),
             ],
           ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            icon: Icon(
+              Icons.notifications_outlined,
+              size: 22,
+              color: scheme.onSurface,
+            ),
+            onPressed: () async => await Get.toNamed(AppRoutes.notifications),
+          ),
           Column(
             children: [
               Text(
@@ -61,18 +71,6 @@ class HomeAppBarWidget extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          Container(
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-              icon: Icon(
-                Icons.notifications_outlined,
-                size: 22,
-                color: scheme.onSurface,
-              ),
-              onPressed: () => Get.toNamed(AppRoutes.notifications),
-            ),
           ),
         ],
       ),

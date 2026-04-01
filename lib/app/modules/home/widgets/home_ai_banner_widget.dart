@@ -9,13 +9,19 @@ class HomeAIBannerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bannerColor = isDark ? scheme.primaryContainer : AppColors.primaryGreen;
+    final bannerColor = isDark
+        ? scheme.primaryContainer
+        : AppColors.primaryGreen;
     final bannerTextColor = isDark ? scheme.onPrimaryContainer : Colors.white;
     final bannerSubTextColor = isDark
         ? scheme.onPrimaryContainer.withValues(alpha: 0.82)
         : Colors.white70;
-    final iconBoxColor = isDark ? scheme.secondaryContainer : AppColors.accentLime;
-    final iconColor = isDark ? scheme.onSecondaryContainer : AppColors.primaryGreen;
+    final iconBoxColor = isDark
+        ? scheme.secondaryContainer
+        : AppColors.accentLime;
+    final iconColor = isDark
+        ? scheme.onSecondaryContainer
+        : AppColors.primaryGreen;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(

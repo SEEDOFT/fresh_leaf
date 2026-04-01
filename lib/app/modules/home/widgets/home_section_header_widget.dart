@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class HomeSectionHeaderWidget extends StatelessWidget {
   const HomeSectionHeaderWidget({
-    super.key,
     required this.title,
+    super.key,
     this.subtitle,
   });
 

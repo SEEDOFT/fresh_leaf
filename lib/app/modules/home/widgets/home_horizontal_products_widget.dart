@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
-import 'package:get/get.dart';
-import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/app/modules/product_detail/models/product_info.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/models/home_product.dart';
+import 'package:get/get.dart';
 
 class HomeHorizontalProductsWidget extends StatelessWidget {
   const HomeHorizontalProductsWidget({
-    super.key,
     required this.pickedThisMorning,
+    super.key,
   });
 
-  final List<dynamic> pickedThisMorning;
-
-  double _parsePrice(dynamic price) {
-    if (price is num) return price.toDouble();
-    if (price is String) {
-      final cleaned = price.replaceAll(RegExp(r'[^0-9\\.]'), '');
-      return double.tryParse(cleaned) ?? 0.0;
-    }
-    return 0.0;
-  }
+  final List<HomeProduct> pickedThisMorning;
 
   @override
   Widget build(BuildContext context) {
@@ -73,24 +65,36 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = pickedThisMorning[index];
           return GestureDetector(
-            onTap: () {
+            onTap: () async {
               final product = ProductInfo(
-                title: item['title'] ?? '',
-                subtitle: item['subtitle'] ?? '',
-                description:
-                    item['description'] ??
-                    'seasonal_pick_description'.tr,
-                imageUrl: item['image'] ?? '',
-                tags: List<String>.from(
-                  item['tags'] ?? ['organic'.tr, 'fresh'.tr],
-                ),
-                price: _parsePrice(item['price']),
-                origin: item['origin'] ?? 'local_farm'.tr,
-                harvest: item['harvest'] ?? 'harvested_this_week'.tr,
-                storage:
-                    item['storage'] ?? 'refrigerate_extend_freshness'.tr,
+                title: item.title.tr,
+                subtitle: item.subtitle.tr,
+                description: (item.description.isEmpty
+                        ? 'seasonal_pick_description'
+                        : item.description)
+                    .tr,
+                imageUrl: item.image,
+                tags: (item.tags.isEmpty
+                        ? ['organic', 'fresh']
+                        : item.tags)
+                    .map((e) => e.tr)
+                    .toList(),
+                price: item.priceValue,
+                origin:
+                    (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
+                harvest: (item.harvest.isEmpty
+                        ? 'harvested_this_week'
+                        : item.harvest)
+                    .tr,
+                storage: (item.storage.isEmpty
+                        ? 'refrigerate_extend_freshness'
+                        : item.storage)
+                    .tr,
               );
-              Get.toNamed(AppRoutes.productDetail, arguments: product);
+              await Get.toNamed<void>(
+                AppRoutes.productDetail,
+                arguments: product,
+              );
             },
             child: Container(
               width: 200,
@@ -104,7 +108,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                   Stack(
                     children: [
                       HomeNetworkImageWidget(
-                        url: item['image']!,
+                        url: item.image,
                         height: 140,
                         width: 200,
                         borderRadius: const BorderRadius.vertical(
@@ -124,7 +128,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            item['badge']!.toString().tr,
+                            item.badge.tr,
                             style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
@@ -145,7 +149,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                item['title']!.toString().tr,
+                                item.title.tr,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -155,7 +159,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              item['price']!,
+                              item.priceText,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
@@ -166,7 +170,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          item['subtitle']!.toString().tr,
+                          item.subtitle.tr,
                           style: TextStyle(
                             fontSize: 12,
                             color: scheme.onSurfaceVariant,

@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 class HomeSearchBarWidget extends StatelessWidget {
   const HomeSearchBarWidget({
-    super.key,
     required this.onTap,
+    super.key,
   });
 
   final VoidCallback onTap;

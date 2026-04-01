@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class HomeChipWidget extends StatelessWidget {
   const HomeChipWidget({
-    super.key,
     required this.icon,
     required this.label,
+    super.key,
   });
 
   final IconData icon;
