@@ -55,7 +55,7 @@ class CheckoutEmptyWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: Get.back,
+              onPressed: Get.back<void>,
               style: ElevatedButton.styleFrom(
                 backgroundColor: scheme.primary,
                 minimumSize: const Size(160, 46),

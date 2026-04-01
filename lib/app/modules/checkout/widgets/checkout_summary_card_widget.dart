@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 
 class CheckoutSummaryCardWidget extends StatelessWidget {
   const CheckoutSummaryCardWidget({
-    super.key,
     required this.subtotal,
     required this.deliveryFee,
     required this.discount,
     required this.total,
     required this.isPlacingOrder,
     required this.onPlaceOrder,
+    super.key,
   });
 
   final double subtotal;
@@ -57,8 +57,11 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
             highlight: true,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Divider(height: 1, color: scheme.outline.withValues(alpha: 0.35)),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Divider(
+              height: 1,
+              color: scheme.outline.withValues(alpha: 0.35),
+            ),
           ),
           _row(
             'total'.tr,
@@ -92,7 +95,7 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
                     )
                   : Text(
                       'place_order'.tr,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),

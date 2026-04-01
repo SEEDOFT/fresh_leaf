@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 class CheckoutDeliveryCardWidget extends StatelessWidget {
   const CheckoutDeliveryCardWidget({
-    super.key,
     required this.onChangeAddress,
+    super.key,
   });
 
   final VoidCallback onChangeAddress;

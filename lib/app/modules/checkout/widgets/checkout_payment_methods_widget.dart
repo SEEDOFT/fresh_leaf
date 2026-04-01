@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 class CheckoutPaymentMethodsWidget extends StatelessWidget {
   const CheckoutPaymentMethodsWidget({
-    super.key,
     required this.methods,
     required this.selectedMethod,
     required this.onSelect,
+    super.key,
   });
 
   final List<String> methods;

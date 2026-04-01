@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/checkout/controllers/checkout_controller.dart';
+import 'package:fresh_leaf/app/modules/checkout/widgets/checkout_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import '../controllers/checkout_controller.dart';
-import '../widgets/checkout_widget.dart';
+import 'package:get/get.dart';
 
 class CheckoutView extends GetView<CheckoutController> {
   const CheckoutView({super.key});
@@ -24,7 +24,7 @@ class CheckoutView extends GetView<CheckoutController> {
             size: 18,
             color: scheme.onSurface,
           ),
-          onPressed: Get.back,
+          onPressed: Get.back<void>,
         ),
         title: Text(
           'checkout'.tr,
@@ -44,13 +44,13 @@ class CheckoutView extends GetView<CheckoutController> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           children: [
             CheckoutDeliveryCardWidget(
-              onChangeAddress: () => Get.toNamed(AppRoutes.addresses),
+              onChangeAddress: () => Get.toNamed<void>(AppRoutes.addresses),
             ),
             const SizedBox(height: 14),
             CheckoutPaymentMethodsWidget(
               methods: controller.paymentMethods,
-              selectedMethod: controller.selectedPayment.value,
-              onSelect: controller.selectPayment,
+              selectedMethod: controller.selectedPayment,
+              onSelect: (method) => controller.selectedPayment = method,
             ),
             const SizedBox(height: 14),
             Container(

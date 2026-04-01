@@ -3,8 +3,8 @@ import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 
 class CheckoutItemRowWidget extends StatelessWidget {
   const CheckoutItemRowWidget({
-    super.key,
     required this.item,
+    super.key,
   });
 
   final CartItem item;

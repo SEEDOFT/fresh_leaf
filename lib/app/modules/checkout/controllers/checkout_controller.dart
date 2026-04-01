@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:get/get.dart';
 
 class CheckoutController extends GetxController {
   final CartController cart = Get.find<CartController>();
 
   final TextEditingController noteController = TextEditingController();
 
-  final RxString selectedPayment = 'Cash on Delivery'.obs;
+  final RxString _selectedPayment = 'Cash on Delivery'.obs;
   final RxBool isPlacingOrder = false.obs;
+
+  String get selectedPayment => _selectedPayment.value;
+  set selectedPayment(String method) => _selectedPayment.value = method;
 
   final List<String> paymentMethods = const <String>[
     'Cash on Delivery',
@@ -28,10 +31,6 @@ class CheckoutController extends GetxController {
     (sum, item) => sum + item.quantity,
   );
 
-  void selectPayment(String method) {
-    selectedPayment.value = method;
-  }
-
   Future<void> placeOrder() async {
     if (cart.items.isEmpty || isPlacingOrder.value) return;
 
@@ -43,10 +42,10 @@ class CheckoutController extends GetxController {
     isPlacingOrder.value = false;
 
     if (Get.isRegistered<DashboardController>()) {
-      Get.back();
+      Get.back<void>();
       Get.find<DashboardController>().changeIndex(3);
     } else {
-      Get.offNamed(AppRoutes.orders);
+      await Get.offNamed<void>(AppRoutes.orders);
     }
 
     Get.snackbar(
