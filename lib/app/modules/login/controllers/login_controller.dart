@@ -1,26 +1,25 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
-import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:get/get.dart';
 
 class LoginController extends GetxController {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
-  final isLoading = false.obs;
-
-  var isPasswordVisible = false.obs;
+  final RxBool isLoading = false.obs;
+  RxBool isPasswordVisible = false.obs;
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
-  void login() async {
+  Future<void> login() async {
     if (phoneController.text.isEmpty || passwordController.text.isEmpty) {
       Get.snackbar('Error', 'Please fill in all fields');
       return;
@@ -37,7 +36,7 @@ class LoginController extends GetxController {
         return;
       }
 
-      final response = await apiClient.postRequest(
+      final response = await apiClient.postRequest<Map<String, dynamic>>(
         ApiEndpoints.login,
         data: {
           'phone_number': normalizedPhone,
@@ -55,21 +54,23 @@ class LoginController extends GetxController {
           apiResponse.status.code == '200') {
         final dataMap =
             (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
-        final token = dataMap['access_token'];
+        final token = dataMap['access_token'] as String;
         await storageService.saveToken(token);
         apiClient.updateAuthToken(token);
         await _hydrateUserProfile(loginData: dataMap);
-        Get.offAllNamed(AppRoutes.dashboard);
+        await Get.offAllNamed<void>(AppRoutes.dashboard);
       } else {
         Get.snackbar(
           'Error',
-          'Login failed: ${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
+          'Login failed: '
+          '${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
         );
       }
     } on DioException catch (e) {
-      final errorMsg = e.response?.data['status']['message'] ?? 'Network error';
+      final error = e.response?.data as Map<String, dynamic>;
+      final message = error['status']['message'] as String;
 
-      Get.snackbar('Error', 'Login failed: $errorMsg');
+      Get.snackbar('Error', 'Login failed: $message');
     } finally {
       isLoading.value = false;
     }
@@ -90,7 +91,7 @@ class LoginController extends GetxController {
       raw = raw.substring(3);
     }
 
-    raw = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    raw = raw.replaceAll(RegExp('[^0-9]'), '');
     if (raw.startsWith('0')) {
       raw = raw.substring(1);
     }
@@ -106,7 +107,9 @@ class LoginController extends GetxController {
 
     try {
       final api = Get.find<ApiClient>();
-      final response = await api.getRequest(ApiEndpoints.userProfile);
+      final response = await api.getRequest<Map<String, dynamic>>(
+        ApiEndpoints.userProfile,
+      );
       final apiResponse = ApiResponse.fromResponse<Map<String, dynamic>>(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
@@ -121,14 +124,16 @@ class LoginController extends GetxController {
 
       final profile = UserProfile.fromMap(apiResponse.data);
       _applyProfile(profile);
-    } catch (_) {
+    } on DioException catch (_) {
       if (fallbackProfile != null) {
         _applyProfile(fallbackProfile);
       }
     }
   }
 
-  UserProfile? _extractProfileFromLoginPayload(Map<String, dynamic>? loginData) {
+  UserProfile? _extractProfileFromLoginPayload(
+    Map<String, dynamic>? loginData,
+  ) {
     if (loginData == null || loginData.isEmpty) return null;
 
     final dynamic nestedUser = loginData['user'] ?? loginData['profile'];
@@ -151,9 +156,6 @@ class LoginController extends GetxController {
   }
 
   void _applyProfile(UserProfile profile) {
-    final storage = Get.find<StorageService>();
-    storage.setUserProfile(profile);
-
     if (Get.isRegistered<ProfileController>()) {
       Get.find<ProfileController>().setProfile(profile);
     }

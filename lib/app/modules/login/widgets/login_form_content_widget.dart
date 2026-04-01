@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fresh_leaf/app/modules/login/controllers/login_controller.dart';
+import 'package:fresh_leaf/app/modules/login/widgets/login_background_hero_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:get/get.dart';
-import '../controllers/login_controller.dart';
-import 'login_background_hero_widget.dart';
 
 class LoginFormContent extends StatelessWidget {
   const LoginFormContent({
-    super.key,
     required this.controller,
     required this.constraints,
+    super.key,
   });
 
   final LoginController controller;
@@ -27,15 +27,11 @@ class LoginFormContent extends StatelessWidget {
     final borderColor = isDark
         ? scheme.outline.withValues(alpha: 0.95)
         : scheme.outline.withValues(alpha: 0.65);
-    final double scale = (constraints.maxHeight / 780)
-        .clamp(0.82, 1.0)
-        .toDouble();
-    final double heroHeight = (constraints.maxHeight * 0.42)
-        .clamp(230.0, 360.0)
-        .toDouble();
-    final double horizontalPadding = (24 * scale).clamp(20, 24).toDouble();
-    final double formTopPadding = (24 * scale).clamp(16, 24).toDouble();
-    final double formBottomPadding = keyboardVisible ? 16 : 24;
+    final scale = (constraints.maxHeight / 780).clamp(0.82, 1.0);
+    final heroHeight = (constraints.maxHeight * 0.42).clamp(230.0, 360.0);
+    final horizontalPadding = (24 * scale).clamp(20, 24).toDouble();
+    final formTopPadding = (24 * scale).clamp(16, 24).toDouble();
+    final formBottomPadding = keyboardVisible ? 16 : 24;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -63,7 +59,7 @@ class LoginFormContent extends StatelessWidget {
                   horizontalPadding,
                   formTopPadding,
                   horizontalPadding,
-                  formBottomPadding,
+                  formBottomPadding as double,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -147,7 +143,6 @@ class LoginFormContent extends StatelessWidget {
                       () => TextField(
                         controller: controller.passwordController,
                         obscureText: !controller.isPasswordVisible.value,
-                        obscuringCharacter: '•',
                         cursorColor: scheme.primary,
                         style: TextStyle(
                           color: scheme.onSurface,
@@ -243,7 +238,8 @@ class LoginFormContent extends StatelessWidget {
                     const SizedBox(height: 20),
                     Center(
                       child: GestureDetector(
-                        onTap: () => Get.toNamed(AppRoutes.register),
+                        onTap: () async =>
+                            await Get.toNamed<void>(AppRoutes.register),
                         child: RichText(
                           text: TextSpan(
                             style: TextStyle(

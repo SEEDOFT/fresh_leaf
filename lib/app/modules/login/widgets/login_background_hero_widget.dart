@@ -24,7 +24,7 @@ class BackgroundHeroWidget extends StatelessWidget {
             return Container(color: scheme.surfaceContainerHighest);
           },
           errorBuilder: (context, error, stackTrace) {
-            return Container(
+            return ColoredBox(
               color: scheme.surfaceContainerHighest,
               child: Center(
                 child: Icon(
@@ -52,7 +52,7 @@ class BackgroundHeroWidget extends StatelessWidget {
                       AppColors.backgroundCream.withValues(alpha: 0.4),
                       AppColors.backgroundCream,
                     ],
-              stops: const <double>[0.4, 0.75, 1.0],
+              stops: const <double>[0.4, 0.75, 1],
             ),
           ),
         ),
