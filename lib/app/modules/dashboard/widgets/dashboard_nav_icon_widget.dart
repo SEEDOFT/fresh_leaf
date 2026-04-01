@@ -3,9 +3,9 @@ import 'package:flutter_svg/svg.dart';
 
 class BuildNavIcon extends StatelessWidget {
   const BuildNavIcon({
-    super.key,
     required this.svgAsset,
     required this.isSelected,
+    super.key,
     this.selectedColor = const Color(0xFF1A3314),
     this.unselectedColor = const Color(0xFF6B7260),
   });

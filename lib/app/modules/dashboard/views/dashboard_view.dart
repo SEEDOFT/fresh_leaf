@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/modules/dashboard/widgets/dashboard_widget.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
 import 'package:get/get.dart';
-import '../controllers/dashboard_controller.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -21,7 +21,7 @@ class DashboardView extends GetView<DashboardController> {
       body: SafeArea(
         child: Obx(
           () => IndexedStack(
-            index: controller.currentIndex.value,
+            index: controller.currentIndex,
             children: controller.pages,
           ),
         ),
@@ -61,13 +61,13 @@ class DashboardView extends GetView<DashboardController> {
               ),
               showUnselectedLabels: true,
               elevation: 0,
-              currentIndex: controller.currentIndex.value,
-              onTap: (index) => controller.changeIndex(index),
+              currentIndex: controller.currentIndex,
+              onTap: (index) => controller.currentIndex = index,
               items: [
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.home,
-                    isSelected: controller.currentIndex.value == 0,
+                    isSelected: controller.currentIndex == 0,
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
@@ -76,7 +76,7 @@ class DashboardView extends GetView<DashboardController> {
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.search,
-                    isSelected: controller.currentIndex.value == 1,
+                    isSelected: controller.currentIndex == 1,
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
@@ -85,7 +85,7 @@ class DashboardView extends GetView<DashboardController> {
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.gemini,
-                    isSelected: controller.currentIndex.value == 2,
+                    isSelected: controller.currentIndex == 2,
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
@@ -94,7 +94,7 @@ class DashboardView extends GetView<DashboardController> {
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.order,
-                    isSelected: controller.currentIndex.value == 3,
+                    isSelected: controller.currentIndex == 3,
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
@@ -103,7 +103,7 @@ class DashboardView extends GetView<DashboardController> {
                 BottomNavigationBarItem(
                   icon: BuildNavIcon(
                     svgAsset: SvgAssets.profile,
-                    isSelected: controller.currentIndex.value == 4,
+                    isSelected: controller.currentIndex == 4,
                     selectedColor: navSelectedColor,
                     unselectedColor: navUnselectedColor,
                   ),
