@@ -238,7 +238,7 @@ class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
                                 ),
                               const SizedBox(height: 14),
                               ProfileAddressEditField(
-                                label: 'label'.tr,
+                                label: 'address_label'.tr,
                                 hintText: 'address_label_home'.tr,
                                 controller: controller.labelController,
                               ),

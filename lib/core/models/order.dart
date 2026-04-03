@@ -27,13 +27,27 @@ class Order {
   final String status;
   final List<Map<String, dynamic>> items;
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'date': date,
-      'total': total,
-      'status': status,
-      'items': items,
-    };
+  Order copyWith({
+    String? id,
+    String? date,
+    double? total,
+    String? status,
+    List<Map<String, dynamic>>? items,
+  }) {
+    return Order(
+      id: id ?? this.id,
+      date: date ?? this.date,
+      total: total ?? this.total,
+      status: status ?? this.status,
+      items: items ?? this.items,
+    );
   }
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'date': date,
+    'total': total,
+    'status': status,
+    'items': items,
+  };
 }

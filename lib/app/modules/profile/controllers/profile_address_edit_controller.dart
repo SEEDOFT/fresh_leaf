@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/permission_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:latlong2/latlong.dart';
@@ -277,11 +278,11 @@ class ProfileAddressEditController extends GetxController {
     isSaving.value = true;
     try {
       final payload = _buildPayload();
-      final api = Get.find<ApiClient>();
+      final apiClient = Get.find<ApiClient>();
 
       final response = isEditMode && addressId.isNotEmpty
-          ? await _updateAddress(api, payload)
-          : await api.postRequest(
+          ? await _updateAddress(apiClient, payload)
+          : await apiClient.postRequest(
               ApiEndpoints.userAddresses,
               data: payload,
             );
@@ -317,7 +318,10 @@ class ProfileAddressEditController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'save_failed'.tr,
-        _extractErrorMessage(e, 'unable_save_address'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_save_address'.tr,
+        ),
       );
     } on Exception {
       Get.snackbar('save_failed'.tr, 'unable_save_address'.tr);
@@ -399,7 +403,10 @@ class ProfileAddressEditController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'delete_failed'.tr,
-        _extractErrorMessage(e, 'unable_delete_address'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_delete_address'.tr,
+        ),
       );
     } on Exception {
       Get.snackbar('delete_failed'.tr, 'unable_delete_address'.tr);
@@ -546,20 +553,6 @@ class ProfileAddressEditController extends GetxController {
   double? _toDouble(Object? value) {
     if (value is num) return value.toDouble();
     return double.tryParse(value?.toString() ?? '');
-  }
-
-  String _extractErrorMessage(DioException error, String fallback) {
-    final data = error.response?.data;
-    if (data is Map<String, dynamic>) {
-      final status = data['status'];
-      if (status is Map<String, dynamic>) {
-        final message = status['message']?.toString() ?? '';
-        if (message.isNotEmpty) return message;
-      }
-      final message = data['message']?.toString() ?? '';
-      if (message.isNotEmpty) return message;
-    }
-    return fallback;
   }
 }
 

@@ -25,6 +25,22 @@ class WishlistItem {
   final double price;
   final String tag;
 
+  WishlistItem copyWith({
+    String? title,
+    String? subtitle,
+    String? imageUrl,
+    double? price,
+    String? tag,
+  }) {
+    return WishlistItem(
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      imageUrl: imageUrl ?? this.imageUrl,
+      price: price ?? this.price,
+      tag: tag ?? this.tag,
+    );
+  }
+
   Map<String, dynamic> toMap() => {
     'title': title,
     'subtitle': subtitle,

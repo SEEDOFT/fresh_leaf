@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class PinSecurityService {
@@ -58,10 +59,7 @@ class PinSecurityService {
         ApiEndpoints.verifyPin,
         data: {'pin': inputPin},
       );
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (apiResponse.isSuccess || response.statusCode == 200) {
         return true;
@@ -71,9 +69,10 @@ class PinSecurityService {
       return false;
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
-      final message =
-          e.response?.data?['status']?['message']?.toString() ??
-          'Unable to verify PIN right now';
+      final message = parseApiErrorMessage(
+        e,
+        fallback: 'Unable to verify PIN right now',
+      );
 
       if (statusCode == 422 && message.toLowerCase().contains('not set')) {
         await storage.savePinOrderVerification(enabled: false);

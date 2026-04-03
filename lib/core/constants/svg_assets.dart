@@ -8,4 +8,7 @@ final class SvgAssets {
   static const String order = 'assets/svg/order.svg';
   static const String profile = 'assets/svg/profile.svg';
   static const String cart = 'assets/svg/cart.svg';
+  static const String visa = 'assets/svg/visa.svg';
+  static const String mastercard = 'assets/svg/mastercard.svg';
+  static const String unionPay = 'assets/svg/upi.svg';
 }

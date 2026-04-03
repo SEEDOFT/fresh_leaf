@@ -32,17 +32,25 @@ import 'package:fresh_leaf/app/modules/product_list/views/product_list_view.dart
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_address_edit_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_addresses_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_help_center_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_payment_add_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_payment_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_personal_details_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_pin_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_pin_password_verify_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/profile_privacy_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_security_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_settings_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_wishlist_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_address_edit_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_addresses_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_help_center_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_payment_add_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_payment_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_personal_details_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_pin_password_verify_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_pin_view.dart';
+import 'package:fresh_leaf/app/modules/profile/views/profile_privacy_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_security_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_settings_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_view.dart';
@@ -194,6 +202,30 @@ final class AppPages {
       name: AppRoutes.wishlist,
       page: () => const ProfileWishlistView(),
       binding: ProfileWishlistBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.paymentMethods,
+      page: () => const ProfilePaymentView(),
+      binding: ProfilePaymentBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.paymentMethodsAdd,
+      page: () => const ProfilePaymentAddView(),
+      binding: ProfilePaymentAddBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.helpCenter,
+      page: () => const ProfileHelpCenterView(),
+      binding: ProfileHelpCenterBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.privacyTerms,
+      page: () => const ProfilePrivacyView(),
+      binding: ProfilePrivacyBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

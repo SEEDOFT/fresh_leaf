@@ -23,6 +23,7 @@ The project uses **modular GetX structure** (`bindings`, `controllers`, `views`,
 - Flutter Map + OpenStreetMap for map/address picking
 - Geolocator + permission_handler for location permissions
 - Static analysis: **very_good_analysis** (follow its lints for any new code)
+- AI agent policy for lint-safe code changes: `documentations/VERY_GOOD_RULES.md`
 
 ### App structure
 - `lib/app/modules/*` → feature modules
@@ -70,6 +71,10 @@ The project uses **modular GetX structure** (`bindings`, `controllers`, `views`,
 - Security settings
 - Addresses with map search/select/save
 - PIN security settings screen
+- Payment methods list (default marker, remove action, add new card flow)
+- Add Payment Method screen with card form validation (Luhn, expiry, CVV) and default-method toggle
+- Help Center (FAQ cards) and Privacy & Terms screen (policy sections)
+- Help Center now includes quick actions: “Chat with support” and “Virtual AI assistant”
 
 ### AI Assistant
 - Gemini streaming chat UI
@@ -125,6 +130,7 @@ Notable routes:
 - `/pin_security`
 - `/addresses`
 - `/ai_assistant`
+- `/payment_methods`
 
 ---
 
@@ -258,6 +264,7 @@ sequenceDiagram
 - Centralized dark chip/input/switch colors in `AppColors`.
 - Integrated Noto Sans Khmer across themes for Khmer UI rendering.
 - Added modern splash screen route using the new branded logo.
+- Built Payment Methods screen (route `/payment_methods`) with card list, default indicator, and action buttons; wired from Profile.
 
 ---
 
@@ -271,3 +278,38 @@ sequenceDiagram
   2. Add to the module barrel file.
   3. Update the view to import only the barrel.
 - **Exception:** Tiny constants or `typedef`s can stay in the view; anything with `build()` should be extracted.
+
+---
+
+## 15) API parsing rule (for all contributors/agents)
+
+- **Always parse backend envelope in `ApiResponse` first**, not inside controllers.
+- Use the typed helpers from `lib/core/models/api_response.dart`:
+  - `ApiResponse.parseMap(...)` for object payloads
+  - `ApiResponse.parseList(...)` for array payloads
+  - `ApiResponse.parseString(...)` / `parseBool(...)` / `parseDynamic(...)` when needed
+- Controllers should only consume typed `apiResponse.data` and business conditions (`isSuccess`, `status.message`).
+- Avoid inline parser lambdas in controllers unless absolutely required for a non-standard endpoint.
+
+---
+
+## 16) Shared helper rule (controller cleanup)
+
+- Reused controller logic must move to `lib/shared/helpers/helper.dart`.
+- Current shared helpers:
+  - `parseApiErrorMessage(...)` for Dio/API error message extraction.
+  - `normalizeCambodiaPhoneForApi(...)` for `+855` phone normalization.
+- Controllers should call these helpers instead of duplicating private methods.
+
+---
+
+## 17) Laravel API method override rule
+
+- Backend contract follows Laravel conventions.
+- For **file upload + update** operations, use:
+  - `POST` request
+  - `multipart/form-data`
+  - body field `_method` as:
+    - `PATCH` for partial update
+    - `PUT` for full update
+- This rule is now applied in profile personal details update flow so image updates work consistently.

@@ -15,11 +15,11 @@ class CartView extends GetView<CartController> {
     final scheme = Theme.of(context).colorScheme;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
-    void handleCheckout() {
+    Future<void> handleCheckout() async {
       if (asPanel) {
         Get.back<void>();
       }
-      Get.toNamed<void>(AppRoutes.checkout);
+      await Get.toNamed<void>(AppRoutes.checkout);
     }
 
     final content = SafeArea(

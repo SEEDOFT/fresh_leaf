@@ -38,8 +38,8 @@ class OnboardingController extends GetxController {
     super.onClose();
   }
 
-  void _markSeen() {
-    Get.find<StorageService>().saveOnboardingSeen(seen: true);
+  Future<void> _markSeen() async {
+    await Get.find<StorageService>().saveOnboardingSeen(seen: true);
   }
 
   Future<void> _goForward() async {

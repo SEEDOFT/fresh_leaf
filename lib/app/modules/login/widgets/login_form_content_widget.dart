@@ -31,7 +31,7 @@ class LoginFormContent extends StatelessWidget {
     final heroHeight = (constraints.maxHeight * 0.42).clamp(230.0, 360.0);
     final horizontalPadding = (24 * scale).clamp(20, 24).toDouble();
     final formTopPadding = (24 * scale).clamp(16, 24).toDouble();
-    final formBottomPadding = keyboardVisible ? 16 : 24;
+    final formBottomPadding = keyboardVisible ? 16.0 : 24.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -59,7 +59,7 @@ class LoginFormContent extends StatelessWidget {
                   horizontalPadding,
                   formTopPadding,
                   horizontalPadding,
-                  formBottomPadding as double,
+                  formBottomPadding,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

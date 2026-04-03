@@ -10,12 +10,16 @@ final class ApiEndpoints {
   static const String setPin = '/auth/pin/set';
   static const String updatePin = '/auth/pin/update';
   static const String verifyPin = '/auth/pin/verify';
+  static const String resetPin = '/auth/pin/reset';
 
   // User
   static const String userProfile = '/users/profile';
   static const String userUpdateProfile = '/users/profile';
   static const String userAddresses = '/users/addresses';
   static const String userAddress = '/users/addresses/{id}';
+  // Payment Methods
+  static const String userPaymentMethods = '/users/payment-methods';
+  static const String userPaymentMethod = '/users/payment-methods/{id}';
 
   // Products
   static const String products = '/products';
@@ -38,11 +42,6 @@ final class ApiEndpoints {
   static const String aiSuggestions = '/ai/suggestions';
   static const String aiChat = '/ai/chat';
   static const String aiChatHistory = '/ai/chat/history';
-
-  // Payments
-  static const String paymentMethods = '/payment/methods';
-  static const String paymentProcess = '/payment/process';
-  static const String paymentWebhook = '/payment/webhook';
 
   // Favorites/Wishlist
   static const String wishlist = '/wishlist';

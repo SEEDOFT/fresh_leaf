@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 String formatToString(dynamic value, {String defaultValue = ''}) {
   if (value == null) return defaultValue;
   try {
@@ -92,4 +94,65 @@ int toInt(dynamic value, {int defaultValue = 0}) {
   } on Exception catch (_) {
     return defaultValue;
   }
+}
+
+String parseApiErrorMessage(
+  Object error, {
+  String fallback = 'Unexpected error',
+}) {
+  if (error is DioException) {
+    final payload = error.response?.data;
+
+    if (payload is Map<String, dynamic>) {
+      final status = payload['status'];
+      if (status is Map<String, dynamic>) {
+        final statusMessage = formatToString(status['message']);
+        if (statusMessage.isNotEmpty) {
+          return statusMessage;
+        }
+      }
+
+      final message = formatToString(payload['message']);
+      if (message.isNotEmpty) {
+        return message;
+      }
+    }
+
+    final dioMessage = formatToString(error.message);
+    if (dioMessage.isNotEmpty) {
+      return dioMessage;
+    }
+  }
+
+  if (error is FormatException) {
+    final message = formatToString(error.message);
+    if (message.isNotEmpty) {
+      return message;
+    }
+  }
+
+  return fallback;
+}
+
+String normalizeCambodiaPhoneForApi(String rawValue) {
+  var raw = rawValue.trim().replaceAll(RegExp(r'[\s-]'), '');
+  if (raw.isEmpty) return '';
+
+  if (raw.startsWith('+') && !raw.startsWith('+855')) {
+    return '';
+  }
+
+  if (raw.startsWith('+855')) {
+    raw = raw.substring(4);
+  } else if (raw.startsWith('855')) {
+    raw = raw.substring(3);
+  }
+
+  raw = raw.replaceAll(RegExp('[^0-9]'), '');
+  if (raw.startsWith('0')) {
+    raw = raw.substring(1);
+  }
+
+  if (raw.isEmpty) return '';
+  return '+855$raw';
 }

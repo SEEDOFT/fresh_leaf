@@ -56,6 +56,32 @@ class HomeProduct {
     }
   }
 
+  HomeProduct copyWith({
+    String? image,
+    String? title,
+    String? subtitle,
+    String? priceText,
+    String? badge,
+    String? description,
+    List<String>? tags,
+    String? origin,
+    String? harvest,
+    String? storage,
+  }) {
+    return HomeProduct(
+      image: image ?? this.image,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      priceText: priceText ?? this.priceText,
+      badge: badge ?? this.badge,
+      description: description ?? this.description,
+      tags: tags ?? this.tags,
+      origin: origin ?? this.origin,
+      harvest: harvest ?? this.harvest,
+      storage: storage ?? this.storage,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'image': image,

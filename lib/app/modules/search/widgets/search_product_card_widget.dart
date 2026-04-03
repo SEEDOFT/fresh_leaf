@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
+import 'package:fresh_leaf/core/models/home_product.dart';
 import 'package:get/get.dart';
 
 class SearchProductCardWidget extends StatelessWidget {
@@ -9,7 +10,7 @@ class SearchProductCardWidget extends StatelessWidget {
     super.key,
   });
 
-  final Map<String, dynamic> item;
+  final HomeProduct item;
   final VoidCallback onTap;
 
   @override
@@ -26,7 +27,7 @@ class SearchProductCardWidget extends StatelessWidget {
           child: Row(
             children: [
               HomeNetworkImageWidget(
-                url: item['image']?.toString() ?? '',
+                url: item.image,
                 width: 72,
                 height: 72,
                 borderRadius: BorderRadius.circular(14),
@@ -37,7 +38,7 @@ class SearchProductCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (item['title']?.toString() ?? '').tr,
+                      item.title.tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -47,7 +48,7 @@ class SearchProductCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      (item['subtitle']?.toString() ?? '').tr,
+                      item.subtitle.tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -57,7 +58,7 @@ class SearchProductCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      item['price']?.toString() ?? '',
+                      item.priceValue.toString(),
                       style: TextStyle(
                         color: scheme.primary,
                         fontWeight: FontWeight.w800,

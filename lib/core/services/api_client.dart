@@ -50,7 +50,7 @@ class ApiClient extends GetxService {
     // Error logging in JSON for easier debugging
     dio.interceptors.add(
       InterceptorsWrapper(
-        onError: (DioException err, handler) {
+        onError: (err, handler) {
           if (kDebugMode) {
             final payload = {
               'type': err.type.name,
@@ -73,8 +73,8 @@ class ApiClient extends GetxService {
   late final Dio dio;
   final StorageService storageService;
 
-  void updateAuthToken(String? token) {
-    storageService.saveToken(token);
+  Future<void> updateAuthToken(String? token) async {
+    await storageService.saveToken(token);
   }
 
   Future<Response<Map<String, dynamic>>> getRequest(

@@ -17,5 +17,6 @@ Future<void> main() async {
     LaunchRouteService(initialRoute),
     permanent: true,
   );
+
   runApp(const FreshLeafApp(initialRoute: AppRoutes.splash));
 }

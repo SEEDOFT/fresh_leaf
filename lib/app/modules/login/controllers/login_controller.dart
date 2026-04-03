@@ -7,6 +7,7 @@ import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
@@ -30,7 +31,9 @@ class LoginController extends GetxController {
       final apiClient = Get.find<ApiClient>();
       final storageService = Get.find<StorageService>();
 
-      final normalizedPhone = _normalizePhoneForApi(phoneController.text);
+      final normalizedPhone = normalizeCambodiaPhoneForApi(
+        phoneController.text,
+      );
       if (normalizedPhone.isEmpty) {
         Get.snackbar('Error', 'Please enter a valid phone number');
         return;
@@ -44,64 +47,51 @@ class LoginController extends GetxController {
         },
       );
 
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess ||
           response.statusCode == 200 ||
           apiResponse.status.code == '200') {
-        final dataMap =
-            (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
-        final token = dataMap['access_token'] as String;
+        final dataMap = apiResponse.data;
+        final token = _extractAccessToken(dataMap);
+        if (token.isEmpty) {
+          Get.snackbar('Error', 'Login succeeded but token was missing');
+          return;
+        }
+
         await storageService.saveToken(token);
-        apiClient.updateAuthToken(token);
+        await apiClient.updateAuthToken(token);
         await _hydrateUserProfile(loginData: dataMap);
         await Get.offAllNamed<void>(AppRoutes.dashboard);
       } else {
+        final errorMessage = apiResponse.status.message.isNotEmpty
+            ? apiResponse.status.message
+            : 'Unknown error';
         Get.snackbar(
           'Error',
-          'Login failed: ${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
+          'Login failed: $errorMessage',
         );
       }
     } on DioException catch (e) {
+      final message = parseApiErrorMessage(e);
       Get.snackbar(
         'Error',
-        'Login failed: ${e.response?.data['status']['message']}',
+        'Login failed: $message',
       );
+    } on FormatException catch (e) {
+      final message = parseApiErrorMessage(e);
+      Get.snackbar('Error', 'Login failed: $message');
+    } on Exception {
+      Get.snackbar('Error', 'Login failed: Unexpected error');
     } finally {
       isLoading.value = false;
     }
   }
 
-  String _normalizePhoneForApi(String rawValue) {
-    var raw = rawValue.trim().replaceAll(RegExp(r'[\s-]'), '');
-    if (raw.isEmpty) return '';
-
-    // Only Cambodia prefix is allowed.
-    if (raw.startsWith('+') && !raw.startsWith('+855')) {
-      return '';
-    }
-
-    if (raw.startsWith('+855')) {
-      raw = raw.substring(4);
-    } else if (raw.startsWith('855')) {
-      raw = raw.substring(3);
-    }
-
-    raw = raw.replaceAll(RegExp('[^0-9]'), '');
-    if (raw.startsWith('0')) {
-      raw = raw.substring(1);
-    }
-
-    if (raw.isEmpty) return '';
-    return '+855$raw';
-  }
-
   Future<void> _hydrateUserProfile({
     Map<String, dynamic>? loginData,
   }) async {
+    final storage = Get.find<StorageService>();
     final fallbackProfile = _extractProfileFromLoginPayload(loginData);
 
     try {
@@ -109,23 +99,20 @@ class LoginController extends GetxController {
       final response = await api.getRequest(
         ApiEndpoints.userProfile,
       );
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
-      );
+      final apiResponse = ApiResponse.parseMap(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         if (fallbackProfile != null) {
-          _applyProfile(fallbackProfile);
+          _applyProfile(fallbackProfile, storage);
         }
         return;
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      _applyProfile(profile);
+      _applyProfile(profile, storage);
     } on DioException catch (_) {
       if (fallbackProfile != null) {
-        _applyProfile(fallbackProfile);
+        _applyProfile(fallbackProfile, storage);
       }
     }
   }
@@ -154,10 +141,29 @@ class LoginController extends GetxController {
         profile.phoneNumber.trim().isNotEmpty;
   }
 
-  void _applyProfile(UserProfile profile) {
+  void _applyProfile(UserProfile profile, StorageService storage) {
+    storage.setUserProfile(profile);
     if (Get.isRegistered<ProfileController>()) {
       Get.find<ProfileController>().setProfile(profile);
     }
+  }
+
+  String _extractAccessToken(Map<String, dynamic> dataMap) {
+    final direct = formatToString(dataMap['access_token']);
+    if (direct.isNotEmpty) return direct;
+
+    final nested = dataMap['data'];
+    if (nested is Map<String, dynamic>) {
+      final nestedToken = formatToString(nested['access_token']);
+      if (nestedToken.isNotEmpty) return nestedToken;
+    }
+
+    final token = dataMap['token'];
+    if (token is String && token.isNotEmpty) {
+      return token;
+    }
+
+    return '';
   }
 
   @override

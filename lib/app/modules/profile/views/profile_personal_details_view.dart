@@ -13,9 +13,7 @@ class ProfilePersonalDetailsView
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
-    final scheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -74,39 +72,10 @@ class ProfilePersonalDetailsView
                   top: false,
                   minimum: const EdgeInsets.only(bottom: 10),
                   child: Obx(
-                    () => SizedBox(
-                      width: screenWidth,
-                      child: ElevatedButton(
-                        onPressed: controller.isSaving.value
-                            ? null
-                            : controller.saveChanges,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: scheme.primary,
-                          minimumSize: Size(screenWidth, 52),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: controller.isSaving.value
-                            ? SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    scheme.onPrimary,
-                                  ),
-                                ),
-                              )
-                            : Text(
-                                'save_changes'.tr,
-                                style: TextStyle(
-                                  color: scheme.onPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ),
+                    () => ProfilePrimaryActionButton(
+                      label: 'save_changes'.tr,
+                      onPressed: controller.saveChanges,
+                      isLoading: controller.isSaving.value,
                     ),
                   ),
                 ),
@@ -190,9 +159,9 @@ class _AvatarBlock extends StatelessWidget {
     );
   }
 
-  void _showPickerSheet(BuildContext context) {
+  Future<void> _showPickerSheet(BuildContext context) async {
     final scheme = Theme.of(context).colorScheme;
-    showModalBottomSheet<void>(
+    await showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
@@ -210,9 +179,9 @@ class _AvatarBlock extends StatelessWidget {
                 'Pick from gallery',
                 style: TextStyle(color: scheme.onSurface),
               ),
-              onTap: () {
+              onTap: () async {
                 Get.back<void>();
-                controller.pickImage(ImageSource.gallery);
+                await controller.pickImage(ImageSource.gallery);
               },
             ),
             ListTile(
@@ -224,9 +193,9 @@ class _AvatarBlock extends StatelessWidget {
                 'Take a photo',
                 style: TextStyle(color: scheme.onSurface),
               ),
-              onTap: () {
+              onTap: () async {
                 Get.back<void>();
-                controller.pickImage(ImageSource.camera);
+                await controller.pickImage(ImageSource.camera);
               },
             ),
           ],

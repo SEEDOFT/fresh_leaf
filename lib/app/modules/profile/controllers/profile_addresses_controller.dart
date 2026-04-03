@@ -7,6 +7,7 @@ import 'package:fresh_leaf/core/models/user_address.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfileAddressesController extends GetxController {
@@ -16,9 +17,9 @@ class ProfileAddressesController extends GetxController {
   final RxString deletingAddressId = ''.obs;
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     super.onReady();
-    fetchSavedAddresses(showError: false);
+    await fetchSavedAddresses(showError: false);
   }
 
   Future<void> refreshAddresses() async {
@@ -36,14 +37,11 @@ class ProfileAddressesController extends GetxController {
     isLoadingAddresses.value = true;
 
     try {
-      final api = Get.find<ApiClient>();
-      final response = await api.getRequest(
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(
         ApiEndpoints.userAddresses,
       );
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
-      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         if (showError) {
@@ -65,7 +63,10 @@ class ProfileAddressesController extends GetxController {
       if (!showError) return;
       Get.snackbar(
         'fetch_failed'.tr,
-        _extractErrorMessage(e, 'unable_load_addresses'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_load_addresses'.tr,
+        ),
       );
     } on Exception {
       if (!showError) return;
@@ -79,7 +80,7 @@ class ProfileAddressesController extends GetxController {
     final storage = Get.find<StorageService>();
     final profile = storage.userProfile;
 
-    final result = await Get.toNamed<bool?>(
+    final result = await Get.toNamed<dynamic>(
       AppRoutes.addressesEdit,
       arguments: {
         'mode': 'create',
@@ -94,13 +95,13 @@ class ProfileAddressesController extends GetxController {
       },
     );
 
-    if (result ?? false) {
+    if (_didAddressChange(result)) {
       await fetchSavedAddresses(showError: false);
     }
   }
 
   Future<void> openEditAddress(UserAddress address) async {
-    final result = await Get.toNamed<bool?>(
+    final result = await Get.toNamed<dynamic>(
       AppRoutes.addressesEdit,
       arguments: {
         'mode': 'edit',
@@ -118,7 +119,7 @@ class ProfileAddressesController extends GetxController {
       },
     );
 
-    if (result ?? false) {
+    if (_didAddressChange(result)) {
       await fetchSavedAddresses(showError: false);
     }
   }
@@ -183,7 +184,10 @@ class ProfileAddressesController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'delete_failed'.tr,
-        _extractErrorMessage(e, 'unable_delete_address'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_delete_address'.tr,
+        ),
       );
     } on Exception {
       Get.snackbar('delete_failed'.tr, 'unable_delete_address'.tr);
@@ -219,17 +223,7 @@ class ProfileAddressesController extends GetxController {
     return value;
   }
 
-  String _extractErrorMessage(DioException error, String fallback) {
-    final data = error.response?.data;
-    if (data is Map<String, dynamic>) {
-      final status = data['status'];
-      if (status is Map<String, dynamic>) {
-        final message = status['message']?.toString() ?? '';
-        if (message.isNotEmpty) return message;
-      }
-      final message = data['message']?.toString() ?? '';
-      if (message.isNotEmpty) return message;
-    }
-    return fallback;
+  bool _didAddressChange(dynamic routeResult) {
+    return routeResult is bool && routeResult;
   }
 }

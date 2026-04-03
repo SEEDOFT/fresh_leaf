@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -18,7 +20,7 @@ class ProfileSyncMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     if (_syncedOnce) return null;
-    _syncProfile(); // fire and forget
+    unawaited(_syncProfile());
     return null;
   }
 
@@ -41,7 +43,8 @@ class ProfileSyncMiddleware extends GetMiddleware {
       }
       _syncedOnce = true;
     } on Exception catch (_) {
-      // If fetching fails, allow navigation; downstream screens can handle refresh errors.
+      // If fetching fails, allow navigation;
+      //downstream screens can handle refresh errors.
     }
   }
 }

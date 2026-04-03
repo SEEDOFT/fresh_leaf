@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
@@ -41,8 +42,9 @@ class RegisterController extends GetxController {
       return;
     }
 
-    // Normalize phone: strip leading zero if present
-    final normalizedPhone = _normalizePhoneForApi(phoneController.text);
+    final normalizedPhone = normalizeCambodiaPhoneForApi(
+      phoneController.text,
+    );
     if (normalizedPhone.isEmpty) {
       Get.snackbar('Error', 'Please enter a valid phone number');
       return;
@@ -70,59 +72,35 @@ class RegisterController extends GetxController {
         },
       );
 
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess ||
           response.statusCode == 201 ||
           apiResponse.status.code == '201') {
-        final dataMap =
-            (apiResponse.data as Map?)?.cast<String, dynamic>() ?? {};
-        final token = dataMap['access_token'] as String;
+        final dataMap = apiResponse.data;
+        final token = formatToString(dataMap['access_token']);
+        if (token.isEmpty) {
+          Get.snackbar('Error', 'Registration succeeded but token missing');
+          return;
+        }
         await storageService.saveToken(token);
-        apiClient.updateAuthToken(token);
+        await apiClient.updateAuthToken(token);
         await Get.offAllNamed<void>(AppRoutes.login);
       } else {
         Get.snackbar(
           'Error',
-          'Registration failed: '
-              '${apiResponse.status.message.isNotEmpty ? apiResponse.status.message : 'Unknown error'}',
+          'Registration failed: ${apiResponse.status.message}',
         );
       }
     } on DioException catch (e) {
+      final message = parseApiErrorMessage(e);
       Get.snackbar(
         'Error',
-        'Registration failed: ${e.response?.data['status']['message']}',
+        'Registration failed: $message',
       );
     } finally {
       isLoading.value = false;
     }
-  }
-
-  String _normalizePhoneForApi(String rawValue) {
-    var raw = rawValue.trim().replaceAll(RegExp(r'[\s-]'), '');
-    if (raw.isEmpty) return '';
-
-    // Only Cambodia prefix is allowed.
-    if (raw.startsWith('+') && !raw.startsWith('+855')) {
-      return '';
-    }
-
-    if (raw.startsWith('+855')) {
-      raw = raw.substring(4);
-    } else if (raw.startsWith('855')) {
-      raw = raw.substring(3);
-    }
-
-    raw = raw.replaceAll(RegExp('[^0-9]'), '');
-    if (raw.startsWith('0')) {
-      raw = raw.substring(1);
-    }
-
-    if (raw.isEmpty) return '';
-    return '+855$raw';
   }
 
   @override

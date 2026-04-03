@@ -21,9 +21,9 @@ class OrderDetailController extends GetxController {
   }
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     super.onReady();
-    _verifyAccess();
+    await _verifyAccess();
   }
 
   Future<void> _verifyAccess() async {

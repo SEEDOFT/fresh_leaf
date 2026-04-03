@@ -25,8 +25,8 @@ class _FreshLeafAppState extends State<FreshLeafApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _requestStartupPermissions();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _requestStartupPermissions();
     });
   }
 

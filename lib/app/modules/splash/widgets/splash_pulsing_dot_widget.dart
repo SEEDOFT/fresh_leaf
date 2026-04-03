@@ -26,12 +26,14 @@ class _SplashPulsingDotWidgetState extends State<SplashPulsingDotWidget>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
+    // Tween<double> requires double type for animation values
+    // ignore: prefer_int_literals
     _scale = Tween(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
     );
 
-    Future.delayed(widget.delay, () {
-      if (mounted) _ctrl.repeat(reverse: true);
+    Future.delayed(widget.delay, () async {
+      if (mounted) await _ctrl.repeat(reverse: true);
     });
   }
 

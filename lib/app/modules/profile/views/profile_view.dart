@@ -83,7 +83,8 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.credit_card,
                       title: 'payment_methods'.tr,
                       subtitle: 'payment_methods_subtitle'.tr,
-                      onTap: () {},
+                      onTap: () async =>
+                          await Get.toNamed<void>(AppRoutes.paymentMethods),
                     ),
                   ],
                 ),
@@ -94,11 +95,15 @@ class ProfileView extends GetView<ProfileController> {
                       icon: Icons.support_agent,
                       title: 'help_center'.tr,
                       subtitle: 'help_center_subtitle'.tr,
+                      onTap: () async =>
+                          await Get.toNamed<void>(AppRoutes.helpCenter),
                     ),
                     const Divider(height: 16),
                     ProfileTile(
                       icon: Icons.policy_outlined,
                       title: 'privacy_terms'.tr,
+                      onTap: () async =>
+                          await Get.toNamed<void>(AppRoutes.privacyTerms),
                     ),
                   ],
                 ),

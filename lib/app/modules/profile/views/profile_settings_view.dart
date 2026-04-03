@@ -36,9 +36,9 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
                     trailing: DropdownButton<ThemeMode>(
                       value: controller.themeMode.value,
                       underline: const SizedBox.shrink(),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         if (value != null) {
-                          controller.changeTheme(value);
+                          await controller.changeTheme(value);
                         }
                       },
                       items: [
@@ -65,11 +65,11 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
                     trailing: DropdownButton<String>(
                       value: controller.locale.value.languageCode,
                       underline: const SizedBox.shrink(),
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         if (value == 'km') {
-                          controller.changeLanguage(const Locale('km'));
+                          await controller.changeLanguage(const Locale('km'));
                         } else if (value == 'en') {
-                          controller.changeLanguage(const Locale('en'));
+                          await controller.changeLanguage(const Locale('en'));
                         }
                       },
                       items: [
@@ -86,7 +86,7 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
                     value: controller.notificationsEnabled.value,
                     contentPadding: EdgeInsets.zero,
                     title: Text('notifications'.tr),
-                    activeColor: scheme.primary,
+                    activeThumbColor: scheme.primary,
                     onChanged: (value) =>
                         controller.toggleNotification(enabled: value),
                   ),

@@ -42,16 +42,6 @@ class HomeAppBarWidget extends StatelessWidget {
               ),
             ],
           ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-            icon: Icon(
-              Icons.notifications_outlined,
-              size: 22,
-              color: scheme.onSurface,
-            ),
-            onPressed: () async => await Get.toNamed(AppRoutes.notifications),
-          ),
           Column(
             children: [
               Text(
@@ -71,6 +61,16 @@ class HomeAppBarWidget extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            icon: Icon(
+              Icons.notifications_outlined,
+              size: 22,
+              color: scheme.onSurface,
+            ),
+            onPressed: () async => await Get.toNamed(AppRoutes.notifications),
           ),
         ],
       ),

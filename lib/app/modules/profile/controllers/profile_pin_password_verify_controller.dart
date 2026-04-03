@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePinPasswordVerifyController extends GetxController {
@@ -16,7 +17,6 @@ class ProfilePinPasswordVerifyController extends GetxController {
   final RxBool isPasswordVisible = false.obs;
   final RxBool isPasswordVerified = false.obs;
   final RxString mode = 'set'.obs;
-  String _verifiedPassword = '';
 
   bool get isResetMode => mode.value == 'reset';
   bool get isUpdateMode => mode.value == 'update';
@@ -91,11 +91,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
     isLoading.value = true;
     try {
       if (isResetMode) {
-        final ok = await _resetPinWithPassword(
-          _verifiedPassword,
-          pin,
-          confirmPin,
-        );
+        final ok = await _resetPin(pin, confirmPin);
         if (!ok) return;
       } else if (isUpdateMode) {
         final ok = await _updatePin(currentPin, pin, confirmPin);
@@ -124,7 +120,6 @@ class ProfilePinPasswordVerifyController extends GetxController {
       final passwordOk = await _verifyPassword(password);
       if (!passwordOk) return;
 
-      _verifiedPassword = password;
       isPasswordVerified.value = true;
       Get.snackbar('verified'.tr, 'password_verified_success'.tr);
     } finally {
@@ -134,7 +129,6 @@ class ProfilePinPasswordVerifyController extends GetxController {
 
   void resetVerification({bool clearPasswordField = false}) {
     isPasswordVerified.value = false;
-    _verifiedPassword = '';
     currentPinController.clear();
     pinController.clear();
     confirmPinController.clear();
@@ -144,17 +138,14 @@ class ProfilePinPasswordVerifyController extends GetxController {
   }
 
   Future<bool> _verifyPassword(String password) async {
-    final api = Get.find<ApiClient>();
+    final apiClient = Get.find<ApiClient>();
     try {
-      final response = await api.postRequest(
+      final response = await apiClient.postRequest(
         ApiEndpoints.verifyPassword,
         data: {'password': password},
       );
 
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
@@ -169,7 +160,10 @@ class ProfilePinPasswordVerifyController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'verification_failed'.tr,
-        _extractApiMessage(e, fallback: 'password_verification_failed'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'password_verification_failed'.tr,
+        ),
       );
       return false;
     } on Exception catch (_) {
@@ -192,10 +186,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         },
       );
 
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
@@ -210,7 +201,10 @@ class ProfilePinPasswordVerifyController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'set_pin_failed'.tr,
-        _extractApiMessage(e, fallback: 'unable_set_pin'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_set_pin'.tr,
+        ),
       );
       return false;
     } on Exception catch (_) {
@@ -235,10 +229,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         },
       );
 
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
@@ -253,7 +244,10 @@ class ProfilePinPasswordVerifyController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'update_pin_failed'.tr,
-        _extractApiMessage(e, fallback: 'unable_update_pin'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_update_pin'.tr,
+        ),
       );
       return false;
     } on Exception catch (_) {
@@ -262,61 +256,45 @@ class ProfilePinPasswordVerifyController extends GetxController {
     }
   }
 
-  Future<bool> _resetPinWithPassword(
-    String password,
+  Future<bool> _resetPin(
     String pin,
     String confirmPin,
   ) async {
-    final api = Get.find<ApiClient>();
+    final apiClient = Get.find<ApiClient>();
+    try {
+      final response = await apiClient.postRequest(
+        ApiEndpoints.resetPin,
+        data: {
+          'pin': pin,
+          'pin_confirmation': confirmPin,
+        },
+      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
-    final payloads = <Map<String, dynamic>>[
-      {
-        'password': password,
-        'pin': pin,
-        'pin_confirmation': confirmPin,
-      },
-      {
-        'password': password,
-        'current_pin': '',
-        'pin': pin,
-        'pin_confirmation': confirmPin,
-      },
-    ];
-
-    for (final payload in payloads) {
-      try {
-        final response = await api.postRequest(
-          ApiEndpoints.updatePin,
-          data: payload,
+      if (!apiResponse.isSuccess && response.statusCode != 200) {
+        Get.snackbar(
+          'reset_pin_failed'.tr,
+          apiResponse.status.message.isNotEmpty
+              ? apiResponse.status.message
+              : 'unable_update_pin'.tr,
         );
-        final apiResponse = ApiResponse.fromResponse(
-          response.data,
-          (json) => json,
-        );
-        if (apiResponse.isSuccess || response.statusCode == 200) {
-          return true;
-        }
-      } on DioException {
-        // try next payload shape
+        return false;
       }
+
+      return true;
+    } on DioException catch (e) {
+      Get.snackbar(
+        'reset_pin_failed'.tr,
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_update_pin'.tr,
+        ),
+      );
+      return false;
+    } on Exception catch (_) {
+      Get.snackbar('reset_pin_failed'.tr, 'unable_update_pin'.tr);
+      return false;
     }
-
-    final setOk = await _setPin(pin, confirmPin);
-    if (setOk) return true;
-
-    Get.snackbar('reset_pin_failed'.tr, 'unable_update_pin'.tr);
-    return false;
-  }
-
-  String _extractApiMessage(DioException error, {required String fallback}) {
-    final responseData = error.response?.data;
-    if (responseData is Map) {
-      final status = responseData['status'];
-      if (status is Map && status['message'] != null) {
-        return status['message'].toString();
-      }
-    }
-    return fallback;
   }
 
   @override

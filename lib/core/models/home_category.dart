@@ -9,6 +9,16 @@ class HomeCategory {
   final HomeCategoryIcon icon;
   final String titleKey;
 
+  HomeCategory copyWith({
+    HomeCategoryIcon? icon,
+    String? titleKey,
+  }) {
+    return HomeCategory(
+      icon: icon ?? this.icon,
+      titleKey: titleKey ?? this.titleKey,
+    );
+  }
+
   static HomeCategoryIcon fromString(String value) {
     switch (value) {
       case 'apple':

@@ -19,6 +19,12 @@ class AiChatMessage {
   final bool isUser;
   final bool isStreaming;
 
+  Map<String, dynamic> toMap() => {
+    'text': text,
+    'isUser': isUser,
+    'isStreaming': isStreaming,
+  };
+
   AiChatMessage copyWith({String? text, bool? isUser, bool? isStreaming}) {
     return AiChatMessage(
       text: text ?? this.text,
@@ -26,10 +32,4 @@ class AiChatMessage {
       isStreaming: isStreaming ?? this.isStreaming,
     );
   }
-
-  Map<String, dynamic> toMap() => {
-    'text': text,
-    'isUser': isUser,
-    'isStreaming': isStreaming,
-  };
 }

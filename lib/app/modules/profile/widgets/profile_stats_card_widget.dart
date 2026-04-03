@@ -18,11 +18,11 @@ class ProfileStatsCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 64,
-            height: 64,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               color: scheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(40),
             ),
             child: Obx(
               () {
@@ -34,19 +34,18 @@ class ProfileStatsCard extends StatelessWidget {
                     size: 28,
                   );
                 }
-
                 return ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(40),
                   child: Image.network(
                     imageUrl,
-                    width: 64,
-                    height: 64,
+                    width: 80,
+                    height: 80,
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
                       return Container(
-                        width: 64,
-                        height: 64,
+                        width: 80,
+                        height: 80,
                         color: scheme.surfaceContainerHighest,
                         child: Center(
                           child: SizedBox(

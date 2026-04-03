@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfileSecurityController extends GetxController {
@@ -36,10 +37,7 @@ class ProfileSecurityController extends GetxController {
         data: {'password': password},
       );
 
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => json,
-      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar(
@@ -57,7 +55,10 @@ class ProfileSecurityController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'verification_failed'.tr,
-        _extractApiMessage(e, fallback: 'password_verification_failed'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'password_verification_failed'.tr,
+        ),
       );
     } on Exception catch (_) {
       Get.snackbar(
@@ -154,10 +155,7 @@ class ProfileSecurityController extends GetxController {
           ApiEndpoints.updatePassword,
           data: payload,
         );
-        final apiResponse = ApiResponse.fromResponse(
-          response.data,
-          (json) => json,
-        );
+        final apiResponse = ApiResponse.parseDynamic(response.data);
         if (apiResponse.isSuccess || response.statusCode == 200) {
           return true;
         }
@@ -169,7 +167,10 @@ class ProfileSecurityController extends GetxController {
         }
         Get.snackbar(
           'update_failed'.tr,
-          _extractApiMessage(e, fallback: 'unable_update_password'.tr),
+          parseApiErrorMessage(
+            e,
+            fallback: 'unable_update_password'.tr,
+          ),
         );
         return false;
       } on Exception catch (_) {
@@ -180,17 +181,6 @@ class ProfileSecurityController extends GetxController {
 
     Get.snackbar('update_failed'.tr, 'unable_update_password'.tr);
     return false;
-  }
-
-  String _extractApiMessage(DioException error, {required String fallback}) {
-    final responseData = error.response?.data;
-    if (responseData is Map) {
-      final status = responseData['status'];
-      if (status is Map && status['message'] != null) {
-        return status['message'].toString();
-      }
-    }
-    return fallback;
   }
 
   @override

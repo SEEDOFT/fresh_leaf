@@ -57,10 +57,7 @@ class ProfileController extends GetxController {
       final response = await api.getRequest(
         ApiEndpoints.userProfile,
       );
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
-      );
+      final apiResponse = ApiResponse.parseMap(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);

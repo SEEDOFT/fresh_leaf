@@ -27,4 +27,8 @@ final class AppRoutes {
   static const pinSecurity = '/pin_security';
   static const pinPasswordVerification = '/pin_password_verification';
   static const wishlist = '/wishlist';
+  static const paymentMethods = '/payment_methods';
+  static const paymentMethodsAdd = '/payment_methods_add';
+  static const helpCenter = '/help_center';
+  static const privacyTerms = '/privacy_terms';
 }

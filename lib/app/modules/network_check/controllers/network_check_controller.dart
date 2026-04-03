@@ -7,9 +7,9 @@ class NetworkCheckController extends GetxController {
   final RxBool isOnline = false.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    checkConnection();
+    await checkConnection();
   }
 
   Future<void> checkConnection() async {

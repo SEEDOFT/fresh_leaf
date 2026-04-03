@@ -37,6 +37,30 @@ class ProductInfo {
   final String harvest;
   final String storage;
 
+  ProductInfo copyWith({
+    String? title,
+    String? subtitle,
+    String? description,
+    String? imageUrl,
+    List<String>? tags,
+    double? price,
+    String? origin,
+    String? harvest,
+    String? storage,
+  }) {
+    return ProductInfo(
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      tags: tags ?? this.tags,
+      price: price ?? this.price,
+      origin: origin ?? this.origin,
+      harvest: harvest ?? this.harvest,
+      storage: storage ?? this.storage,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'title': title,

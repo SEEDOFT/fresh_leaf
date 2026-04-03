@@ -16,10 +16,10 @@ class AiAssistantController extends GetxController {
   String? _inventoryContext;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     _hydrateMessages();
-    _loadInventory();
+    await _loadInventory();
   }
 
   @override
@@ -49,7 +49,7 @@ class AiAssistantController extends GetxController {
         : 'Store inventory:\n$_inventoryContext\n\nUser: $prompt\nAI:';
 
     messages.add(AiChatMessage(text: prompt, isUser: true));
-    _persistMessages();
+    await _persistMessages();
     _scheduleAutoScroll();
     inputController.clear();
 
@@ -57,7 +57,7 @@ class AiAssistantController extends GetxController {
       const AiChatMessage(text: '', isUser: false, isStreaming: true),
     );
     final aiIndex = messages.length - 1;
-    _persistMessages();
+    await _persistMessages();
     _scheduleAutoScroll();
 
     isLoading.value = true;
@@ -70,26 +70,26 @@ class AiAssistantController extends GetxController {
           text: buffer.toString(),
           isStreaming: true,
         );
-        _persistMessages();
+        await _persistMessages();
         _scheduleAutoScroll(animated: false);
       }
       messages[aiIndex] = messages[aiIndex].copyWith(isStreaming: false);
-      _persistMessages();
+      await _persistMessages();
       _scheduleAutoScroll();
     } on Exception catch (e) {
       messages[aiIndex] = AiChatMessage(
         text: 'Error: $e',
         isUser: false,
       );
-      _persistMessages();
+      await _persistMessages();
       _scheduleAutoScroll();
     } finally {
       isLoading.value = false;
     }
   }
 
-  void copyText(String text) {
-    Clipboard.setData(ClipboardData(text: text));
+  Future<void> copyText(String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
     if (text.isNotEmpty) {
       Get.snackbar(
         'copied'.tr,
@@ -115,11 +115,11 @@ class AiAssistantController extends GetxController {
   }
 
   void _scheduleAutoScroll({bool animated = true}) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!chatScrollController.hasClients) return;
       final target = chatScrollController.position.maxScrollExtent;
       if (animated) {
-        chatScrollController.animateTo(
+        await chatScrollController.animateTo(
           target,
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeOut,
@@ -130,8 +130,8 @@ class AiAssistantController extends GetxController {
     });
   }
 
-  void _persistMessages() {
-    _storage.saveMessages(messages.toList());
+  Future<void> _persistMessages() async {
+    await _storage.saveMessages(messages.toList());
   }
 
   Future<void> clearHistory() async {

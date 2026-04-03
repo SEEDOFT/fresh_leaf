@@ -7,6 +7,7 @@ import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePinController extends GetxController {
@@ -94,10 +95,7 @@ class ProfilePinController extends GetxController {
             ApiEndpoints.updatePin,
             data: payload,
           );
-          lastResponse = ApiResponse.fromResponse(
-            response.data,
-            (json) => json,
-          );
+          lastResponse = ApiResponse.parseDynamic(response.data);
           if (lastResponse.isSuccess || response.statusCode == 200) {
             updated = true;
             break;
@@ -128,7 +126,10 @@ class ProfilePinController extends GetxController {
     } on DioException catch (e) {
       Get.snackbar(
         'update_pin_failed'.tr,
-        _extractApiMessage(e, fallback: 'unable_update_pin'.tr),
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_update_pin'.tr,
+        ),
       );
     } on Exception {
       Get.snackbar('update_pin_failed'.tr, 'unable_update_pin'.tr);
@@ -138,14 +139,15 @@ class ProfilePinController extends GetxController {
   }
 
   Future<void> openResetPinWithPassword() async {
-    final result = await Get.toNamed<bool?>(
+    final result = await Get.toNamed<dynamic>(
       AppRoutes.pinPasswordVerification,
       arguments: const {'mode': 'reset'},
     );
-    if (result ?? false) {
+
+    if (result is bool && result) {
       await _setPinState(true);
       Get.snackbar('success'.tr, 'pin_reset_success'.tr);
-    }
+    } 
   }
 
   Future<void> _setPinState(bool value) async {
@@ -166,10 +168,7 @@ class ProfilePinController extends GetxController {
       final response = await apiClient.getRequest(
         ApiEndpoints.userProfile,
       );
-      final apiResponse = ApiResponse.fromResponse(
-        response.data,
-        (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
-      );
+      final apiResponse = ApiResponse.parseMap(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         return;
@@ -183,17 +182,6 @@ class ProfilePinController extends GetxController {
     } on Exception {
       // Keep current state from in-memory profile if request fails.
     }
-  }
-
-  String _extractApiMessage(DioException error, {required String fallback}) {
-    final responseData = error.response?.data;
-    if (responseData is Map) {
-      final status = responseData['status'];
-      if (status is Map && status['message'] != null) {
-        return status['message'].toString();
-      }
-    }
-    return fallback;
   }
 
   void _clearPinInputs() {
