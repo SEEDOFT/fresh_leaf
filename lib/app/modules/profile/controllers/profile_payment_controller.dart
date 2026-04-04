@@ -33,8 +33,10 @@ class ProfilePaymentController extends GetxController {
     if (isLoading.value) return;
     isLoading.value = true;
     try {
-      final api = Get.find<ApiClient>();
-      final response = await api.getRequest(ApiEndpoints.userPaymentMethods);
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(
+        ApiEndpoints.userPaymentMethods,
+      );
       final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
@@ -43,7 +45,7 @@ class ProfilePaymentController extends GetxController {
             'fetch_failed'.tr,
             apiResponse.status.message.isNotEmpty
                 ? apiResponse.status.message
-                : 'Unable to load payment methods',
+                : 'unable_load_payment_methods'.tr,
           );
         }
         return;
@@ -59,13 +61,13 @@ class ProfilePaymentController extends GetxController {
           'fetch_failed'.tr,
           parseApiErrorMessage(
             error,
-            fallback: 'Unable to load payment methods',
+            fallback: 'unable_load_payment_methods'.tr,
           ),
         );
       }
-    } on Exception {
+    } on Exception catch (_) {
       if (showError) {
-        Get.snackbar('fetch_failed'.tr, 'Unable to load payment methods');
+        Get.snackbar('fetch_failed'.tr, 'unable_load_payment_methods'.tr);
       }
     } finally {
       isLoading.value = false;
@@ -81,15 +83,15 @@ class ProfilePaymentController extends GetxController {
   }
 
   Future<void> setDefault(PaymentMethod method) async {
-    if (processingId.value.isNotEmpty || method.isDefault) return;
-    processingId.value = method.id;
+    if (processingId.value.isNotEmpty || method.isDefault == true) return;
+    processingId.value = method.id.toString();
     try {
       methods.assignAll(
         methods.map(
           (item) => item.copyWith(isDefault: item.id == method.id),
         ),
       );
-      Get.snackbar('updated'.tr, 'Default payment updated');
+      Get.snackbar('updated'.tr, 'default_payment_updated'.tr);
     } finally {
       processingId.value = '';
     }
@@ -97,10 +99,10 @@ class ProfilePaymentController extends GetxController {
 
   Future<void> remove(PaymentMethod method) async {
     if (processingId.value.isNotEmpty) return;
-    processingId.value = method.id;
+    processingId.value = method.id.toString();
     try {
       methods.removeWhere((item) => item.id == method.id);
-      Get.snackbar('deleted'.tr, 'Payment method removed');
+      Get.snackbar('deleted'.tr, 'payment_method_removed'.tr);
     } finally {
       processingId.value = '';
     }
@@ -136,16 +138,22 @@ class ProfilePaymentController extends GetxController {
   }
 
   Future<void> _openPaymentEditor({PaymentMethod? seed}) async {
+    final hasDefaultMethod =
+        methods.isNotEmpty && methods.first.isDefault == true;
     final routeResult = await Get.toNamed<dynamic>(
       AppRoutes.paymentMethodsAdd,
-      arguments: seed,
+      arguments: <String, dynamic>{
+        'seed': seed,
+        'has_default_method': hasDefaultMethod,
+      },
     );
     final result = _toPaymentMethod(routeResult);
     if (result == null) return;
 
     final isEdit = seed != null;
     final firstItem = methods.isEmpty;
-    final shouldBeDefault = firstItem || result.isDefault;
+    final shouldBeDefault =
+        firstItem || (!hasDefaultMethod && result.isDefault == true);
     final normalized = result.copyWith(isDefault: shouldBeDefault);
 
     if (shouldBeDefault) {
@@ -161,11 +169,11 @@ class ProfilePaymentController extends GetxController {
       } else {
         methods.insert(0, normalized);
       }
-      Get.snackbar('Success', 'Payment method updated.');
+      Get.snackbar('success'.tr, 'payment_method_updated'.tr);
       return;
     }
 
     methods.insert(0, normalized);
-    Get.snackbar('Success', 'Payment method added.');
+    Get.snackbar('success'.tr, 'payment_method_added'.tr);
   }
 }

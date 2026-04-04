@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_primary_action_button_widget.dart';
+import 'package:get/get.dart';
 
 class ProfilePaymentHeader extends StatelessWidget {
   const ProfilePaymentHeader({
@@ -57,7 +58,7 @@ class ProfilePaymentHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Your payment methods',
+                  'your_payment_methods'.tr,
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontSize: 16,
@@ -66,7 +67,7 @@ class ProfilePaymentHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: _gap12),
                 Text(
-                  'Manage your cards and wallets used at checkout.',
+                  'manage_cards_wallets_checkout'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 13,
@@ -75,7 +76,7 @@ class ProfilePaymentHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: _gap12),
                 ProfilePrimaryActionButton(
-                  label: 'Add payment method',
+                  label: 'add_payment_method'.tr,
                   icon: Icons.add,
                   onPressed: onAddTap,
                   isLoading: isLoading,

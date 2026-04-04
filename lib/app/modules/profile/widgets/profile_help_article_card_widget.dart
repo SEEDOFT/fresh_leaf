@@ -34,8 +34,8 @@ class ProfileHelpArticleCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           tilePadding: const EdgeInsets.symmetric(
-            horizontal: 14.0,
-            vertical: 12.0,
+            horizontal: 14,
+            vertical: 12,
           ),
           collapsedIconColor: scheme.onSurfaceVariant,
           iconColor: scheme.primary,
@@ -89,8 +89,8 @@ class ProfileHelpArticleCard extends StatelessWidget {
             ],
           ),
           childrenPadding: const EdgeInsets.symmetric(
-            horizontal: 14.0,
-            vertical: 6.0,
+            horizontal: 14,
+            vertical: 6,
           ),
           children: [
             Text(

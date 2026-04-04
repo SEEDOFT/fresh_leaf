@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
+import 'package:get/get.dart';
 
 class ProfilePaymentMethodCard extends StatelessWidget {
   const ProfilePaymentMethodCard({
-    required this.method,
+    required this.paymentMethod,
     required this.isProcessing,
     required this.onEdit,
     required this.onSetDefault,
@@ -11,7 +12,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
     super.key,
   });
 
-  final PaymentMethod method;
+  final PaymentMethod paymentMethod;
   final bool isProcessing;
   final VoidCallback onEdit;
   final VoidCallback onSetDefault;
@@ -21,8 +22,13 @@ class ProfilePaymentMethodCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final media = MediaQuery.of(context);
-    final month = method.expiryMonth.clamp(1, 12);
-    final year = method.expiryYear % 100;
+    final month = paymentMethod.expiryMonth.clamp(1, 12);
+    final year = paymentMethod.expiryYear % 100;
+    final label = paymentMethod.label != null && paymentMethod.label!.isNotEmpty
+        ? paymentMethod.label
+        : paymentMethod.paymentMethodType?.name;
+    final last4 = _resolveLast4(paymentMethod.cardNumber);
+    final statusName = paymentMethod.paymentMethodStatus?.name;
 
     return Container(
       width: media.size.width,
@@ -44,14 +50,17 @@ class ProfilePaymentMethodCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              _PaymentBrandAvatar(brand: method.brand, color: scheme.primary),
+              _PaymentBrandAvatar(
+                brand: label.toString(),
+                color: scheme.primary,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      method.brand.isNotEmpty ? method.brand : 'Card',
+                      label ?? 'payment_method'.tr,
                       style: TextStyle(
                         color: scheme.onSurface,
                         fontWeight: FontWeight.w700,
@@ -60,7 +69,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '•••• ${method.last4}',
+                      '•••• $last4',
                       style: TextStyle(
                         color: scheme.onSurfaceVariant,
                         fontSize: 13,
@@ -69,7 +78,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (method.isDefault)
+              if (paymentMethod.isDefault ?? false)
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -80,7 +89,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    'Default',
+                    'default'.tr,
                     style: TextStyle(
                       color: scheme.primary,
                       fontWeight: FontWeight.w700,
@@ -100,7 +109,8 @@ class ProfilePaymentMethodCard extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                'Exp ${month.toString().padLeft(2, '0')}/${year.toString().padLeft(2, '0')}',
+                '${'exp'.tr} ${month.toString().padLeft(2, '0')}/'
+                '${year.toString().padLeft(2, '0')}',
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 13,
@@ -114,7 +124,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                method.type.isNotEmpty ? method.type : 'Secure',
+                statusName != null ? statusName.tr : 'status_unknown'.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 13,
@@ -128,13 +138,14 @@ class ProfilePaymentMethodCard extends StatelessWidget {
               Expanded(
                 child: OutlinedButton(
                   onPressed: isProcessing ? null : onEdit,
-                  child: const Text('Edit'),
+                  child: Text('edit'.tr),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton(
-                  onPressed: (isProcessing || method.isDefault)
+                  onPressed:
+                      (isProcessing || (paymentMethod.isDefault ?? false))
                       ? null
                       : onSetDefault,
                   child: isProcessing
@@ -146,7 +157,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                             color: scheme.primary,
                           ),
                         )
-                      : const Text('Set as default'),
+                      : Text('set_as_default'.tr),
                 ),
               ),
               const SizedBox(width: 6),
@@ -155,7 +166,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                 style: TextButton.styleFrom(
                   foregroundColor: scheme.error,
                 ),
-                child: const Text('Remove'),
+                child: Text('remove'.tr),
               ),
             ],
           ),
@@ -195,4 +206,11 @@ class _PaymentBrandAvatar extends StatelessWidget {
       ),
     );
   }
+}
+
+String _resolveLast4(String cardNumber) {
+  final digits = cardNumber.replaceAll(RegExp('[^0-9]'), '');
+  if (digits.isEmpty) return '****';
+  if (digits.length <= 4) return digits;
+  return digits.substring(digits.length - 4);
 }

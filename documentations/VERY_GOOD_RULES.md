@@ -24,6 +24,17 @@ AI agents must follow these rules whenever writing or modifying code.
   - [api_response.dart](D:/Flutter/fresh_leaf/lib/core/models/api_response.dart)
   - [helper.dart](D:/Flutter/fresh_leaf/lib/shared/helpers/helper.dart)
 
+## 2.1) Variable naming clarity
+
+- Prefer clear, descriptive variable names over short abbreviations.
+- Use full meaning names such as:
+  - `currentPaymentMethod`
+  - `billingZipCode`
+  - `isDefaultPaymentEnabled`
+- Avoid unclear short names like:
+  - `cur`, `pm`, `zip`, `isDef`
+- Keep names readable for onboarding and maintenance.
+
 ## 3) Exceptions and error handling
 
 - Always catch specific exceptions first:
@@ -74,6 +85,8 @@ AI agents must follow these rules whenever writing or modifying code.
 - Keep code formatter-friendly and lint-friendly.
 - Wrap long expressions for readability and to avoid lint violations.
 - Preserve trailing commas where appropriate.
+- Do not write lines longer than 80 characters.
+- If a statement is too long, wrap it into multiple lines.
 
 ## 9) Analyzer scope notes
 

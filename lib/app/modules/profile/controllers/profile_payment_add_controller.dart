@@ -1,7 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/constants/payment_method_status_constants.dart';
+import 'package:fresh_leaf/core/constants/payment_method_type_constants.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentAddController extends GetxController {
@@ -10,12 +17,15 @@ class ProfilePaymentAddController extends GetxController {
   final expiryController = TextEditingController();
   final cvvController = TextEditingController();
   final billingAddressController = TextEditingController();
+  final billingCityController = TextEditingController();
+  final billingStateController = TextEditingController();
+  final billingZipCodeController = TextEditingController();
   final RxBool setAsDefault = false.obs;
   final RxBool isSaving = false.obs;
+  final RxBool canSetAsDefault = true.obs;
   final RxString cardType = 'Unknown'.obs;
   final RxString cardValidationMessage = ''.obs;
 
-  String _lastAcceptedCardDigits = '';
   PaymentMethod? _editingMethod;
 
   bool get isEditMode => _editingMethod != null;
@@ -44,19 +54,6 @@ class ProfilePaymentAddController extends GetxController {
 
   void onCardNumberChanged(String value) {
     final digits = _digitsOnly(value);
-    if (_shouldRejectCardInput(digits)) {
-      final fallback = _formatCardNumber(_lastAcceptedCardDigits);
-      cardNumberController.value = TextEditingValue(
-        text: fallback,
-        selection: TextSelection.collapsed(offset: fallback.length),
-      );
-      if (cardValidationMessage.value.isEmpty) {
-        cardValidationMessage.value = 'Unsupported or invalid card number.';
-      }
-      return;
-    }
-
-    _lastAcceptedCardDigits = digits;
     cardType.value = _detectCardType(digits);
     cardValidationMessage.value = '';
 
@@ -86,47 +83,115 @@ class ProfilePaymentAddController extends GetxController {
     final holder = holderNameController.text.trim();
     final cardDigits = _digitsOnly(cardNumberController.text);
     final expiryDigits = _digitsOnly(expiryController.text);
-    final cvv = _digitsOnly(cvvController.text);
+    final enteredCvv = _digitsOnly(cvvController.text);
+    final billingAddress = billingAddressController.text.trim();
+    final billingCity = billingCityController.text.trim();
+    final billingState = billingStateController.text.trim();
+    final billingZipCode = billingZipCodeController.text.trim();
     final isKeepingExistingCard = isEditMode && cardDigits.isEmpty;
 
     final validationError = _validate(
       holder: holder,
       cardDigits: cardDigits,
       expiryDigits: expiryDigits,
-      cvv: cvv,
+      enteredCvv: enteredCvv,
+      billingAddress: billingAddress,
+      billingCity: billingCity,
+      billingState: billingState,
+      billingZipCode: billingZipCode,
       isKeepingExistingCard: isKeepingExistingCard,
     );
 
     if (validationError.isNotEmpty) {
-      Get.snackbar('Invalid payment', validationError);
+      Get.snackbar('invalid_payment'.tr, validationError);
       return;
     }
 
     isSaving.value = true;
     try {
+      final apiClient = Get.find<ApiClient>();
       final expiryMonth = int.parse(expiryDigits.substring(0, 2));
       final expiryYear = 2000 + int.parse(expiryDigits.substring(2));
-      final last4 = isKeepingExistingCard
-          ? (_editingMethod?.last4 ?? '')
-          : cardDigits.substring(cardDigits.length - 4);
-      final brand = isKeepingExistingCard
-          ? (_editingMethod?.brand ?? 'Unknown')
+      final cvv = isKeepingExistingCard ? _editingMethod?.cvv : enteredCvv;
+      final label = isKeepingExistingCard
+          ? (_editingMethod?.label ?? 'Unknown')
           : _detectCardType(cardDigits);
+      final paymentMethodTypeId = _resolvePaymentMethodTypeId(label);
+      final cardNumber = isKeepingExistingCard
+          ? (_editingMethod?.cardNumber ?? '')
+          : cardDigits;
 
       final created = PaymentMethod(
-        id:
-            _editingMethod?.id ??
-            DateTime.now().millisecondsSinceEpoch.toString(),
-        brand: brand,
-        last4: last4,
-        type: 'Card',
+        label: label,
+        cardNumber: cardNumber,
+        cvv: cvv ?? '',
+        paymentMethodTypeId: paymentMethodTypeId,
+        paymentMethodStatusId: PaymentMethodStatusConstants.active,
         expiryMonth: expiryMonth,
         expiryYear: expiryYear,
-        holderName: holder,
-        isDefault: setAsDefault.value,
+        cardHolderName: holder,
+        billingAddress: billingAddress,
+        billingCity: billingCity,
+        billingState: billingState,
+        billingZipCode: billingZipCode,
+        isDefault: canSetAsDefault.value && setAsDefault.value,
       );
 
-      Get.back<PaymentMethod>(result: created);
+      final payload = {
+        'label': created.label,
+        'card_number': created.cardNumber,
+        'cvv': created.cvv,
+        'payment_method_type_id': created.paymentMethodTypeId,
+        'expiry_month': created.expiryMonth,
+        'expiry_year': created.expiryYear,
+        'card_holder_name': created.cardHolderName,
+        'billing_address': created.billingAddress,
+        'billing_city': created.billingCity,
+        'billing_state': created.billingState,
+        'billing_zip_code': created.billingZipCode,
+        'is_default': created.isDefault,
+      };
+      
+      final response = await apiClient.postRequest(
+        ApiEndpoints.userPaymentMethods,
+        data: payload,
+      );
+
+      final apiResponse = ApiResponse.parseMap(response.data);
+      final statusCode = response.statusCode ?? 0;
+      final isSuccessCode = statusCode == 200 || statusCode == 201;
+      if (!apiResponse.status.success || !isSuccessCode) {
+        Get.snackbar(
+          'save_failed'.tr,
+          apiResponse.status.message.isNotEmpty
+              ? apiResponse.status.message
+              : 'unable_save_payment_method'.tr,
+        );
+        return;
+      }
+
+      final savedMethod = apiResponse.data.isEmpty
+          ? created
+          : PaymentMethod.fromMap(apiResponse.data);
+      Get.back<PaymentMethod>(result: savedMethod);
+    } on DioException catch (error) {
+      Get.snackbar(
+        'save_failed'.tr,
+        parseApiErrorMessage(
+          error,
+          fallback: 'unable_save_payment_method'.tr,
+        ),
+      );
+    } on FormatException catch (_) {
+      Get.snackbar(
+        'save_failed'.tr,
+        'unable_save_payment_method'.tr,
+      );
+    } on Exception catch (_) {
+      Get.snackbar(
+        'save_failed'.tr,
+        'unable_save_payment_method'.tr,
+      );
     } finally {
       isSaving.value = false;
     }
@@ -136,35 +201,38 @@ class ProfilePaymentAddController extends GetxController {
     required String holder,
     required String cardDigits,
     required String expiryDigits,
-    required String cvv,
+    required String enteredCvv,
+    required String billingAddress,
+    required String billingCity,
+    required String billingState,
+    required String billingZipCode,
     required bool isKeepingExistingCard,
   }) {
     if (holder.isEmpty) {
-      return 'Card holder name is required.';
+      return 'card_holder_required'.tr;
     }
+
     if (!isKeepingExistingCard) {
-      final brand = _detectCardType(cardDigits);
-      if (brand == 'Unknown') {
-        return 'Only Visa, Mastercard, and UnionPay are supported.';
+      if (cardDigits.length < 12) {
+        return 'card_number_invalid'.tr;
       }
-      if (!_isSupportedLength(brand, cardDigits.length)) {
-        return 'Card number is invalid.';
+      if (enteredCvv.length < 3 || enteredCvv.length > 4) {
+        return 'cvv_invalid'.tr;
       }
-      if (!_passesLuhn(cardDigits)) {
-        return 'Card number is invalid.';
-      }
-      if (cvv.length < 3 || cvv.length > 4) {
-        return 'CVV is invalid.';
+    } else if ((_editingMethod?.cvv ?? '').isEmpty) {
+      if (enteredCvv.length < 3 || enteredCvv.length > 4) {
+        return 'cvv_invalid'.tr;
       }
     }
+
     if (expiryDigits.length != 4) {
-      return 'Expiry must be in MM/YY format.';
+      return 'expiry_format_invalid'.tr;
     }
 
     final month = int.tryParse(expiryDigits.substring(0, 2)) ?? 0;
     final year = int.tryParse(expiryDigits.substring(2)) ?? -1;
     if (month < 1 || month > 12) {
-      return 'Expiry month is invalid.';
+      return 'expiry_month_invalid'.tr;
     }
 
     final fullYear = 2000 + year;
@@ -172,7 +240,20 @@ class ProfilePaymentAddController extends GetxController {
     final currentMonthStart = DateTime(now.year, now.month);
     final expiryMonthStart = DateTime(fullYear, month);
     if (expiryMonthStart.isBefore(currentMonthStart)) {
-      return 'Card has expired.';
+      return 'card_expired'.tr;
+    }
+
+    if (billingAddress.isEmpty) {
+      return 'enter_address_line_1'.tr;
+    }
+    if (billingCity.isEmpty) {
+      return 'enter_city'.tr;
+    }
+    if (billingState.isEmpty) {
+      return 'enter_province'.tr;
+    }
+    if (billingZipCode.isEmpty) {
+      return 'enter_postal_code'.tr;
     }
 
     return '';
@@ -190,82 +271,6 @@ class ProfilePaymentAddController extends GetxController {
     if (four != null && four >= 2221 && four <= 2720) return 'Mastercard';
     if (_isUnionPayPrefix(number)) return 'UnionPay';
     return 'Unknown';
-  }
-
-  bool _isSupportedLength(String brand, int length) {
-    if (brand == 'Mastercard') return length == 16;
-    if (brand == 'Visa') {
-      return length == 13 || length == 16 || length == 19;
-    }
-    if (brand == 'UnionPay') {
-      return length >= 16 && length <= 19;
-    }
-    return false;
-  }
-
-  bool _shouldRejectCardInput(String digits) {
-    if (digits.isEmpty) return false;
-
-    if (!_matchesAnySupportedPrefix(digits)) {
-      return true;
-    }
-
-    final maxLen = _maxLengthForPrefix(digits);
-    if (digits.length > maxLen) {
-      return true;
-    }
-
-    final type = _detectCardType(digits);
-    if (type == 'Unknown') {
-      return false;
-    }
-
-    if (_isSupportedLength(type, digits.length) && !_passesLuhn(digits)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool _matchesAnySupportedPrefix(String digits) {
-    return _isVisaPrefix(digits) ||
-        _isMastercardPrefix(digits) ||
-        _isUnionPayPrefix(digits);
-  }
-
-  int _maxLengthForPrefix(String digits) {
-    final isVisa = _isVisaPrefix(digits);
-    if (isVisa) return 19;
-
-    final isMastercard = _isMastercardPrefix(digits);
-    if (isMastercard) return 16;
-
-    final isUnionPay = _isUnionPayPrefix(digits);
-    if (isUnionPay) return 19;
-
-    return 19;
-  }
-
-  bool _isVisaPrefix(String digits) {
-    return '4'.startsWith(digits) || digits.startsWith('4');
-  }
-
-  bool _isMastercardPrefix(String digits) {
-    final twoDigitRanges = <List<int>>[
-      <int>[51, 55],
-      <int>[22, 27],
-    ];
-    for (final range in twoDigitRanges) {
-      if (_prefixInRange(digits, min: range[0], max: range[1], width: 2)) {
-        return true;
-      }
-    }
-
-    if (_prefixInRange(digits, min: 2221, max: 2720, width: 4)) {
-      return true;
-    }
-
-    return false;
   }
 
   bool _isUnionPayPrefix(String digits) {
@@ -303,23 +308,6 @@ class ProfilePaymentAddController extends GetxController {
     return groups.join(' ');
   }
 
-  bool _passesLuhn(String cardNumber) {
-    var sum = 0;
-    var doubleIt = false;
-    for (var i = cardNumber.length - 1; i >= 0; i--) {
-      var digit = int.parse(cardNumber[i]);
-      if (doubleIt) {
-        digit *= 2;
-        if (digit > 9) {
-          digit -= 9;
-        }
-      }
-      sum += digit;
-      doubleIt = !doubleIt;
-    }
-    return sum % 10 == 0;
-  }
-
   String? get cardLogoAsset {
     final type = cardType.value;
     if (type == 'Visa') return SvgAssets.visa;
@@ -330,23 +318,45 @@ class ProfilePaymentAddController extends GetxController {
 
   void _bindEditArgument() {
     final args = Get.arguments;
+    final hasDefaultMethod = _mapToHasDefault(args);
+    if (!isEditMode && hasDefaultMethod) {
+      canSetAsDefault.value = false;
+      setAsDefault.value = false;
+    }
+
     final method = _mapToPaymentMethod(args);
     if (method == null) return;
 
     _editingMethod = method;
-    holderNameController.text = method.holderName;
+    holderNameController.text = method.cardHolderName;
     final shortYear = (method.expiryYear % 100).toString().padLeft(2, '0');
     expiryController.text =
         '${method.expiryMonth.toString().padLeft(2, '0')}/$shortYear';
-    setAsDefault.value = method.isDefault;
-    cardType.value = method.brand.isEmpty ? 'Unknown' : method.brand;
+    billingAddressController.text = method.billingAddress;
+    billingCityController.text = method.billingCity;
+    billingStateController.text = method.billingState;
+    billingZipCodeController.text = method.billingZipCode;
+    setAsDefault.value = method.isDefault ?? false;
+    cardType.value = method.label ?? _detectCardType(method.cardNumber);
+    canSetAsDefault.value = true;
   }
 
   PaymentMethod? _mapToPaymentMethod(dynamic value) {
     if (value is PaymentMethod) {
       return value;
     }
+    if (value is Map<String, dynamic> && value['seed'] is PaymentMethod) {
+      return value['seed'] as PaymentMethod;
+    }
+    if (value is Map && value['seed'] is PaymentMethod) {
+      return value['seed'] as PaymentMethod;
+    }
     if (value is Map<String, dynamic>) {
+      final hasSeed = value['seed'] != null;
+      final hasPaymentId = value['id'] != null;
+      if (!hasSeed && !hasPaymentId) {
+        return null;
+      }
       return PaymentMethod.fromMap(value);
     }
     if (value is Map) {
@@ -358,12 +368,39 @@ class ProfilePaymentAddController extends GetxController {
     return null;
   }
 
+  bool _mapToHasDefault(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value['has_default_method'] == true;
+    }
+    if (value is Map) {
+      return value['has_default_method'] == true;
+    }
+    return false;
+  }
+
+  int _resolvePaymentMethodTypeId(String label) {
+    if (label == 'Visa') {
+      return PaymentMethodTypeConstants.visa;
+    }
+    if (label == 'Mastercard') {
+      return PaymentMethodTypeConstants.masterCard;
+    }
+    if (label == 'UnionPay') {
+      return PaymentMethodTypeConstants.unionPay;
+    }
+    return PaymentMethodTypeConstants.visa;
+  }
+
   @override
   void onClose() {
     holderNameController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
     cvvController.dispose();
+    billingAddressController.dispose();
+    billingCityController.dispose();
+    billingStateController.dispose();
+    billingZipCodeController.dispose();
     super.onClose();
   }
 }

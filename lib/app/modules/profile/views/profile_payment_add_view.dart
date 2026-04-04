@@ -13,13 +13,15 @@ class ProfilePaymentAddView extends GetView<ProfilePaymentAddController> {
     final media = MediaQuery.of(context);
     final scheme = Theme.of(context).colorScheme;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
+    final keyboardBottomInset = media.viewInsets.bottom;
+    final bottomSafeArea = media.padding.bottom;
 
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: ProfileAppBar(
         title: controller.isEditMode
-            ? 'Edit payment method'
-            : 'Add payment method',
+            ? 'edit_payment_method'.tr
+            : 'add_payment_method'.tr,
       ),
       body: SafeArea(
         child: ListView(
@@ -38,10 +40,8 @@ class ProfilePaymentAddView extends GetView<ProfilePaymentAddController> {
               ),
               child: Text(
                 controller.isEditMode
-                    ? 'Update the details below. '
-                          'Leave card number empty to keep current card.'
-                    : 'Your card data is used only for checkout '
-                          'and secure payment processing.',
+                    ? 'payment_edit_hint'.tr
+                    : 'payment_security_hint'.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   height: 1.35,
@@ -50,17 +50,29 @@ class ProfilePaymentAddView extends GetView<ProfilePaymentAddController> {
             ),
             const SizedBox(height: _gap12),
             ProfilePaymentAddForm(controller: controller),
-            const SizedBox(height: _gap12),
-            Obx(
-              () => ProfilePrimaryActionButton(
-                label: controller.isEditMode
-                    ? 'Update payment method'
-                    : 'Save payment method',
-                onPressed: controller.submit,
-                isLoading: controller.isSaving.value,
-              ),
-            ),
+            const SizedBox(height: 88),
           ],
+        ),
+      ),
+      bottomNavigationBar: AnimatedPadding(
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.fromLTRB(
+          16,
+          10,
+          16,
+          keyboardBottomInset > 0
+              ? keyboardBottomInset + 10
+              : bottomSafeArea + 10,
+        ),
+        child: Obx(
+          () => ProfilePrimaryActionButton(
+            label: controller.isEditMode
+                ? 'update_payment_method'.tr
+                : 'save_payment_method'.tr,
+            onPressed: controller.submit,
+            isLoading: controller.isSaving.value,
+          ),
         ),
       ),
     );

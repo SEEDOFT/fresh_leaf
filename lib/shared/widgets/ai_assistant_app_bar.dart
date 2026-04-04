@@ -135,9 +135,10 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         onTap: msg.text.isEmpty
                             ? null
-                            : () {
-                                _controller.copyText(msg.text);
+                            : () async {
                                 Navigator.pop(context);
+
+                                await _controller.copyText(msg.text);
                               },
                       );
                     },

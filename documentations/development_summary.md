@@ -24,6 +24,10 @@ The project uses **modular GetX structure** (`bindings`, `controllers`, `views`,
 - Geolocator + permission_handler for location permissions
 - Static analysis: **very_good_analysis** (follow its lints for any new code)
 - AI agent policy for lint-safe code changes: `documentations/VERY_GOOD_RULES.md`
+- Localization split by language file:
+  - `lib/core/localization/translations_en.dart`
+  - `lib/core/localization/translations_km.dart`
+  - aggregator: `lib/core/localization/app_translations.dart`
 
 ### App structure
 - `lib/app/modules/*` → feature modules
@@ -300,6 +304,25 @@ sequenceDiagram
   - `parseApiErrorMessage(...)` for Dio/API error message extraction.
   - `normalizeCambodiaPhoneForApi(...)` for `+855` phone normalization.
 - Controllers should call these helpers instead of duplicating private methods.
+
+---
+
+## 18) Line length rule
+
+- Keep every source line at 80 characters or fewer.
+- Wrap long strings/arguments into multiple lines.
+
+---
+
+## 19) Naming style rule
+
+- Use variable names that clearly express meaning.
+- Prefer full words over shortened forms.
+- Example preferred:
+  - `paymentMethodStatus`
+  - `hasDefaultPaymentMethod`
+  - `billingPostalCode`
+- Avoid confusing abbreviations unless they are standard terms.
 
 ---
 

@@ -11,7 +11,7 @@ class OnboardingController extends GetxController {
 
   Future<void> nextPage() async {
     if (isLastPage) {
-      _markSeen();
+      await _markSeen();
       await _goForward();
     } else {
       await pageController.nextPage(
@@ -22,14 +22,14 @@ class OnboardingController extends GetxController {
   }
 
   Future<void> skip() async {
-    _markSeen();
+    await _markSeen();
     await _goForward();
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    _markSeen();
+    await _markSeen();
   }
 
   @override

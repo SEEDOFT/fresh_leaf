@@ -52,7 +52,7 @@ final class AppBootstrap {
       return hasInternet ? AppRoutes.login : AppRoutes.networkCheck;
     }
 
-    apiClient.updateAuthToken(token);
+    await apiClient.updateAuthToken(token);
 
     try {
       final response = await apiClient.getRequest(ApiEndpoints.userProfile);

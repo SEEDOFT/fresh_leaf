@@ -29,14 +29,12 @@ class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
                 ),
               ),
               const SizedBox(height: 10),
-              ...controller.articles
-                  .map(
-                    (article) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: ProfileHelpArticleCard(article: article),
-                    ),
-                  )
-                  .toList(),
+              ...controller.articles.map(
+                (article) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: ProfileHelpArticleCard(article: article),
+                ),
+              ),
             ],
           );
         }),

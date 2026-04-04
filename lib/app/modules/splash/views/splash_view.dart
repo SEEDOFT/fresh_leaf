@@ -26,7 +26,7 @@ class SplashView extends GetView<SplashController> {
 
     return Scaffold(
       body: AnimatedBuilder(
-        animation: controller.animController,
+        animation: controller.animationController,
         builder: (context, _) => SplashBodyWidget(
           c: controller,
           isDark: isDark,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProfilePaymentEmptyState extends StatelessWidget {
   const ProfilePaymentEmptyState({super.key});
@@ -26,7 +27,7 @@ class ProfilePaymentEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'No payment methods yet',
+            'no_payment_methods_yet'.tr,
             style: TextStyle(
               color: scheme.onSurface,
               fontWeight: FontWeight.w800,
@@ -35,7 +36,7 @@ class ProfilePaymentEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Add a card or wallet to speed up checkout.',
+            'add_card_wallet_speed_checkout'.tr,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: scheme.onSurfaceVariant,

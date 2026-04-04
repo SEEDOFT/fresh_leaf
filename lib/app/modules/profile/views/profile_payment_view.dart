@@ -66,8 +66,8 @@ class ProfilePaymentView extends GetView<ProfilePaymentController> {
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: ProfilePaymentMethodCard(
-                method: item,
-                isProcessing: processingId == item.id,
+                paymentMethod: item,
+                isProcessing: processingId == item.id.toString(),
                 onEdit: () => controller.openEditPaymentMethod(item),
                 onSetDefault: () => controller.setDefault(item),
                 onRemove: () => controller.remove(item),

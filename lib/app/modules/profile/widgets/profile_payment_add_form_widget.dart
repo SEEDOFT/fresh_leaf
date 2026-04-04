@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fresh_leaf/app/modules/profile/controllers/profile_payment_add_controller.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/'
+    'profile_payment_add_controller.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentAddForm extends StatelessWidget {
@@ -36,7 +37,9 @@ class ProfilePaymentAddForm extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  controller.isEditMode ? 'Edit card details' : 'Card details',
+                  controller.isEditMode
+                      ? 'edit_card_details'.tr
+                      : 'card_details'.tr,
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontWeight: FontWeight.w800,
@@ -54,18 +57,18 @@ class ProfilePaymentAddForm extends StatelessWidget {
           ),
           const SizedBox(height: _gap12),
           _PaymentInput(
-            label: 'Card holder name',
-            hint: 'John Doe',
+            label: 'card_holder_name'.tr,
+            hint: 'placeholder_name'.tr,
             controller: controller.holderNameController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
           _PaymentInput(
             label: controller.isEditMode
-                ? 'Card number (optional)'
-                : 'Card number',
+                ? 'card_number_optional'.tr
+                : 'card_number'.tr,
             hint: controller.isEditMode
-                ? 'Enter only if replacing card'
+                ? 'card_number_optional_hint'.tr
                 : '4242 4242 4242 4242',
             controller: controller.cardNumberController,
             keyboardType: TextInputType.number,
@@ -98,7 +101,7 @@ class ProfilePaymentAddForm extends StatelessWidget {
             children: [
               Expanded(
                 child: _PaymentInput(
-                  label: 'Expiry',
+                  label: 'expiry'.tr,
                   hint: 'MM/YY',
                   controller: controller.expiryController,
                   keyboardType: TextInputType.number,
@@ -110,8 +113,8 @@ class ProfilePaymentAddForm extends StatelessWidget {
               const SizedBox(width: _gap12),
               Expanded(
                 child: _PaymentInput(
-                  label: 'CVV',
-                  hint: controller.isEditMode ? 'Optional' : '123',
+                  label: 'cvv'.tr,
+                  hint: controller.isEditMode ? 'optional'.tr : '123',
                   controller: controller.cvvController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
@@ -123,7 +126,7 @@ class ProfilePaymentAddForm extends StatelessWidget {
           const SizedBox(height: _gap12),
           _PaymentInput(
             label: 'billing_address'.tr,
-            hint: '123 Main St',
+            hint: 'placeholder_billing_address'.tr,
             controller: controller.billingAddressController,
             textInputAction: TextInputAction.next,
           ),
@@ -131,14 +134,21 @@ class ProfilePaymentAddForm extends StatelessWidget {
           _PaymentInput(
             label: 'city'.tr,
             hint: 'placeholder_city'.tr,
-            controller: controller.billingAddressController,
+            controller: controller.billingCityController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
           _PaymentInput(
             label: 'province'.tr,
             hint: 'placeholder_province'.tr,
-            controller: controller.billingAddressController,
+            controller: controller.billingStateController,
+            textInputAction: TextInputAction.next,
+          ),
+          const SizedBox(height: _gap12),
+          _PaymentInput(
+            label: 'postal_code'.tr,
+            hint: 'placeholder_postal_code'.tr,
+            controller: controller.billingZipCodeController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
@@ -146,8 +156,13 @@ class ProfilePaymentAddForm extends StatelessWidget {
             () => SwitchListTile.adaptive(
               contentPadding: EdgeInsets.zero,
               value: controller.setAsDefault.value,
-              onChanged: (value) => controller.setAsDefault.value = value,
-              title: const Text('Set as default payment method'),
+              onChanged: controller.canSetAsDefault.value
+                  ? (value) => controller.setAsDefault.value = value
+                  : null,
+              title: Text('set_default_payment_method'.tr),
+              subtitle: controller.canSetAsDefault.value
+                  ? null
+                  : Text('default_payment_exists'.tr),
             ),
           ),
         ],

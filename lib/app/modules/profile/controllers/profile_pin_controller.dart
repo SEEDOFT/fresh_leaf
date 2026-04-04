@@ -147,7 +147,7 @@ class ProfilePinController extends GetxController {
     if (result is bool && result) {
       await _setPinState(true);
       Get.snackbar('success'.tr, 'pin_reset_success'.tr);
-    } 
+    }
   }
 
   Future<void> _setPinState(bool value) async {

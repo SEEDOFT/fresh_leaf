@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class SplashController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  late AnimationController animController;
+  late AnimationController animationController;
 
   late Animation<double> logoScale;
   late Animation<double> logoOpacity;
@@ -21,7 +21,7 @@ class SplashController extends GetxController
   }
 
   void _setupAnimations() {
-    animController = AnimationController(
+    animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2800),
     );
@@ -48,13 +48,13 @@ class SplashController extends GetxController
       // Tween<double> requires double type for animation values
       // ignore: prefer_int_literals
       TweenSequenceItem(tween: ConstantTween(1.0), weight: 25),
-    ]).animate(animController);
+    ]).animate(animationController);
 
     // Tween<double> requires double type for animation values
     // ignore: prefer_int_literals
     logoOpacity = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: animController,
+        parent: animationController,
         // Tween<double> requires double type for animation values
         // ignore: prefer_int_literals
         curve: const Interval(0.0, 0.35, curve: Curves.easeIn),
@@ -65,7 +65,7 @@ class SplashController extends GetxController
     // ignore: prefer_int_literals
     leafRotate = Tween(begin: -0.15, end: 0.0).animate(
       CurvedAnimation(
-        parent: animController,
+        parent: animationController,
         // Tween<double> requires double type for animation values
         // ignore: prefer_int_literals
         curve: const Interval(0.0, 0.55, curve: Curves.elasticOut),
@@ -76,14 +76,14 @@ class SplashController extends GetxController
     // ignore: prefer_int_literals
     textFade = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: animController,
+        parent: animationController,
         curve: const Interval(0.45, 0.72, curve: Curves.easeIn),
       ),
     );
 
     textSlide = Tween(begin: const Offset(0, 0.4), end: Offset.zero).animate(
       CurvedAnimation(
-        parent: animController,
+        parent: animationController,
         curve: const Interval(0.45, 0.72, curve: Curves.easeOut),
       ),
     );
@@ -92,7 +92,7 @@ class SplashController extends GetxController
     // ignore: prefer_int_literals
     taglineFade = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: animController,
+        parent: animationController,
         curve: const Interval(0.62, 0.85, curve: Curves.easeIn),
       ),
     );
@@ -101,14 +101,14 @@ class SplashController extends GetxController
     // ignore: prefer_int_literals
     dotsPulse = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: animController,
+        parent: animationController,
         // Tween<double> requires double type for animation values
         // ignore: prefer_int_literals
         curve: const Interval(0.82, 1.0, curve: Curves.easeInOut),
       ),
     );
 
-    animController
+    animationController
       ..addStatusListener((status) async {
         if (status == AnimationStatus.completed) {
           await _startFlow();
@@ -125,7 +125,7 @@ class SplashController extends GetxController
 
   @override
   void onClose() {
-    animController.dispose();
+    animationController.dispose();
     super.onClose();
   }
 }
