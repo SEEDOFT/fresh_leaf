@@ -11,7 +11,40 @@ final class AppConfig {
     defaultValue: 'https://api.freshleaf.dev',
   );
 
-  static const geminiApiKey = String.fromEnvironment(
-    'GEMINI_API_KEY',
+  static const reverbWebSocketHost = String.fromEnvironment(
+    'REVERB_WS_HOST',
   );
+
+  static const reverbWebSocketPort = int.fromEnvironment(
+    'REVERB_WS_PORT',
+    defaultValue: 443,
+  );
+
+  static const reverbWebSocketScheme = String.fromEnvironment(
+    'REVERB_WS_SCHEME',
+    defaultValue: 'wss',
+  );
+
+  static const reverbAppKey = String.fromEnvironment(
+    'REVERB_APP_KEY',
+  );
+
+  static const reverbAuthEndpointOverride = String.fromEnvironment(
+    'REVERB_AUTH_ENDPOINT',
+  );
+
+  static String get reverbAuthEndpoint {
+    if (reverbAuthEndpointOverride.isNotEmpty) {
+      return reverbAuthEndpointOverride;
+    }
+    final normalizedApiUrl = apiUrl.replaceAll(RegExp(r'/+$'), '');
+    const apiSuffix = '/api/v1';
+    final baseOrigin = normalizedApiUrl.endsWith(apiSuffix)
+        ? normalizedApiUrl.substring(
+            0,
+            normalizedApiUrl.length - apiSuffix.length,
+          )
+        : normalizedApiUrl;
+    return '$baseOrigin/broadcasting/auth';
+  }
 }

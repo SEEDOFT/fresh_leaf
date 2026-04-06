@@ -10,7 +10,11 @@
 2. **Edit `.env.prod` with your production secrets:**
    ```env
    API_URL=https://your-production-api.com
-   GEMINI_API_KEY=your_production_gemini_key
+   REVERB_WS_SCHEME=wss
+   REVERB_WS_HOST=reverb.your-domain.com
+   REVERB_WS_PORT=443
+   REVERB_APP_KEY=your_reverb_app_key
+   REVERB_AUTH_ENDPOINT=
    ```
 
 ## Build for Client
@@ -72,7 +76,9 @@ The environment variables are:
 
 If build fails:
 1. Ensure `.env.prod` exists: `Test-Path .env.prod`
-2. Check it has all required variables: `API_URL` and `GEMINI_API_KEY`
+2. Check it has all required variables:
+   `API_URL`, `REVERB_WS_SCHEME`, `REVERB_WS_HOST`,
+   `REVERB_WS_PORT`, and `REVERB_APP_KEY`
 3. Re-run the build command
 
 Need help? See [SECURE_CONFIG_SETUP.md](SECURE_CONFIG_SETUP.md) for detailed documentation.

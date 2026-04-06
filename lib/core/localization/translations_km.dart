@@ -494,4 +494,6 @@ const Map<String, String> translationsKm = {
   'expiry_format_invalid': 'កាលបរិច្ឆេទផុតកំណត់ត្រូវជា MM/YY។',
   'expiry_month_invalid': 'ខែផុតកំណត់មិនត្រឹមត្រូវ។',
   'card_expired': 'កាតនេះបានផុតកំណត់ហើយ។',
+  'unable_connect_chat_realtime': 'មិនអាចភ្ជាប់ការជជែកតាម Realtime បានទេ។',
+  'unable_send_chat_message': 'មិនអាចផ្ញើសារបានទេនៅពេលនេះ។',
 };

@@ -165,11 +165,4 @@ class LoginController extends GetxController {
 
     return '';
   }
-
-  @override
-  void onClose() {
-    phoneController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
 }

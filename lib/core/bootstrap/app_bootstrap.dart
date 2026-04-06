@@ -5,6 +5,8 @@ import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
+import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
+import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
@@ -34,6 +36,11 @@ final class AppBootstrap {
       ..put<SecureConfigService>(secureConfig, permanent: true)
       ..put<ApiClient>(ApiClient(storageService: storage), permanent: true)
       ..put<AiChatStorageService>(AiChatStorageService(), permanent: true)
+      ..put<AiAssistantApiService>(AiAssistantApiService(), permanent: true)
+      ..put<AiAssistantRealtimeService>(
+        AiAssistantRealtimeService(),
+        permanent: true,
+      )
       ..put<AppSettingsController>(
         AppSettingsController(storageService: storage),
         permanent: true,

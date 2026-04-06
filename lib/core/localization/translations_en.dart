@@ -463,12 +463,12 @@ const Map<String, String> translationsEn = {
   'set_default_payment_method': 'Set as default payment method',
   'unable_load_payment_methods': 'Unable to load payment methods',
   'default_payment_updated': 'Default payment updated',
-    'payment_method_removed': 'Payment method removed',
-    'payment_method_updated': 'Payment method updated.',
-    'payment_method_added': 'Payment method added.',
-    'unable_save_payment_method': 'Unable to save payment method',
-    'default_payment_exists':
-        'A default payment already exists. Change it in the list.',
+  'payment_method_removed': 'Payment method removed',
+  'payment_method_updated': 'Payment method updated.',
+  'payment_method_added': 'Payment method added.',
+  'unable_save_payment_method': 'Unable to save payment method',
+  'default_payment_exists':
+      'A default payment already exists. Change it in the list.',
   'default': 'Default',
   'exp': 'Exp',
   'secure': 'Secure',
@@ -492,4 +492,6 @@ const Map<String, String> translationsEn = {
   'expiry_format_invalid': 'Expiry must be in MM/YY format.',
   'expiry_month_invalid': 'Expiry month is invalid.',
   'card_expired': 'Card has expired.',
+  'unable_connect_chat_realtime': 'Unable to connect realtime chat.',
+  'unable_send_chat_message': 'Unable to send message right now.',
 };

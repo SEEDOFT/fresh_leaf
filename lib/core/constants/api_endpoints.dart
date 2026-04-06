@@ -41,6 +41,8 @@ final class ApiEndpoints {
   // AI Assistant
   static const String aiSuggestions = '/ai/suggestions';
   static const String aiChat = '/ai/chat';
+  static const String aiChatSessions = '/ai/chat/sessions';
+  static const String aiChatMessages = '/ai/chat/messages';
   static const String aiChatHistory = '/ai/chat/history';
 
   // Favorites/Wishlist

@@ -56,7 +56,7 @@ Write-Host "Loading configuration from: $env_file" -ForegroundColor Cyan
 $env_vars = Read-EnvFile -FilePath $env_file
 
 # Validate required variables
-$required_vars = @('API_URL', 'GEMINI_API_KEY')
+$required_vars = @('API_URL')
 $missing_vars = @()
 
 foreach ($var in $required_vars) {

@@ -6,6 +6,11 @@ import 'package:get/get.dart';
 class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
   const ProfileHelpCenterView({super.key});
 
+  static const _companyName = 'Fresh Leaf';
+  static const _supportEmail = 'support@freshleaf.com';
+  static const _supportPhone = '+855 12 345 678';
+  static const _officeAddress = 'Phnom Penh, Cambodia';
+
   @override
   Widget build(BuildContext context) {
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
@@ -19,6 +24,13 @@ class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
             physics: const BouncingScrollPhysics(),
             children: [
               _SupportShortcuts(),
+              const SizedBox(height: 16),
+              const ProfileHelpContactCard(
+                companyName: _companyName,
+                supportEmail: _supportEmail,
+                supportPhone: _supportPhone,
+                officeAddress: _officeAddress,
+              ),
               const SizedBox(height: 16),
               Text(
                 'FAQs',

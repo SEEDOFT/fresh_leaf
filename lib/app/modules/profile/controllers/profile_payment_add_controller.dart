@@ -151,7 +151,7 @@ class ProfilePaymentAddController extends GetxController {
         'billing_zip_code': created.billingZipCode,
         'is_default': created.isDefault,
       };
-      
+
       final response = await apiClient.postRequest(
         ApiEndpoints.userPaymentMethods,
         data: payload,

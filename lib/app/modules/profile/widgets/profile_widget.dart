@@ -1,6 +1,7 @@
 export 'profile_app_bar_widget.dart';
 export 'profile_header_widget.dart';
 export 'profile_help_article_card_widget.dart';
+export 'profile_help_contact_card_widget.dart';
 export 'profile_logout_button_widget.dart';
 export 'profile_payment_add_form_widget.dart';
 export 'profile_payment_empty_state_widget.dart';

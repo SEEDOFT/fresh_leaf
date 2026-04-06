@@ -29,7 +29,11 @@ Edit `.env.local` and `.env.prod` with your actual values:
 
 ```env
 API_URL=https://your-api-server.com
-GEMINI_API_KEY=your_actual_gemini_key_here
+REVERB_WS_SCHEME=wss
+REVERB_WS_HOST=reverb.your-domain.com
+REVERB_WS_PORT=443
+REVERB_APP_KEY=your_reverb_app_key
+REVERB_AUTH_ENDPOINT=
 ```
 
 ⚠️ **IMPORTANT**: These `.env` files are already in `.gitignore`. Never commit them!
@@ -75,7 +79,6 @@ final secureConfig = Get.find<SecureConfigService>();
 
 // Use the values
 final apiUrl = secureConfig.apiUrl;
-final geminiKey = secureConfig.geminiApiKey;
 
 // Check if configured
 if (secureConfig.isConfigured) {

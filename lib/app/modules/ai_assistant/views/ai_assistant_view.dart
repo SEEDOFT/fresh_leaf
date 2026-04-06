@@ -20,6 +20,7 @@ class AiAssistantView extends GetView<AiAssistantController> {
             child: Column(
               children: [
                 const AiAssistantAppBar(),
+                const AiAssistantRealtimeDebugWidget(),
                 Expanded(
                   child: Obx(
                     () {

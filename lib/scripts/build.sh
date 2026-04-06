@@ -55,7 +55,7 @@ while IFS='=' read -r key value; do
 done < "$ENV_FILE"
 
 # Validate required variables
-required_vars=("API_URL" "GEMINI_API_KEY")
+required_vars=("API_URL")
 missing_vars=()
 
 for var in "${required_vars[@]}"; do
