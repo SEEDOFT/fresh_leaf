@@ -57,10 +57,6 @@ class StorageService extends GetxService {
     }
   }
 
-  void setUserProfile(UserProfile? profile) {
-    userProfile = profile;
-  }
-
   Future<void> clear() async {
     _token = null;
     _onboardingSeen = false;

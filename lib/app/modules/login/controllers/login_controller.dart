@@ -142,7 +142,7 @@ class LoginController extends GetxController {
   }
 
   void _applyProfile(UserProfile profile, StorageService storage) {
-    storage.setUserProfile(profile);
+    storage.userProfile = profile;
     if (Get.isRegistered<ProfileController>()) {
       Get.find<ProfileController>().setProfile(profile);
     }

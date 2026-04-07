@@ -14,7 +14,6 @@
    REVERB_WS_HOST=reverb.your-domain.com
    REVERB_WS_PORT=443
    REVERB_APP_KEY=your_reverb_app_key
-   REVERB_AUTH_ENDPOINT=
    ```
 
 ## Build for Client

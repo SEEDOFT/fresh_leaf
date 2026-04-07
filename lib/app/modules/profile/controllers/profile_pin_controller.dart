@@ -156,7 +156,7 @@ class ProfilePinController extends GetxController {
 
     final profile = storage.userProfile;
     if (profile != null) {
-      storage.setUserProfile(profile.copyWith(setPin: value));
+      storage.userProfile = profile.copyWith(setPin: value);
     }
 
     await storage.savePinOrderVerification(enabled: false);
@@ -175,7 +175,7 @@ class ProfilePinController extends GetxController {
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      Get.find<StorageService>().setUserProfile(profile);
+      Get.find<StorageService>().userProfile = profile;
       hasPin.value = profile.setPin;
     } on DioException {
       // Keep current state from in-memory profile if request fails.

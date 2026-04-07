@@ -4,9 +4,9 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
-import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
+import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
@@ -69,7 +69,7 @@ final class AppBootstrap {
       );
 
       if (apiResponse.isSuccess || response.statusCode == 200) {
-        storage.setUserProfile(UserProfile.fromMap(apiResponse.data));
+        storage.userProfile = UserProfile.fromMap(apiResponse.data);
         return AppRoutes.dashboard;
       }
     } on DioException catch (_) {

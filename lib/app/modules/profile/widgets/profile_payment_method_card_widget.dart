@@ -245,7 +245,7 @@ class _PaymentBrandBadge extends StatelessWidget {
         ),
       ),
       child: brandAsset != null
-          ? SvgPicture.asset(brandAsset!, fit: BoxFit.contain)
+          ? SvgPicture.asset(brandAsset!)
           : Center(
               child: Text(
                 initials.toUpperCase(),

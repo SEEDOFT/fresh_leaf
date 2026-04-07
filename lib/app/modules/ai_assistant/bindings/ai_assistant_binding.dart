@@ -6,8 +6,9 @@ import 'package:get/get.dart';
 class AiAssistantBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<AiAssistantApiService>(AiAssistantApiService.new);
-    Get.lazyPut<AiAssistantRealtimeService>(AiAssistantRealtimeService.new);
-    Get.lazyPut<AiAssistantController>(AiAssistantController.new);
+    Get
+      ..lazyPut<AiAssistantApiService>(AiAssistantApiService.new)
+      ..lazyPut<AiAssistantRealtimeService>(AiAssistantRealtimeService.new)
+      ..lazyPut<AiAssistantController>(AiAssistantController.new);
   }
 }

@@ -38,8 +38,7 @@ class ProfileSyncMiddleware extends GetMiddleware {
       );
 
       if (apiResponse.isSuccess || response.statusCode == 200) {
-        final profile = UserProfile.fromMap(apiResponse.data);
-        storage.setUserProfile(profile);
+        storage.userProfile = UserProfile.fromMap(apiResponse.data);
       }
       _syncedOnce = true;
     } on Exception catch (_) {

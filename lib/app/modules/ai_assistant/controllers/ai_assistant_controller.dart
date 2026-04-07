@@ -3,16 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/core/models/ai_chat_message.dart';
-import 'package:fresh_leaf/core/models/ai_chat_send_message_result.dart';
 import 'package:fresh_leaf/core/models/ai_chat_realtime_event.dart';
-import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
+import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:get/get.dart';
 
 class AiAssistantController extends GetxController {
   final RxBool isLoading = false.obs;
-  final RxString responseSource = 'idle'.obs;
   final AiChatStorageService _storage = Get.find<AiChatStorageService>();
   final AiAssistantApiService _apiService = Get.find<AiAssistantApiService>();
   final AiAssistantRealtimeService _realtimeService =
@@ -25,6 +23,8 @@ class AiAssistantController extends GetxController {
   String? _userId;
   StreamSubscription<AiChatRealtimeEvent>? _realtimeSubscription;
   Timer? _streamWatchdog;
+  Timer? _persistDebounceTimer;
+  Timer? _scrollDebounceTimer;
 
   @override
   Future<void> onInit() async {
@@ -64,8 +64,6 @@ class AiAssistantController extends GetxController {
       if (history.isNotEmpty) {
         messages.assignAll(history);
       }
-
-      await _persistMessages();
       _scheduleAutoScroll(animated: false);
     } on Exception catch (_) {
       // App still allows local compose; backend may be temporarily unavailable.
@@ -86,41 +84,33 @@ class AiAssistantController extends GetxController {
       return;
     }
 
-    messages.add(
-      AiChatMessage(
-        text: prompt,
-        isUser: true,
-        sessionId: sessionId,
-      ),
-    );
-    await _persistMessages();
-    _scheduleAutoScroll();
+    messages
+      ..add(
+        AiChatMessage(
+          text: prompt,
+          isUser: true,
+          sessionId: sessionId,
+        ),
+      )
+      ..add(
+        AiChatMessage(
+          text: '',
+          isUser: false,
+          isStreaming: true,
+          sessionId: sessionId,
+          status: 'streaming',
+        ),
+      );
     inputController.clear();
-
-    messages.add(
-      AiChatMessage(
-        text: '',
-        isUser: false,
-        isStreaming: true,
-        sessionId: sessionId,
-        status: 'streaming',
-      ),
-    );
     await _persistMessages();
     _scheduleAutoScroll();
     _restartStreamWatchdog();
-    responseSource.value = 'pending';
 
     isLoading.value = true;
     try {
-      final sendResult = await _apiService.sendMessage(
+      await _apiService.sendMessage(
         sessionId: sessionId,
         message: prompt,
-      );
-      unawaited(
-        _pollHistoryFallback(
-          sendResult: sendResult,
-        ),
       );
     } on Exception catch (error) {
       final lastIndex = _latestAssistantStreamingIndex();
@@ -159,6 +149,8 @@ class AiAssistantController extends GetxController {
     await _realtimeSubscription?.cancel();
     _realtimeSubscription = null;
     _stopStreamWatchdog();
+    _persistDebounceTimer?.cancel();
+    _scrollDebounceTimer?.cancel();
     unawaited(_realtimeService.disconnect());
     inputController.dispose();
     chatScrollController.dispose();
@@ -207,15 +199,15 @@ class AiAssistantController extends GetxController {
     if (event.isStarted || event.isChunk) {
       _upsertStreamingMessage(event);
       _restartStreamWatchdog();
-      responseSource.value = 'realtime';
+      _queuePersistMessages();
+      _queueAutoScroll();
+      return;
     } else if (event.isCompleted) {
       _completeStreamingMessage(event);
       _stopStreamWatchdog();
-      responseSource.value = 'realtime';
     } else if (event.isFailed) {
       _failStreamingMessage(event);
       _stopStreamWatchdog();
-      responseSource.value = 'realtime_failed';
     }
 
     unawaited(_persistMessages());
@@ -298,11 +290,9 @@ class AiAssistantController extends GetxController {
       AiChatMessage(
         text: finalText,
         isUser: false,
-        isStreaming: false,
         sessionId: event.sessionId,
         messageId: event.messageId,
         sequence: event.sequence,
-        status: 'done',
       ),
     );
   }
@@ -338,7 +328,6 @@ class AiAssistantController extends GetxController {
       AiChatMessage(
         text: errorText,
         isUser: false,
-        isStreaming: false,
         sessionId: event.sessionId,
         messageId: event.messageId,
         sequence: event.sequence,
@@ -367,90 +356,6 @@ class AiAssistantController extends GetxController {
     return -1;
   }
 
-  Future<void> _pollHistoryFallback({
-    required AiChatSendMessageResult sendResult,
-  }) async {
-    const maxAttempts = 60;
-
-    for (var attempt = 0; attempt < maxAttempts; attempt++) {
-      if (isClosed) {
-        return;
-      }
-
-      final streamingIndex = _latestAssistantStreamingIndex();
-      if (streamingIndex < 0) {
-        return;
-      }
-
-      await Future<void>.delayed(const Duration(seconds: 1));
-      try {
-        final history = await _apiService.fetchHistory(
-          sessionId: sendResult.sessionId,
-        );
-        if (history.isEmpty) {
-          continue;
-        }
-
-        final assistantMessage = _resolveAssistantMessage(
-          history: history,
-          assistantMessageId: sendResult.assistantMessageId,
-        );
-        if (assistantMessage == null) {
-          continue;
-        }
-
-        final index = _latestAssistantStreamingIndex();
-        if (index < 0) {
-          return;
-        }
-
-        final isTerminal = assistantMessage.status == 'done' ||
-            assistantMessage.status == 'failed';
-
-        messages[index] = messages[index].copyWith(
-          text: assistantMessage.text,
-          isStreaming: !isTerminal,
-          sessionId: assistantMessage.sessionId,
-          messageId: assistantMessage.messageId,
-          sequence: assistantMessage.sequence,
-          status: assistantMessage.status,
-        );
-        responseSource.value = 'history_fallback';
-        unawaited(_persistMessages());
-        _scheduleAutoScroll(animated: false);
-
-        if (isTerminal && assistantMessage.text.trim().isNotEmpty) {
-          _stopStreamWatchdog();
-          return;
-        }
-      } on Exception {
-        // Keep polling until timeout.
-      }
-    }
-  }
-
-  AiChatMessage? _resolveAssistantMessage({
-    required List<AiChatMessage> history,
-    required String assistantMessageId,
-  }) {
-    if (assistantMessageId.isNotEmpty) {
-      for (var index = history.length - 1; index >= 0; index--) {
-        final message = history[index];
-        if (!message.isUser && message.messageId == assistantMessageId) {
-          return message;
-        }
-      }
-    }
-
-    for (var index = history.length - 1; index >= 0; index--) {
-      final message = history[index];
-      if (!message.isUser) {
-        return message;
-      }
-    }
-    return null;
-  }
-
   void _restartStreamWatchdog() {
     _streamWatchdog?.cancel();
     _streamWatchdog = Timer(const Duration(minutes: 1), () {
@@ -463,7 +368,6 @@ class AiAssistantController extends GetxController {
         isStreaming: false,
         status: 'failed',
       );
-      responseSource.value = 'timeout_failed';
       unawaited(_persistMessages());
       _scheduleAutoScroll();
     });
@@ -472,5 +376,21 @@ class AiAssistantController extends GetxController {
   void _stopStreamWatchdog() {
     _streamWatchdog?.cancel();
     _streamWatchdog = null;
+  }
+
+  void _queuePersistMessages() {
+    _persistDebounceTimer?.cancel();
+    _persistDebounceTimer = Timer(
+      const Duration(milliseconds: 350),
+      () => unawaited(_persistMessages()),
+    );
+  }
+
+  void _queueAutoScroll() {
+    _scrollDebounceTimer?.cancel();
+    _scrollDebounceTimer = Timer(
+      const Duration(milliseconds: 80),
+      () => _scheduleAutoScroll(animated: false),
+    );
   }
 }

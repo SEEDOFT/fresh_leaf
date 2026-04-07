@@ -15,12 +15,12 @@ class SplashController extends GetxController
   late Animation<double> dotsPulse;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    _setupAnimations();
+    await _setupAnimations();
   }
 
-  void _setupAnimations() {
+  Future<void> _setupAnimations() async {
     animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2800),
@@ -108,13 +108,12 @@ class SplashController extends GetxController
       ),
     );
 
-    animationController
-      ..addStatusListener((status) async {
-        if (status == AnimationStatus.completed) {
-          await _startFlow();
-        }
-      })
-      ..forward();
+    animationController.addStatusListener((status) async {
+      if (status == AnimationStatus.completed) {
+        await _startFlow();
+      }
+    });
+    await animationController.forward();
   }
 
   Future<void> _startFlow() async {

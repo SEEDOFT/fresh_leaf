@@ -22,29 +22,23 @@ final class AppConfig {
 
   static const reverbWebSocketScheme = String.fromEnvironment(
     'REVERB_WS_SCHEME',
-    defaultValue: 'wss',
+    defaultValue: 'ws',
   );
 
   static const reverbAppKey = String.fromEnvironment(
     'REVERB_APP_KEY',
   );
 
-  static const reverbAuthEndpointOverride = String.fromEnvironment(
+  static const reverbAuthEndpointPath = String.fromEnvironment(
     'REVERB_AUTH_ENDPOINT',
+    defaultValue: '/broadcasting/auth',
   );
 
   static String get reverbAuthEndpoint {
-    if (reverbAuthEndpointOverride.isNotEmpty) {
-      return reverbAuthEndpointOverride;
-    }
     final normalizedApiUrl = apiUrl.replaceAll(RegExp(r'/+$'), '');
-    const apiSuffix = '/api/v1';
-    final baseOrigin = normalizedApiUrl.endsWith(apiSuffix)
-        ? normalizedApiUrl.substring(
-            0,
-            normalizedApiUrl.length - apiSuffix.length,
-          )
-        : normalizedApiUrl;
-    return '$baseOrigin/broadcasting/auth';
+    final normalizedAuthPath = reverbAuthEndpointPath.startsWith('/')
+        ? reverbAuthEndpointPath
+        : '/$reverbAuthEndpointPath';
+    return '$normalizedApiUrl$normalizedAuthPath';
   }
 }

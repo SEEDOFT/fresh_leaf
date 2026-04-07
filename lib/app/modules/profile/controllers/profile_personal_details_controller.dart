@@ -123,7 +123,7 @@ class ProfilePersonalDetailsController extends GetxController {
         updatedAt: _initialProfile?.updatedAt,
       );
 
-      Get.find<StorageService>().setUserProfile(mergedProfile);
+      Get.find<StorageService>().userProfile = mergedProfile;
       _initialProfile = mergedProfile;
       setProfile(mergedProfile);
 
@@ -169,7 +169,7 @@ class ProfilePersonalDetailsController extends GetxController {
       }
 
       final latestProfile = UserProfile.fromMap(apiResponse.data);
-      Get.find<StorageService>().setUserProfile(latestProfile);
+      Get.find<StorageService>().userProfile = latestProfile;
       _initialProfile = latestProfile;
       setProfile(latestProfile);
 

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/models/ai_chat_realtime_event.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
@@ -14,13 +13,6 @@ class AiAssistantRealtimeService extends GetxService {
   final StreamController<AiChatRealtimeEvent> _eventController =
       StreamController<AiChatRealtimeEvent>.broadcast();
   final Dio _dio = Dio();
-
-  final RxString connectionState = 'DISCONNECTED'.obs;
-  final RxString subscriptionState = 'idle'.obs;
-  final RxString activeChannelName = ''.obs;
-  final RxString lastEventName = ''.obs;
-  final RxString lastError = ''.obs;
-  final RxString authState = 'idle'.obs;
 
   WebSocketChannel? _socketChannel;
   StreamSubscription<dynamic>? _socketSubscription;
@@ -51,9 +43,6 @@ class AiAssistantRealtimeService extends GetxService {
     }
 
     _connectionCompleter = Completer<void>();
-    connectionState.value = 'CONNECTING';
-    lastError.value = '';
-    _trace('connect ${_buildSocketUri()}');
 
     final channel = WebSocketChannel.connect(_buildSocketUri());
     _socketChannel = channel;
@@ -84,7 +73,6 @@ class AiAssistantRealtimeService extends GetxService {
         },
       );
       _activeChannel = '';
-      activeChannelName.value = '';
     }
 
     await _socketSubscription?.cancel();
@@ -95,8 +83,6 @@ class AiAssistantRealtimeService extends GetxService {
     _socketId = '';
     _pendingChannel = '';
     _isConnected = false;
-    connectionState.value = 'DISCONNECTED';
-    subscriptionState.value = 'idle';
   }
 
   Future<void> subscribeToSessionChannel({
@@ -106,7 +92,7 @@ class AiAssistantRealtimeService extends GetxService {
     await connect();
 
     final channelName = 'private-ai-chat.$userId.$sessionId';
-    if (_activeChannel == channelName && subscriptionState.value == 'ok') {
+    if (_activeChannel == channelName) {
       return;
     }
 
@@ -118,7 +104,6 @@ class AiAssistantRealtimeService extends GetxService {
         },
       );
       _activeChannel = '';
-      activeChannelName.value = '';
     }
 
     if (_socketId.isEmpty) {
@@ -145,10 +130,6 @@ class AiAssistantRealtimeService extends GetxService {
     }
 
     _pendingChannel = channelName;
-    activeChannelName.value = channelName;
-    subscriptionState.value = 'subscribing';
-    lastError.value = '';
-    _trace('subscribe $channelName');
 
     _subscriptionCompleter = Completer<void>();
     _sendRaw(
@@ -163,11 +144,7 @@ class AiAssistantRealtimeService extends GetxService {
         const Duration(seconds: 10),
       );
       _activeChannel = channelName;
-      subscriptionState.value = 'ok';
-      _trace('subscription ok $channelName');
     } on TimeoutException {
-      subscriptionState.value = 'failed';
-      lastError.value = 'Subscription timeout';
       throw TimeoutException('Realtime channel subscribe timeout');
     } finally {
       _subscriptionCompleter = null;
@@ -182,9 +159,6 @@ class AiAssistantRealtimeService extends GetxService {
     if (token == null || token.isEmpty) {
       throw const FormatException('Missing access token for Reverb auth');
     }
-
-    authState.value = 'authorizing';
-    _trace('authorizer request $channelName');
 
     try {
       final response = await _dio.post<Map<String, dynamic>>(
@@ -207,15 +181,15 @@ class AiAssistantRealtimeService extends GetxService {
         throw const FormatException('Empty Reverb auth response');
       }
 
-      authState.value = 'authorized';
       return data;
     } on DioException catch (error) {
       final statusCode = error.response?.statusCode;
-      final message = 'auth failed (${statusCode ?? '-'})';
-      authState.value = message;
-      lastError.value = message;
-      _trace(message);
-      rethrow;
+      final responseBody = error.response?.data;
+      final responseText = responseBody == null ? '' : jsonEncode(responseBody);
+      final message = responseText.isEmpty
+          ? 'auth failed (${statusCode ?? '-'})'
+          : 'auth failed (${statusCode ?? '-'}): $responseText';
+      throw FormatException(message);
     }
   }
 
@@ -229,9 +203,6 @@ class AiAssistantRealtimeService extends GetxService {
     if (eventName.isEmpty) {
       return;
     }
-
-    lastEventName.value = eventName;
-    _trace('event $eventName');
 
     if (eventName == 'pusher:connection_established') {
       _onConnectionEstablished(message['data']);
@@ -254,8 +225,6 @@ class AiAssistantRealtimeService extends GetxService {
       if (channelName == _pendingChannel &&
           eventName == 'pusher_internal:subscription_error') {
         const errorMessage = 'Realtime subscription failed';
-        subscriptionState.value = 'failed';
-        lastError.value = errorMessage;
         _completeSubscriptionError(const FormatException(errorMessage));
         _emitFailureEvent(errorMessage);
         return;
@@ -274,9 +243,7 @@ class AiAssistantRealtimeService extends GetxService {
 
     _socketId = socketId;
     _isConnected = true;
-    connectionState.value = 'CONNECTED';
     _completeConnectionSuccess();
-    _trace('connected socket_id=$socketId');
   }
 
   void _onPusherError(dynamic data) {
@@ -284,8 +251,6 @@ class AiAssistantRealtimeService extends GetxService {
     final errorText = _toString(errorData['message']).isEmpty
         ? 'Realtime connection error'
         : _toString(errorData['message']);
-    lastError.value = errorText;
-    connectionState.value = 'ERROR';
     _completeConnectionError(FormatException(errorText));
     _completeSubscriptionError(FormatException(errorText));
     _emitFailureEvent(errorText);
@@ -297,8 +262,6 @@ class AiAssistantRealtimeService extends GetxService {
       return;
     }
 
-    subscriptionState.value = 'ok';
-    lastError.value = '';
     if (_pendingChannel.isNotEmpty) {
       _activeChannel = _pendingChannel;
     }
@@ -332,9 +295,7 @@ class AiAssistantRealtimeService extends GetxService {
 
   void _handleSocketError(Object error) {
     _isConnected = false;
-    connectionState.value = 'ERROR';
     final message = error.toString();
-    lastError.value = message;
     _completeConnectionError(error);
     _completeSubscriptionError(error);
     _emitFailureEvent(message);
@@ -342,7 +303,6 @@ class AiAssistantRealtimeService extends GetxService {
 
   void _handleSocketDone() {
     _isConnected = false;
-    connectionState.value = 'DISCONNECTED';
     _socketId = '';
     _completeConnectionError(
       const FormatException('Realtime connection closed'),
@@ -454,27 +414,53 @@ class AiAssistantRealtimeService extends GetxService {
   }
 
   String? _resolveEventType(String eventName) {
-    if (eventName == AiChatEventType.messageStarted ||
-        eventName.endsWith(AiChatEventType.messageStarted)) {
+    final normalized = eventName.toLowerCase();
+    if (_matchesEventType(
+      normalized: normalized,
+      expected: AiChatEventType.messageStarted,
+      aliases: const <String>['aimessagestarted', 'ai.message.started'],
+    )) {
       return AiChatEventType.messageStarted;
     }
-    if (eventName == AiChatEventType.messageChunk ||
-        eventName.endsWith(AiChatEventType.messageChunk)) {
+    if (_matchesEventType(
+      normalized: normalized,
+      expected: AiChatEventType.messageChunk,
+      aliases: const <String>['aimessagechunk', 'ai.message.chunk'],
+    )) {
       return AiChatEventType.messageChunk;
     }
-    if (eventName == AiChatEventType.messageCompleted ||
-        eventName.endsWith(AiChatEventType.messageCompleted)) {
+    if (_matchesEventType(
+      normalized: normalized,
+      expected: AiChatEventType.messageCompleted,
+      aliases: const <String>['aimessagecompleted', 'ai.message.completed'],
+    )) {
       return AiChatEventType.messageCompleted;
     }
-    if (eventName == AiChatEventType.messageFailed ||
-        eventName.endsWith(AiChatEventType.messageFailed)) {
+    if (_matchesEventType(
+      normalized: normalized,
+      expected: AiChatEventType.messageFailed,
+      aliases: const <String>['aimessagefailed', 'ai.message.failed'],
+    )) {
       return AiChatEventType.messageFailed;
     }
     return null;
   }
 
-  void _trace(String message) {
-    debugPrint('[AI-RT] $message');
+  bool _matchesEventType({
+    required String normalized,
+    required String expected,
+    required List<String> aliases,
+  }) {
+    final expectedLower = expected.toLowerCase();
+    if (normalized == expectedLower || normalized.endsWith(expectedLower)) {
+      return true;
+    }
+    for (final alias in aliases) {
+      if (normalized == alias || normalized.endsWith(alias)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override

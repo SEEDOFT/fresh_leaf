@@ -65,7 +65,7 @@ class ProfileController extends GetxController {
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      Get.find<StorageService>().setUserProfile(profile);
+      Get.find<StorageService>().userProfile = profile;
       setProfile(profile);
     } on DioException catch (e) {
       Get.snackbar(
