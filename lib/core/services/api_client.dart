@@ -25,6 +25,8 @@ class ApiClient extends GetxService {
       InterceptorsWrapper(
         onRequest: (options, handler) {
           final token = storageService.token;
+          final languageCode = storageService.languageCode ?? 'km';
+          options.headers['Accept-Language'] = _toApiLanguage(languageCode);
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           } else {
@@ -167,5 +169,9 @@ class ApiClient extends GetxService {
       options: options,
       cancelToken: cancelToken,
     );
+  }
+
+  String _toApiLanguage(String languageCode) {
+    return languageCode == 'en' ? 'en' : 'km';
   }
 }

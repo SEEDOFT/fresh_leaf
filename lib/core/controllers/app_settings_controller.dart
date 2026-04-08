@@ -9,7 +9,7 @@ class AppSettingsController extends GetxController {
   final StorageService _storageService;
 
   final Rx<ThemeMode> themeMode = ThemeMode.system.obs;
-  final Rx<Locale> locale = const Locale('en').obs;
+  final Rx<Locale> locale = const Locale('km', 'KH').obs;
   final RxBool notificationsEnabled = true.obs;
 
   @override

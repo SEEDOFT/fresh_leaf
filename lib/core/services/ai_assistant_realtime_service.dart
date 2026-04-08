@@ -81,6 +81,7 @@ class AiAssistantRealtimeService extends GetxService {
     _socketChannel = null;
 
     _socketId = '';
+    _activeChannel = '';
     _pendingChannel = '';
     _isConnected = false;
   }
@@ -92,7 +93,7 @@ class AiAssistantRealtimeService extends GetxService {
     await connect();
 
     final channelName = 'private-ai-chat.$userId.$sessionId';
-    if (_activeChannel == channelName) {
+    if (_activeChannel == channelName && _isConnected) {
       return;
     }
 
@@ -214,6 +215,16 @@ class AiAssistantRealtimeService extends GetxService {
       return;
     }
 
+    if (eventName == 'pusher:ping') {
+      _sendRaw(
+        <String, dynamic>{
+          'event': 'pusher:pong',
+          'data': '{}',
+        },
+      );
+      return;
+    }
+
     if (eventName == 'pusher_internal:subscription_succeeded' ||
         eventName == 'pusher:subscription_succeeded') {
       _onSubscriptionSucceeded(message);
@@ -295,6 +306,9 @@ class AiAssistantRealtimeService extends GetxService {
 
   void _handleSocketError(Object error) {
     _isConnected = false;
+    _socketId = '';
+    _activeChannel = '';
+    _pendingChannel = '';
     final message = error.toString();
     _completeConnectionError(error);
     _completeSubscriptionError(error);
@@ -304,6 +318,8 @@ class AiAssistantRealtimeService extends GetxService {
   void _handleSocketDone() {
     _isConnected = false;
     _socketId = '';
+    _activeChannel = '';
+    _pendingChannel = '';
     _completeConnectionError(
       const FormatException('Realtime connection closed'),
     );

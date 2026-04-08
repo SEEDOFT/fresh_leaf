@@ -79,7 +79,7 @@ class _FreshLeafAppState extends State<FreshLeafApp> {
             },
             translations: AppTranslations(),
             locale: appSettings.locale.value,
-            fallbackLocale: const Locale('en'),
+            fallbackLocale: const Locale('km', 'KH'),
             supportedLocales: const [
               Locale('en'),
               Locale('km'),

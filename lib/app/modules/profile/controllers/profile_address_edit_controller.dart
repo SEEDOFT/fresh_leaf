@@ -171,6 +171,7 @@ class ProfileAddressEditController extends GetxController {
           'format': 'jsonv2',
           'addressdetails': 1,
           'limit': 8,
+          'accept-language': _nominatimLanguage(),
         },
       );
 
@@ -474,6 +475,7 @@ class ProfileAddressEditController extends GetxController {
           'lon': point.longitude,
           'format': 'jsonv2',
           'addressdetails': 1,
+          'accept-language': _nominatimLanguage(),
         },
       );
 
@@ -553,6 +555,10 @@ class ProfileAddressEditController extends GetxController {
   double? _toDouble(Object? value) {
     if (value is num) return value.toDouble();
     return double.tryParse(value?.toString() ?? '');
+  }
+
+  String _nominatimLanguage() {
+    return Get.locale?.languageCode == 'km' ? 'km' : 'en';
   }
 }
 

@@ -1,9 +1,18 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:fresh_leaf/core/models/home_category.dart';
 import 'package:fresh_leaf/core/models/home_product.dart';
+import 'package:fresh_leaf/core/services/permission_service.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  final Dio _dio = Dio();
   final RxString _searchQuery = ''.obs;
+  final RxString locationName = ''.obs;
+  final RxString locationRegion = ''.obs;
+  final RxBool isResolvingLocation = false.obs;
 
   String get searchQuery => _searchQuery.value;
   set searchQuery(String value) => _searchQuery.value = value;
@@ -71,6 +80,90 @@ class HomeController extends GetxController {
           subtitle.contains(query) ||
           badge.contains(query);
     }).toList();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    unawaited(fetchCurrentLocation());
+  }
+
+  Future<void> fetchCurrentLocation() async {
+    if (isResolvingLocation.value) {
+      return;
+    }
+    isResolvingLocation.value = true;
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        Get.snackbar('Location', 'Please turn on location service.');
+        return;
+      }
+
+      final hasPermission = await PermissionService.requestLocation();
+      if (!hasPermission) {
+        Get.snackbar('Location', 'Location permission is required.');
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+        ),
+      );
+
+      final response = await _dio.get<Map<String, dynamic>>(
+        'https://nominatim.openstreetmap.org/reverse',
+        queryParameters: <String, dynamic>{
+          'format': 'jsonv2',
+          'lat': position.latitude,
+          'lon': position.longitude,
+          'zoom': 18,
+          'addressdetails': 1,
+          'accept-language': (Get.locale?.languageCode == 'km') ? 'km' : 'en',
+        },
+        options: Options(
+          headers: <String, String>{
+            'User-Agent': 'FreshLeaf/1.0',
+          },
+        ),
+      );
+
+      final data = response.data;
+      final address = data?['address'];
+      if (address is Map<String, dynamic>) {
+        final primary = _firstNonEmpty(<String?>[
+          address['suburb']?.toString(),
+          address['village']?.toString(),
+          address['town']?.toString(),
+          address['city']?.toString(),
+          address['municipality']?.toString(),
+          address['state_district']?.toString(),
+        ]);
+        final region = _firstNonEmpty(<String?>[
+          address['state']?.toString(),
+          address['country']?.toString(),
+        ]);
+
+        locationName.value = primary ?? '';
+        locationRegion.value = region ?? '';
+      }
+    } on DioException {
+      Get.snackbar('Location', 'Unable to load current location.');
+    } on Exception {
+      Get.snackbar('Location', 'Unable to detect your current location.');
+    } finally {
+      isResolvingLocation.value = false;
+    }
+  }
+
+  String? _firstNonEmpty(List<String?> values) {
+    for (final value in values) {
+      if (value != null && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+    return null;
   }
 
   Future<void> refreshHome() async {}

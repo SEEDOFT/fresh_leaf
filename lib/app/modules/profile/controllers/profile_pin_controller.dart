@@ -37,11 +37,11 @@ class ProfilePinController extends GetxController {
   ];
 
   Future<void> openSetPinWithPassword() async {
-    final result = await Get.toNamed<bool?>(
+    final result = await Get.toNamed<dynamic>(
       AppRoutes.pinPasswordVerification,
       arguments: const {'mode': 'set'},
     );
-    if (result ?? false) {
+    if (result is bool && result) {
       await _setPinState(true);
       Get.snackbar('success'.tr, 'pin_configured_success'.tr);
     }

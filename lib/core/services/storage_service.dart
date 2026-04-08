@@ -1,11 +1,17 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class StorageService extends GetxService {
-  StorageService({GetStorage? box}) : _box = box ?? GetStorage();
+  StorageService({
+    GetStorage? box,
+    FlutterSecureStorage? secureStorage,
+  }) : _box = box ?? GetStorage(),
+       _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   final GetStorage _box;
+  final FlutterSecureStorage _secureStorage;
   static const _tokenKey = 'access_token';
   static const _onboardingSeenKey = 'onboarding_seen';
   static const _securityPinKey = 'security_pin';
@@ -21,8 +27,8 @@ class StorageService extends GetxService {
   String? _securityPin;
   bool _pinOrderVerification = false;
   String _themeMode = 'system';
-  String? _languageCode = 'en';
-  String? _countryCode;
+  String? _languageCode = 'km';
+  String? _countryCode = 'KH';
   bool _notificationsEnabled = true;
 
   String? get token => _token;
@@ -38,22 +44,32 @@ class StorageService extends GetxService {
   bool get notificationsEnabled => _notificationsEnabled;
 
   Future<void> init() async {
-    _token = _box.read<String?>(_tokenKey);
+    _token = await _secureStorage.read(key: _tokenKey);
+    if (_token == null || _token!.isEmpty) {
+      final legacyToken = _box.read<String?>(_tokenKey);
+      if (legacyToken != null && legacyToken.isNotEmpty) {
+        _token = legacyToken;
+        await _secureStorage.write(key: _tokenKey, value: legacyToken);
+        await _box.remove(_tokenKey);
+      }
+    }
     _onboardingSeen = _box.read<bool>(_onboardingSeenKey) ?? false;
     _securityPin = _box.read<String?>(_securityPinKey);
     _pinOrderVerification = _box.read<bool>(_pinOrderVerificationKey) ?? false;
     _themeMode = _box.read<String>(_themeModeKey) ?? 'system';
-    _languageCode = _box.read<String>(_languageCodeKey) ?? 'en';
-    _countryCode = _box.read<String?>(_countryCodeKey);
+    _languageCode = _box.read<String>(_languageCodeKey) ?? 'km';
+    _countryCode = _box.read<String?>(_countryCodeKey) ?? 'KH';
     _notificationsEnabled = _box.read<bool>(_notificationsEnabledKey) ?? true;
   }
 
   Future<void> saveToken(String? token) async {
     _token = token;
-    if (token == null) {
+    if (token == null || token.isEmpty) {
+      await _secureStorage.delete(key: _tokenKey);
       await _box.remove(_tokenKey);
     } else {
-      await _box.write(_tokenKey, token);
+      await _secureStorage.write(key: _tokenKey, value: token);
+      await _box.remove(_tokenKey);
     }
   }
 
@@ -63,6 +79,7 @@ class StorageService extends GetxService {
     _userProfile = null;
     _securityPin = null;
     _pinOrderVerification = false;
+    await _secureStorage.delete(key: _tokenKey);
     await _box.remove(_tokenKey);
     await _box.remove(_onboardingSeenKey);
     await _box.remove(_securityPinKey);

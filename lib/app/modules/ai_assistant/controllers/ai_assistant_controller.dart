@@ -10,6 +10,8 @@ import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:get/get.dart';
 
 class AiAssistantController extends GetxController {
+  static const Duration _aiResponseTimeout = Duration(minutes: 5);
+
   final RxBool isLoading = false.obs;
   final AiChatStorageService _storage = Get.find<AiChatStorageService>();
   final AiAssistantApiService _apiService = Get.find<AiAssistantApiService>();
@@ -258,13 +260,17 @@ class AiAssistantController extends GetxController {
 
   void _completeStreamingMessage(AiChatRealtimeEvent event) {
     final messageIndex = _indexByMessageId(event.messageId);
-    final finalText = event.fullText.isNotEmpty
+    final finalTextFromEvent = event.fullText.isNotEmpty
         ? event.fullText
         : event.textChunk;
 
     if (messageIndex >= 0) {
+      final current = messages[messageIndex];
+      final mergedText = event.fullText.isNotEmpty
+          ? event.fullText
+          : current.text + event.textChunk;
       messages[messageIndex] = messages[messageIndex].copyWith(
-        text: finalText,
+        text: mergedText,
         isStreaming: false,
         sequence: event.sequence,
         status: 'done',
@@ -276,7 +282,9 @@ class AiAssistantController extends GetxController {
     if (placeholderIndex >= 0) {
       final current = messages[placeholderIndex];
       messages[placeholderIndex] = current.copyWith(
-        text: finalText.isNotEmpty ? finalText : current.text,
+        text: event.fullText.isNotEmpty
+            ? event.fullText
+            : (current.text + event.textChunk),
         isStreaming: false,
         sessionId: event.sessionId,
         messageId: event.messageId,
@@ -288,7 +296,7 @@ class AiAssistantController extends GetxController {
 
     messages.add(
       AiChatMessage(
-        text: finalText,
+        text: finalTextFromEvent,
         isUser: false,
         sessionId: event.sessionId,
         messageId: event.messageId,
@@ -358,11 +366,33 @@ class AiAssistantController extends GetxController {
 
   void _restartStreamWatchdog() {
     _streamWatchdog?.cancel();
-    _streamWatchdog = Timer(const Duration(minutes: 1), () {
+    _streamWatchdog = Timer(_aiResponseTimeout, () async {
+      final sessionId = _sessionId;
       final lastIndex = _latestAssistantStreamingIndex();
-      if (lastIndex < 0) {
+      if (lastIndex < 0 || sessionId == null || sessionId.isEmpty) {
         return;
       }
+
+      try {
+        final history = await _apiService.fetchHistory(sessionId: sessionId);
+        final latestAssistant = _latestAssistantMessage(history);
+        if (latestAssistant != null && latestAssistant.text.trim().isNotEmpty) {
+          messages[lastIndex] = messages[lastIndex].copyWith(
+            text: latestAssistant.text,
+            isStreaming: false,
+            sessionId: latestAssistant.sessionId,
+            messageId: latestAssistant.messageId,
+            sequence: latestAssistant.sequence,
+            status: latestAssistant.status,
+          );
+          unawaited(_persistMessages());
+          _scheduleAutoScroll();
+          return;
+        }
+      } on Exception catch (_){
+        // Fallback to default timeout state.
+      }
+
       messages[lastIndex] = messages[lastIndex].copyWith(
         text: 'Unable to receive realtime response. Please try again.',
         isStreaming: false,
@@ -392,5 +422,15 @@ class AiAssistantController extends GetxController {
       const Duration(milliseconds: 80),
       () => _scheduleAutoScroll(animated: false),
     );
+  }
+
+  AiChatMessage? _latestAssistantMessage(List<AiChatMessage> history) {
+    for (var index = history.length - 1; index >= 0; index--) {
+      final message = history[index];
+      if (!message.isUser) {
+        return message;
+      }
+    }
+    return null;
   }
 }

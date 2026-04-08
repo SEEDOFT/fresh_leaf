@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
-class HomeAppBarWidget extends StatelessWidget {
+class HomeAppBarWidget extends GetView<HomeController> {
   const HomeAppBarWidget({super.key});
 
   @override
@@ -13,34 +14,70 @@ class HomeAppBarWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.location_on,
-                color: scheme.onSurface,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'home_location_name'.tr,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+          Obx(
+            () => InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: controller.fetchCurrentLocation,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 2,
+                ),
+                child: Row(
+                  children: [
+                    if (controller.isResolvingLocation.value)
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: scheme.onSurface,
+                        ),
+                      )
+                    else
+                      Icon(
+                        Icons.location_on,
+                        color: scheme.onSurface,
+                        size: 20,
+                      ),
+                    const SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 110,
+                          child: Text(
+                            controller.locationName.value.isEmpty
+                                ? 'home_location_name'.tr
+                                : controller.locationName.value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 110,
+                          child: Text(
+                            controller.locationRegion.value.isEmpty
+                                ? 'home_location_region'.tr
+                                : controller.locationRegion.value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: scheme.onSurface.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Text(
-                    'home_location_region'.tr,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: scheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
           Column(
             children: [

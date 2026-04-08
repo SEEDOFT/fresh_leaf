@@ -83,9 +83,9 @@ class ProfilePersonalDetailsController extends GetxController {
 
     isSaving.value = true;
     try {
-      final api = Get.find<ApiClient>();
+      final apiClient = Get.find<ApiClient>();
       final response = await _updateProfile(
-        api,
+        apiClient,
         partialPayload: payload,
         fullPayload: _buildFullUpdatePayload(),
       );
@@ -178,6 +178,8 @@ class ProfilePersonalDetailsController extends GetxController {
       }
     } on DioException catch (_) {
       Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
+    } on Exception catch (_) {
+      Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     }
   }
 
@@ -236,7 +238,7 @@ class ProfilePersonalDetailsController extends GetxController {
   }
 
   Future<Response<dynamic>> _updateProfile(
-    ApiClient api, {
+    ApiClient apiClient, {
     required Map<String, dynamic> partialPayload,
     required Map<String, dynamic> fullPayload,
   }) async {
@@ -252,7 +254,7 @@ class ProfilePersonalDetailsController extends GetxController {
         ...requestPayload,
         '_method': methodOverride,
       };
-      return api.postRequest(
+      return apiClient.postRequest(
         ApiEndpoints.userUpdateProfile,
         data: FormData.fromMap(multipartPayload),
         options: Options(contentType: 'multipart/form-data'),
@@ -263,19 +265,19 @@ class ProfilePersonalDetailsController extends GetxController {
 
     try {
       if (usePatch) {
-        return await api.patchRequest(
+        return await apiClient.patchRequest(
           ApiEndpoints.userUpdateProfile,
           data: payloadData,
         );
       }
-      return await api.putRequest(
+      return await apiClient.putRequest(
         ApiEndpoints.userUpdateProfile,
         data: payloadData,
       );
     } on DioException catch (e) {
       final code = e.response?.statusCode ?? 0;
       if (code == 404 || code == 405) {
-        return api.postRequest(
+        return apiClient.postRequest(
           ApiEndpoints.userUpdateProfile,
           data: payloadData,
         );
