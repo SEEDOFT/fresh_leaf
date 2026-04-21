@@ -389,7 +389,7 @@ class AiAssistantController extends GetxController {
           _scheduleAutoScroll();
           return;
         }
-      } on Exception catch (_){
+      } on Exception catch (_) {
         // Fallback to default timeout state.
       }
 

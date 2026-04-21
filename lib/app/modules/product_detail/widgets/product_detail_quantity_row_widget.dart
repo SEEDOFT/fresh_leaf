@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_quantity_selector.dart';
 import 'package:get/get.dart';
 
 class QuantityRowWidget extends StatelessWidget {
@@ -27,31 +28,10 @@ class QuantityRowWidget extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        Container(
-          decoration: BoxDecoration(
-            color: scheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.remove),
-                onPressed: onDecrement,
-              ),
-              Text(
-                quantity.toString(),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: scheme.onSurface,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: onIncrement,
-              ),
-            ],
-          ),
+        AppQuantitySelector(
+          quantity: quantity,
+          onIncrement: onIncrement,
+          onDecrement: onDecrement,
         ),
       ],
     );

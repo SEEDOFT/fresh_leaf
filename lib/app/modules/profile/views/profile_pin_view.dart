@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_pin_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_pin_widget.dart';
-import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class ProfilePinView extends GetView<ProfilePinController> {
@@ -15,7 +16,7 @@ class ProfilePinView extends GetView<ProfilePinController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(title: 'pin_security'.tr),
+      appBar: CustomAppBar(title: 'pin_security'.tr),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Obx(
@@ -34,30 +35,12 @@ class ProfilePinView extends GetView<ProfilePinController> {
               ),
               const SizedBox(height: 18),
               if (!controller.hasPin.value) ...[
-                SizedBox(
-                  width: screenWidth,
-                  child: ElevatedButton.icon(
-                    onPressed: controller.openSetPinWithPassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: scheme.primary,
-                      minimumSize: const Size(0, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                    ),
-                    icon: Icon(
-                      Icons.lock_person_rounded,
-                      color: scheme.onPrimary,
-                    ),
-                    label: Text(
-                      'verify_password_set_pin'.tr,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: scheme.onPrimary,
-                      ),
-                    ),
-                  ),
+                PrimaryButton(
+                  onPressed: controller.openSetPinWithPassword,
+                  icon: Icons.lock_person_rounded,
+                  label: 'verify_password_set_pin'.tr,
+                  borderRadius: 14,
+                  height: 50,
                 ),
               ] else ...[
                 PinTextField(
@@ -78,37 +61,14 @@ class ProfilePinView extends GetView<ProfilePinController> {
                   inputFormatters: controller.pinInputFormatter,
                 ),
                 const SizedBox(height: 14),
-                SizedBox(
-                  width: screenWidth,
-                  child: ElevatedButton(
-                    onPressed: controller.isSaving.value
-                        ? null
-                        : controller.updateExistingPin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: scheme.primary,
-                      minimumSize: const Size(0, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: controller.isSaving.value
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: scheme.onPrimary,
-                            ),
-                          )
-                        : Text(
-                            'update_pin'.tr,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: scheme.onPrimary,
-                            ),
-                          ),
-                  ),
+                PrimaryButton(
+                  onPressed: controller.isSaving.value
+                      ? null
+                      : controller.updateExistingPin,
+                  isLoading: controller.isSaving.value,
+                  label: 'update_pin'.tr,
+                  borderRadius: 14,
+                  height: 50,
                 ),
                 const SizedBox(height: 10),
                 SizedBox(

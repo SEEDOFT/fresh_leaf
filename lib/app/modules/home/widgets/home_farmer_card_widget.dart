@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/home/widgets/home_chip_widget.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 
 class HomeFarmerCardWidget extends StatelessWidget {
   const HomeFarmerCardWidget({super.key});
@@ -55,17 +55,31 @@ class HomeFarmerCardWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                HomeChipWidget(
-                  icon: Icons.check_circle,
+                AppBadge(
                   label: 'Carbon Neutral',
+                  icon: Icons.check_circle,
+                  backgroundColor: scheme.surface,
+                  foregroundColor: scheme.onSurface,
+                  borderRadius: 20,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
-                SizedBox(width: 8),
-                HomeChipWidget(
-                  icon: Icons.local_shipping,
+                const SizedBox(width: 8),
+                AppBadge(
                   label: '12 Miles Away',
+                  icon: Icons.local_shipping,
+                  backgroundColor: scheme.surface,
+                  foregroundColor: scheme.onSurface,
+                  borderRadius: 20,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
               ],
             ),

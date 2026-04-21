@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_payment_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentView extends GetView<ProfilePaymentController> {
@@ -11,7 +12,7 @@ class ProfilePaymentView extends GetView<ProfilePaymentController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: ProfileAppBar(title: 'payment_methods'.tr),
+      appBar: CustomAppBar(title: 'payment_methods'.tr),
       body: SafeArea(
         child: Obx(
           () => RefreshIndicator(

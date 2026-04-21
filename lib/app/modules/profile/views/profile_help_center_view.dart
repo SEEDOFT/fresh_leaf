@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
@@ -16,7 +17,7 @@ class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(title: 'help_center'.tr),
+      appBar: CustomAppBar(title: 'help_center'.tr),
       body: SafeArea(
         child: Obx(() {
           return ListView(

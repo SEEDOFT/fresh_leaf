@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/orders/widgets/order_item_widget.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/shared/widgets/app_section_header.dart';
 import 'package:get/get.dart';
 
 class OrdersListWidget extends StatelessWidget {
@@ -44,7 +45,11 @@ class OrdersListWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SectionHeader(title: _translateSection(section)),
+              AppSectionHeader(
+                title: _translateSection(section),
+                style: AppSectionHeaderStyle.divider,
+                horizontalPadding: 0,
+              ),
               const SizedBox(height: 10),
               ...sectionOrders.map(
                 (order) => Padding(
@@ -73,35 +78,5 @@ class OrdersListWidget extends StatelessWidget {
       default:
         return 'earlier'.tr;
     }
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            color: scheme.onSurface,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Divider(
-            thickness: 1,
-            color: scheme.outline.withValues(alpha: 0.35),
-          ),
-        ),
-      ],
-    );
   }
 }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_skeleton_box_widget.dart';
 
-class ProductListImageWidget extends StatelessWidget {
-  const ProductListImageWidget({
+class AppNetworkImage extends StatelessWidget {
+  const AppNetworkImage({
     required this.url,
-    required this.width,
+    super.key,
+    this.height,
+    this.width,
     this.borderRadius,
     this.fit = BoxFit.cover,
-    super.key,
   });
 
   final String url;
-  final double width;
+  final double? height;
+  final double? width;
   final BorderRadius? borderRadius;
   final BoxFit fit;
 
@@ -19,22 +20,26 @@ class ProductListImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final radius = borderRadius ?? BorderRadius.zero;
     final scheme = Theme.of(context).colorScheme;
+
     return ClipRRect(
       borderRadius: radius,
       child: Image.network(
         url,
+        height: height,
         width: width,
         fit: fit,
         loadingBuilder: (context, child, progress) {
           if (progress == null) return child;
-          return ProductListSkeletonBoxWidget(
+          return _ImageSkeleton(
+            height: height,
             width: width,
             borderRadius: radius,
             color: scheme.surfaceContainerHighest,
           );
         },
         errorBuilder: (context, error, stackTrace) {
-          return ProductListSkeletonBoxWidget(
+          return _ImageSkeleton(
+            height: height,
             width: width,
             borderRadius: radius,
             color: scheme.surfaceContainerHighest,
@@ -45,6 +50,35 @@ class ProductListImageWidget extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _ImageSkeleton extends StatelessWidget {
+  const _ImageSkeleton({
+    this.height,
+    this.width,
+    this.borderRadius,
+    this.color,
+    this.child,
+  });
+
+  final double? height;
+  final double? width;
+  final BorderRadius? borderRadius;
+  final Color? color;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: borderRadius ?? BorderRadius.zero,
+      ),
+      child: child != null ? Center(child: child) : null,
     );
   }
 }

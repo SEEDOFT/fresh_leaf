@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:get/get.dart';
 
 class HomeAIBannerWidget extends StatelessWidget {
@@ -32,16 +33,14 @@ class HomeAIBannerWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
+            AppBadge(
+              label: '',
+              icon: Icons.auto_awesome,
+              backgroundColor: iconBoxColor,
+              foregroundColor: iconColor,
+              borderRadius: 16,
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: iconBoxColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                Icons.auto_awesome,
-                color: iconColor,
-              ),
+              fontSize: 0,
             ),
             const SizedBox(width: 16),
             Expanded(

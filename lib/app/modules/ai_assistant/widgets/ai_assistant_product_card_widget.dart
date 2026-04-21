@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 
 class AiAssistantProductCard extends StatelessWidget {
   const AiAssistantProductCard({
@@ -34,33 +35,11 @@ class AiAssistantProductCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
+          AppNetworkImage(
+            url: imageUrl,
+            height: 90,
+            width: screenWidth,
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              imageUrl,
-              height: 90,
-              width: screenWidth,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
-                  height: 90,
-                  width: screenWidth,
-                  color: scheme.surfaceContainerHighest,
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 90,
-                  width: screenWidth,
-                  color: scheme.surfaceContainerHighest,
-                  child: Icon(
-                    Icons.broken_image_rounded,
-                    color: scheme.onSurfaceVariant,
-                  ),
-                );
-              },
-            ),
           ),
           const SizedBox(height: 12),
           Text(

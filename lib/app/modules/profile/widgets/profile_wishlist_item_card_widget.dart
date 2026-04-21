@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
 
 class WishlistItemCard extends StatelessWidget {
@@ -27,31 +28,11 @@ class WishlistItemCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
+          AppNetworkImage(
+            url: item.imageUrl,
+            width: 66,
+            height: 66,
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              item.imageUrl,
-              width: 66,
-              height: 66,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
-                  width: 66,
-                  height: 66,
-                  color: scheme.surfaceContainerHighest,
-                );
-              },
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 66,
-                height: 66,
-                color: scheme.surfaceContainerHighest,
-                child: Icon(
-                  Icons.broken_image_rounded,
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ),
           ),
           const SizedBox(width: 12),
           Expanded(

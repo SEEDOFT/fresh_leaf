@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/'
     'profile_payment_add_controller.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
+import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentAddForm extends StatelessWidget {
@@ -56,25 +57,27 @@ class ProfilePaymentAddForm extends StatelessWidget {
             ],
           ),
           const SizedBox(height: _gap12),
-          _PaymentInput(
+          AppTextField(
             label: 'card_holder_name'.tr,
-            hint: 'placeholder_name'.tr,
+            hintText: 'placeholder_name'.tr,
             controller: controller.holderNameController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
-          _PaymentInput(
-            label: controller.isEditMode
-                ? 'card_number_optional'.tr
-                : 'card_number'.tr,
-            hint: controller.isEditMode
-                ? 'card_number_optional_hint'.tr
-                : '4242 4242 4242 4242',
-            controller: controller.cardNumberController,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
-            onChanged: controller.onCardNumberChanged,
-            inputFormatters: controller.cardNumberInputFormatters,
+          Obx(
+            () => AppTextField(
+              label: controller.isEditMode
+                  ? 'card_number_optional'.tr
+                  : 'card_number'.tr,
+              hintText: controller.isEditMode
+                  ? 'card_number_optional_hint'.tr
+                  : '4242 4242 4242 4242',
+              controller: controller.cardNumberController,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              onChanged: controller.onCardNumberChanged,
+              inputFormatters: controller.cardNumberInputFormatters,
+            ),
           ),
           Obx(
             () => controller.cardValidationMessage.value.isEmpty
@@ -100,9 +103,9 @@ class ProfilePaymentAddForm extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _PaymentInput(
+                child: AppTextField(
                   label: 'expiry'.tr,
-                  hint: 'MM/YY',
+                  hintText: 'MM/YY',
                   controller: controller.expiryController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
@@ -112,9 +115,9 @@ class ProfilePaymentAddForm extends StatelessWidget {
               ),
               const SizedBox(width: _gap12),
               Expanded(
-                child: _PaymentInput(
+                child: AppTextField(
                   label: 'cvv'.tr,
-                  hint: controller.isEditMode ? 'optional'.tr : '123',
+                  hintText: controller.isEditMode ? 'optional'.tr : '123',
                   controller: controller.cvvController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
@@ -124,30 +127,30 @@ class ProfilePaymentAddForm extends StatelessWidget {
             ],
           ),
           const SizedBox(height: _gap12),
-          _PaymentInput(
+          AppTextField(
             label: 'billing_address'.tr,
-            hint: 'placeholder_billing_address'.tr,
+            hintText: 'placeholder_billing_address'.tr,
             controller: controller.billingAddressController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
-          _PaymentInput(
+          AppTextField(
             label: 'city'.tr,
-            hint: 'placeholder_city'.tr,
+            hintText: 'placeholder_city'.tr,
             controller: controller.billingCityController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
-          _PaymentInput(
+          AppTextField(
             label: 'province'.tr,
-            hint: 'placeholder_province'.tr,
+            hintText: 'placeholder_province'.tr,
             controller: controller.billingStateController,
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: _gap12),
-          _PaymentInput(
+          AppTextField(
             label: 'postal_code'.tr,
-            hint: 'placeholder_postal_code'.tr,
+            hintText: 'placeholder_postal_code'.tr,
             controller: controller.billingZipCodeController,
             textInputAction: TextInputAction.next,
           ),
@@ -184,86 +187,23 @@ class _CardTypeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    return Container(
-      width: 88,
-      height: 34,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: scheme.primary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: logoAsset == null
-          ? Text(
-              cardType,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: scheme.primary,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
-            )
-          : SvgPicture.asset(logoAsset!),
-    );
-  }
-}
-
-class _PaymentInput extends StatelessWidget {
-  const _PaymentInput({
-    required this.label,
-    required this.hint,
-    required this.controller,
-    this.keyboardType,
-    this.textInputAction,
-    this.onChanged,
-    this.inputFormatters,
-  });
-
-  final String label;
-  final String hint;
-  final TextEditingController controller;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final ValueChanged<String>? onChanged;
-  final List<TextInputFormatter>? inputFormatters;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: scheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-          ),
+    if (logoAsset != null) {
+      return Container(
+        width: 88,
+        height: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: scheme.primary.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12),
         ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          onChanged: onChanged,
-          inputFormatters: inputFormatters,
-          decoration: InputDecoration(
-            hintText: hint,
-            isDense: true,
-            filled: true,
-            fillColor: scheme.surfaceContainerHighest,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
-          ),
-        ),
-      ],
+        child: SvgPicture.asset(logoAsset!),
+      );
+    }
+
+    return AppBadge(
+      label: cardType,
+      backgroundColor: scheme.primary.withValues(alpha: 0.12),
+      foregroundColor: scheme.primary,
     );
   }
 }

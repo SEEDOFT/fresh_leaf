@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_empty_state.dart';
 
 class NotificationsEmptyState extends StatelessWidget {
   const NotificationsEmptyState({required this.scheme, super.key});
@@ -6,36 +7,10 @@ class NotificationsEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(
-        parent: BouncingScrollPhysics(),
-      ),
-      children: [
-        const SizedBox(height: 120),
-        Icon(
-          Icons.notifications_none_rounded,
-          size: 56,
-          color: scheme.onSurfaceVariant,
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'You’re all caught up',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 16,
-            color: scheme.onSurface,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          'We’ll drop your updates here.',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: scheme.onSurfaceVariant,
-          ),
-        ),
-      ],
+    return const AppEmptyState(
+      icon: Icons.notifications_none_rounded,
+      title: 'You’re all caught up',
+      subtitle: 'We’ll drop your updates here.',
     );
   }
 }

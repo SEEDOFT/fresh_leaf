@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:fresh_leaf/app/modules/onboarding/widgets/onboarding_widget.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -110,39 +111,14 @@ class OnboardingView extends GetView<OnboardingController> {
                   const SizedBox(height: 18),
                   // 2. Action Button controlled by GetX (closer to content)
                   Obx(
-                    () => SizedBox(
+                    () => PrimaryButton(
+                      label: controller.isLastPage
+                          ? 'get_started'.tr
+                          : 'next'.tr,
+                      onPressed: controller.nextPage,
+                      icon: Icons.arrow_forward,
                       height: 68,
-                      child: ElevatedButton(
-                        onPressed: controller.nextPage,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: scheme.primary,
-                          foregroundColor: scheme.onPrimary,
-                          minimumSize: Size(media.size.width, 64),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              controller.isLastPage
-                                  ? 'get_started'.tr
-                                  : 'next'.tr,
-                              style: TextStyle(
-                                color: scheme.onPrimary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: scheme.onPrimary,
-                            ),
-                          ],
-                        ),
-                      ),
+                      borderRadius: 16,
                     ),
                   ),
                   const SizedBox(height: 16),

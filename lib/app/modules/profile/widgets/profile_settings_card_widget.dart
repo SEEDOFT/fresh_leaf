@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_card.dart';
 
 class SettingsCard extends StatelessWidget {
   const SettingsCard({
@@ -10,20 +11,11 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0F000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
+    return AppCard(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      borderRadius: 16,
+      showShadow: true,
+      showBorder: false,
       child: Column(children: children),
     );
   }

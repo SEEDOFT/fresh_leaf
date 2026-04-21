@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_address_edit_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_address_edit_widget.dart';
-import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
@@ -18,7 +18,7 @@ class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(
+      appBar: CustomAppBar(
         title: controller.isEditMode ? 'update_address'.tr : 'add_address'.tr,
       ),
       body: LayoutBuilder(

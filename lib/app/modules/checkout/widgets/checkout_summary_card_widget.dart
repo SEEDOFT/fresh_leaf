@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/app_card.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
+import 'package:fresh_leaf/shared/widgets/summary_row.dart';
 import 'package:get/get.dart';
 
 class CheckoutSummaryCardWidget extends StatelessWidget {
@@ -25,36 +27,24 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final scheme = Theme.of(context).colorScheme;
 
-    return Container(
+    return AppCard(
       width: screenWidth - 32,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
-      ),
       child: Column(
         children: [
-          _row(
-            'subtotal'.tr,
-            subtotal,
-            textColor: scheme.onSurface,
-            mutedColor: scheme.onSurfaceVariant,
+          SummaryRow(
+            label: 'subtotal'.tr,
+            amount: subtotal,
           ),
           const SizedBox(height: 8),
-          _row(
-            'delivery_fee'.tr,
-            deliveryFee,
-            textColor: scheme.onSurface,
-            mutedColor: scheme.onSurfaceVariant,
+          SummaryRow(
+            label: 'delivery_fee'.tr,
+            amount: deliveryFee,
           ),
           const SizedBox(height: 8),
-          _row(
-            'discount'.tr,
-            -discount,
-            textColor: scheme.onSurface,
-            mutedColor: scheme.onSurfaceVariant,
-            highlight: true,
+          SummaryRow(
+            label: 'discount'.tr,
+            amount: -discount,
+            isDiscount: true,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -63,85 +53,21 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
               color: scheme.outline.withValues(alpha: 0.35),
             ),
           ),
-          _row(
-            'total'.tr,
-            total,
-            textColor: scheme.onSurface,
-            mutedColor: scheme.onSurfaceVariant,
-            large: true,
+          SummaryRow(
+            label: 'total'.tr,
+            amount: total,
+            emphasize: true,
           ),
           const SizedBox(height: 14),
-          SizedBox(
+          PrimaryButton(
+            label: 'place_order'.tr,
+            onPressed: onPlaceOrder,
+            isLoading: isPlacingOrder,
             width: screenWidth - 64,
-            child: ElevatedButton(
-              onPressed: isPlacingOrder ? null : onPlaceOrder,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: scheme.primary,
-                foregroundColor: scheme.onPrimary,
-                minimumSize: const Size(0, 52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: isPlacingOrder
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: scheme.onPrimary,
-                      ),
-                    )
-                  : Text(
-                      'place_order'.tr,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-            ),
+            borderRadius: 16,
           ),
         ],
       ),
-    );
-  }
-
-  Widget _row(
-    String label,
-    double amount, {
-    required Color textColor,
-    required Color mutedColor,
-    bool large = false,
-    bool highlight = false,
-  }) {
-    final amountText =
-        '${amount < 0 ? '-' : ''}\$${amount.abs().toStringAsFixed(2)}';
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: large ? textColor : mutedColor,
-            fontSize: large ? 16 : 13,
-            fontWeight: large ? FontWeight.w800 : FontWeight.w600,
-          ),
-        ),
-        Text(
-          amountText,
-          style: TextStyle(
-            color: large
-                ? textColor
-                : highlight
-                ? AppColors.success
-                : textColor,
-            fontSize: large ? 20 : 14,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
     );
   }
 }

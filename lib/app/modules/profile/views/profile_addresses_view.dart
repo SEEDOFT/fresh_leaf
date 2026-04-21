@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_addresses_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_addresses_list_item_widget.dart';
-import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/core/models/user_address.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class AddressesView extends GetView<ProfileAddressesController> {
@@ -16,7 +16,7 @@ class AddressesView extends GetView<ProfileAddressesController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(title: 'my_addresses'.tr),
+      appBar: CustomAppBar(title: 'my_addresses'.tr),
       body: SafeArea(
         child: Obx(
           () => RefreshIndicator(

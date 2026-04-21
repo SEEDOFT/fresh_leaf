@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/order_detail/controllers/order_detail_controller.dart';
 import 'package:fresh_leaf/app/modules/order_detail/widgets/order_detail_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class OrderDetailView extends GetView<OrderDetailController> {
@@ -15,29 +17,10 @@ class OrderDetailView extends GetView<OrderDetailController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: scaffoldBg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            size: 18,
-            color: scheme.onSurface,
-          ),
-          onPressed: Get.back<void>,
-        ),
-        title: Obx(
-          () => Text(
-            controller.order.value == null
-                ? 'order_details'.tr
-                : 'Order ${controller.order.value!.id}',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: scheme.onSurface,
-              fontSize: 16,
-            ),
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: controller.order.value == null
+            ? 'order_details'.tr
+            : 'Order ${controller.order.value!.id}',
       ),
       body: Obx(() {
         if (controller.isCheckingAccess.value) {
@@ -89,27 +72,11 @@ class OrderDetailView extends GetView<OrderDetailController> {
               ),
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              width: screenWidth - 32,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: scheme.primary,
-                  foregroundColor: scheme.onPrimary,
-                  minimumSize: Size(screenWidth - 32, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  'reorder_everything'.tr,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
+            PrimaryButton(
+              onPressed: () {},
+              label: 'reorder_everything'.tr,
+              borderRadius: 14,
+              height: 50,
             ),
           ],
         );

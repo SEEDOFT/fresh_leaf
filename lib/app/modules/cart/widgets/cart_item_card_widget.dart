@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
+import 'package:fresh_leaf/shared/widgets/app_quantity_selector.dart';
 import 'package:get/get.dart';
 
 class CartItemCardWidget extends StatelessWidget {
@@ -38,31 +40,11 @@ class CartItemCardWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
+          AppNetworkImage(
+            url: item.imageUrl,
+            width: 86,
+            height: 86,
             borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              item.imageUrl,
-              width: 86,
-              height: 86,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
-                  width: 86,
-                  height: 86,
-                  color: scheme.surfaceContainerHighest,
-                );
-              },
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 86,
-                height: 86,
-                color: scheme.surfaceContainerHighest,
-                child: Icon(
-                  Icons.broken_image_rounded,
-                  color: scheme.onSurfaceVariant,
-                ),
-              ),
-            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -109,38 +91,11 @@ class CartItemCardWidget extends StatelessWidget {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: scheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        children: [
-                          _QtyButton(
-                            icon: Icons.remove_rounded,
-                            onTap: onMinus,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              '${item.quantity}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
-                                color: scheme.onSurface,
-                              ),
-                            ),
-                          ),
-                          _QtyButton(
-                            icon: Icons.add_rounded,
-                            onTap: onPlus,
-                          ),
-                        ],
-                      ),
+                    AppQuantitySelector(
+                      quantity: item.quantity,
+                      onIncrement: onPlus,
+                      onDecrement: onMinus,
+                      borderRadius: 20,
                     ),
                     const Spacer(),
                     Column(
@@ -170,39 +125,6 @@ class CartItemCardWidget extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _QtyButton extends StatelessWidget {
-  const _QtyButton({
-    required this.icon,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: onTap,
-      child: Container(
-        width: 24,
-        height: 24,
-        decoration: BoxDecoration(
-          color: scheme.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
-        ),
-        child: Icon(
-          icon,
-          size: 14,
-          color: scheme.onSurface,
-        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_list/controllers/product_list_controller.dart';
-import 'package:fresh_leaf/app/modules/product_list/widgets/product_list_widget.dart';
+import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProductListView extends GetView<ProductListController> {
@@ -8,27 +9,10 @@ class ProductListView extends GetView<ProductListController> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: scaffoldBg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: scheme.onSurface),
-          onPressed: Get.back<void>,
-        ),
-        title: Text(
-          'all_products'.tr,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: scheme.onSurface,
-          ),
-        ),
-        centerTitle: false,
-      ),
+      appBar: CustomAppBar(title: 'all_products'.tr),
       body: SafeArea(
         child: Obx(
           () => controller.isLoading.value
@@ -76,14 +60,18 @@ class ProductListView extends GetView<ProductListController> {
                       itemCount: controller.products.length,
                       itemBuilder: (context, index) {
                         final product = controller.products[index];
-                        return ProductListItemWidget(
-                          product: product,
+                        return AppProductCard(
+                          title: product.title.tr,
+                          subtitle: product.subtitle.tr,
+                          imageUrl: product.imageUrl,
+                          price: product.price,
                           onTap: () async {
                             await Get.toNamed<void>(
                               '/product_detail',
                               arguments: product,
                             );
                           },
+                          onActionTap: () {},
                         );
                       },
                     );

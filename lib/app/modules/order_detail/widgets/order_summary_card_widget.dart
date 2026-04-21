@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/shared/widgets/app_card.dart';
 import 'package:get/get.dart';
 
 class OrderSummaryCard extends StatelessWidget {
@@ -20,14 +21,8 @@ class OrderSummaryCard extends StatelessWidget {
         ? scheme.primaryContainer.withValues(alpha: 0.6)
         : scheme.secondaryContainer.withValues(alpha: 0.6);
     final statusColor = delivered ? scheme.primary : scheme.secondary;
-    return Container(
+    return AppCard(
       width: width,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: scheme.outline.withValues(alpha: 0.35)),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class ProfileLogoutButton extends StatelessWidget {
@@ -12,37 +13,11 @@ class ProfileLogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final media = MediaQuery.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: media.size.width,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: scheme.primary,
-          minimumSize: Size(media.size.width, 52),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: isLoading
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(scheme.onPrimary),
-                ),
-              )
-            : Text(
-                'log_out'.tr,
-                style: TextStyle(
-                  color: scheme.onPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-      ),
+    return PrimaryButton(
+      label: 'log_out'.tr,
+      onPressed: onTap,
+      isLoading: isLoading,
+      borderRadius: 16,
     );
   }
 }

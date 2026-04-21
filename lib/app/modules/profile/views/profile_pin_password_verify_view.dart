@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_pin_password_verify_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_pin_widget.dart';
-import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class ProfilePinPasswordVerifyView
@@ -10,7 +11,6 @@ class ProfilePinPasswordVerifyView
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final scheme = Theme.of(context).colorScheme;
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
@@ -18,7 +18,7 @@ class ProfilePinPasswordVerifyView
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         backgroundColor: scaffoldBg,
-        appBar: ProfileAppBar(title: controller.screenTitle),
+        appBar: CustomAppBar(title: controller.screenTitle),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: Column(
@@ -96,41 +96,17 @@ class ProfilePinPasswordVerifyView
                 top: false,
                 minimum: const EdgeInsets.only(bottom: 10),
                 child: Obx(
-                  () => SizedBox(
-                    width: screenWidth,
-                    child: ElevatedButton(
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : controller.isPasswordVerified.value
-                          ? controller.submit
-                          : controller.verifyPasswordFirst,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: scheme.primary,
-                        minimumSize: Size(screenWidth, 52),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: controller.isLoading.value
-                          ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: scheme.onPrimary,
-                              ),
-                            )
-                          : Text(
-                              controller.isPasswordVerified.value
-                                  ? controller.actionTitle
-                                  : 'verify_password'.tr,
-                              style: TextStyle(
-                                color: scheme.onPrimary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                    ),
+                  () => PrimaryButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : controller.isPasswordVerified.value
+                        ? controller.submit
+                        : controller.verifyPasswordFirst,
+                    isLoading: controller.isLoading.value,
+                    label: controller.isPasswordVerified.value
+                        ? controller.actionTitle
+                        : 'verify_password'.tr,
+                    borderRadius: 14,
                   ),
                 ),
               ),

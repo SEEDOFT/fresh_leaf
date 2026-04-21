@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
 import 'package:fresh_leaf/app/modules/notifications/widgets/notifications_widget.dart';
+import 'package:fresh_leaf/shared/widgets/app_filter_bar.dart';
+import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class NotificationsView extends GetView<NotificationsController> {
@@ -9,20 +12,26 @@ class NotificationsView extends GetView<NotificationsController> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
-    return Scaffold(
-      backgroundColor: scaffoldBg,
-      appBar: AppBar(
-        title: Text(
-          'Notifications',
-          style: TextStyle(
-            color: scheme.onSurface,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        backgroundColor: scaffoldBg,
-        elevation: 0,
+    final filterOptions = [
+      {'label': 'All', 'value': 'all', 'icon': Icons.inbox_outlined},
+      {
+        'label': 'Orders',
+        'value': 'order',
+        'icon': Icons.local_shipping_outlined,
+      },
+      {'label': 'Promos', 'value': 'promo', 'icon': Icons.local_offer_outlined},
+      {
+        'label': 'System',
+        'value': 'system',
+        'icon': Icons.settings_suggest_outlined,
+      },
+    ];
+
+    return AppScaffold(
+      scrollable: false,
+      appBar: CustomAppBar(
+        title: 'Notifications',
         actions: [
           TextButton(
             onPressed: controller.markAllRead,
@@ -36,10 +45,23 @@ class NotificationsView extends GetView<NotificationsController> {
           ),
         ],
       ),
+      padding: EdgeInsets.zero,
       body: Column(
         children: [
           const SizedBox(height: 6),
-          NotificationsFilterBar(controller: controller),
+          Obx(
+            () => AppFilterBar(
+              filters: filterOptions.map((e) => e['value']! as String).toList(),
+              selectedFilter: controller.activeFilter,
+              onChanged: (value) => controller.activeFilter = value,
+              labelBuilder: (value) =>
+                  filterOptions.firstWhere((e) => e['value'] == value)['label']!
+                      as String,
+              iconBuilder: (value) =>
+                  filterOptions.firstWhere((e) => e['value'] == value)['icon']!
+                      as IconData,
+            ),
+          ),
           Expanded(
             child: Obx(
               () => RefreshIndicator(
@@ -47,8 +69,8 @@ class NotificationsView extends GetView<NotificationsController> {
                 child: controller.filtered.isEmpty
                     ? NotificationsEmptyState(scheme: scheme)
                     : ListView.separated(
-                        physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
                         ),
                         padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
                         itemCount: controller.filtered.length,

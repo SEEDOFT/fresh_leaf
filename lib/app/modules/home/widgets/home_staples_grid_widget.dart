@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
 
 class HomeStaplesGridWidget extends StatelessWidget {
@@ -17,7 +18,6 @@ class HomeStaplesGridWidget extends StatelessWidget {
         ? scheme.surfaceContainerHighest.withValues(alpha: 0.82)
         : Colors.white;
     final chipPrimaryText = isDark ? scheme.onSurface : Colors.black;
-    final chipMutedText = isDark ? scheme.onSurfaceVariant : Colors.black54;
     final cardPeach = isDark
         ? scheme.secondaryContainer.withValues(alpha: 0.75)
         : AppColors.accentPeach;
@@ -42,7 +42,7 @@ class HomeStaplesGridWidget extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  HomeNetworkImageWidget(
+                  AppNetworkImage(
                     url:
                         'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
                     height: 280,
@@ -87,34 +87,16 @@ class HomeStaplesGridWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Container(
+                        AppBadge(
+                          label: 'reorder'.tr,
+                          backgroundColor: chipBackground,
+                          foregroundColor: chipPrimaryText,
+                          borderRadius: 20,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 8,
                           ),
-                          decoration: BoxDecoration(
-                            color: chipBackground,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'reorder'.tr,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: chipPrimaryText,
-                                ),
-                              ),
-                              Text(
-                                r'$6.50',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: chipMutedText,
-                                ),
-                              ),
-                            ],
-                          ),
+                          fontSize: 12,
                         ),
                       ],
                     ),
@@ -152,23 +134,16 @@ class HomeStaplesGridWidget extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Container(
+                      AppBadge(
+                        label: 'add_price'.trParams({'price': r'$4.20'}),
+                        backgroundColor: ctaDark,
+                        foregroundColor: ctaDarkText,
+                        borderRadius: 16,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
-                        decoration: BoxDecoration(
-                          color: ctaDark,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          'add_price'.trParams({'price': r'$4.20'}),
-                          style: TextStyle(
-                            color: ctaDarkText,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        fontSize: 12,
                       ),
                     ],
                   ),
@@ -199,23 +174,16 @@ class HomeStaplesGridWidget extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Container(
+                      AppBadge(
+                        label: 'add_price'.trParams({'price': r'$7.50'}),
+                        backgroundColor: ctaDark,
+                        foregroundColor: ctaDarkText,
+                        borderRadius: 16,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
-                        decoration: BoxDecoration(
-                          color: ctaDark,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          'add_price'.trParams({'price': r'$7.50'}),
-                          style: TextStyle(
-                            color: ctaDarkText,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        fontSize: 12,
                       ),
                     ],
                   ),

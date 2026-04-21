@@ -23,7 +23,7 @@ class StorageService extends GetxService {
 
   String? _token;
   bool _onboardingSeen = false;
-  UserProfile? _userProfile;
+  UserProfile? userProfile;
   String? _securityPin;
   bool _pinOrderVerification = false;
   String _themeMode = 'system';
@@ -33,9 +33,6 @@ class StorageService extends GetxService {
 
   String? get token => _token;
   bool get onboardingSeen => _onboardingSeen;
-  UserProfile? get userProfile => _userProfile;
-  set userProfile(UserProfile? profile) => _userProfile = profile;
-
   String? get securityPin => _securityPin;
   bool get pinOrderVerification => _pinOrderVerification;
   String get themeMode => _themeMode;
@@ -76,7 +73,7 @@ class StorageService extends GetxService {
   Future<void> clear() async {
     _token = null;
     _onboardingSeen = false;
-    _userProfile = null;
+    userProfile = null;
     _securityPin = null;
     _pinOrderVerification = false;
     await _secureStorage.delete(key: _tokenKey);

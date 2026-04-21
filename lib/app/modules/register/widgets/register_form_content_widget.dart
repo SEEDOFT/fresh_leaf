@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
 import 'package:fresh_leaf/app/modules/register/widgets/register_input_field_widget.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class RegisterFormContent extends StatelessWidget {
@@ -211,53 +212,15 @@ class RegisterFormContent extends StatelessWidget {
               ),
               SizedBox(height: actionGap),
               Obx(
-                () => ElevatedButton(
+                () => PrimaryButton(
+                  label: 'sign_up'.tr.toUpperCase(),
                   onPressed: controller.isLoading.value
                       ? null
                       : controller.signUp,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: scheme.primary,
-                    minimumSize: Size(
-                      media.size.width,
-                      buttonHeight,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: controller.isLoading.value
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              scheme.onPrimary,
-                            ),
-                          ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'sign_up'.tr.toUpperCase(),
-                              style: TextStyle(
-                                color: scheme.onPrimary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Icon(
-                              Icons.arrow_upward,
-                              color: scheme.onPrimary,
-                            ),
-                          ],
-                        ),
+                  isLoading: controller.isLoading.value,
+                  icon: Icons.arrow_upward,
+                  height: buttonHeight,
+                  borderRadius: 20,
                 ),
               ),
               SizedBox(height: footerGap),

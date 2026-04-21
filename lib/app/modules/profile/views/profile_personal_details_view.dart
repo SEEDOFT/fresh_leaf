@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_personal_details_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_personal_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,75 +15,56 @@ class ProfilePersonalDetailsView
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
-
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        backgroundColor: scaffoldBg,
-        appBar: ProfileAppBar(title: 'personal_details'.tr),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: controller.refreshProfile,
-                    child: ListView(
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      children: [
-                        _AvatarBlock(controller: controller),
-                        const SizedBox(height: 16),
-                        const PersonalDetailsIntroCard(),
-                        const SizedBox(height: 16),
-                        PersonalDetailsField(
-                          label: 'first_name'.tr,
-                          controller: controller.firstNameController,
-                          icon: Icons.badge_outlined,
-                        ),
-                        const SizedBox(height: 16),
-                        PersonalDetailsField(
-                          label: 'last_name'.tr,
-                          controller: controller.lastNameController,
-                          icon: Icons.badge_outlined,
-                        ),
-                        const SizedBox(height: 16),
-                        PersonalDetailsField(
-                          label: 'email'.tr,
-                          controller: controller.emailController,
-                          keyboard: TextInputType.emailAddress,
-                          icon: Icons.alternate_email_rounded,
-                        ),
-                        const SizedBox(height: 16),
-                        PersonalDetailsField(
-                          label: 'phone'.tr,
-                          controller: controller.phoneController,
-                          keyboard: TextInputType.phone,
-                          icon: Icons.phone_outlined,
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                    ),
-                  ),
-                ),
-                SafeArea(
-                  top: false,
-                  minimum: const EdgeInsets.only(bottom: 10),
-                  child: Obx(
-                    () => ProfilePrimaryActionButton(
-                      label: 'save_changes'.tr,
-                      onPressed: controller.saveChanges,
-                      isLoading: controller.isSaving.value,
-                    ),
-                  ),
-                ),
-              ],
+      child: AppScaffold(
+        appBar: CustomAppBar(title: 'personal_details'.tr),
+        onRefresh: controller.refreshProfile,
+        bottomNavigationBar: SafeArea(
+          top: false,
+          minimum: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+          child: Obx(
+            () => ProfilePrimaryActionButton(
+              label: 'save_changes'.tr,
+              onPressed: controller.saveChanges,
+              isLoading: controller.isSaving.value,
             ),
           ),
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _AvatarBlock(controller: controller),
+            const SizedBox(height: 16),
+            const PersonalDetailsIntroCard(),
+            const SizedBox(height: 16),
+            PersonalDetailsField(
+              label: 'first_name'.tr,
+              controller: controller.firstNameController,
+              icon: Icons.badge_outlined,
+            ),
+            const SizedBox(height: 16),
+            PersonalDetailsField(
+              label: 'last_name'.tr,
+              controller: controller.lastNameController,
+              icon: Icons.badge_outlined,
+            ),
+            const SizedBox(height: 16),
+            PersonalDetailsField(
+              label: 'email'.tr,
+              controller: controller.emailController,
+              keyboard: TextInputType.emailAddress,
+              icon: Icons.alternate_email_rounded,
+            ),
+            const SizedBox(height: 16),
+            PersonalDetailsField(
+              label: 'phone'.tr,
+              controller: controller.phoneController,
+              keyboard: TextInputType.phone,
+              icon: Icons.phone_outlined,
+            ),
+            const SizedBox(height: 8),
+          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_privacy_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfilePrivacyView extends GetView<ProfilePrivacyController> {
@@ -11,7 +12,7 @@ class ProfilePrivacyView extends GetView<ProfilePrivacyController> {
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(title: 'privacy_terms'.tr),
+      appBar: CustomAppBar(title: 'privacy_terms'.tr),
       body: SafeArea(
         child: Obx(
           () => ListView.separated(

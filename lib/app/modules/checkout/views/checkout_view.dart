@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/checkout/controllers/checkout_controller.dart';
 import 'package:fresh_leaf/app/modules/checkout/widgets/checkout_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class CheckoutView extends GetView<CheckoutController> {
@@ -11,37 +13,15 @@ class CheckoutView extends GetView<CheckoutController> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final scheme = Theme.of(context).colorScheme;
-    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
-    return Scaffold(
-      backgroundColor: scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: scaffoldBg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            size: 18,
-            color: scheme.onSurface,
-          ),
-          onPressed: Get.back<void>,
-        ),
-        title: Text(
-          'checkout'.tr,
-          style: TextStyle(
-            color: scheme.onSurface,
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-          ),
-        ),
-      ),
+    return AppScaffold(
+      appBar: CustomAppBar(title: 'checkout'.tr),
       body: Obx(() {
         if (controller.cart.items.isEmpty) {
           return const CheckoutEmptyWidget();
         }
 
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+        return Column(
           children: [
             CheckoutDeliveryCardWidget(
               onChangeAddress: () => Get.toNamed<void>(AppRoutes.addresses),

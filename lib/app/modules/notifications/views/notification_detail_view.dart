@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/notifications/controllers/notification_detail_controller.dart';
-import 'package:fresh_leaf/app/modules/notifications/widgets/notification_type_chip_widget.dart';
+import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class NotificationDetailView extends GetView<NotificationDetailController> {
@@ -14,17 +16,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: AppBar(
-        backgroundColor: scaffoldBg,
-        elevation: 0,
-        title: Text(
-          'Notification',
-          style: TextStyle(
-            color: scheme.onSurface,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Notification'),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         child: Column(
@@ -32,7 +24,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
           children: [
             Row(
               children: [
-                NotificationTypeChip(item: item, scheme: scheme),
+                _buildTypeBadge(item, scheme),
                 const Spacer(),
                 Text(
                   item.timeAgo,
@@ -82,6 +74,30 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTypeBadge(NotificationItem item, ColorScheme scheme) {
+    final Color color;
+    final IconData icon;
+
+    switch (item.type) {
+      case 'order':
+        color = scheme.primary;
+        icon = Icons.local_shipping_rounded;
+      case 'promo':
+        color = scheme.secondary;
+        icon = Icons.loyalty_rounded;
+      default:
+        color = scheme.tertiary;
+        icon = Icons.notifications_active_outlined;
+    }
+
+    return AppBadge(
+      label: item.type.capitalizeFirst ?? item.type,
+      icon: icon,
+      backgroundColor: color.withValues(alpha: 0.16),
+      foregroundColor: color,
     );
   }
 }

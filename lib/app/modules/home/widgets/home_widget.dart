@@ -1,11 +1,8 @@
 export 'home_ai_banner_widget.dart';
 export 'home_app_bar_widget.dart';
 export 'home_categories_widget.dart';
-export 'home_chip_widget.dart';
 export 'home_farmer_card_widget.dart';
 export 'home_hero_card_widget.dart';
 export 'home_horizontal_products_widget.dart';
-export 'home_network_image_widget.dart';
 export 'home_search_bar_widget.dart';
-export 'home_section_header_widget.dart';
 export 'home_staples_grid_widget.dart';

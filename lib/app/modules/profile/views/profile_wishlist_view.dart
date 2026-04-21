@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
-import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_wishlist_widget.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfileWishlistView extends GetView<ProfileWishlistController> {
@@ -12,7 +12,7 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(title: 'wishlist'.tr),
+      appBar: CustomAppBar(title: 'wishlist'.tr),
       body: Obx(() {
         if (controller.items.isEmpty) {
           return const WishlistEmptyWidget();

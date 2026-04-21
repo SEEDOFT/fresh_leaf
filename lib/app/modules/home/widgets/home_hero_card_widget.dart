@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/home/widgets/home_network_image_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
 
 class HomeHeroCardWidget extends StatelessWidget {
@@ -29,7 +29,7 @@ class HomeHeroCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           child: Stack(
             children: [
-              HomeNetworkImageWidget(
+              AppNetworkImage(
                 url:
                     'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=1000',
                 height: 240,

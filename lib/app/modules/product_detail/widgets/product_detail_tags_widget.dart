@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:get/get.dart';
 
 class TagsWidget extends StatelessWidget {
@@ -17,20 +18,14 @@ class TagsWidget extends StatelessWidget {
       runSpacing: 8,
       children: tags
           .map(
-            (tag) => Container(
+            (tag) => AppBadge(
+              label: tag.tr,
+              backgroundColor: scheme.surfaceContainerHighest,
+              foregroundColor: scheme.onSurface,
+              borderRadius: 16,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                tag.tr,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: scheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
           )
           .toList(),

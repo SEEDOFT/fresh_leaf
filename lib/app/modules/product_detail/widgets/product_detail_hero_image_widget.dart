@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
 
 class HeroImageWidget extends StatelessWidget {
@@ -19,25 +20,8 @@ class HeroImageWidget extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return Container(color: scheme.surfaceContainerHighest);
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return ColoredBox(
-                    color: scheme.surfaceContainerHighest,
-                    child: Center(
-                      child: Icon(
-                        Icons.broken_image_rounded,
-                        color: scheme.onSurfaceVariant,
-                        size: 34,
-                      ),
-                    ),
-                  );
-                },
+              child: AppNetworkImage(
+                url: imageUrl,
               ),
             ),
             Positioned(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
 import 'package:get/get.dart';
 
 class PinTextField extends StatelessWidget {
@@ -16,48 +17,13 @@ class PinTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.2,
-            color: scheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          inputFormatters: inputFormatters,
-          obscureText: true,
-          decoration: InputDecoration(
-            hintText: 'enter_6_digits'.tr,
-            hintStyle: TextStyle(color: scheme.onSurfaceVariant),
-            filled: true,
-            fillColor: scheme.surfaceContainerHighest,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 12,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: scheme.outline),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: scheme.primary,
-                width: 1.5,
-              ),
-            ),
-          ),
-        ),
-      ],
+    return AppTextField(
+      label: label,
+      controller: controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: inputFormatters,
+      obscureText: true,
+      hintText: 'enter_6_digits'.tr,
     );
   }
 }

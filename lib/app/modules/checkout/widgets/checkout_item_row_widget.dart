@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 
 class CheckoutItemRowWidget extends StatelessWidget {
   const CheckoutItemRowWidget({
@@ -23,34 +24,11 @@ class CheckoutItemRowWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
+          AppNetworkImage(
+            url: item.imageUrl,
+            width: 52,
+            height: 52,
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              item.imageUrl,
-              width: 52,
-              height: 52,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
-                  width: 52,
-                  height: 52,
-                  color: scheme.surfaceContainerHighest,
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: 52,
-                  height: 52,
-                  color: scheme.surfaceContainerHighest,
-                  child: Icon(
-                    Icons.broken_image_rounded,
-                    color: scheme.onSurfaceVariant,
-                    size: 18,
-                  ),
-                );
-              },
-            ),
           ),
           const SizedBox(width: 10),
           Expanded(

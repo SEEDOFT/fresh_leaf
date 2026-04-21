@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/login/controllers/login_controller.dart';
 import 'package:fresh_leaf/app/modules/login/widgets/login_background_hero_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
+import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
 class LoginFormContent extends StatelessWidget {
@@ -21,12 +23,6 @@ class LoginFormContent extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final keyboardVisible = media.viewInsets.bottom > 0;
-    final fieldFill = isDark
-        ? scheme.surfaceContainerHighest.withValues(alpha: 0.65)
-        : scheme.surface;
-    final borderColor = isDark
-        ? scheme.outline.withValues(alpha: 0.95)
-        : scheme.outline.withValues(alpha: 0.65);
     final scale = (constraints.maxHeight / 780).clamp(0.82, 1.0);
     final heroHeight = (constraints.maxHeight * 0.42).clamp(230.0, 360.0);
     final horizontalPadding = (24 * scale).clamp(20, 24).toDouble();
@@ -82,157 +78,41 @@ class LoginFormContent extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    Text(
-                      'phone_number'.tr.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                        color: scheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
+                    AppTextField(
+                      label: 'phone_number'.tr,
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
-                      cursorColor: scheme.primary,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      decoration: InputDecoration(
-                        hintText: '012 345 678',
-                        isDense: true,
-                        hintStyle: TextStyle(
-                          color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
-                          fontSize: 15,
-                        ),
-                        filled: true,
-                        fillColor: fieldFill,
-                        prefixStyle: TextStyle(
-                          color: scheme.primary,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: borderColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(
-                            color: scheme.primary,
-                            width: 1.5,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                      ),
+                      hintText: '012 345 678',
                     ),
                     const SizedBox(height: 28),
-                    Text(
-                      'password'.tr.toUpperCase(),
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                        color: scheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
                     Obx(
-                      () => TextField(
+                      () => AppTextField(
+                        label: 'password'.tr,
                         controller: controller.passwordController,
                         obscureText: !controller.isPasswordVisible.value,
-                        cursorColor: scheme.primary,
-                        style: TextStyle(
-                          color: scheme.onSurface,
-                          fontSize: 16,
-                          letterSpacing: 4,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: '••••••••',
-                          isDense: true,
-                          hintStyle: TextStyle(
-                            color: scheme.onSurfaceVariant.withValues(
-                              alpha: 0.7,
-                            ),
-                            fontSize: 15,
-                            letterSpacing: 4,
+                        hintText: '••••••••',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isPasswordVisible.value
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: scheme.onSurfaceVariant,
+                            size: 20,
                           ),
-                          filled: true,
-                          fillColor: fieldFill,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(color: borderColor),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide(
-                              color: scheme.primary,
-                              width: 1.5,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 12,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.isPasswordVisible.value
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: scheme.onSurfaceVariant,
-                              size: 20,
-                            ),
-                            onPressed: controller.togglePasswordVisibility,
-                          ),
+                          onPressed: controller.togglePasswordVisibility,
                         ),
                       ),
                     ),
                     const SizedBox(height: 36),
                     Obx(
-                      () => ElevatedButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : controller.login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: scheme.primary,
-                          minimumSize: Size(media.size.width, 56),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: controller.isLoading.value
-                            ? SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    scheme.onPrimary,
-                                  ),
-                                ),
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'login'.tr,
-                                    style: TextStyle(
-                                      color: scheme.onPrimary,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: scheme.onPrimary,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
+                      () => PrimaryButton(
+                        label: 'login'.tr,
+                        onPressed: controller.login,
+                        isLoading: controller.isLoading.value,
+                        icon: Icons.arrow_forward,
+                        borderRadius: 12,
+                        height: 56,
                       ),
                     ),
                     const SizedBox(height: 20),

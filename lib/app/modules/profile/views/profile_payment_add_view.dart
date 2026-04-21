@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_payment_add_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentAddView extends GetView<ProfilePaymentAddController> {
@@ -18,7 +19,7 @@ class ProfilePaymentAddView extends GetView<ProfilePaymentAddController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: ProfileAppBar(
+      appBar: CustomAppBar(
         title: controller.isEditMode
             ? 'edit_payment_method'.tr
             : 'add_payment_method'.tr,

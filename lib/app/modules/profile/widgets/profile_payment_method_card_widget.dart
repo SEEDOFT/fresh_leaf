@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fresh_leaf/core/constants/payment_method_type_constants.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
+import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentMethodCard extends StatelessWidget {
@@ -280,17 +281,14 @@ class _InfoTag extends StatelessWidget {
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
       children: [
-        Icon(icon, color: scheme.onSurfaceVariant, size: 17),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          overflow: TextOverflow.ellipsis,
-          softWrap: false,
-          style: TextStyle(
-            color: scheme.onSurfaceVariant,
-            fontSize: 12.5,
-            fontWeight: FontWeight.w500,
-          ),
+        AppBadge(
+          label: text,
+          icon: icon,
+          backgroundColor: Colors.transparent,
+          foregroundColor: scheme.onSurfaceVariant,
+          padding: EdgeInsets.zero,
+          fontSize: 12.5,
+          fontWeight: FontWeight.w500,
         ),
       ],
     );

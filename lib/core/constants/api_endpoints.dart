@@ -2,41 +2,41 @@ final class ApiEndpoints {
   ApiEndpoints._();
 
   // Auth
-  static const String login = '/auth/login';
-  static const String register = '/auth/register';
-  static const String logout = '/auth/logout';
-  static const String updatePassword = '/auth/password/update';
-  static const String verifyPassword = '/auth/password/verify';
-  static const String setPin = '/auth/pin/set';
-  static const String updatePin = '/auth/pin/update';
-  static const String verifyPin = '/auth/pin/verify';
-  static const String resetPin = '/auth/pin/reset';
+  static const String login = '/user/auth/login';
+  static const String register = '/user/auth/register';
+  static const String logout = '/user/auth/logout';
+  static const String updatePassword = '/user/auth/password/update';
+  static const String verifyPassword = '/user/auth/password/verify';
+  static const String setPin = '/user/auth/pin/set';
+  static const String updatePin = '/user/auth/pin/update';
+  static const String verifyPin = '/user/auth/pin/verify';
+  static const String resetPin = '/user/auth/pin/reset';
 
   // User
-  static const String userProfile = '/users/profile';
-  static const String userUpdateProfile = '/users/profile';
-  static const String userAddresses = '/users/addresses';
-  static const String userAddress = '/users/addresses/{id}';
+  static const String userProfile = '/user/profile';
+  static const String userUpdateProfile = '/user/profile';
+  static const String userAddresses = '/user/addresses';
+  static const String userAddress = '/user/addresses/{id}';
   // Payment Methods
-  static const String userPaymentMethods = '/users/payment-methods';
-  static const String userPaymentMethod = '/users/payment-methods/{id}';
+  static const String userPaymentMethods = '/user/payment-methods';
+  static const String userPaymentMethod = '/user/payment-methods/{id}';
 
   // Products
-  static const String products = '/products';
-  static const String productById = '/products/{id}';
-  static const String productCategories = '/products/categories';
-  static const String productSearch = '/products/search';
+  static const String products = '/user/products';
+  static const String productById = '/user/products/{id}';
+  static const String productCategories = '/user/products/categories';
+  static const String productSearch = '/user/products/search';
 
   // Cart
-  static const String cart = '/cart';
-  static const String cartItem = '/cart/items/{itemId}';
-  static const String cartApplyCoupon = '/cart/apply-coupon';
-  static const String cartRemoveCoupon = '/cart/remove-coupon';
+  static const String cart = '/user/cart';
+  static const String cartItem = '/user/cart/items/{itemId}';
+  static const String cartApplyCoupon = '/user/cart/apply-coupon';
+  static const String cartRemoveCoupon = '/user/cart/remove-coupon';
 
   // Orders
-  static const String orders = '/orders';
-  static const String orderById = '/orders/{id}';
-  static const String orderCancel = '/orders/{id}/cancel';
+  static const String orders = '/user/orders';
+  static const String orderById = '/user/orders/{id}';
+  static const String orderCancel = '/user/orders/{id}/cancel';
 
   // AI Assistant
   static const String aiSuggestions = '/ai/suggestions';
@@ -46,6 +46,6 @@ final class ApiEndpoints {
   static const String aiChatHistory = '/ai/chat/history';
 
   // Favorites/Wishlist
-  static const String wishlist = '/wishlist';
-  static const String wishlistItem = '/wishlist/items/{itemId}';
+  static const String wishlist = '/user/wishlist';
+  static const String wishlistItem = '/user/wishlist/items/{itemId}';
 }
