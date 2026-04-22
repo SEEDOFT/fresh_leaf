@@ -82,21 +82,6 @@ class ProfilePaymentController extends GetxController {
     await _openPaymentEditor(seed: method);
   }
 
-  Future<void> setDefault(PaymentMethod method) async {
-    if (processingId.value.isNotEmpty || method.isDefault == true) return;
-    processingId.value = method.id.toString();
-    try {
-      methods.assignAll(
-        methods.map(
-          (item) => item.copyWith(isDefault: item.id == method.id),
-        ),
-      );
-      Get.snackbar('updated'.tr, 'default_payment_updated'.tr);
-    } finally {
-      processingId.value = '';
-    }
-  }
-
   Future<void> remove(PaymentMethod method) async {
     if (processingId.value.isNotEmpty) return;
     processingId.value = method.id.toString();
@@ -138,29 +123,17 @@ class ProfilePaymentController extends GetxController {
   }
 
   Future<void> _openPaymentEditor({PaymentMethod? seed}) async {
-    final hasDefaultMethod =
-        methods.isNotEmpty && methods.first.isDefault == true;
     final routeResult = await Get.toNamed<dynamic>(
       AppRoutes.paymentMethodsAdd,
       arguments: <String, dynamic>{
         'seed': seed,
-        'has_default_method': hasDefaultMethod,
       },
     );
     final result = _toPaymentMethod(routeResult);
     if (result == null) return;
 
     final isEdit = seed != null;
-    final firstItem = methods.isEmpty;
-    final shouldBeDefault =
-        firstItem || (!hasDefaultMethod && result.isDefault == true);
-    final normalized = result.copyWith(isDefault: shouldBeDefault);
-
-    if (shouldBeDefault) {
-      methods.assignAll(
-        methods.map((item) => item.copyWith(isDefault: false)),
-      );
-    }
+    final normalized = result.copyWith(isDefault: false);
 
     if (isEdit) {
       final index = methods.indexWhere((item) => item.id == normalized.id);

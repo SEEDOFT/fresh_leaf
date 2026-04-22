@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fresh_leaf/core/constants/payment_method_type_constants.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
@@ -11,7 +10,6 @@ class ProfilePaymentMethodCard extends StatelessWidget {
     required this.paymentMethod,
     required this.isProcessing,
     required this.onEdit,
-    required this.onSetDefault,
     required this.onRemove,
     super.key,
   });
@@ -19,22 +17,24 @@ class ProfilePaymentMethodCard extends StatelessWidget {
   final PaymentMethod paymentMethod;
   final bool isProcessing;
   final VoidCallback onEdit;
-  final VoidCallback onSetDefault;
   final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final month = paymentMethod.expiryMonth.clamp(1, 12);
+    final month = paymentMethod.expiryMonth;
     final year = paymentMethod.expiryYear % 100;
     final label = paymentMethod.label != null && paymentMethod.label!.isNotEmpty
         ? paymentMethod.label
         : paymentMethod.paymentMethodType?.name;
+    final hasCardNumber = paymentMethod.cardNumber.trim().isNotEmpty;
     final last4 = _resolveLast4(paymentMethod.cardNumber);
     final maskedNumber = _resolveMaskedNumber(paymentMethod.cardNumber);
     final statusName = paymentMethod.paymentMethodStatus?.name;
-    final brandAsset = _resolveBrandAsset(paymentMethod.paymentMethodTypeId);
+    final brandAsset = _resolveBrandAsset(
+      paymentMethod.paymentMethodType?.code,
+    );
     final topColor = isDark
         ? scheme.primaryContainer.withValues(alpha: 0.55)
         : scheme.primary.withValues(alpha: 0.11);
@@ -82,58 +82,43 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '•••• $last4',
-                      style: TextStyle(
-                        color: scheme.onSurfaceVariant.withValues(alpha: 0.9),
-                        fontSize: 13,
+                    if (hasCardNumber) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        '•••• $last4',
+                        style: TextStyle(
+                          color: scheme.onSurfaceVariant.withValues(alpha: 0.9),
+                          fontSize: 13,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
-              if (paymentMethod.isDefault ?? false)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 9,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: scheme.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'default'.tr,
-                    style: TextStyle(
-                      color: scheme.primary,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
             ],
           ),
           const SizedBox(height: 14),
-          Text(
-            maskedNumber,
-            style: TextStyle(
-              color: scheme.onSurface,
-              fontWeight: FontWeight.w700,
-              fontSize: 18,
-              letterSpacing: 1.3,
+          if (hasCardNumber)
+            Text(
+              maskedNumber,
+              style: TextStyle(
+                color: scheme.onSurface,
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+                letterSpacing: 1.3,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
+          SizedBox(height: hasCardNumber ? 12 : 0),
           Row(
             children: [
-              _InfoTag(
-                icon: Icons.calendar_month,
-                text:
-                    '${'exp'.tr} ${month.toString().padLeft(2, '0')}/'
-                    '${year.toString().padLeft(2, '0')}',
-              ),
-              const SizedBox(width: 8),
+              if (hasCardNumber && month > 0)
+                _InfoTag(
+                  icon: Icons.calendar_month,
+                  text:
+                      '${'exp'.tr} ${month.toString().padLeft(2, '0')}/'
+                      '${year.toString().padLeft(2, '0')}',
+                ),
+              if (hasCardNumber && month > 0) const SizedBox(width: 8),
               Expanded(
                 child: _InfoTag(
                   icon: Icons.shield_outlined,
@@ -171,46 +156,23 @@ class ProfilePaymentMethodCard extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton(
-                  onPressed:
-                      (isProcessing || (paymentMethod.isDefault ?? false))
-                      ? null
-                      : onSetDefault,
+                  onPressed: isProcessing ? null : onRemove,
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(44),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: isProcessing
-                      ? SizedBox(
-                          height: 14,
-                          width: 14,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: scheme.primary,
-                          ),
-                        )
-                      : Text(
-                          'set_as_default'.tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: (paymentMethod.isDefault ?? false)
-                                ? scheme.onSurfaceVariant
-                                : scheme.primary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                  child: Text(
+                    'remove'.tr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: scheme.error,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              TextButton(
-                onPressed: isProcessing ? null : onRemove,
-                style: TextButton.styleFrom(
-                  foregroundColor: scheme.error,
-                  minimumSize: const Size(0, 40),
-                ),
-                child: Text('remove'.tr),
               ),
             ],
           ),
@@ -316,13 +278,16 @@ String _resolveLast4(String cardNumber) {
   return digits.substring(digits.length - 4);
 }
 
-String? _resolveBrandAsset(int typeId) {
-  switch (typeId) {
-    case PaymentMethodTypeConstants.visa:
+String? _resolveBrandAsset(String? typeCode) {
+  final code = (typeCode ?? '').trim().toLowerCase();
+  switch (code) {
+    case 'visa':
       return SvgAssets.visa;
-    case PaymentMethodTypeConstants.masterCard:
+    case 'mastercard':
+    case 'master_card':
       return SvgAssets.mastercard;
-    case PaymentMethodTypeConstants.unionPay:
+    case 'unionpay':
+    case 'union_pay':
       return SvgAssets.unionPay;
     default:
       return null;

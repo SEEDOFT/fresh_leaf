@@ -27,10 +27,12 @@ class CheckoutView extends GetView<CheckoutController> {
               onChangeAddress: () => Get.toNamed<void>(AppRoutes.addresses),
             ),
             const SizedBox(height: 14),
-            CheckoutPaymentMethodsWidget(
-              methods: controller.paymentMethods,
-              selectedMethod: controller.selectedPayment,
-              onSelect: (method) => controller.selectedPayment = method,
+            Obx(
+              () => CheckoutPaymentMethodsWidget(
+                options: controller.paymentOptions,
+                selectedOptionId: controller.selectedOptionId.value,
+                onSelect: controller.selectPaymentOption,
+              ),
             ),
             const SizedBox(height: 14),
             Container(

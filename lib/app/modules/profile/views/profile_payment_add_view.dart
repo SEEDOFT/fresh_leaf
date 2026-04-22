@@ -39,13 +39,17 @@ class ProfilePaymentAddView extends GetView<ProfilePaymentAddController> {
                   color: scheme.primary.withValues(alpha: 0.18),
                 ),
               ),
-              child: Text(
-                controller.isEditMode
-                    ? 'payment_edit_hint'.tr
-                    : 'payment_security_hint'.tr,
-                style: TextStyle(
-                  color: scheme.onSurfaceVariant,
-                  height: 1.35,
+              child: Obx(
+                () => Text(
+                  controller.requiresDetails
+                      ? (controller.isEditMode
+                            ? 'payment_edit_hint'.tr
+                            : 'payment_security_hint'.tr)
+                      : 'bank_channel_payment_hint'.tr,
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
                 ),
               ),
             ),

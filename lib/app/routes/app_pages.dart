@@ -21,6 +21,8 @@ import 'package:fresh_leaf/app/modules/notifications/views/notification_detail_v
 import 'package:fresh_leaf/app/modules/notifications/views/notifications_view.dart';
 import 'package:fresh_leaf/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:fresh_leaf/app/modules/onboarding/views/onboarding_view.dart';
+import 'package:fresh_leaf/app/modules/payment_qr/bindings/payment_qr_binding.dart';
+import 'package:fresh_leaf/app/modules/payment_qr/views/payment_qr_view.dart';
 import 'package:fresh_leaf/app/modules/order_detail/bindings/order_detail_binding.dart';
 import 'package:fresh_leaf/app/modules/order_detail/views/order_detail_view.dart';
 import 'package:fresh_leaf/app/modules/orders/bindings/orders_binding.dart';
@@ -65,6 +67,8 @@ import 'package:fresh_leaf/app/modules/wallet/bindings/wallet_binding.dart';
 import 'package:fresh_leaf/app/modules/wallet/views/wallet_view.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up/bindings/wallet_top_up_binding.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up/views/wallet_top_up_view.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up_payment/bindings/wallet_top_up_payment_binding.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up_payment/views/wallet_top_up_payment_view.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -266,6 +270,18 @@ final class AppPages {
       name: AppRoutes.walletTopUp,
       page: () => const WalletTopUpView(),
       binding: WalletTopUpBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.walletTopUpPayment,
+      page: () => const WalletTopUpPaymentView(),
+      binding: WalletTopUpPaymentBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.paymentQr,
+      page: () => const PaymentQrView(),
+      binding: PaymentQrBinding(),
       middlewares: _authOnly,
     ),
   ];

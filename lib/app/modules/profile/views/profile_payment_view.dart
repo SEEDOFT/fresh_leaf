@@ -70,7 +70,6 @@ class ProfilePaymentView extends GetView<ProfilePaymentController> {
                 paymentMethod: item,
                 isProcessing: processingId == item.id.toString(),
                 onEdit: () => controller.openEditPaymentMethod(item),
-                onSetDefault: () => controller.setDefault(item),
                 onRemove: () => controller.remove(item),
               ),
             ),

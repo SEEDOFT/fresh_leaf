@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/checkout/controllers/checkout_controller.dart';
 import 'package:get/get.dart';
 
 class CheckoutPaymentMethodsWidget extends StatelessWidget {
   const CheckoutPaymentMethodsWidget({
-    required this.methods,
-    required this.selectedMethod,
+    required this.options,
+    required this.selectedOptionId,
     required this.onSelect,
     super.key,
   });
 
-  final List<String> methods;
-  final String selectedMethod;
+  final List<CheckoutPaymentOption> options;
+  final String selectedOptionId;
   final ValueChanged<String> onSelect;
 
   @override
@@ -35,66 +36,64 @@ class CheckoutPaymentMethodsWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          ...methods.map(
-            (method) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: GestureDetector(
-                onTap: () => onSelect(method),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: selectedMethod == method
-                        ? scheme.primaryContainer.withValues(alpha: 0.55)
-                        : scheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: selectedMethod == method
-                          ? scheme.primary
-                          : scheme.outline.withValues(alpha: 0.35),
+          if (options.isEmpty)
+            Text(
+              'unable_load_payment_methods'.tr,
+              style: TextStyle(color: scheme.onSurfaceVariant),
+            )
+          else
+            ...options.map(
+              (option) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: GestureDetector(
+                  onTap: () => onSelect(option.id),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        selectedMethod == method
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked,
-                        color: selectedMethod == method
+                    decoration: BoxDecoration(
+                      color: selectedOptionId == option.id
+                          ? scheme.primaryContainer.withValues(alpha: 0.55)
+                          : scheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selectedOptionId == option.id
                             ? scheme.primary
-                            : scheme.onSurfaceVariant,
-                        size: 18,
+                            : scheme.outline.withValues(alpha: 0.35),
                       ),
-                      const SizedBox(width: 10),
-                      Text(
-                        _displayLabel(method).tr,
-                        style: TextStyle(
-                          color: scheme.onSurface,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          selectedOptionId == option.id
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_unchecked,
+                          color: selectedOptionId == option.id
+                              ? scheme.primary
+                              : scheme.onSurfaceVariant,
+                          size: 18,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            option.label,
+                            style: TextStyle(
+                              color: scheme.onSurface,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
-
-  String _displayLabel(String method) {
-    switch (method) {
-      case 'Cash on Delivery':
-        return 'cash_on_delivery';
-      case 'Credit/Debit Card':
-        return 'credit_debit_card';
-      default:
-        return method;
-    }
-  }
 }
+

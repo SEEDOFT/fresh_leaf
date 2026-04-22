@@ -2,11 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/core/constants/payment_method_status_constants.dart';
-import 'package:fresh_leaf/core/constants/payment_method_type_constants.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
+import 'package:fresh_leaf/core/models/payment_method_type.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
@@ -20,20 +21,35 @@ class ProfilePaymentAddController extends GetxController {
   final billingCityController = TextEditingController();
   final billingStateController = TextEditingController();
   final billingZipCodeController = TextEditingController();
-  final RxBool setAsDefault = false.obs;
   final RxBool isSaving = false.obs;
-  final RxBool canSetAsDefault = true.obs;
   final RxString cardType = 'Unknown'.obs;
   final RxString cardValidationMessage = ''.obs;
+  final RxList<PaymentMethodType> paymentMethodTypes =
+      <PaymentMethodType>[].obs;
+  final Rxn<PaymentMethodType> selectedPaymentMethodType =
+      Rxn<PaymentMethodType>();
+  final RxBool isLoadingPaymentMethodTypes = false.obs;
+  bool _excludeWalletType = false;
 
   PaymentMethod? _editingMethod;
 
   bool get isEditMode => _editingMethod != null;
+  bool get requiresDetails {
+    final rule = resolvePaymentMethodFlowRule(selectedPaymentMethodType.value?.code);
+    return rule.requiresDetails;
+  }
+
+  bool get isBankChannelType {
+    final code = (selectedPaymentMethodType.value?.code ?? '').toLowerCase();
+    return code == PaymentMethodTypeCodes.aba ||
+        code == PaymentMethodTypeCodes.acleda;
+  }
 
   @override
   void onInit() {
     super.onInit();
     _bindEditArgument();
+    fetchPaymentMethodTypes();
   }
 
   List<TextInputFormatter> get cardNumberInputFormatters =>
@@ -89,7 +105,9 @@ class ProfilePaymentAddController extends GetxController {
     final billingState = billingStateController.text.trim();
     final billingZipCode = billingZipCodeController.text.trim();
     final isKeepingExistingCard = isEditMode && cardDigits.isEmpty;
+    final selectedType = selectedPaymentMethodType.value;
 
+    final rule = resolvePaymentMethodFlowRule(selectedType?.code);
     final validationError = _validate(
       holder: holder,
       cardDigits: cardDigits,
@@ -100,6 +118,8 @@ class ProfilePaymentAddController extends GetxController {
       billingState: billingState,
       billingZipCode: billingZipCode,
       isKeepingExistingCard: isKeepingExistingCard,
+      selectedType: selectedType,
+      requiresDetails: rule.requiresDetails,
     );
 
     if (validationError.isNotEmpty) {
@@ -110,16 +130,24 @@ class ProfilePaymentAddController extends GetxController {
     isSaving.value = true;
     try {
       final apiClient = Get.find<ApiClient>();
-      final expiryMonth = int.parse(expiryDigits.substring(0, 2));
-      final expiryYear = 2000 + int.parse(expiryDigits.substring(2));
-      final cvv = isKeepingExistingCard ? _editingMethod?.cvv : enteredCvv;
-      final label = isKeepingExistingCard
-          ? (_editingMethod?.label ?? 'Unknown')
-          : _detectCardType(cardDigits);
-      final paymentMethodTypeId = _resolvePaymentMethodTypeId(label);
-      final cardNumber = isKeepingExistingCard
-          ? (_editingMethod?.cardNumber ?? '')
-          : cardDigits;
+      final expiryMonth = rule.requiresDetails
+          ? int.parse(expiryDigits.substring(0, 2))
+          : 0;
+      final expiryYear = rule.requiresDetails
+          ? 2000 + int.parse(expiryDigits.substring(2))
+          : 0;
+      final cvv = rule.requiresDetails
+          ? (isKeepingExistingCard ? _editingMethod?.cvv : enteredCvv)
+          : '';
+      final label = rule.requiresDetails
+          ? (isKeepingExistingCard
+                ? (_editingMethod?.label ?? 'Unknown')
+                : _detectCardType(cardDigits))
+          : (selectedType?.name ?? selectedType?.code ?? 'Payment');
+      final paymentMethodTypeId = selectedType?.id ?? 0;
+      final cardNumber = rule.requiresDetails
+          ? (isKeepingExistingCard ? (_editingMethod?.cardNumber ?? '') : cardDigits)
+          : '';
 
       final created = PaymentMethod(
         label: label,
@@ -134,7 +162,7 @@ class ProfilePaymentAddController extends GetxController {
         billingCity: billingCity,
         billingState: billingState,
         billingZipCode: billingZipCode,
-        isDefault: canSetAsDefault.value && setAsDefault.value,
+        isDefault: false,
       );
 
       final payload = {
@@ -149,7 +177,7 @@ class ProfilePaymentAddController extends GetxController {
         'billing_city': created.billingCity,
         'billing_state': created.billingState,
         'billing_zip_code': created.billingZipCode,
-        'is_default': created.isDefault,
+        'is_default': false,
       };
 
       final response = await apiClient.postRequest(
@@ -207,56 +235,127 @@ class ProfilePaymentAddController extends GetxController {
     required String billingState,
     required String billingZipCode,
     required bool isKeepingExistingCard,
+    required PaymentMethodType? selectedType,
+    required bool requiresDetails,
   }) {
-    if (holder.isEmpty) {
-      return 'card_holder_required'.tr;
+    if (selectedType == null || (selectedType.id ?? 0) <= 0) {
+      return 'payment_method_type_required'.tr;
     }
 
-    if (!isKeepingExistingCard) {
-      if (cardDigits.length < 12) {
-        return 'card_number_invalid'.tr;
+    if (requiresDetails) {
+      if (holder.isEmpty) {
+        return 'card_holder_required'.tr;
       }
-      if (enteredCvv.length < 3 || enteredCvv.length > 4) {
-        return 'cvv_invalid'.tr;
+
+      if (!isKeepingExistingCard) {
+        if (cardDigits.length < 12) {
+          return 'card_number_invalid'.tr;
+        }
+        if (enteredCvv.length < 3 || enteredCvv.length > 4) {
+          return 'cvv_invalid'.tr;
+        }
+      } else if ((_editingMethod?.cvv ?? '').isEmpty) {
+        if (enteredCvv.length < 3 || enteredCvv.length > 4) {
+          return 'cvv_invalid'.tr;
+        }
       }
-    } else if ((_editingMethod?.cvv ?? '').isEmpty) {
-      if (enteredCvv.length < 3 || enteredCvv.length > 4) {
-        return 'cvv_invalid'.tr;
+
+      if (expiryDigits.length != 4) {
+        return 'expiry_format_invalid'.tr;
       }
-    }
 
-    if (expiryDigits.length != 4) {
-      return 'expiry_format_invalid'.tr;
-    }
+      final month = int.tryParse(expiryDigits.substring(0, 2)) ?? 0;
+      final year = int.tryParse(expiryDigits.substring(2)) ?? -1;
+      if (month < 1 || month > 12) {
+        return 'expiry_month_invalid'.tr;
+      }
 
-    final month = int.tryParse(expiryDigits.substring(0, 2)) ?? 0;
-    final year = int.tryParse(expiryDigits.substring(2)) ?? -1;
-    if (month < 1 || month > 12) {
-      return 'expiry_month_invalid'.tr;
-    }
+      final fullYear = 2000 + year;
+      final now = DateTime.now();
+      final currentMonthStart = DateTime(now.year, now.month);
+      final expiryMonthStart = DateTime(fullYear, month);
+      if (expiryMonthStart.isBefore(currentMonthStart)) {
+        return 'card_expired'.tr;
+      }
 
-    final fullYear = 2000 + year;
-    final now = DateTime.now();
-    final currentMonthStart = DateTime(now.year, now.month);
-    final expiryMonthStart = DateTime(fullYear, month);
-    if (expiryMonthStart.isBefore(currentMonthStart)) {
-      return 'card_expired'.tr;
-    }
-
-    if (billingAddress.isEmpty) {
-      return 'enter_address_line_1'.tr;
-    }
-    if (billingCity.isEmpty) {
-      return 'enter_city'.tr;
-    }
-    if (billingState.isEmpty) {
-      return 'enter_province'.tr;
-    }
-    if (billingZipCode.isEmpty) {
-      return 'enter_postal_code'.tr;
+      if (billingAddress.isEmpty) {
+        return 'enter_address_line_1'.tr;
+      }
+      if (billingCity.isEmpty) {
+        return 'enter_city'.tr;
+      }
+      if (billingState.isEmpty) {
+        return 'enter_province'.tr;
+      }
+      if (billingZipCode.isEmpty) {
+        return 'enter_postal_code'.tr;
+      }
     }
 
     return '';
+  }
+
+  Future<void> fetchPaymentMethodTypes() async {
+    if (isLoadingPaymentMethodTypes.value) return;
+
+    isLoadingPaymentMethodTypes.value = true;
+    try {
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(
+        ApiEndpoints.userPaymentMethodTypes,
+      );
+      final apiResponse = ApiResponse.parseList(response.data);
+      final statusCode = response.statusCode ?? 0;
+      final isSuccessCode = statusCode == 200 || statusCode == 201;
+
+      if (!apiResponse.status.success || !isSuccessCode) {
+        paymentMethodTypes.clear();
+        selectedPaymentMethodType.value = null;
+        Get.snackbar(
+          'fetch_failed'.tr,
+          apiResponse.status.message.isNotEmpty
+              ? apiResponse.status.message
+              : 'unable_load_payment_method_types'.tr,
+        );
+        return;
+      }
+
+      final types = apiResponse.data.map(PaymentMethodType.fromMap).toList();
+      final filteredTypes = _excludeWalletType
+          ? types
+                .where(
+                  (type) => (type.code ?? '').trim().toLowerCase() != 'wallet',
+                )
+                .toList()
+          : types;
+      paymentMethodTypes.assignAll(filteredTypes);
+      _selectDefaultPaymentMethodType();
+    } on DioException catch (error) {
+      paymentMethodTypes.clear();
+      selectedPaymentMethodType.value = null;
+      Get.snackbar(
+        'fetch_failed'.tr,
+        parseApiErrorMessage(
+          error,
+          fallback: 'unable_load_payment_method_types'.tr,
+        ),
+      );
+    } on Exception catch (_) {
+      paymentMethodTypes.clear();
+      selectedPaymentMethodType.value = null;
+      Get.snackbar('fetch_failed'.tr, 'unable_load_payment_method_types'.tr);
+    } finally {
+      isLoadingPaymentMethodTypes.value = false;
+    }
+  }
+
+  void onPaymentMethodTypeChanged(PaymentMethodType? value) {
+    if (value == null) return;
+    selectedPaymentMethodType.value = value;
+    if (!requiresDetails) {
+      cardValidationMessage.value = '';
+      cardType.value = value.name ?? value.code ?? 'Unknown';
+    }
   }
 
   String _digitsOnly(String value) {
@@ -318,10 +417,10 @@ class ProfilePaymentAddController extends GetxController {
 
   void _bindEditArgument() {
     final args = Get.arguments;
-    final hasDefaultMethod = _mapToHasDefault(args);
-    if (!isEditMode && hasDefaultMethod) {
-      canSetAsDefault.value = false;
-      setAsDefault.value = false;
+    if (args is Map<String, dynamic>) {
+      _excludeWalletType = args['exclude_wallet_type'] == true;
+    } else if (args is Map) {
+      _excludeWalletType = args['exclude_wallet_type'] == true;
     }
 
     final method = _mapToPaymentMethod(args);
@@ -329,16 +428,44 @@ class ProfilePaymentAddController extends GetxController {
 
     _editingMethod = method;
     holderNameController.text = method.cardHolderName;
-    final shortYear = (method.expiryYear % 100).toString().padLeft(2, '0');
-    expiryController.text =
-        '${method.expiryMonth.toString().padLeft(2, '0')}/$shortYear';
+    if (method.expiryMonth > 0 && method.expiryYear > 0) {
+      final shortYear = (method.expiryYear % 100).toString().padLeft(2, '0');
+      expiryController.text =
+          '${method.expiryMonth.toString().padLeft(2, '0')}/$shortYear';
+    }
     billingAddressController.text = method.billingAddress;
     billingCityController.text = method.billingCity;
     billingStateController.text = method.billingState;
     billingZipCodeController.text = method.billingZipCode;
-    setAsDefault.value = method.isDefault ?? false;
     cardType.value = method.label ?? _detectCardType(method.cardNumber);
-    canSetAsDefault.value = true;
+  }
+
+  void _selectDefaultPaymentMethodType() {
+    final types = paymentMethodTypes;
+    if (types.isEmpty) {
+      selectedPaymentMethodType.value = null;
+      return;
+    }
+
+    if (isEditMode) {
+      final existing = types
+          .where((type) => type.id == _editingMethod?.paymentMethodTypeId)
+          .toList();
+      if (existing.isNotEmpty) {
+        selectedPaymentMethodType.value = existing.first;
+        return;
+      }
+    }
+
+    final creditDebit = types
+        .where((type) => (type.code ?? '').toLowerCase() == 'credit_debit')
+        .toList();
+    if (creditDebit.isNotEmpty) {
+      selectedPaymentMethodType.value = creditDebit.first;
+      return;
+    }
+
+    selectedPaymentMethodType.value = types.first;
   }
 
   PaymentMethod? _mapToPaymentMethod(dynamic value) {
@@ -366,29 +493,6 @@ class ProfilePaymentAddController extends GetxController {
       return PaymentMethod.fromMap(mapped);
     }
     return null;
-  }
-
-  bool _mapToHasDefault(dynamic value) {
-    if (value is Map<String, dynamic>) {
-      return value['has_default_method'] == true;
-    }
-    if (value is Map) {
-      return value['has_default_method'] == true;
-    }
-    return false;
-  }
-
-  int _resolvePaymentMethodTypeId(String label) {
-    if (label == 'Visa') {
-      return PaymentMethodTypeConstants.visa;
-    }
-    if (label == 'Mastercard') {
-      return PaymentMethodTypeConstants.masterCard;
-    }
-    if (label == 'UnionPay') {
-      return PaymentMethodTypeConstants.unionPay;
-    }
-    return PaymentMethodTypeConstants.visa;
   }
 
   @override

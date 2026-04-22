@@ -17,9 +17,14 @@ final class ApiEndpoints {
   static const String userUpdateProfile = '/user/profile';
   static const String userAddresses = '/user/addresses';
   static const String userAddress = '/user/addresses/{id}';
+  static const String userWallets = '/user/wallets';
   // Payment Methods
   static const String userPaymentMethods = '/user/payment-methods';
   static const String userPaymentMethod = '/user/payment-methods/{id}';
+  static const String userPaymentMethodTypes = '/user/payment-method-types';
+  static const String userWalletTopUpSessions = '/user/wallets/top-up/sessions';
+  static const String userCheckoutSessions = '/user/checkout/sessions';
+  static const String userPaymentSession = '/user/payments/sessions/{id}';
 
   // Products
   static const String products = '/user/products';
@@ -47,5 +52,5 @@ final class ApiEndpoints {
 
   // Favorites/Wishlist
   static const String wishlist = '/user/wishlist';
-  static const String wishlistItem = '/user/wishlist/items/{itemId}';
+  static const String wishlistItem = '/user/wishlist/items/{id}';
 }
