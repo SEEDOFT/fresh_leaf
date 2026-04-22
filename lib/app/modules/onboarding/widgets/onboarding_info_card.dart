@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
 class OnboardingInfoCard extends StatelessWidget {
@@ -9,8 +10,8 @@ class OnboardingInfoCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      height: 98,
-      padding: const EdgeInsets.all(16),
+      height: 98.scaled,
+      padding: EdgeInsets.all(16.scaled),
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(16),
@@ -18,20 +19,20 @@ class OnboardingInfoCard extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            height: 48,
-            width: 48,
+            height: 48.scaled,
+            width: 48.scaled,
             child: CircleAvatar(
               backgroundColor: isDark
                   ? scheme.primaryContainer
                   : const Color(0xFFC4EEB5),
               child: Icon(
                 Icons.eco,
-                size: 18,
+                size: 18.scaled,
                 color: isDark ? scheme.onPrimaryContainer : scheme.primary,
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.scaled),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -39,7 +40,7 @@ class OnboardingInfoCard extends StatelessWidget {
                 'ethically_sourced'.tr,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 16.scaled,
                   color: scheme.onSurface,
                 ),
               ),
@@ -47,7 +48,7 @@ class OnboardingInfoCard extends StatelessWidget {
                 'carbon_neutral_delivery'.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
-                  fontSize: 13,
+                  fontSize: 13.scaled,
                 ),
               ),
             ],

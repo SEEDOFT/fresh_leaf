@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 
 enum AppProductCardLayout { grid, list }
@@ -45,12 +46,12 @@ class AppProductCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: scheme.surface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.scaled),
           boxShadow: [
             BoxShadow(
               color: scheme.shadow.withValues(alpha: 0.12),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
+              blurRadius: 10.scaled,
+              offset: Offset(0, 5.scaled),
             ),
           ],
         ),
@@ -64,27 +65,27 @@ class AppProductCard extends StatelessWidget {
                   AppNetworkImage(
                     url: imageUrl,
                     width: double.infinity,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(20),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.scaled),
                     ),
                   ),
                   if (badge != null)
                     Positioned(
-                      top: 12,
-                      left: 12,
+                      top: 12.scaled,
+                      left: 12.scaled,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.scaled,
+                          vertical: 4.scaled,
                         ),
                         decoration: BoxDecoration(
                           color: scheme.secondaryContainer,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.scaled),
                         ),
                         child: Text(
                           badge!,
                           style: TextStyle(
-                            fontSize: 9,
+                            fontSize: 9.scaled,
                             fontWeight: FontWeight.bold,
                             color: scheme.onSecondaryContainer,
                           ),
@@ -97,14 +98,14 @@ class AppProductCard extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.scaled),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.scaled,
                         fontWeight: FontWeight.bold,
                         color: scheme.onSurface,
                       ),
@@ -112,11 +113,11 @@ class AppProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (subtitle != null) ...[
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.scaled),
                       Text(
                         subtitle!,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12.scaled,
                           color: scheme.onSurfaceVariant,
                         ),
                         maxLines: 1,
@@ -130,7 +131,7 @@ class AppProductCard extends StatelessWidget {
                         Text(
                           '\$${price.toStringAsFixed(2)}',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16.scaled,
                             fontWeight: FontWeight.bold,
                             color: scheme.primary,
                           ),
@@ -155,21 +156,21 @@ class AppProductCard extends StatelessWidget {
   Widget _buildListLayout(ColorScheme scheme) {
     return Material(
       color: scheme.surface,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(18.scaled),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18.scaled),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.scaled),
           child: Row(
             children: [
               AppNetworkImage(
                 url: imageUrl,
-                width: 72,
-                height: 72,
-                borderRadius: BorderRadius.circular(14),
+                width: 72.scaled,
+                height: 72.scaled,
+                borderRadius: BorderRadius.circular(14.scaled),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.scaled),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,18 +185,18 @@ class AppProductCard extends StatelessWidget {
                       ),
                     ),
                     if (subtitle != null) ...[
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.scaled),
                       Text(
                         subtitle!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: scheme.onSurfaceVariant,
-                          fontSize: 12,
+                          fontSize: 12.scaled,
                         ),
                       ),
                     ],
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.scaled),
                     Text(
                       '\$${price.toStringAsFixed(2)}',
                       style: TextStyle(
@@ -239,14 +240,14 @@ class _CircleActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.scaled),
         decoration: BoxDecoration(
           color: scheme.primaryContainer.withValues(alpha: 0.5),
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
-          size: 18,
+          size: 18.scaled,
           color: scheme.primary,
         ),
       ),

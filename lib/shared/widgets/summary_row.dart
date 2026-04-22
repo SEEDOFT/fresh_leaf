@@ -31,8 +31,8 @@ class SummaryRow extends StatelessWidget {
     final amountColor = emphasize
         ? basePrimaryColor
         : isDiscount
-            ? AppColors.success
-            : baseTextColor;
+        ? AppColors.success
+        : baseTextColor;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

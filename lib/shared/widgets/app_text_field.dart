@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 
 class AppTextField extends StatelessWidget {
   const AppTextField({
@@ -42,13 +43,13 @@ class AppTextField extends StatelessWidget {
         Text(
           label.toUpperCase(),
           style: TextStyle(
-            fontSize: 11,
+            fontSize: 11.scaled,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
             color: scheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.scaled),
         TextField(
           controller: controller,
           obscureText: obscureText,
@@ -61,7 +62,7 @@ class AppTextField extends StatelessWidget {
           textInputAction: textInputAction,
           style: TextStyle(
             color: scheme.onSurface,
-            fontSize: 16,
+            fontSize: 16.scaled,
           ),
           decoration: InputDecoration(
             hintText: hintText,
@@ -69,21 +70,21 @@ class AppTextField extends StatelessWidget {
             fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 12,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 14.scaled,
+              vertical: 12.scaled,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.scaled),
               borderSide: BorderSide(
                 color: scheme.outline.withValues(alpha: 0.5),
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.scaled),
               borderSide: BorderSide(
                 color: scheme.primary,
-                width: 1.5,
+                width: 1.5.scaled,
               ),
             ),
           ),

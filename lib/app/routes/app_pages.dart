@@ -61,6 +61,10 @@ import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
 import 'package:fresh_leaf/app/modules/search/views/search_view.dart';
 import 'package:fresh_leaf/app/modules/splash/bindings/splash_binding.dart';
 import 'package:fresh_leaf/app/modules/splash/views/splash_view.dart';
+import 'package:fresh_leaf/app/modules/wallet/bindings/wallet_binding.dart';
+import 'package:fresh_leaf/app/modules/wallet/views/wallet_view.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up/bindings/wallet_top_up_binding.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up/views/wallet_top_up_view.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -250,6 +254,18 @@ final class AppPages {
       name: AppRoutes.notificationDetail,
       page: () => const NotificationDetailView(),
       binding: NotificationDetailBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.wallet,
+      page: () => const WalletView(),
+      binding: WalletBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.walletTopUp,
+      page: () => const WalletTopUpView(),
+      binding: WalletTopUpBinding(),
       middlewares: _authOnly,
     ),
   ];

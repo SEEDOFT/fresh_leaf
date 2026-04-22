@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/modules/dashboard/widgets/dashboard_widget.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
 class DashboardView extends GetView<DashboardController> {
@@ -30,20 +31,20 @@ class DashboardView extends GetView<DashboardController> {
         () => DecoratedBox(
           decoration: BoxDecoration(
             color: navBackgroundColor,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(24.scaled),
             ),
             boxShadow: [
               BoxShadow(
                 color: scheme.shadow.withValues(alpha: 0.20),
-                blurRadius: 20,
-                offset: const Offset(0, -4),
+                blurRadius: 20.scaled,
+                offset: Offset(0, -4.scaled),
               ),
             ],
           ),
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(24.scaled),
             ),
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
@@ -51,13 +52,13 @@ class DashboardView extends GetView<DashboardController> {
               selectedItemColor: navSelectedColor,
               selectedIconTheme: IconThemeData(color: navSelectedColor),
               unselectedItemColor: navUnselectedColor,
-              selectedLabelStyle: const TextStyle(
+              selectedLabelStyle: TextStyle(
                 fontWeight: FontWeight.w700,
-                fontSize: 12,
+                fontSize: 12.scaled,
               ),
-              unselectedLabelStyle: const TextStyle(
+              unselectedLabelStyle: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 12,
+                fontSize: 12.scaled,
               ),
               showUnselectedLabels: true,
               elevation: 0,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/home_category.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
 class HomeCategoriesWidget extends StatelessWidget {
@@ -18,14 +19,14 @@ class HomeCategoriesWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: 24.scaled),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'browse_categories'.tr,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 20.scaled,
                   fontWeight: FontWeight.bold,
                   color: scheme.onSurface,
                 ),
@@ -35,7 +36,7 @@ class HomeCategoriesWidget extends StatelessWidget {
                 child: Text(
                   'view_all'.tr,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.scaled,
                     fontWeight: FontWeight.w600,
                     color: scheme.primary.withValues(alpha: 0.8),
                   ),
@@ -44,23 +45,23 @@ class HomeCategoriesWidget extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.scaled),
         SizedBox(
-          height: 110,
+          height: 110.scaled,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: EdgeInsets.symmetric(horizontal: 24.scaled),
             scrollDirection: Axis.horizontal,
             itemCount: categories.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            separatorBuilder: (_, _) => SizedBox(width: 12.scaled),
             itemBuilder: (context, index) {
               final cat = categories[index];
               return Container(
-                width: 80,
+                width: 80.scaled,
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.scaled),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16.scaled),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -68,12 +69,12 @@ class HomeCategoriesWidget extends StatelessWidget {
                       _iconFor(cat.icon),
                       color: scheme.onSurface,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.scaled),
                     Text(
                       cat.titleKey.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.scaled,
                         fontWeight: FontWeight.w600,
                         color: scheme.onSurface,
                       ),

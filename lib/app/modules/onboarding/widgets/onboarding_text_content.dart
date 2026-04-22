@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
 class OnboardingTextContent extends StatelessWidget {
@@ -15,7 +16,10 @@ class OnboardingTextContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.scaled,
+            vertical: 6.scaled,
+          ),
           decoration: BoxDecoration(
             color: isDark
                 ? scheme.secondaryContainer.withValues(alpha: 0.8)
@@ -25,7 +29,7 @@ class OnboardingTextContent extends StatelessWidget {
           child: Text(
             'onboarding_badge'.tr,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.scaled,
               fontWeight: FontWeight.w800,
               color: isDark
                   ? scheme.onSecondaryContainer
@@ -33,11 +37,11 @@ class OnboardingTextContent extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.scaled),
         RichText(
           text: TextSpan(
-            style: const TextStyle(
-              fontSize: 48,
+            style: TextStyle(
+              fontSize: 48.scaled,
               fontWeight: FontWeight.w900,
               height: 1.1,
               fontFamily: 'Serif',
@@ -54,11 +58,11 @@ class OnboardingTextContent extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.scaled),
         Text(
           'onboarding_subtitle'.tr,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 16.scaled,
             color: scheme.onSurfaceVariant,
             height: 1.5,
           ),

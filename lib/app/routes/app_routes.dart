@@ -31,4 +31,6 @@ final class AppRoutes {
   static const paymentMethodsAdd = '/payment_methods_add';
   static const helpCenter = '/help_center';
   static const privacyTerms = '/privacy_terms';
+  static const wallet = '/wallet';
+  static const walletTopUp = '/wallet_top_up';
 }

@@ -147,6 +147,11 @@ final class AppTheme {
       error: AppColors.darkError,
       onError: AppColors.darkOnError,
       surface: AppColors.darkSurface,
+      surfaceContainerHighest: Color(0xFF242E28),
+      surfaceContainerHigh: Color(0xFF2A362E),
+      surfaceContainer: Color(0xFF212B25),
+      surfaceContainerLow: Color(0xFF1E2621),
+      surfaceContainerLowest: Color(0xFF0D120F),
       onSurface: AppColors.darkOnSurface,
       onSurfaceVariant: AppColors.darkOnSurfaceVariant,
       outline: AppColors.darkOutline,
@@ -186,7 +191,7 @@ final class AppTheme {
         labelSmall: TextStyle(color: Color(0xFFB6C2B6)),
       ),
       cardTheme: CardThemeData(
-        color: darkScheme.surface,
+        color: darkScheme.surfaceContainerHigh,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),

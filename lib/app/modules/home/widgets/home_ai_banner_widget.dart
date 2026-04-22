@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:get/get.dart';
 
@@ -24,12 +25,12 @@ class HomeAIBannerWidget extends StatelessWidget {
         ? scheme.onSecondaryContainer
         : AppColors.primaryGreen;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.scaled),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.scaled),
         decoration: BoxDecoration(
           color: bannerColor,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(24.scaled),
         ),
         child: Row(
           children: [
@@ -38,11 +39,11 @@ class HomeAIBannerWidget extends StatelessWidget {
               icon: Icons.auto_awesome,
               backgroundColor: iconBoxColor,
               foregroundColor: iconColor,
-              borderRadius: 16,
-              padding: const EdgeInsets.all(12),
+              borderRadius: 16.scaled,
+              padding: EdgeInsets.all(12.scaled),
               fontSize: 0,
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.scaled),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,14 +53,17 @@ class HomeAIBannerWidget extends StatelessWidget {
                     style: TextStyle(
                       color: bannerTextColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16.scaled,
                       height: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.scaled),
                   Text(
                     'ai_smart_suggestions_subtitle'.tr,
-                    style: TextStyle(color: bannerSubTextColor, fontSize: 12),
+                    style: TextStyle(
+                      color: bannerSubTextColor,
+                      fontSize: 12.scaled,
+                    ),
                   ),
                 ],
               ),

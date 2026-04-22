@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
@@ -31,23 +32,23 @@ class PrimaryButton extends StatelessWidget {
 
     return SizedBox(
       width: width ?? media.size.width,
-      height: height,
+      height: height.scaled,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? scheme.primary,
           foregroundColor: foregroundColor ?? scheme.onPrimary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius ?? 14),
+            borderRadius: BorderRadius.circular(borderRadius ?? 14.scaled),
           ),
           elevation: 0,
         ),
         child: isLoading
             ? SizedBox(
-                width: 20,
-                height: 20,
+                width: 20.scaled,
+                height: 20.scaled,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2.2,
+                  strokeWidth: 2.2.scaled,
                   valueColor: AlwaysStoppedAnimation<Color>(
                     foregroundColor ?? scheme.onPrimary,
                   ),
@@ -57,14 +58,14 @@ class PrimaryButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 8),
+                    Icon(icon, size: 20.scaled),
+                    SizedBox(width: 8.scaled),
                   ],
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16.scaled,
                     ),
                   ),
                 ],

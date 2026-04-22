@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/onboarding/controllers/onboarding_controller.dart';
 import 'package:fresh_leaf/app/modules/onboarding/widgets/onboarding_widget.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -49,7 +50,7 @@ class OnboardingView extends GetView<OnboardingController> {
                         child: Icon(
                           Icons.broken_image_rounded,
                           color: imageScheme.onSurfaceVariant,
-                          size: 34,
+                          size: 34.scaled,
                         ),
                       ),
                     );
@@ -59,17 +60,17 @@ class OnboardingView extends GetView<OnboardingController> {
             ),
             // Skip
             Positioned(
-              top: 8,
-              right: 16,
+              top: 8.scaled,
+              right: 16.scaled,
               child: Obx(
                 () => controller.isLastPage
                     ? const SizedBox.shrink()
                     : TextButton(
                         onPressed: controller.skip,
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 8,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 14.scaled,
+                            vertical: 8.scaled,
                           ),
                           backgroundColor: scheme.surface.withValues(
                             alpha: 0.92,
@@ -89,11 +90,11 @@ class OnboardingView extends GetView<OnboardingController> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24.scaled),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28.scaled),
                   const OnboardingLogo(),
 
                   // 1. PageView for the text content
@@ -108,7 +109,7 @@ class OnboardingView extends GetView<OnboardingController> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(height: 18.scaled),
                   // 2. Action Button controlled by GetX (closer to content)
                   Obx(
                     () => PrimaryButton(
@@ -117,14 +118,14 @@ class OnboardingView extends GetView<OnboardingController> {
                           : 'next'.tr,
                       onPressed: controller.nextPage,
                       icon: Icons.arrow_forward,
-                      height: 68,
+                      height: 68.scaled,
                       borderRadius: 16,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.scaled),
                   // Info Card
                   const OnboardingInfoCard(),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.scaled),
 
                   // 3. Smooth Page Indicator
                   Center(
@@ -136,14 +137,14 @@ class OnboardingView extends GetView<OnboardingController> {
                         dotColor: isDark
                             ? scheme.outline.withValues(alpha: 0.65)
                             : scheme.outline.withValues(alpha: 0.35),
-                        dotHeight: 8,
-                        dotWidth: 8,
+                        dotHeight: 8.scaled,
+                        dotWidth: 8.scaled,
                         expansionFactor: 4,
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: 20.scaled,
                   ),
                 ],
               ),

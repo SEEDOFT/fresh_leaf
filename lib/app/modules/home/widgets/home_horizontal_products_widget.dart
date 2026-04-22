@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/home_product.dart';
 import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:get/get.dart';
 
@@ -18,13 +19,16 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     if (pickedThisMorning.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24.scaled),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.scaled,
+            vertical: 24.scaled,
+          ),
           decoration: BoxDecoration(
             color: scheme.surface,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.scaled),
           ),
           child: Column(
             children: [
@@ -32,7 +36,7 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                 Icons.search_off_outlined,
                 color: scheme.onSurfaceVariant,
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.scaled),
               Text(
                 'no_matching_products'.tr,
                 style: TextStyle(
@@ -40,11 +44,11 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                   color: scheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.scaled),
               Text(
                 'try_another_keyword_short'.tr,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.scaled,
                   color: scheme.onSurfaceVariant,
                 ),
               ),
@@ -55,16 +59,16 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 280,
+      height: 280.scaled,
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24.scaled),
         scrollDirection: Axis.horizontal,
         itemCount: pickedThisMorning.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 16),
+        separatorBuilder: (_, _) => SizedBox(width: 16.scaled),
         itemBuilder: (context, index) {
           final item = pickedThisMorning[index];
           return SizedBox(
-            width: 200,
+            width: 200.scaled,
             child: AppProductCard(
               title: item.title.tr,
               subtitle: item.subtitle.tr,

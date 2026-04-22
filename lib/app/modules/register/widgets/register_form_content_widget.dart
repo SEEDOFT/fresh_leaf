@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
 import 'package:fresh_leaf/app/modules/register/widgets/register_input_field_widget.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
@@ -21,39 +22,38 @@ class RegisterFormContent extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final keyboardVisible = media.viewInsets.bottom > 0;
-    final scale = (constraints.maxHeight / 805).clamp(0.76, 1.0);
-    final compact = constraints.maxHeight < 720;
 
-    final verticalPadding = (keyboardVisible ? 11 : 18 * scale)
-        .clamp(11, 18)
-        .toDouble();
-    final topGap = compact ? 5 : (12 * scale).clamp(5, 12).toDouble();
-    final eyebrowSize = (11 * scale).clamp(9, 11).toDouble();
-    final headingSpacing = (6 * scale).clamp(4, 9).toDouble();
-    final headingSize = (33 * scale).clamp(27, 37).toDouble();
-    final subtitleGap = (10 * scale).clamp(8, 12).toDouble();
-    final subtitleSize = (14 * scale).clamp(12.8, 15).toDouble();
+    final verticalPadding = (keyboardVisible ? 11.0 : 18.scaled).clamp(
+      11.0,
+      18.0,
+    );
+    final topGap = constraints.maxHeight < 720
+        ? 5.0
+        : 12.scaled.clamp(5.0, 12.0);
+    final eyebrowSize = 11.scaled.clamp(9.0, 11.0);
+    final headingSpacing = 6.scaled.clamp(4.0, 9.0);
+    final headingSize = 33.scaled.clamp(27.0, 37.0);
+    final subtitleGap = 10.scaled.clamp(8.0, 12.0);
+    final subtitleSize = 14.scaled.clamp(12.8, 15.0);
     final showHero = constraints.maxHeight >= 620;
-    final blockGap = (showHero ? 15 * scale : 11 * scale)
-        .clamp(9, 15)
-        .toDouble();
-    final heroHeight = (150 * scale).clamp(96, 146).toDouble();
-    final heroRadius = (20 * scale).clamp(16, 22).toDouble();
-    final heroGap = (13 * scale).clamp(10, 18).toDouble();
-    final fieldGap = (14 * scale).clamp(10, 15).toDouble();
-    final actionGap = (17 * scale).clamp(13, 20).toDouble();
-    final buttonHeight = (54 * scale).clamp(49, 58).toDouble();
-    final footerGap = (11 * scale).clamp(8, 13).toDouble();
+    final blockGap = (showHero ? 15.scaled : 11.scaled).clamp(9.0, 15.0);
+    final heroHeight = 150.scaled.clamp(96.0, 146.0);
+    final heroRadius = 20.scaled.clamp(16.0, 22.0);
+    final heroGap = 13.scaled.clamp(10.0, 18.0);
+    final fieldGap = 14.scaled.clamp(10.0, 15.0);
+    final actionGap = 17.scaled.clamp(13.0, 20.0);
+    final buttonHeight = 54.scaled.clamp(49.0, 58.0);
+    final footerGap = 11.scaled.clamp(8.0, 13.0);
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: 24,
+        horizontal: 24.scaled,
         vertical: verticalPadding,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: topGap.toDouble()),
+          SizedBox(height: topGap),
           Text(
             'register_eyebrow'.tr,
             style: TextStyle(
@@ -108,7 +108,7 @@ class RegisterFormContent extends StatelessWidget {
                             child: Icon(
                               Icons.broken_image_rounded,
                               color: imageScheme.onSurfaceVariant,
-                              size: 28,
+                              size: 28.scaled,
                             ),
                           ),
                         );
@@ -148,7 +148,7 @@ class RegisterFormContent extends StatelessWidget {
                       textController: controller.firstNameController,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.scaled),
                   Expanded(
                     child: RegisterWidget.buildInputField(
                       context: context,
@@ -183,7 +183,7 @@ class RegisterFormContent extends StatelessWidget {
                           ? Icons.visibility
                           : Icons.visibility_off,
                       color: scheme.onSurfaceVariant,
-                      size: 20,
+                      size: 20.scaled,
                     ),
                     onPressed: controller.togglePasswordVisibility,
                   ),
@@ -204,7 +204,7 @@ class RegisterFormContent extends StatelessWidget {
                           ? Icons.visibility
                           : Icons.visibility_off,
                       color: scheme.onSurfaceVariant,
-                      size: 20,
+                      size: 20.scaled,
                     ),
                     onPressed: controller.togglePasswordConfirmVisibility,
                   ),
@@ -231,7 +231,7 @@ class RegisterFormContent extends StatelessWidget {
                     text: TextSpan(
                       style: TextStyle(
                         color: scheme.onSurface,
-                        fontSize: 14,
+                        fontSize: 14.scaled,
                       ),
                       children: [
                         TextSpan(text: '${'already_have_account'.tr}  '),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 
 class BackgroundHeroWidget extends StatelessWidget {
   const BackgroundHeroWidget({super.key});
@@ -30,7 +31,7 @@ class BackgroundHeroWidget extends StatelessWidget {
                 child: Icon(
                   Icons.broken_image_rounded,
                   color: scheme.onSurfaceVariant,
-                  size: 28,
+                  size: 28.scaled,
                 ),
               ),
             );
@@ -44,28 +45,28 @@ class BackgroundHeroWidget extends StatelessWidget {
               colors: isDark
                   ? <Color>[
                       Colors.transparent,
-                      const Color(0xCC111713),
-                      scheme.surface,
+                      Colors.black.withValues(alpha: 0.2),
+                      Colors.black.withValues(alpha: 0.6),
                     ]
                   : <Color>[
                       Colors.transparent,
                       AppColors.backgroundCream.withValues(alpha: 0.4),
                       AppColors.backgroundCream,
                     ],
-              stops: const <double>[0.4, 0.75, 1],
+              stops: const <double>[0, 0.6, 1],
             ),
           ),
         ),
         Positioned(
-          bottom: 24,
-          left: 24,
+          bottom: 24.scaled,
+          left: 24.scaled,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'FreshLeaf',
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 48.scaled,
                   fontWeight: FontWeight.w900,
                   color: titleColor,
                   letterSpacing: -1,
@@ -83,7 +84,7 @@ class BackgroundHeroWidget extends StatelessWidget {
               Text(
                 'THE DIGITAL LARDER',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.scaled,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2,
                   color: subtitleColor,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/login/controllers/login_controller.dart';
 import 'package:fresh_leaf/app/modules/login/widgets/login_background_hero_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
@@ -23,33 +24,40 @@ class LoginFormContent extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final keyboardVisible = media.viewInsets.bottom > 0;
-    final scale = (constraints.maxHeight / 780).clamp(0.82, 1.0);
+
     final heroHeight = (constraints.maxHeight * 0.42).clamp(230.0, 360.0);
-    final horizontalPadding = (24 * scale).clamp(20, 24).toDouble();
-    final formTopPadding = (24 * scale).clamp(16, 24).toDouble();
+    final horizontalPadding = 24.scaled.clamp(20, 24).toDouble();
+    final formTopPadding = 24.scaled.clamp(16, 24).toDouble();
     final formBottomPadding = keyboardVisible ? 16.0 : 24.0;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    const overlap = 32.0;
+
+    return Stack(
       children: [
         SizedBox(
           width: media.size.width,
-          height: heroHeight,
+          height: heroHeight + overlap,
           child: const BackgroundHeroWidget(),
         ),
-        Expanded(
+        Padding(
+          padding: EdgeInsets.only(top: heroHeight),
           child: Material(
             color: scheme.surface,
-            shadowColor: isDark ? Colors.transparent : const Color(0x14000000),
-            elevation: isDark ? 0 : 2,
+            shadowColor: isDark
+                ? Colors.black.withValues(alpha: 0.3)
+                : const Color(0x14000000),
+            elevation: isDark ? 8 : 2,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(32),
               ),
             ),
             clipBehavior: Clip.antiAlias,
-            child: SizedBox(
+            child: Container(
               width: media.size.width,
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight - heroHeight,
+              ),
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
                   horizontalPadding,
@@ -64,20 +72,20 @@ class LoginFormContent extends StatelessWidget {
                     Text(
                       'welcome_back'.tr,
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 28.scaled,
                         fontWeight: FontWeight.w800,
                         color: scheme.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.scaled),
                     Text(
                       'login_subtitle'.tr,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.scaled,
                         color: scheme.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.scaled),
                     AppTextField(
                       label: 'phone_number'.tr,
                       controller: controller.phoneController,
@@ -85,7 +93,7 @@ class LoginFormContent extends StatelessWidget {
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       hintText: '012 345 678',
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28.scaled),
                     Obx(
                       () => AppTextField(
                         label: 'password'.tr,
@@ -98,13 +106,13 @@ class LoginFormContent extends StatelessWidget {
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                             color: scheme.onSurfaceVariant,
-                            size: 20,
+                            size: 20.scaled,
                           ),
                           onPressed: controller.togglePasswordVisibility,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 36),
+                    SizedBox(height: 36.scaled),
                     Obx(
                       () => PrimaryButton(
                         label: 'login'.tr,
@@ -112,10 +120,10 @@ class LoginFormContent extends StatelessWidget {
                         isLoading: controller.isLoading.value,
                         icon: Icons.arrow_forward,
                         borderRadius: 12,
-                        height: 56,
+                        height: 56.scaled,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.scaled),
                     Center(
                       child: GestureDetector(
                         onTap: () async =>
@@ -124,7 +132,7 @@ class LoginFormContent extends StatelessWidget {
                           text: TextSpan(
                             style: TextStyle(
                               color: scheme.onSurfaceVariant,
-                              fontSize: 14,
+                              fontSize: 14.scaled,
                             ),
                             children: [
                               TextSpan(text: '${'new_to_freshleaf'.tr} '),

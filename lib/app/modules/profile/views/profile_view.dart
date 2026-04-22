@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_divider.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/app_tile.dart';
@@ -18,9 +19,9 @@ class ProfileView extends GetView<ProfileController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ProfileHeader(controller: controller),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.scaled),
           ProfileStatsCard(controller: controller),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.scaled),
           ProfileSectionCard(
             title: 'account'.tr,
             children: [
@@ -31,7 +32,7 @@ class ProfileView extends GetView<ProfileController> {
                 onTap: () async =>
                     await Get.toNamed<void>(AppRoutes.personalDetails),
               ),
-              const AppDivider(height: 16),
+              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.lock_outline,
                 title: 'security'.tr,
@@ -39,7 +40,7 @@ class ProfileView extends GetView<ProfileController> {
                 onTap: () async =>
                     await Get.toNamed<void>(AppRoutes.securitySettings),
               ),
-              const AppDivider(height: 16),
+              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.pin_outlined,
                 title: 'pin_security'.tr,
@@ -58,21 +59,21 @@ class ProfileView extends GetView<ProfileController> {
                 subtitle: 'wishlist_subtitle'.tr,
                 onTap: () async => await Get.toNamed(AppRoutes.wishlist),
               ),
-              const AppDivider(height: 16),
+              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.shopping_bag_outlined,
                 title: 'orders'.tr,
                 subtitle: 'orders_subtitle'.tr,
                 onTap: controller.openOrders,
               ),
-              const AppDivider(height: 16),
+              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.location_on_outlined,
                 title: 'addresses'.tr,
                 subtitle: 'addresses_subtitle'.tr,
                 onTap: () async => await Get.toNamed(AppRoutes.addresses),
               ),
-              const AppDivider(height: 16),
+              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.credit_card,
                 title: 'payment_methods'.tr,
@@ -92,7 +93,7 @@ class ProfileView extends GetView<ProfileController> {
                 onTap: () async =>
                     await Get.toNamed<void>(AppRoutes.helpCenter),
               ),
-              const AppDivider(height: 16),
+              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.policy_outlined,
                 title: 'privacy_terms'.tr,
@@ -101,14 +102,14 @@ class ProfileView extends GetView<ProfileController> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.scaled),
           Obx(
             () => ProfileLogoutButton(
               onTap: controller.logout,
               isLoading: controller.isLoading.value,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.scaled),
         ],
       ),
     );

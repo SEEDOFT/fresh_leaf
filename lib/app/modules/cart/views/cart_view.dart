@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/widgets/cart_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:get/get.dart';
 
@@ -63,9 +64,14 @@ class CartView extends GetView<CartController> {
                 }
 
                 return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                  padding: EdgeInsets.fromLTRB(
+                    20.scaled,
+                    8.scaled,
+                    20.scaled,
+                    16.scaled,
+                  ),
                   itemCount: controller.items.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 14),
+                  separatorBuilder: (_, _) => SizedBox(height: 14.scaled),
                   itemBuilder: (context, index) {
                     final item = controller.items[index];
                     return CartItemCardWidget(

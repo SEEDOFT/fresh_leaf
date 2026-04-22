@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
@@ -29,29 +30,29 @@ class HomeStaplesGridWidget extends StatelessWidget {
     final cardText = isDark ? scheme.onSurface : Colors.black;
     final cardSubText = isDark ? scheme.onSurfaceVariant : Colors.black;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: 24.scaled),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Container(
-              height: 280,
+              height: 280.scaled,
               decoration: BoxDecoration(
                 color: scheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(24.scaled),
               ),
               child: Stack(
                 children: [
                   AppNetworkImage(
                     url:
                         'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
-                    height: 280,
+                    height: 280.scaled,
                     width: media.size.width,
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(24.scaled),
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24.scaled),
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -62,7 +63,7 @@ class HomeStaplesGridWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.scaled),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,17 +73,17 @@ class HomeStaplesGridWidget extends StatelessWidget {
                           children: [
                             Text(
                               'pasture_raised_eggs'.tr,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 16.scaled,
                               ),
                             ),
                             Text(
                               'dozen_large'.tr,
                               style: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.85),
-                                fontSize: 12,
+                                fontSize: 12.scaled,
                               ),
                             ),
                           ],
@@ -91,12 +92,12 @@ class HomeStaplesGridWidget extends StatelessWidget {
                           label: 'reorder'.tr,
                           backgroundColor: chipBackground,
                           foregroundColor: chipPrimaryText,
-                          borderRadius: 20,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                          borderRadius: 20.scaled,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.scaled,
+                            vertical: 8.scaled,
                           ),
-                          fontSize: 12,
+                          fontSize: 12.scaled,
                         ),
                       ],
                     ),
@@ -105,15 +106,15 @@ class HomeStaplesGridWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.scaled),
           Expanded(
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.scaled),
                   decoration: BoxDecoration(
                     color: cardPeach,
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(24.scaled),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,38 +123,38 @@ class HomeStaplesGridWidget extends StatelessWidget {
                         'whole_milk'.tr,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 16.scaled,
                           color: cardText,
                         ),
                       ),
                       Text(
                         'glass_bottle_1l'.tr,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12.scaled,
                           color: cardSubText,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.scaled),
                       AppBadge(
                         label: 'add_price'.trParams({'price': r'$4.20'}),
                         backgroundColor: ctaDark,
                         foregroundColor: ctaDarkText,
-                        borderRadius: 16,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+                        borderRadius: 16.scaled,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.scaled,
+                          vertical: 8.scaled,
                         ),
-                        fontSize: 12,
+                        fontSize: 12.scaled,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.scaled),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.scaled),
                   decoration: BoxDecoration(
                     color: cardLime,
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(24.scaled),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,28 +163,28 @@ class HomeStaplesGridWidget extends StatelessWidget {
                         'sourdough_loaf'.tr,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 16.scaled,
                           color: cardText,
                         ),
                       ),
                       Text(
                         'artisan_baked'.tr,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12.scaled,
                           color: cardSubText,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.scaled),
                       AppBadge(
                         label: 'add_price'.trParams({'price': r'$7.50'}),
                         backgroundColor: ctaDark,
                         foregroundColor: ctaDarkText,
-                        borderRadius: 16,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+                        borderRadius: 16.scaled,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.scaled,
+                          vertical: 8.scaled,
                         ),
-                        fontSize: 12,
+                        fontSize: 12.scaled,
                       ),
                     ],
                   ),
