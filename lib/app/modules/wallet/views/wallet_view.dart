@@ -15,46 +15,107 @@ class WalletView extends GetView<WalletController> {
 
     return AppScaffold(
       scrollable: false,
-      appBar: const CustomAppBar(
-        title: 'my_wallet',
+      padding: EdgeInsets.zero,
+      appBar: CustomAppBar(
+        title: 'my_wallet'.tr,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ColoredBox(
-            color: scheme.surface,
-            child: TabBar(
-              controller: controller.tabController,
-              indicatorColor: scheme.primary,
-              labelColor: scheme.primary,
-              unselectedLabelColor: scheme.onSurfaceVariant,
-              labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.scaled,
+          // Padding(
+          //   padding: EdgeInsets.fromLTRB(
+          //     20.scaled,
+          //     8.scaled,
+          //     20.scaled,
+          //     4.scaled,
+          //   ),
+          //   child: Text(
+          //     'wallet_currency'.tr,
+          //     style: TextStyle(
+          //       fontSize: 12.scaled,
+          //       fontWeight: FontWeight.w600,
+          //       color: scheme.onSurfaceVariant,
+          //       letterSpacing: 0.25,
+          //     ),
+          //   ),
+          // ),
+          Container(
+            margin: EdgeInsets.fromLTRB(
+              20.scaled,
+              0,
+              20.scaled,
+              12.scaled,
+            ),
+            padding: EdgeInsets.all(4.scaled),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(16.scaled),
+              border: Border.all(
+                color: scheme.outline.withValues(alpha: 0.12),
               ),
-              tabs: const [
-                Tab(text: 'KHR'),
-                Tab(text: 'USD'),
-              ],
+            ),
+            child: Obx(
+              () => Row(
+                children: WalletController.supportedCurrencies.map((currency) {
+                  final isSelected =
+                      controller.selectedCurrency.value == currency;
+                  return Expanded(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeOutCubic,
+                      margin: EdgeInsets.symmetric(horizontal: 2.scaled),
+                      decoration: BoxDecoration(
+                        gradient: isSelected
+                            ? LinearGradient(
+                                colors: [
+                                  scheme.primary,
+                                  scheme.primary.withValues(alpha: 0.78),
+                                ],
+                              )
+                            : null,
+                        color: isSelected ? null : Colors.transparent,
+                        borderRadius: BorderRadius.circular(12.scaled),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: scheme.primary.withValues(alpha: 0.16),
+                                  blurRadius: 10.scaled,
+                                  offset: Offset(0, 4.scaled),
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12.scaled),
+                          onTap: () => controller.setCurrency(currency),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 9.scaled,
+                            ),
+                            child: Text(
+                              currency,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13.scaled,
+                                fontWeight: FontWeight.w700,
+                                color: isSelected
+                                    ? Colors.white
+                                    : scheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-          Expanded(
-            child: TabBarView(
-              controller: controller.tabController,
-              children: [
-                WalletTabContentWidget(
-                  currency: 'KHR',
-                  balance: controller.khrBalance,
-                  transactions: controller.khrTransactions,
-                  symbol: '៛',
-                ),
-                WalletTabContentWidget(
-                  currency: 'USD',
-                  balance: controller.usdBalance,
-                  transactions: controller.usdTransactions,
-                  symbol: r'$',
-                ),
-              ],
-            ),
+          const Expanded(
+            child: WalletTabContentWidget(),
           ),
         ],
       ),

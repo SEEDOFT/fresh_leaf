@@ -1,4 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/wallet.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class WalletTransaction {
@@ -8,8 +13,8 @@ class WalletTransaction {
     required this.amount,
     required this.date,
     required this.isCredit,
-    this.status = 'Success',
-  });
+    String? status,
+  }) : status = status ?? 'success'.tr;
 
   final String id;
   final String title;
@@ -19,61 +24,123 @@ class WalletTransaction {
   final String status;
 }
 
-class WalletController extends GetxController
-    with GetSingleTickerProviderStateMixin {
-  late TabController tabController;
+class WalletController extends GetxController {
+  static const List<String> supportedCurrencies = ['KHR', 'USD'];
 
-  final RxDouble khrBalance = 250000.0.obs;
-  final RxDouble usdBalance = 125.50.obs;
+  final RxString selectedCurrency = 'KHR'.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool isRefreshing = false.obs;
+  final RxBool isBalanceVisible = true.obs;
 
-  final RxList<WalletTransaction> khrTransactions = <WalletTransaction>[
-    WalletTransaction(
-      id: '1',
-      title: 'Top Up via ABA',
-      amount: 50000,
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      isCredit: true,
-    ),
-    WalletTransaction(
-      id: '2',
-      title: 'Payment for Order #1234',
-      amount: 15000,
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      isCredit: false,
-    ),
-  ].obs;
+  final RxDouble khrBalance = 0.0.obs;
+  final RxDouble usdBalance = 0.0.obs;
 
-  final RxList<WalletTransaction> usdTransactions = <WalletTransaction>[
-    WalletTransaction(
-      id: '1',
-      title: 'Top Up via Visa',
-      amount: 50,
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      isCredit: true,
-    ),
-    WalletTransaction(
-      id: '2',
-      title: 'Payment for Order #1235',
-      amount: 12.50,
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      isCredit: false,
-    ),
-  ].obs;
+  final RxList<WalletTransaction> khrTransactions = <WalletTransaction>[].obs;
+
+  final RxList<WalletTransaction> usdTransactions = <WalletTransaction>[].obs;
 
   @override
-  void onInit() {
-    super.onInit();
-    tabController = TabController(length: 2, vsync: this);
+  Future<void> onReady() async {
+    super.onReady();
+    if (!Get.isRegistered<ApiClient>()) return;
+    await fetchWallets(showError: false);
   }
 
-  @override
-  void onClose() {
-    tabController.dispose();
-    super.onClose();
+  RxDouble get activeBalance =>
+      selectedCurrency.value == 'USD' ? usdBalance : khrBalance;
+
+  RxList<WalletTransaction> get activeTransactions =>
+      selectedCurrency.value == 'USD' ? usdTransactions : khrTransactions;
+
+  String get activeSymbol => selectedCurrency.value == 'USD' ? r'$' : '៛';
+
+  void setCurrency(String currency) {
+    if (supportedCurrencies.contains(currency)) {
+      selectedCurrency.value = currency;
+    }
   }
 
-  void topUp(String currency) {
-    // Navigate to top up screen with currency context
-    // Get.toNamed(AppRoutes.paymentMethodsAdd); // For now, or dedicated top up
+  void toggleBalanceVisibility() {
+    isBalanceVisible.value = !isBalanceVisible.value;
+  }
+
+  Future<void> refreshWallets() async {
+    if (isRefreshing.value) return;
+    isRefreshing.value = true;
+    try {
+      await fetchWallets();
+    } finally {
+      isRefreshing.value = false;
+    }
+  }
+
+  Future<void> fetchWallets({bool showError = true}) async {
+    if (isLoading.value) return;
+    if (!Get.isRegistered<ApiClient>()) return;
+
+    isLoading.value = true;
+    try {
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(ApiEndpoints.userWallets);
+      final apiResponse = ApiResponse.fromResponse(
+        response.data,
+        Wallet.listFromDynamic,
+      );
+
+      if (!apiResponse.isSuccess && response.statusCode != 200) {
+        if (showError) {
+          Get.snackbar(
+            'fetch_failed'.tr,
+            apiResponse.status.message.isNotEmpty
+                ? apiResponse.status.message
+                : 'unable_load_wallets'.tr,
+          );
+        }
+        return;
+      }
+
+      applyWallets(apiResponse.data);
+    } on DioException catch (error) {
+      if (showError) {
+        Get.snackbar(
+          'fetch_failed'.tr,
+          parseApiErrorMessage(
+            error,
+            fallback: 'unable_load_wallets'.tr,
+          ),
+        );
+      }
+    } on Exception catch (_) {
+      if (showError) {
+        Get.snackbar('fetch_failed'.tr, 'unable_load_wallets'.tr);
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void applyWallets(List<Wallet> wallets) {
+    var nextUsdBalance = 0.0;
+    var nextKhrBalance = 0.0;
+    var hasUsd = false;
+    var hasKhr = false;
+
+    for (final wallet in wallets) {
+      final currencyCode = wallet.currency.code.toUpperCase();
+      if (currencyCode == 'USD') {
+        nextUsdBalance = wallet.balance;
+        hasUsd = true;
+      } else if (currencyCode == 'KHR') {
+        nextKhrBalance = wallet.balance;
+        hasKhr = true;
+      }
+    }
+
+    usdBalance.value = hasUsd ? nextUsdBalance : 0.0;
+    khrBalance.value = hasKhr ? nextKhrBalance : 0.0;
+
+    // Transactions stay empty until we add a dedicated history API.
+    usdTransactions.clear();
+    khrTransactions.clear();
   }
 }

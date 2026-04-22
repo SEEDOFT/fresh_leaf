@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_card.dart';
 
 class ProfileSectionCard extends StatelessWidget {
@@ -15,7 +16,7 @@ class ProfileSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return AppCard(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: 16.scaled),
       showBorder: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,11 +25,11 @@ class ProfileSectionCard extends StatelessWidget {
             title,
             style: TextStyle(
               fontWeight: FontWeight.w800,
-              fontSize: 16,
+              fontSize: 16.scaled,
               color: scheme.onSurface,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.scaled),
           ...children,
         ],
       ),

@@ -30,38 +30,41 @@ class WalletTopUpPresetsWidget extends StatelessWidget {
         Wrap(
           spacing: 12.scaled,
           runSpacing: 12.scaled,
-          children: (controller.selectedCurrency.value == 'USD'
-                  ? controller.usdPresets
-                  : controller.khrPresets)
-              .map((amount) {
-            final amountLabel = controller.selectedCurrency.value == 'USD'
-                ? '\$$amount'
-                : '${amount.toInt()} ៛';
-            return Obx(
-              () => ChoiceChip(
-                label: Text(amountLabel),
-                selected: controller.selectedAmount.value == amount,
-                onSelected: (selected) {
-                  if (selected) controller.selectPreset(amount);
-                },
-                selectedColor: scheme.primary.withValues(alpha: 0.2),
-                labelStyle: TextStyle(
-                  color: controller.selectedAmount.value == amount
-                      ? scheme.primary
-                      : scheme.onSurface,
-                  fontWeight: controller.selectedAmount.value == amount
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-                backgroundColor: scheme.surface,
-                side: BorderSide(
-                  color: controller.selectedAmount.value == amount
-                      ? scheme.primary
-                      : scheme.outline.withValues(alpha: 0.2),
-                ),
-              ),
-            );
-          }).toList(),
+          children:
+              (controller.selectedCurrency.value == 'USD'
+                      ? controller.usdPresets
+                      : controller.khrPresets)
+                  .map((amount) {
+                    final amountLabel =
+                        controller.selectedCurrency.value == 'USD'
+                        ? '\$$amount'
+                        : '${amount.toInt()} ៛';
+                    return Obx(
+                      () => ChoiceChip(
+                        label: Text(amountLabel),
+                        selected: controller.selectedAmount.value == amount,
+                        onSelected: (selected) {
+                          if (selected) controller.selectPreset(amount);
+                        },
+                        selectedColor: scheme.primary.withValues(alpha: 0.2),
+                        labelStyle: TextStyle(
+                          color: controller.selectedAmount.value == amount
+                              ? scheme.primary
+                              : scheme.onSurface,
+                          fontWeight: controller.selectedAmount.value == amount
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                        backgroundColor: scheme.surface,
+                        side: BorderSide(
+                          color: controller.selectedAmount.value == amount
+                              ? scheme.primary
+                              : scheme.outline.withValues(alpha: 0.2),
+                        ),
+                      ),
+                    );
+                  })
+                  .toList(),
         ),
       ],
     );

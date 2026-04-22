@@ -23,7 +23,7 @@ class ProfileView extends GetView<ProfileController> {
           ProfileStatsCard(controller: controller),
           SizedBox(height: 20.scaled),
           ProfileSectionCard(
-            title: 'account'.tr,
+            title: 'account'.tr.toUpperCase(),
             children: [
               AppTile(
                 icon: Icons.person_outline,
@@ -51,7 +51,26 @@ class ProfileView extends GetView<ProfileController> {
             ],
           ),
           ProfileSectionCard(
-            title: 'orders_payments'.tr,
+            title: 'wallet_payment'.tr.toUpperCase(),
+            children: [
+              AppTile(
+                icon: Icons.account_balance_wallet_outlined,
+                title: 'my_wallet'.tr,
+                subtitle: 'wallet_subtitle'.tr,
+                onTap: () async => await Get.toNamed<void>(AppRoutes.wallet),
+              ),
+              AppDivider(height: 16.scaled),
+              AppTile(
+                icon: Icons.credit_card,
+                title: 'payment_methods'.tr,
+                subtitle: 'payment_methods_subtitle'.tr,
+                onTap: () async =>
+                    await Get.toNamed<void>(AppRoutes.paymentMethods),
+              ),
+            ],
+          ),
+          ProfileSectionCard(
+            title: 'orders'.tr.toUpperCase(),
             children: [
               AppTile(
                 icon: Icons.favorite_border,
@@ -73,18 +92,10 @@ class ProfileView extends GetView<ProfileController> {
                 subtitle: 'addresses_subtitle'.tr,
                 onTap: () async => await Get.toNamed(AppRoutes.addresses),
               ),
-              AppDivider(height: 16.scaled),
-              AppTile(
-                icon: Icons.credit_card,
-                title: 'payment_methods'.tr,
-                subtitle: 'payment_methods_subtitle'.tr,
-                onTap: () async =>
-                    await Get.toNamed<void>(AppRoutes.paymentMethods),
-              ),
             ],
           ),
           ProfileSectionCard(
-            title: 'support'.tr,
+            title: 'support'.tr.toUpperCase(),
             children: [
               AppTile(
                 icon: Icons.support_agent,

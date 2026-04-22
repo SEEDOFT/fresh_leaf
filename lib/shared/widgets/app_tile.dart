@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 
 class AppTile extends StatelessWidget {
   const AppTile({
@@ -26,12 +27,16 @@ class AppTile extends StatelessWidget {
       contentPadding: contentPadding,
       leading: icon != null
           ? Container(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(10.scaled),
               decoration: BoxDecoration(
                 color: scheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.scaled),
               ),
-              child: Icon(icon, color: scheme.onSurface),
+              child: Icon(
+                icon,
+                color: scheme.onSurface,
+                size: 20.scaled,
+              ),
             )
           : null,
       title: Text(
@@ -39,12 +44,16 @@ class AppTile extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.w700,
           color: scheme.onSurface,
+          fontSize: 14.scaled,
         ),
       ),
       subtitle: subtitle != null
           ? Text(
               subtitle!,
-              style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 12),
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 12.scaled,
+              ),
             )
           : null,
       trailing:
@@ -52,7 +61,7 @@ class AppTile extends StatelessWidget {
           Icon(
             Icons.chevron_right_rounded,
             color: scheme.onSurfaceVariant,
-            size: 20,
+            size: 20.scaled,
           ),
       onTap: onTap,
     );
