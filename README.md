@@ -10,6 +10,7 @@ wishlist, and AI assistant chat.
 - Dart SDK: `^3.8.1` (from `pubspec.yaml`)
 - Java: `21` (pinned in `.mise.toml`)
 - Gradle wrapper: `8.14`
+- Android minSdk: `24` (required by `flutter_secure_storage 10.0.0`)
 
 ## 1) First-Time Setup
 

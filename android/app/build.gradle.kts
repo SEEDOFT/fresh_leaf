@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.seedoft.fresh_leaf"
     // Pinned explicitly for deterministic local/CI Android builds.
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -26,7 +26,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // Pinned explicitly for deterministic local/CI Android builds.
-        minSdk = 21
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

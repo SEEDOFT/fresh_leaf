@@ -4,7 +4,6 @@ import 'package:fresh_leaf/app/modules/onboarding/widgets/onboarding_widget.dart
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({super.key});
@@ -127,20 +126,15 @@ class OnboardingView extends GetView<OnboardingController> {
                   const OnboardingInfoCard(),
                   SizedBox(height: 16.scaled),
 
-                  // 3. Smooth Page Indicator
+                  // 3. Page Indicator
                   Center(
-                    child: SmoothPageIndicator(
+                    child: OnboardingPageIndicator(
                       controller: controller.pageController,
                       count: 3,
-                      effect: ExpandingDotsEffect(
-                        activeDotColor: scheme.primary,
-                        dotColor: isDark
-                            ? scheme.outline.withValues(alpha: 0.65)
-                            : scheme.outline.withValues(alpha: 0.35),
-                        dotHeight: 8.scaled,
-                        dotWidth: 8.scaled,
-                        expansionFactor: 4,
-                      ),
+                      activeColor: scheme.primary,
+                      inactiveColor: isDark
+                          ? scheme.outline.withValues(alpha: 0.65)
+                          : scheme.outline.withValues(alpha: 0.35),
                     ),
                   ),
                   SizedBox(
