@@ -3,6 +3,8 @@
 *.log
 *.pyc
 *.swp
+.tmp
+.cache/
 .DS_Store
 .atom/
 .build/
@@ -11,10 +13,12 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
-.env.local.json
-.env.prod.json
-.env.local
-.env.prod
+
+# Private environment data
+.env
+.env.*
+!.env.example
+!.env*.example
 
 # IntelliJ related
 *.iml
@@ -36,6 +40,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+**/build/
 
 # Symbolication related
 app.*.symbols
@@ -47,8 +52,23 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/build/
+/android/**/generated/
+/android/**/intermediates/
+/android/**/outputs/
+/android/**/cxx/
+/android/**/captures/
+
+# Signing and local Android machine config
+/android/key.properties
+*.jks
+*.keystore
 
 # FVM (commit config, ignore downloaded SDK)
 
 # FVM Version Cache
 .fvm/
+
+# Local IDE settings
+.idea/
+.vscode/
