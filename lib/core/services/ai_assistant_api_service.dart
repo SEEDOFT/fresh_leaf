@@ -23,13 +23,13 @@ class AiAssistantApiService extends GetxService {
 
   Future<AiChatSendMessageResult> sendMessage({
     required String sessionId,
-    required String message,
+    required String prompt,
   }) async {
     final response = await _apiClient.postRequest(
       ApiEndpoints.aiChatMessages,
       data: <String, dynamic>{
         'session_id': sessionId,
-        'message': message,
+        'prompt': prompt,
       },
     );
     final apiResponse = ApiResponse.parseMap(response.data);

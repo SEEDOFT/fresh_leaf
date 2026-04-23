@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/orders/widgets/order_item_widget.dart';
 import 'package:fresh_leaf/core/models/order.dart';
-import 'package:fresh_leaf/shared/widgets/app_section_header.dart';
 import 'package:get/get.dart';
 
 class OrdersListWidget extends StatelessWidget {
@@ -16,19 +15,6 @@ class OrdersListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    if (groupedOrders.isEmpty) {
-      return Center(
-        child: Text(
-          'no_orders_in_status'.tr,
-          style: TextStyle(
-            color: scheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      );
-    }
-
     final sectionKeys = groupedOrders.keys.toList();
 
     return ListView.builder(
@@ -45,11 +31,7 @@ class OrdersListWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppSectionHeader(
-                title: _translateSection(section),
-                style: AppSectionHeaderStyle.divider,
-                horizontalPadding: 0,
-              ),
+              _TimelineSectionHeader(title: _translateSection(section)),
               const SizedBox(height: 10),
               ...sectionOrders.map(
                 (order) => Padding(
@@ -78,5 +60,44 @@ class OrdersListWidget extends StatelessWidget {
       default:
         return 'earlier'.tr;
     }
+  }
+}
+
+class _TimelineSectionHeader extends StatelessWidget {
+  const _TimelineSectionHeader({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+            color: scheme.primary,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: TextStyle(
+            color: scheme.onSurface,
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: scheme.outline.withValues(alpha: 0.18),
+          ),
+        ),
+      ],
+    );
   }
 }

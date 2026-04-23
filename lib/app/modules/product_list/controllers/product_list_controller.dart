@@ -30,6 +30,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'refrigerate',
+            shareSlug: 'heritage-carrots',
           ),
           ProductInfo(
             title: 'product_golden_oysters_title',
@@ -42,6 +43,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'paper_bag',
+            shareSlug: 'golden-oysters',
           ),
           ProductInfo(
             title: 'product_leafy_greens_title',
@@ -54,6 +56,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'refrigerate',
+            shareSlug: 'leafy-greens',
           ),
           ProductInfo(
             title: 'product_citrus_bundle_title',
@@ -66,6 +69,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'cool_dry_place',
+            shareSlug: 'citrus-bundle',
           ),
           ProductInfo(
             title: 'product_rainbow_chard_title',
@@ -78,6 +82,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'refrigerate',
+            shareSlug: 'rainbow-chard',
           ),
           ProductInfo(
             title: 'product_wild_mushrooms_title',
@@ -90,6 +95,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'paper_bag',
+            shareSlug: 'wild-mushrooms',
           ),
           ProductInfo(
             title: 'product_artisan_bread_title',
@@ -102,6 +108,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'bread_box',
+            shareSlug: 'artisan-bread',
           ),
           ProductInfo(
             title: 'product_pasture_eggs_title',
@@ -114,6 +121,7 @@ class ProductListController extends GetxController {
             origin: 'local_farm',
             harvest: 'harvest_spring_2026',
             storage: 'refrigerate',
+            shareSlug: 'pasture-raised-eggs',
           ),
         ],
       },

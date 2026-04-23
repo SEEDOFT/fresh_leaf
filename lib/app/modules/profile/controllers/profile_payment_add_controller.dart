@@ -30,6 +30,10 @@ class ProfilePaymentAddController extends GetxController {
       Rxn<PaymentMethodType>();
   final RxBool isLoadingPaymentMethodTypes = false.obs;
   bool _excludeWalletType = false;
+  String? _preferredPaymentMethodTypeCode;
+  Set<String>? _allowedPaymentMethodTypeCodes = <String>{
+    PaymentMethodTypeCodes.creditDebit,
+  };
 
   PaymentMethod? _editingMethod;
 
@@ -321,13 +325,21 @@ class ProfilePaymentAddController extends GetxController {
       }
 
       final types = apiResponse.data.map(PaymentMethodType.fromMap).toList();
-      final filteredTypes = _excludeWalletType
+      var filteredTypes = _excludeWalletType
           ? types
                 .where(
                   (type) => (type.code ?? '').trim().toLowerCase() != 'wallet',
                 )
                 .toList()
           : types;
+      final allowedCodes = _allowedPaymentMethodTypeCodes;
+      if (allowedCodes != null && allowedCodes.isNotEmpty) {
+        filteredTypes = filteredTypes
+            .where(
+              (type) => allowedCodes.contains((type.code ?? '').trim().toLowerCase()),
+            )
+            .toList();
+      }
       paymentMethodTypes.assignAll(filteredTypes);
       _selectDefaultPaymentMethodType();
     } on DioException catch (error) {
@@ -417,10 +429,16 @@ class ProfilePaymentAddController extends GetxController {
 
   void _bindEditArgument() {
     final args = Get.arguments;
-    if (args is Map<String, dynamic>) {
-      _excludeWalletType = args['exclude_wallet_type'] == true;
-    } else if (args is Map) {
-      _excludeWalletType = args['exclude_wallet_type'] == true;
+    final argMap = _toStringDynamicMap(args);
+    if (argMap != null) {
+      _excludeWalletType = argMap['exclude_wallet_type'] == true;
+      _preferredPaymentMethodTypeCode = formatToString(
+        argMap['preferred_payment_method_type_code'],
+      ).trim().toLowerCase();
+      final allowedCodes = _extractAllowedTypeCodes(argMap['allowed_payment_method_type_codes']);
+      if (allowedCodes.isNotEmpty) {
+        _allowedPaymentMethodTypeCodes = allowedCodes;
+      }
     }
 
     final method = _mapToPaymentMethod(args);
@@ -453,6 +471,18 @@ class ProfilePaymentAddController extends GetxController {
           .toList();
       if (existing.isNotEmpty) {
         selectedPaymentMethodType.value = existing.first;
+        return;
+      }
+    }
+
+    if ((_preferredPaymentMethodTypeCode ?? '').isNotEmpty) {
+      final preferred = types
+          .where(
+            (type) => (type.code ?? '').trim().toLowerCase() == _preferredPaymentMethodTypeCode,
+          )
+          .toList();
+      if (preferred.isNotEmpty) {
+        selectedPaymentMethodType.value = preferred.first;
         return;
       }
     }
@@ -491,6 +521,28 @@ class ProfilePaymentAddController extends GetxController {
         (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
       );
       return PaymentMethod.fromMap(mapped);
+    }
+    return null;
+  }
+
+  Set<String> _extractAllowedTypeCodes(dynamic raw) {
+    if (raw is List) {
+      return raw
+          .map((item) => formatToString(item).trim().toLowerCase())
+          .where((item) => item.isNotEmpty)
+          .toSet();
+    }
+    return <String>{};
+  }
+
+  Map<String, dynamic>? _toStringDynamicMap(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+    if (value is Map) {
+      return value.map<String, dynamic>(
+        (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
+      );
     }
     return null;
   }

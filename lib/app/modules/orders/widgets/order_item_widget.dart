@@ -13,10 +13,10 @@ class OrderItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final borderColor = scheme.outline.withValues(alpha: 0.4);
+    final borderColor = scheme.outline.withValues(alpha: 0.22);
     final badgeBg = _delivered
-        ? scheme.primaryContainer.withValues(alpha: 0.6)
-        : scheme.secondaryContainer.withValues(alpha: 0.6);
+        ? scheme.primaryContainer.withValues(alpha: 0.65)
+        : scheme.secondaryContainer.withValues(alpha: 0.7);
     final badgeText = _delivered ? scheme.primary : scheme.secondary;
 
     return GestureDetector(
@@ -24,16 +24,23 @@ class OrderItemWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: scheme.surface,
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[
+              scheme.surfaceContainerHighest.withValues(alpha: 0.28),
+              scheme.surface,
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: borderColor,
           ),
           boxShadow: [
             BoxShadow(
-              color: scheme.shadow.withValues(alpha: 0.16),
-              blurRadius: 14,
-              offset: const Offset(0, 7),
+              color: scheme.shadow.withValues(alpha: 0.07),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -62,7 +69,7 @@ class OrderItemWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 Icon(
-                  Icons.receipt_long,
+                  Icons.receipt_long_rounded,
                   size: 16,
                   color: scheme.onSurfaceVariant,
                 ),
@@ -109,8 +116,11 @@ class OrderItemWidget extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest,
+                    color: scheme.surface.withValues(alpha: 0.76),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: scheme.outline.withValues(alpha: 0.2),
+                    ),
                   ),
                   child: Row(
                     children: [

@@ -112,7 +112,7 @@ class AiAssistantController extends GetxController {
     try {
       await _apiService.sendMessage(
         sessionId: sessionId,
-        message: prompt,
+        prompt: prompt,
       );
     } on Exception catch (error) {
       final lastIndex = _latestAssistantStreamingIndex();

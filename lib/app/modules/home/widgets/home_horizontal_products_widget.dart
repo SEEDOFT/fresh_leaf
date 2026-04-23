@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/home_product.dart';
 import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:get/get.dart';
@@ -100,6 +101,12 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                               ? 'refrigerate_extend_freshness'
                               : item.storage)
                           .tr,
+                  shareSlug: ProductShareHelper.resolveSlug(
+                    title: item.title.tr,
+                    shareSlug: item.shareSlug,
+                  ),
+                  shareDeepLink:
+                      item.shareDeepLink.isEmpty ? null : item.shareDeepLink,
                 );
                 await Get.toNamed<void>(
                   AppRoutes.productDetail,

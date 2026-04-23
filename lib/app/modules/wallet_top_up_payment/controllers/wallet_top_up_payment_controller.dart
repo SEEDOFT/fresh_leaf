@@ -9,12 +9,27 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
+class WalletTopUpChannelOption {
+  const WalletTopUpChannelOption({
+    required this.id,
+    required this.label,
+    required this.typeCode,
+    this.type,
+  });
+
+  final String id;
+  final String label;
+  final String typeCode;
+  final PaymentMethodType? type;
+
+  bool get isCreditDebit => typeCode == PaymentMethodTypeCodes.creditDebit;
+}
+
 class WalletTopUpPaymentController extends GetxController {
-  final RxList<PaymentMethod> methods = <PaymentMethod>[].obs;
   final RxList<PaymentMethodType> types = <PaymentMethodType>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool isRefreshing = false.obs;
-  final RxString selectedMethodId = ''.obs;
+  final RxString selectedChannelId = ''.obs;
   final RxString currency = 'USD'.obs;
   final RxDouble amount = 0.0.obs;
 
@@ -31,59 +46,82 @@ class WalletTopUpPaymentController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    await fetchPaymentOptions(showError: false);
+    await fetchPaymentTypes(showError: false);
   }
 
   Future<void> refreshPaymentMethods() async {
     if (isRefreshing.value) return;
     isRefreshing.value = true;
     try {
-      await fetchPaymentOptions();
+      await fetchPaymentTypes();
     } finally {
       isRefreshing.value = false;
     }
   }
 
-  Future<void> fetchPaymentOptions({bool showError = true}) async {
+  Future<void> fetchPaymentTypes({bool showError = true}) async {
     if (isLoading.value) return;
     isLoading.value = true;
     try {
-      await Future.wait<void>([
-        _fetchPaymentMethods(showError: showError),
-        _fetchPaymentTypes(showError: showError),
-      ]);
+      await _fetchPaymentTypes(showError: showError);
       _ensureSelection();
     } finally {
       isLoading.value = false;
     }
   }
 
-  List<PaymentMethod> get displayMethods {
-    final items = <PaymentMethod>[...methods];
+  List<WalletTopUpChannelOption> get channelOptions {
+    final items = <WalletTopUpChannelOption>[];
+    final creditType = _findType(PaymentMethodTypeCodes.creditDebit);
+    items.add(
+      WalletTopUpChannelOption(
+        id: 'channel-${PaymentMethodTypeCodes.creditDebit}',
+        label: creditType?.name?.trim().isNotEmpty == true
+            ? creditType!.name!.trim()
+            : 'credit_debit_card'.tr,
+        typeCode: PaymentMethodTypeCodes.creditDebit,
+        type: creditType,
+      ),
+    );
+
     for (final type in types) {
       final code = (type.code ?? '').toLowerCase();
-      if (code != PaymentMethodTypeCodes.aba &&
-          code != PaymentMethodTypeCodes.acleda) {
+      if (code.isEmpty || code == PaymentMethodTypeCodes.creditDebit) {
         continue;
       }
-      final alreadyExists = items.any(
-        (m) => (m.paymentMethodType?.code ?? '').toLowerCase() == code,
-      );
+      if (code != PaymentMethodTypeCodes.aba && code != PaymentMethodTypeCodes.acleda) {
+        continue;
+      }
+      final alreadyExists = items.any((option) => option.typeCode == code);
       if (alreadyExists) continue;
-      items.add(_channelMethodFromType(type));
+      items.add(
+        WalletTopUpChannelOption(
+          id: 'channel-$code',
+          label: (type.name ?? code).trim(),
+          typeCode: code,
+          type: type,
+        ),
+      );
     }
     return items;
   }
 
-  void selectMethod(PaymentMethod method) {
-    selectedMethodId.value = (method.id ?? 0).toString();
+  Future<void> selectChannel(WalletTopUpChannelOption option) async {
+    if (option.isCreditDebit) {
+      final selectedCard = await _openSavedCards();
+      if (selectedCard != null) {
+        Get.back<PaymentMethod>(result: selectedCard);
+      }
+      return;
+    }
+    selectedChannelId.value = option.id;
   }
 
-  PaymentMethod? get selectedMethod {
-    final id = selectedMethodId.value;
+  WalletTopUpChannelOption? get selectedChannel {
+    final id = selectedChannelId.value;
     if (id.isEmpty) return null;
-    for (final method in displayMethods) {
-      if ((method.id ?? 0).toString() == id) return method;
+    for (final option in channelOptions) {
+      if (option.id == id) return option;
     }
     return null;
   }
@@ -96,66 +134,14 @@ class WalletTopUpPaymentController extends GetxController {
   }
 
   void confirmSelection() {
-    final method = selectedMethod;
-    if (method == null) {
+    final option = selectedChannel;
+    if (option == null) {
       Get.snackbar('payment_method'.tr, 'select_payment_method_to_continue'.tr);
       return;
     }
+
+    final method = _channelMethodFromOption(option);
     Get.back<PaymentMethod>(result: method);
-  }
-
-  Future<void> openAddPaymentMethod() async {
-    final routeResult = await Get.toNamed<dynamic>(
-      AppRoutes.paymentMethodsAdd,
-      arguments: <String, dynamic>{
-        'exclude_wallet_type': true,
-      },
-    );
-    final method = _toPaymentMethod(routeResult);
-    if (method == null) return;
-    methods.insert(0, method);
-    selectedMethodId.value = (method.id ?? 0).toString();
-  }
-
-  Future<void> _fetchPaymentMethods({required bool showError}) async {
-    try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
-        ApiEndpoints.userPaymentMethods,
-      );
-      final apiResponse = ApiResponse.parseDynamic(response.data);
-
-      if (!apiResponse.isSuccess && response.statusCode != 200) {
-        if (showError) {
-          Get.snackbar(
-            'fetch_failed'.tr,
-            apiResponse.status.message.isNotEmpty
-                ? apiResponse.status.message
-                : 'unable_load_payment_methods'.tr,
-          );
-        }
-        return;
-      }
-
-      final parsed = _extractPaymentMaps(
-        apiResponse.data,
-      ).map(PaymentMethod.fromMap).toList();
-      methods.assignAll(parsed);
-    } on DioException catch (error) {
-      if (showError) {
-        Get.snackbar(
-          'fetch_failed'.tr,
-          parseApiErrorMessage(
-            error,
-            fallback: 'unable_load_payment_methods'.tr,
-          ),
-        );
-      }
-    } on Exception catch (_) {
-      if (showError) {
-        Get.snackbar('fetch_failed'.tr, 'unable_load_payment_methods'.tr);
-      }
-    }
   }
 
   Future<void> _fetchPaymentTypes({required bool showError}) async {
@@ -185,23 +171,28 @@ class WalletTopUpPaymentController extends GetxController {
   }
 
   void _ensureSelection() {
-    final options = displayMethods;
+    final options = channelOptions.where((option) => !option.isCreditDebit).toList();
     if (options.isEmpty) {
-      selectedMethodId.value = '';
+      selectedChannelId.value = '';
       return;
     }
-    final current = selectedMethodId.value;
+    final current = selectedChannelId.value;
     if (current.isEmpty) {
-      selectedMethodId.value = (options.first.id ?? 0).toString();
+      selectedChannelId.value = options.first.id;
       return;
     }
-    final exists = options.any((m) => (m.id ?? 0).toString() == current);
+    final exists = options.any((option) => option.id == current);
     if (!exists) {
-      selectedMethodId.value = (options.first.id ?? 0).toString();
+      selectedChannelId.value = options.first.id;
     }
   }
 
-  PaymentMethod _channelMethodFromType(PaymentMethodType type) {
+  PaymentMethod _channelMethodFromOption(WalletTopUpChannelOption option) {
+    final type = option.type ??
+        PaymentMethodType(
+          code: option.typeCode,
+          name: option.label,
+        );
     final id = -1000 - (type.id ?? 0);
     return PaymentMethod(
       id: id,
@@ -223,24 +214,32 @@ class WalletTopUpPaymentController extends GetxController {
     );
   }
 
-  List<Map<String, dynamic>> _extractPaymentMaps(dynamic data) {
-    if (data is List) {
-      return data.whereType<Map<String, dynamic>>().toList();
+  PaymentMethodType? _findType(String code) {
+    for (final type in types) {
+      if ((type.code ?? '').toLowerCase() == code) return type;
     }
-    if (data is Map<String, dynamic>) {
-      final nested = data['items'] ?? data['methods'] ?? data['data'];
-      if (nested is List) {
-        return nested.whereType<Map<String, dynamic>>().toList();
-      }
-    }
-    return const <Map<String, dynamic>>[];
+    return null;
   }
 
-  PaymentMethod? _toPaymentMethod(dynamic value) {
-    if (value is PaymentMethod) return value;
-    if (value is Map<String, dynamic>) return PaymentMethod.fromMap(value);
-    if (value is Map) {
-      final mapped = value.map<String, dynamic>(
+  Future<PaymentMethod?> _openSavedCards() async {
+    final routeResult = await Get.toNamed<dynamic>(
+      AppRoutes.paymentMethods,
+      arguments: <String, dynamic>{
+        'mode': 'pick',
+        'allowed_payment_method_type_codes': <String>[
+          PaymentMethodTypeCodes.creditDebit,
+        ],
+        'return_on_select': true,
+      },
+    );
+    if (routeResult is PaymentMethod) {
+      return routeResult;
+    }
+    if (routeResult is Map<String, dynamic>) {
+      return PaymentMethod.fromMap(routeResult);
+    }
+    if (routeResult is Map) {
+      final mapped = routeResult.map<String, dynamic>(
         (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
       );
       return PaymentMethod.fromMap(mapped);
@@ -248,4 +247,3 @@ class WalletTopUpPaymentController extends GetxController {
     return null;
   }
 }
-

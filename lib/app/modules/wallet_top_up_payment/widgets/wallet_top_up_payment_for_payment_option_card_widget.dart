@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/models/payment_method.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up_payment/controllers/wallet_top_up_payment_controller.dart';
+import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
 class WalletTopUpPaymentForPaymentOptionCardWidget extends StatelessWidget {
   const WalletTopUpPaymentForPaymentOptionCardWidget({
-    required this.method,
+    required this.option,
     required this.isSelected,
     required this.onTap,
     super.key,
   });
 
-  final PaymentMethod method;
+  final WalletTopUpChannelOption option;
   final bool isSelected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final typeCode = (method.paymentMethodType?.code ?? '').toLowerCase();
-    final isBankChannel = typeCode == 'aba' || typeCode == 'acleda';
-    final label = (method.label?.isNotEmpty ?? false)
-        ? method.label!
-        : (method.paymentMethodType?.name ?? 'payment_method'.tr);
-    final number = method.cardNumber.replaceAll(RegExp('[^0-9]'), '');
-    final last4 = number.length >= 4
-        ? number.substring(number.length - 4)
-        : number.padLeft(4, '*');
+    final typeCode = option.typeCode.toLowerCase();
+    final isBankChannel = typeCode == PaymentMethodTypeCodes.aba ||
+        typeCode == PaymentMethodTypeCodes.acleda;
+    final isCreditDebit = option.isCreditDebit;
+    final label = option.label;
 
     return InkWell(
       borderRadius: BorderRadius.circular(14.scaled),
@@ -78,7 +75,9 @@ class WalletTopUpPaymentForPaymentOptionCardWidget extends StatelessWidget {
                   SizedBox(height: 2.scaled),
                   if (!isBankChannel)
                     Text(
-                      '•••• $last4',
+                      isCreditDebit
+                          ? 'your_payment_methods'.tr
+                          : 'credit_debit_card'.tr,
                       style: TextStyle(
                         fontSize: 12.scaled,
                         color: scheme.onSurfaceVariant,
@@ -96,9 +95,11 @@ class WalletTopUpPaymentForPaymentOptionCardWidget extends StatelessWidget {
               ),
             ),
             Icon(
-              isSelected
-                  ? Icons.check_circle_rounded
-                  : Icons.radio_button_unchecked_rounded,
+              isCreditDebit
+                  ? Icons.chevron_right_rounded
+                  : (isSelected
+                        ? Icons.check_circle_rounded
+                        : Icons.radio_button_unchecked_rounded),
               color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
               size: 20.scaled,
             ),

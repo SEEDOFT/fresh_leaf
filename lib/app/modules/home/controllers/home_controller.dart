@@ -50,6 +50,7 @@ class HomeController extends GetxController {
       origin: 'local_farm',
       harvest: 'harvested_this_week',
       storage: 'refrigerate_extend_freshness',
+      shareSlug: 'heritage-carrots',
     ),
     const HomeProduct(
       image:
@@ -63,6 +64,7 @@ class HomeController extends GetxController {
       origin: 'local_farm',
       harvest: 'harvested_this_week',
       storage: 'refrigerate_extend_freshness',
+      shareSlug: 'golden-oysters',
     ),
   ].obs;
 

@@ -80,7 +80,12 @@ class ProfileController extends GetxController {
   Future<void> openOrders() async {
     final canOpen = await PinSecurityService.verifyOrderAccess();
     if (!canOpen) return;
-    await Get.toNamed<void>(AppRoutes.orders);
+    await Get.toNamed<void>(
+      AppRoutes.orders,
+      arguments: <String, dynamic>{
+        'show_app_bar': true,
+      },
+    );
   }
 
   Future<void> logout() async {

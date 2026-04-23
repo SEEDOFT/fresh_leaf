@@ -2,21 +2,45 @@ import 'package:fresh_leaf/core/models/order.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+enum OrderSortType {
+  newest,
+  oldest,
+  highestTotal,
+}
+
 class OrdersController extends GetxController {
   static final DateFormat _dateFormat = DateFormat('MMM d, yyyy');
   final RxBool isLoading = false.obs;
   final RxList<Order> orders = <Order>[].obs;
   final RxString _selectedStatus = 'All'.obs;
+  final Rx<OrderSortType> _selectedSort = OrderSortType.newest.obs;
 
   String get selectedStatus => _selectedStatus.value;
   set selectedStatus(String status) => _selectedStatus.value = status;
+  OrderSortType get selectedSort => _selectedSort.value;
 
   List<String> get statusFilters => const ['All', 'Processing', 'Delivered'];
+  int get visibleOrderCount => filteredOrders.length;
 
   List<Order> get filteredOrders {
     final current = _selectedStatus.value;
-    if (current == 'All') return orders;
-    return orders.where((o) => o.status == current).toList();
+    var list = current == 'All'
+        ? List<Order>.from(orders)
+        : orders.where((order) => order.status == current).toList();
+
+    switch (_selectedSort.value) {
+      case OrderSortType.newest:
+        list.sort((a, b) => _tryParseOrderDate(b.date).compareTo(_tryParseOrderDate(a.date)));
+        break;
+      case OrderSortType.oldest:
+        list.sort((a, b) => _tryParseOrderDate(a.date).compareTo(_tryParseOrderDate(b.date)));
+        break;
+      case OrderSortType.highestTotal:
+        list.sort((a, b) => b.total.compareTo(a.total));
+        break;
+    }
+
+    return list;
   }
 
   Map<String, List<Order>> get groupedFilteredOrders {
@@ -35,6 +59,10 @@ class OrdersController extends GetxController {
 
     groups.removeWhere((key, value) => value.isEmpty);
     return groups;
+  }
+
+  void setSort(OrderSortType sortType) {
+    _selectedSort.value = sortType;
   }
 
   @override

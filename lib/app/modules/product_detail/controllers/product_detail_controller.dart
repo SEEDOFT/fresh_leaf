@@ -1,5 +1,7 @@
 import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProductDetailController extends GetxController {
   late final ProductInfo product;
@@ -31,5 +33,34 @@ class ProductDetailController extends GetxController {
 
   void decrement() {
     if (quantity.value > 1) quantity.value--;
+  }
+
+  Future<void> shareProduct() async {
+    try {
+      final resolvedTitle = title.tr;
+      final resolvedDescription = ProductShareHelper.trimDescription(
+        description.tr,
+      );
+      final deepLink = ProductShareHelper.resolveDeepLink(
+        title: resolvedTitle,
+        shareSlug: product.shareSlug,
+        shareDeepLink: product.shareDeepLink,
+      );
+      final message = 'share_product_message_template'.trParams({
+        'title': resolvedTitle,
+        'price': '\$${price.toStringAsFixed(2)}',
+        'description': resolvedDescription,
+        'link': deepLink,
+      });
+      await Share.share(
+        message,
+        subject: resolvedTitle,
+      );
+    } on Exception {
+      Get.snackbar(
+        'share_product'.tr,
+        'unable_share_product'.tr,
+      );
+    }
   }
 }

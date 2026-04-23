@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -8,10 +9,23 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentController extends GetxController {
+  ProfilePaymentController();
+
   final RxList<PaymentMethod> methods = <PaymentMethod>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool isRefreshing = false.obs;
   final RxString processingId = ''.obs;
+  final RxString selectedMethodId = ''.obs;
+
+  bool isPickerMode = false;
+  bool returnOnSelect = true;
+  Set<String> allowedTypeCodes = <String>{PaymentMethodTypeCodes.creditDebit};
+
+  @override
+  void onInit() {
+    super.onInit();
+    _bindArgs();
+  }
 
   @override
   Future<void> onReady() async {
@@ -53,8 +67,9 @@ class ProfilePaymentController extends GetxController {
 
       final parsed = _extractPaymentMaps(
         apiResponse.data,
-      ).map(PaymentMethod.fromMap).toList();
+      ).map(PaymentMethod.fromMap).where(_isAllowedType).toList();
       methods.assignAll(parsed);
+      _ensureSelection();
     } on DioException catch (error) {
       if (showError) {
         Get.snackbar(
@@ -79,14 +94,17 @@ class ProfilePaymentController extends GetxController {
   }
 
   Future<void> openEditPaymentMethod(PaymentMethod method) async {
+    if (isPickerMode) return;
     await _openPaymentEditor(seed: method);
   }
 
   Future<void> remove(PaymentMethod method) async {
+    if (isPickerMode) return;
     if (processingId.value.isNotEmpty) return;
     processingId.value = method.id.toString();
     try {
       methods.removeWhere((item) => item.id == method.id);
+      _ensureSelection();
       Get.snackbar('deleted'.tr, 'payment_method_removed'.tr);
     } finally {
       processingId.value = '';
@@ -122,11 +140,43 @@ class ProfilePaymentController extends GetxController {
     return null;
   }
 
+  Future<void> selectForPick(PaymentMethod method) async {
+    if (!isPickerMode) return;
+    selectedMethodId.value = (method.id ?? 0).toString();
+    if (returnOnSelect) {
+      Get.back<PaymentMethod>(result: method);
+    }
+  }
+
+  PaymentMethod? get selectedMethod {
+    final current = selectedMethodId.value;
+    if (current.isEmpty) return null;
+    for (final method in methods) {
+      if ((method.id ?? 0).toString() == current) return method;
+    }
+    return null;
+  }
+
+  void confirmPick() {
+    if (!isPickerMode) return;
+    final method = selectedMethod;
+    if (method == null) {
+      Get.snackbar('payment_method'.tr, 'select_payment_method_to_continue'.tr);
+      return;
+    }
+    Get.back<PaymentMethod>(result: method);
+  }
+
   Future<void> _openPaymentEditor({PaymentMethod? seed}) async {
     final routeResult = await Get.toNamed<dynamic>(
       AppRoutes.paymentMethodsAdd,
       arguments: <String, dynamic>{
         'seed': seed,
+        'exclude_wallet_type': true,
+        'preferred_payment_method_type_code': PaymentMethodTypeCodes.creditDebit,
+        'allowed_payment_method_type_codes': <String>[
+          PaymentMethodTypeCodes.creditDebit,
+        ],
       },
     );
     final result = _toPaymentMethod(routeResult);
@@ -147,6 +197,70 @@ class ProfilePaymentController extends GetxController {
     }
 
     methods.insert(0, normalized);
+    _ensureSelection();
+    if (isPickerMode && returnOnSelect) {
+      Get.back<PaymentMethod>(result: normalized);
+      return;
+    }
     Get.snackbar('success'.tr, 'payment_method_added'.tr);
+  }
+
+  void _bindArgs() {
+    final args = Get.arguments;
+    final map = _toMap(args);
+    if (map == null) return;
+
+    final mode = formatToString(map['mode']).trim().toLowerCase();
+    isPickerMode = mode == 'pick';
+    returnOnSelect = map['return_on_select'] != false;
+
+    final allowed = _extractAllowedCodes(map['allowed_payment_method_type_codes']);
+    if (allowed.isNotEmpty) {
+      allowedTypeCodes = allowed;
+    }
+  }
+
+  Set<String> _extractAllowedCodes(dynamic raw) {
+    if (raw is List) {
+      return raw
+          .map((item) => formatToString(item).trim().toLowerCase())
+          .where((item) => item.isNotEmpty)
+          .toSet();
+    }
+    return <String>{};
+  }
+
+  Map<String, dynamic>? _toMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) {
+      return value.map<String, dynamic>(
+        (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
+      );
+    }
+    return null;
+  }
+
+  bool _isAllowedType(PaymentMethod method) {
+    final code = (method.paymentMethodType?.code ?? '').trim().toLowerCase();
+    if (code.isNotEmpty) {
+      return allowedTypeCodes.contains(code);
+    }
+    return allowedTypeCodes.contains(PaymentMethodTypeCodes.creditDebit);
+  }
+
+  void _ensureSelection() {
+    if (methods.isEmpty) {
+      selectedMethodId.value = '';
+      return;
+    }
+    final current = selectedMethodId.value;
+    if (current.isEmpty) {
+      selectedMethodId.value = (methods.first.id ?? 0).toString();
+      return;
+    }
+    final exists = methods.any((m) => (m.id ?? 0).toString() == current);
+    if (!exists) {
+      selectedMethodId.value = (methods.first.id ?? 0).toString();
+    }
   }
 }

@@ -6,6 +6,8 @@ class ProfilePaymentHeader extends StatelessWidget {
   const ProfilePaymentHeader({
     required this.onAddTap,
     required this.isLoading,
+    this.title,
+    this.subtitle,
     super.key,
   });
 
@@ -13,6 +15,8 @@ class ProfilePaymentHeader extends StatelessWidget {
 
   final VoidCallback onAddTap;
   final bool isLoading;
+  final String? title;
+  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +62,7 @@ class ProfilePaymentHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'your_payment_methods'.tr,
+                  title ?? 'your_payment_methods'.tr,
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontSize: 16,
@@ -67,7 +71,7 @@ class ProfilePaymentHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: _gap12),
                 Text(
-                  'manage_cards_wallets_checkout'.tr,
+                  subtitle ?? 'manage_cards_wallets_checkout'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 13,

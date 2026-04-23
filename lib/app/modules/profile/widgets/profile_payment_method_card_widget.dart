@@ -9,15 +9,21 @@ class ProfilePaymentMethodCard extends StatelessWidget {
   const ProfilePaymentMethodCard({
     required this.paymentMethod,
     required this.isProcessing,
-    required this.onEdit,
-    required this.onRemove,
+    this.onEdit,
+    this.onRemove,
+    this.onTap,
+    this.showActions = true,
+    this.isSelected = false,
     super.key,
   });
 
   final PaymentMethod paymentMethod;
   final bool isProcessing;
-  final VoidCallback onEdit;
-  final VoidCallback onRemove;
+  final VoidCallback? onEdit;
+  final VoidCallback? onRemove;
+  final VoidCallback? onTap;
+  final bool showActions;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,7 @@ class ProfilePaymentMethodCard extends StatelessWidget {
         ? scheme.surfaceContainerHighest.withValues(alpha: 0.35)
         : scheme.surface;
 
-    return Container(
+    final content = Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -51,7 +57,11 @@ class ProfilePaymentMethodCard extends StatelessWidget {
           colors: <Color>[topColor, bottomColor],
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: scheme.outline.withValues(alpha: 0.18)),
+        border: Border.all(
+          color: isSelected
+              ? scheme.primary.withValues(alpha: 0.7)
+              : scheme.outline.withValues(alpha: 0.18),
+        ),
         boxShadow: [
           BoxShadow(
             color: scheme.shadow.withValues(alpha: 0.06),
@@ -95,6 +105,15 @@ class ProfilePaymentMethodCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (!showActions) ...[
+                const SizedBox(width: 10),
+                Icon(
+                  isSelected
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked_rounded,
+                  color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 14),
@@ -130,54 +149,63 @@ class ProfilePaymentMethodCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: isProcessing ? null : onEdit,
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+          if (showActions) ...[
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: isProcessing ? null : onEdit,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'edit'.tr,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: scheme.primary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: isProcessing ? null : onRemove,
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(
-                    'remove'.tr,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: scheme.error,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                    child: Text(
+                      'edit'.tr,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: scheme.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: isProcessing ? null : onRemove,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'remove'.tr,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: scheme.error,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
+    );
+
+    if (onTap == null) return content;
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: content,
     );
   }
 }

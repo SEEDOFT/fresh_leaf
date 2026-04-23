@@ -16,6 +16,11 @@ class ProductDetailView extends GetView<ProductDetailController> {
         title: '',
         actions: [
           IconButton(
+            icon: Icon(Icons.share_outlined, color: scheme.onSurface),
+            onPressed: controller.shareProduct,
+            tooltip: 'share_product'.tr,
+          ),
+          IconButton(
             icon: Icon(Icons.favorite_border, color: scheme.onSurface),
             onPressed: () {},
           ),

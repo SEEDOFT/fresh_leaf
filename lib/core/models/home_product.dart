@@ -12,6 +12,8 @@ class HomeProduct {
     this.origin = '',
     this.harvest = '',
     this.storage = '',
+    this.shareSlug = '',
+    this.shareDeepLink = '',
   });
 
   factory HomeProduct.fromMap(Map<String, dynamic> map) {
@@ -33,6 +35,8 @@ class HomeProduct {
       origin: formatToString(map['origin']),
       harvest: formatToString(map['harvest']),
       storage: formatToString(map['storage']),
+      shareSlug: formatToString(map['shareSlug']),
+      shareDeepLink: formatToString(map['shareDeepLink']),
     );
   }
 
@@ -46,6 +50,8 @@ class HomeProduct {
   final String origin;
   final String harvest;
   final String storage;
+  final String shareSlug;
+  final String shareDeepLink;
 
   double get priceValue {
     try {
@@ -67,6 +73,8 @@ class HomeProduct {
     String? origin,
     String? harvest,
     String? storage,
+    String? shareSlug,
+    String? shareDeepLink,
   }) {
     return HomeProduct(
       image: image ?? this.image,
@@ -79,6 +87,8 @@ class HomeProduct {
       origin: origin ?? this.origin,
       harvest: harvest ?? this.harvest,
       storage: storage ?? this.storage,
+      shareSlug: shareSlug ?? this.shareSlug,
+      shareDeepLink: shareDeepLink ?? this.shareDeepLink,
     );
   }
 
@@ -94,6 +104,8 @@ class HomeProduct {
       'origin': origin,
       'harvest': harvest,
       'storage': storage,
+      'shareSlug': shareSlug,
+      'shareDeepLink': shareDeepLink,
     };
   }
 }

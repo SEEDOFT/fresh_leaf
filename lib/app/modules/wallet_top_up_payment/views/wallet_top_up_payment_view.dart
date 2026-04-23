@@ -73,37 +73,32 @@ class WalletTopUpPaymentView extends GetView<WalletTopUpPaymentController> {
                   SizedBox(height: 14.scaled),
                   Obx(() {
                     if (controller.isLoading.value &&
-                        controller.displayMethods.isEmpty) {
+                        controller.channelOptions.isEmpty) {
                       return Padding(
                         padding: EdgeInsets.only(top: 60.scaled),
                         child: const Center(child: CircularProgressIndicator()),
                       );
                     }
 
-                    if (controller.displayMethods.isEmpty) {
+                    if (controller.channelOptions.isEmpty) {
                       return AppEmptyState(
                         icon: Icons.credit_card_off_outlined,
-                        title: 'no_payment_methods_yet'.tr,
-                        subtitle: 'add_payment_method_to_continue_top_up'.tr,
-                        actionLabel: 'add_payment_method'.tr,
-                        onActionPressed: controller.openAddPaymentMethod,
+                        title: 'unable_load_payment_method_types'.tr,
+                        subtitle: 'unable_load_payment_methods'.tr,
                       );
                     }
 
-                    final options = controller.displayMethods;
+                    final options = controller.channelOptions;
                     return Column(
                       children: options
-                          .map(
-                            (method) => Padding(
+                          .map<Widget>(
+                            (option) => Padding(
                               padding: EdgeInsets.only(bottom: 10.scaled),
                               child:
                                   WalletTopUpPaymentForPaymentOptionCardWidget(
-                                    method: method,
-                                    isSelected:
-                                        controller.selectedMethodId.value ==
-                                        (method.id ?? 0).toString(),
-                                    onTap: () =>
-                                        controller.selectMethod(method),
+                                    option: option,
+                                    isSelected: controller.selectedChannelId.value == option.id,
+                                    onTap: () => controller.selectChannel(option),
                                   ),
                             ),
                           )
@@ -119,7 +114,7 @@ class WalletTopUpPaymentView extends GetView<WalletTopUpPaymentController> {
               label: 'pay_amount'.trParams({
                 'amount': controller.formattedAmount,
               }),
-              onPressed: controller.selectedMethod == null
+              onPressed: controller.selectedChannel == null
                   ? null
                   : controller.confirmSelection,
               height: 54.scaled,
