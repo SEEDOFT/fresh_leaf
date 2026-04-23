@@ -84,16 +84,14 @@ class ProfileWishlistController extends GetxController {
     switch (selectedSort.value) {
       case WishlistSortType.newest:
         list.sort((a, b) => b.savedOrder.compareTo(a.savedOrder));
-        break;
       case WishlistSortType.priceLowHigh:
         list.sort((a, b) => a.price.compareTo(b.price));
-        break;
       case WishlistSortType.priceHighLow:
         list.sort((a, b) => b.price.compareTo(a.price));
-        break;
       case WishlistSortType.az:
-        list.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
-        break;
+        list.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
     }
     return list;
   }
@@ -160,6 +158,9 @@ class ProfileWishlistController extends GetxController {
       storage: 'refrigerate_extend_freshness'.tr,
       shareSlug: ProductShareHelper.resolveSlug(title: item.title),
     );
-    await Get.toNamed<void>(AppRoutes.productDetail, arguments: product.toMap());
+    await Get.toNamed<void>(
+      AppRoutes.productDetail,
+      arguments: product.toMap(),
+    );
   }
 }

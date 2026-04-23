@@ -316,7 +316,7 @@ class _PaymentMethodTypeDropdown extends StatelessWidget {
 
   String _typeLabel(PaymentMethodType? type) {
     if (type == null) return '';
-    return type.name?.isNotEmpty == true ? type.name! : (type.code ?? '');
+    return type.name?.isNotEmpty ?? false ? type.name! : (type.code ?? '');
   }
 
   Future<void> _openPicker(BuildContext context) async {
@@ -409,7 +409,7 @@ class _PaymentMethodTypeDropdown extends StatelessWidget {
                         ),
                       );
                     },
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
                     itemCount: types.length,
                   ),
                 ),

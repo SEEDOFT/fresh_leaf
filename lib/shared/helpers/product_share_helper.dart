@@ -35,8 +35,8 @@ class ProductShareHelper {
 
   static String _sanitizeSlug(String input) {
     var slug = input.toLowerCase().trim();
-    slug = slug.replaceAll(RegExp(r'[^a-z0-9]+'), '-');
-    slug = slug.replaceAll(RegExp(r'-{2,}'), '-');
+    slug = slug.replaceAll(RegExp('[^a-z0-9]+'), '-');
+    slug = slug.replaceAll(RegExp('-{2,}'), '-');
     slug = slug.replaceAll(RegExp(r'^-+|-+$'), '');
     if (slug.isEmpty) {
       return 'product';

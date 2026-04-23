@@ -20,7 +20,8 @@ class WalletTopUpPaymentForPaymentOptionCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final typeCode = option.typeCode.toLowerCase();
-    final isBankChannel = typeCode == PaymentMethodTypeCodes.aba ||
+    final isBankChannel =
+        typeCode == PaymentMethodTypeCodes.aba ||
         typeCode == PaymentMethodTypeCodes.acleda;
     final isCreditDebit = option.isCreditDebit;
     final label = option.label;

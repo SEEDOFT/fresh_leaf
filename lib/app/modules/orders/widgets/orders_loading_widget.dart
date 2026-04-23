@@ -32,6 +32,7 @@ class OrdersLoadingWidget extends StatelessWidget {
             ),
           ),
         ),
-      ]);
+      ],
+    );
   }
 }

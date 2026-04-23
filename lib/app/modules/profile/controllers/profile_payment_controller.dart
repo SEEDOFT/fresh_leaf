@@ -173,7 +173,8 @@ class ProfilePaymentController extends GetxController {
       arguments: <String, dynamic>{
         'seed': seed,
         'exclude_wallet_type': true,
-        'preferred_payment_method_type_code': PaymentMethodTypeCodes.creditDebit,
+        'preferred_payment_method_type_code':
+            PaymentMethodTypeCodes.creditDebit,
         'allowed_payment_method_type_codes': <String>[
           PaymentMethodTypeCodes.creditDebit,
         ],
@@ -214,7 +215,9 @@ class ProfilePaymentController extends GetxController {
     isPickerMode = mode == 'pick';
     returnOnSelect = map['return_on_select'] != false;
 
-    final allowed = _extractAllowedCodes(map['allowed_payment_method_type_codes']);
+    final allowed = _extractAllowedCodes(
+      map['allowed_payment_method_type_codes'],
+    );
     if (allowed.isNotEmpty) {
       allowedTypeCodes = allowed;
     }

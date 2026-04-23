@@ -53,8 +53,12 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
                               padding: const EdgeInsets.only(bottom: 12),
                               child: WishlistItemCard(
                                 item: item,
-                                imageHeight: _imageHeightFor(item, isLeft: true),
-                                onOpen: () => controller.openProductDetail(item),
+                                imageHeight: _imageHeightFor(
+                                  item,
+                                  isLeft: true,
+                                ),
+                                onOpen: () =>
+                                    controller.openProductDetail(item),
                                 onRemove: () => controller.removeItem(item),
                                 onAddToCart: () => controller.addToCart(item),
                               ),
@@ -72,9 +76,12 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
                               padding: const EdgeInsets.only(bottom: 12),
                               child: WishlistItemCard(
                                 item: item,
-                                imageHeight:
-                                    _imageHeightFor(item, isLeft: false),
-                                onOpen: () => controller.openProductDetail(item),
+                                imageHeight: _imageHeightFor(
+                                  item,
+                                  isLeft: false,
+                                ),
+                                onOpen: () =>
+                                    controller.openProductDetail(item),
                                 onRemove: () => controller.removeItem(item),
                                 onAddToCart: () => controller.addToCart(item),
                               ),
@@ -140,16 +147,21 @@ class _WishlistControls extends StatelessWidget {
                           (category) => Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: ChoiceChip(
-                              label: Text(category == 'All'
-                                  ? 'wishlist_category_all'.tr
-                                  : category),
-                              selected: controller.selectedCategory.value == category,
-                              onSelected: (_) => controller.setCategory(category),
+                              label: Text(
+                                category == 'All'
+                                    ? 'wishlist_category_all'.tr
+                                    : category,
+                              ),
+                              selected:
+                                  controller.selectedCategory.value == category,
+                              onSelected: (_) =>
+                                  controller.setCategory(category),
                               labelStyle: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
                                 color:
-                                    controller.selectedCategory.value == category
+                                    controller.selectedCategory.value ==
+                                        category
                                     ? scheme.onPrimaryContainer
                                     : scheme.onSurfaceVariant,
                               ),
@@ -187,7 +199,9 @@ class _WishlistControls extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
+                    color: scheme.surfaceContainerHighest.withValues(
+                      alpha: 0.55,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(

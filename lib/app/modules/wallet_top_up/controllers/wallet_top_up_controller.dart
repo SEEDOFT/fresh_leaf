@@ -115,7 +115,7 @@ class WalletTopUpController extends GetxController {
         'session': session.toMap(),
       },
     );
-    return paid == true;
+    return paid ?? false;
   }
 
   Future<bool> _tryOpenRedirect(String? url) async {

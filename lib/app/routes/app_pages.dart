@@ -21,12 +21,12 @@ import 'package:fresh_leaf/app/modules/notifications/views/notification_detail_v
 import 'package:fresh_leaf/app/modules/notifications/views/notifications_view.dart';
 import 'package:fresh_leaf/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:fresh_leaf/app/modules/onboarding/views/onboarding_view.dart';
-import 'package:fresh_leaf/app/modules/payment_qr/bindings/payment_qr_binding.dart';
-import 'package:fresh_leaf/app/modules/payment_qr/views/payment_qr_view.dart';
 import 'package:fresh_leaf/app/modules/order_detail/bindings/order_detail_binding.dart';
 import 'package:fresh_leaf/app/modules/order_detail/views/order_detail_view.dart';
 import 'package:fresh_leaf/app/modules/orders/bindings/orders_binding.dart';
 import 'package:fresh_leaf/app/modules/orders/views/orders_view.dart';
+import 'package:fresh_leaf/app/modules/payment_qr/bindings/payment_qr_binding.dart';
+import 'package:fresh_leaf/app/modules/payment_qr/views/payment_qr_view.dart';
 import 'package:fresh_leaf/app/modules/product_detail/bindings/product_detail_binding.dart';
 import 'package:fresh_leaf/app/modules/product_detail/views/product_detail_view.dart';
 import 'package:fresh_leaf/app/modules/product_list/bindings/product_list_binding.dart';

@@ -7,4 +7,3 @@ class PaymentQrBinding extends Bindings {
     Get.lazyPut<PaymentQrController>(PaymentQrController.new);
   }
 }
-

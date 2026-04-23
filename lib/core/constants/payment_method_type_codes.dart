@@ -42,4 +42,3 @@ PaymentMethodFlowRule resolvePaymentMethodFlowRule(String? typeCode) {
       );
   }
 }
-

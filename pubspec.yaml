@@ -26,12 +26,13 @@ dependencies:
   share_plus: ^12.0.2
   smooth_page_indicator: ^2.0.1
   url_launcher: ^6.3.1
+  web_socket_channel: ^3.0.3
 
 dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^10.2.0
+  very_good_analysis: ^9.0.0
 
 flutter:
   uses-material-design: true

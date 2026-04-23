@@ -163,8 +163,7 @@ const Map<String, String> translationsKm = {
   'wishlist_sort_price_high_low': 'តម្លៃខ្ពស់-ទាប',
   'wishlist_sort_az': 'A-Z',
   'wishlist_filter_empty_title': 'មិនមានមុខទំនិញក្នុងប្រភេទនេះទេ',
-  'wishlist_filter_empty_subtitle':
-      'សាកល្បងជ្រើសប្រភេទ ឬការតម្រៀបផ្សេងទៀត។',
+  'wishlist_filter_empty_subtitle': 'សាកល្បងជ្រើសប្រភេទ ឬការតម្រៀបផ្សេងទៀត។',
   'wishlist_hint_tap_card': 'ចុចលើកាតណាមួយដើម្បីមើលព័ត៌មានលម្អិតផលិតផល',
   'wishlist_empty_title': 'បញ្ជីចង់បានរបស់អ្នកទទេ',
   'wishlist_empty_subtitle':
@@ -486,7 +485,8 @@ const Map<String, String> translationsKm = {
   'select_payment_method_type': 'ជ្រើសរើសប្រភេទវិធីទូទាត់',
   'payment_method_type_required': 'សូមជ្រើសរើសប្រភេទវិធីទូទាត់។',
   'bank_channel_payment_hint':
-      'មិនចាំបាច់បញ្ចូលព័ត៌មានកាតទេ។ អ្នកនឹងបន្តនៅក្នុងកម្មវិធីធនាគារ ឬស្កេន QR ដើម្បីទូទាត់។',
+      'មិនចាំបាច់បញ្ចូលព័ត៌មានកាតទេ។ អ្នកនឹងបន្តនៅក្នុងកម្មវិធីធនាគារ'
+      ' ឬស្កេន QR ដើម្បីទូទាត់។',
   'expiry': 'ផុតកំណត់',
   'cvv': 'CVV',
   'optional': 'ជាជម្រើស',
@@ -523,6 +523,10 @@ const Map<String, String> translationsKm = {
   'expiry_month_invalid': 'ខែផុតកំណត់មិនត្រឹមត្រូវ។',
   'card_expired': 'កាតនេះបានផុតកំណត់ហើយ។',
   'unable_connect_chat_realtime': 'មិនអាចភ្ជាប់ការជជែកតាម Realtime បានទេ។',
+  'chat_realtime_connect_timeout': 'ការភ្ជាប់ Realtime អស់ពេលរង់ចាំ។',
+  'chat_realtime_auth_failed': 'ការអនុញ្ញាត Realtime បរាជ័យ។',
+  'chat_realtime_subscribe_failed': 'ការចុះឈ្មោះឆានែល Realtime បរាជ័យ។',
+  'chat_realtime_disconnected': 'ការភ្ជាប់ Realtime ត្រូវបានផ្តាច់។',
   'unable_send_chat_message': 'មិនអាចផ្ញើសារបានទេនៅពេលនេះ។',
   'my_wallet': 'កាបូបរបស់ខ្ញុំ',
   'wallet_subtitle': 'សមតុល្យ និងការបញ្ចូលលុយ',

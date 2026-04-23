@@ -24,20 +24,23 @@ class OrdersController extends GetxController {
 
   List<Order> get filteredOrders {
     final current = _selectedStatus.value;
-    var list = current == 'All'
+    final list = current == 'All'
         ? List<Order>.from(orders)
         : orders.where((order) => order.status == current).toList();
 
     switch (_selectedSort.value) {
       case OrderSortType.newest:
-        list.sort((a, b) => _tryParseOrderDate(b.date).compareTo(_tryParseOrderDate(a.date)));
-        break;
+        list.sort(
+          (a, b) =>
+              _tryParseOrderDate(b.date).compareTo(_tryParseOrderDate(a.date)),
+        );
       case OrderSortType.oldest:
-        list.sort((a, b) => _tryParseOrderDate(a.date).compareTo(_tryParseOrderDate(b.date)));
-        break;
+        list.sort(
+          (a, b) =>
+              _tryParseOrderDate(a.date).compareTo(_tryParseOrderDate(b.date)),
+        );
       case OrderSortType.highestTotal:
         list.sort((a, b) => b.total.compareTo(a.total));
-        break;
     }
 
     return list;

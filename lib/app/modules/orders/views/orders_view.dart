@@ -126,7 +126,6 @@ class _OrdersControls extends StatelessWidget {
                   return 'tag_all'.tr;
               }
             },
-            horizontalPadding: 16,
           ),
         ),
         PopupMenuButton<OrderSortType>(

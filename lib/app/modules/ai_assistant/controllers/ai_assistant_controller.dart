@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/core/models/ai_chat_message.dart';
@@ -10,9 +11,11 @@ import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:get/get.dart';
 
 class AiAssistantController extends GetxController {
-  static const Duration _aiResponseTimeout = Duration(minutes: 5);
+  static const Duration _aiResponseTimeout = Duration(seconds: 45);
 
   final RxBool isLoading = false.obs;
+  final RxBool isRealtimeReady = false.obs;
+  final RxString lastRealtimeError = ''.obs;
   final AiChatStorageService _storage = Get.find<AiChatStorageService>();
   final AiAssistantApiService _apiService = Get.find<AiAssistantApiService>();
   final AiAssistantRealtimeService _realtimeService =
@@ -23,7 +26,9 @@ class AiAssistantController extends GetxController {
 
   String? _sessionId;
   String? _userId;
+  bool _historyLoaded = false;
   StreamSubscription<AiChatRealtimeEvent>? _realtimeSubscription;
+  Completer<bool>? _realtimeInitCompleter;
   Timer? _streamWatchdog;
   Timer? _persistDebounceTimer;
   Timer? _scrollDebounceTimer;
@@ -32,7 +37,7 @@ class AiAssistantController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     _hydrateMessages();
-    await _initializeRealtimeChat();
+    await _initializeRealtimeChat(showError: false);
   }
 
   @override
@@ -41,34 +46,73 @@ class AiAssistantController extends GetxController {
     _scheduleAutoScroll(animated: false);
   }
 
-  Future<void> _initializeRealtimeChat() async {
-    if (_sessionId != null && _userId != null) {
-      return;
+  /// Initializes user/session/realtime state and loads history once.
+  ///
+  /// Sequencing: chat is considered ready only after private-channel
+  /// subscription succeeds and event listener is attached.
+  /// Side effects: updates `isRealtimeReady`, `lastRealtimeError`,
+  /// `_sessionId`, `_userId`, and `_historyLoaded`.
+  Future<bool> _initializeRealtimeChat({required bool showError}) async {
+    if (isRealtimeReady.value && _sessionId != null && _userId != null) {
+      return true;
     }
 
+    if (_realtimeInitCompleter != null) {
+      return _realtimeInitCompleter!.future;
+    }
+
+    final completer = Completer<bool>();
+    _realtimeInitCompleter = completer;
+
     try {
-      _userId = await _apiService.resolveUserId();
-      final session = await _apiService.createSession();
-      _sessionId = session.sessionId;
+      _userId ??= await _apiService.resolveUserId();
+      if (_sessionId == null || _sessionId!.isEmpty) {
+        final session = await _apiService.createSession();
+        _sessionId = session.sessionId;
+        _historyLoaded = false;
+      }
+
+      _realtimeSubscription ??= _realtimeService.events.listen(
+        _handleRealtimeEvent,
+      );
 
       await _realtimeService.subscribeToSessionChannel(
         userId: _userId!,
         sessionId: _sessionId!,
       );
 
-      _realtimeSubscription ??= _realtimeService.events.listen(
-        _handleRealtimeEvent,
-      );
+      isRealtimeReady.value = true;
+      lastRealtimeError.value = '';
 
-      final history = await _apiService.fetchHistory(
-        sessionId: _sessionId!,
-      );
-      if (history.isNotEmpty) {
-        messages.assignAll(history);
+      if (!_historyLoaded) {
+        final history = await _apiService.fetchHistory(
+          sessionId: _sessionId!,
+        );
+        if (history.isNotEmpty) {
+          messages.assignAll(history);
+        }
+        _historyLoaded = true;
+        _scheduleAutoScroll(animated: false);
       }
-      _scheduleAutoScroll(animated: false);
-    } on Exception catch (_) {
-      // App still allows local compose; backend may be temporarily unavailable.
+
+      completer.complete(true);
+      return true;
+    } on Exception catch (error) {
+      final reason = _resolveRealtimeErrorMessage(error);
+      isRealtimeReady.value = false;
+      lastRealtimeError.value = reason;
+      if (kDebugMode) {
+        debugPrint('[AI][Realtime] init failed: $error');
+      }
+
+      if (showError) {
+        Get.snackbar('fetch_failed'.tr, reason);
+      }
+
+      completer.complete(false);
+      return false;
+    } finally {
+      _realtimeInitCompleter = null;
     }
   }
 
@@ -76,7 +120,11 @@ class AiAssistantController extends GetxController {
     final prompt = inputController.text.trim();
     if (prompt.isEmpty || isLoading.value) return;
 
-    await _initializeRealtimeChat();
+    final ready = await _ensureRealtimeReadyForSend();
+    if (!ready) {
+      return;
+    }
+
     final sessionId = _sessionId;
     if (sessionId == null || sessionId.isEmpty) {
       Get.snackbar(
@@ -134,6 +182,34 @@ class AiAssistantController extends GetxController {
     }
   }
 
+  /// Guarantees realtime readiness before a message POST is allowed.
+  ///
+  /// Sequencing: tries initialize once, then does one disconnect/retry cycle.
+  /// Side effects: may show a snackbar and block send when WS is unavailable.
+  Future<bool> _ensureRealtimeReadyForSend() async {
+    final initialized = await _initializeRealtimeChat(showError: false);
+    if (initialized) {
+      return true;
+    }
+
+    if (kDebugMode) {
+      debugPrint('[AI][Realtime] retrying connect/subscribe before send');
+    }
+    await _realtimeService.disconnect();
+    isRealtimeReady.value = false;
+
+    final retried = await _initializeRealtimeChat(showError: false);
+    if (retried) {
+      return true;
+    }
+
+    final reason = lastRealtimeError.value.isEmpty
+        ? 'unable_connect_chat_realtime'.tr
+        : lastRealtimeError.value;
+    Get.snackbar('fetch_failed'.tr, reason);
+    return false;
+  }
+
   Future<void> copyText(String text) async {
     await Clipboard.setData(ClipboardData(text: text));
     if (text.isNotEmpty) {
@@ -154,6 +230,8 @@ class AiAssistantController extends GetxController {
     _persistDebounceTimer?.cancel();
     _scrollDebounceTimer?.cancel();
     unawaited(_realtimeService.disconnect());
+    isRealtimeReady.value = false;
+    lastRealtimeError.value = '';
     inputController.dispose();
     chatScrollController.dispose();
     super.onClose();
@@ -191,7 +269,24 @@ class AiAssistantController extends GetxController {
     await _storage.clearMessages();
   }
 
+  /// Routes realtime events into UI message state transitions.
+  ///
+  /// Sequencing: only events for the active session are processed.
+  /// Side effects: updates streaming/final/failed bubbles, watchdog lifecycle,
+  /// persistence queue, and auto-scroll.
   void _handleRealtimeEvent(AiChatRealtimeEvent event) {
+    if (event.isFailed && event.sessionId.isEmpty) {
+      isRealtimeReady.value = false;
+      final reason = event.fullText.isNotEmpty
+          ? event.fullText
+          : 'unable_connect_chat_realtime'.tr;
+      lastRealtimeError.value = reason;
+      if (kDebugMode) {
+        debugPrint('[AI][Realtime] transport failure: $reason');
+      }
+      return;
+    }
+
     if (_sessionId != null && event.sessionId.isNotEmpty) {
       if (event.sessionId != _sessionId) {
         return;
@@ -207,6 +302,7 @@ class AiAssistantController extends GetxController {
     } else if (event.isCompleted) {
       _completeStreamingMessage(event);
       _stopStreamWatchdog();
+      unawaited(_syncFinalAssistantMessage(event));
     } else if (event.isFailed) {
       _failStreamingMessage(event);
       _stopStreamWatchdog();
@@ -364,33 +460,16 @@ class AiAssistantController extends GetxController {
     return -1;
   }
 
+  /// Starts/refreshes timeout protection for an in-flight assistant stream.
+  ///
+  /// Sequencing: called when stream starts/chunks arrive and stopped on complete/fail.
+  /// Side effects: converts the current streaming bubble to failed on timeout.
   void _restartStreamWatchdog() {
     _streamWatchdog?.cancel();
     _streamWatchdog = Timer(_aiResponseTimeout, () async {
-      final sessionId = _sessionId;
       final lastIndex = _latestAssistantStreamingIndex();
-      if (lastIndex < 0 || sessionId == null || sessionId.isEmpty) {
+      if (lastIndex < 0) {
         return;
-      }
-
-      try {
-        final history = await _apiService.fetchHistory(sessionId: sessionId);
-        final latestAssistant = _latestAssistantMessage(history);
-        if (latestAssistant != null && latestAssistant.text.trim().isNotEmpty) {
-          messages[lastIndex] = messages[lastIndex].copyWith(
-            text: latestAssistant.text,
-            isStreaming: false,
-            sessionId: latestAssistant.sessionId,
-            messageId: latestAssistant.messageId,
-            sequence: latestAssistant.sequence,
-            status: latestAssistant.status,
-          );
-          unawaited(_persistMessages());
-          _scheduleAutoScroll();
-          return;
-        }
-      } on Exception catch (_) {
-        // Fallback to default timeout state.
       }
 
       messages[lastIndex] = messages[lastIndex].copyWith(
@@ -432,5 +511,98 @@ class AiAssistantController extends GetxController {
       }
     }
     return null;
+  }
+
+  /// Performs one final history sync after `AiMessageCompleted`.
+  ///
+  /// Sequencing: this is a safety backup after stream completion,
+  /// not active polling.
+  /// Side effects: may replace the assistant bubble with server-final text.
+  Future<void> _syncFinalAssistantMessage(AiChatRealtimeEvent event) async {
+    final sessionId = _sessionId;
+    if (sessionId == null || sessionId.isEmpty) {
+      return;
+    }
+
+    try {
+      final history = await _apiService.fetchHistory(sessionId: sessionId);
+      final finalAssistant = _resolveAssistantMessageFromHistory(
+        history: history,
+        preferredMessageId: event.messageId,
+      );
+      if (finalAssistant == null || finalAssistant.text.trim().isEmpty) {
+        return;
+      }
+
+      final index = event.messageId.isNotEmpty
+          ? _indexByMessageId(event.messageId)
+          : _latestAssistantIndex();
+      if (index < 0) {
+        return;
+      }
+
+      final current = messages[index];
+      if (current.text == finalAssistant.text && !current.isStreaming) {
+        return;
+      }
+
+      messages[index] = current.copyWith(
+        text: finalAssistant.text,
+        isStreaming: false,
+        sessionId: finalAssistant.sessionId,
+        messageId: finalAssistant.messageId,
+        sequence: finalAssistant.sequence,
+        status: finalAssistant.status,
+      );
+      _queuePersistMessages();
+      _queueAutoScroll();
+    } on Exception {
+      // Keep event-stream result when sync fails.
+    }
+  }
+
+  AiChatMessage? _resolveAssistantMessageFromHistory({
+    required List<AiChatMessage> history,
+    required String preferredMessageId,
+  }) {
+    if (preferredMessageId.isNotEmpty) {
+      for (var index = history.length - 1; index >= 0; index--) {
+        final message = history[index];
+        if (!message.isUser && message.messageId == preferredMessageId) {
+          return message;
+        }
+      }
+    }
+    return _latestAssistantMessage(history);
+  }
+
+  int _latestAssistantIndex() {
+    for (var index = messages.length - 1; index >= 0; index--) {
+      if (!messages[index].isUser) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  /// Maps low-level realtime errors into localized user-facing messages.
+  ///
+  /// Side effects: none; pure translation for diagnostics/snackbar usage.
+  String _resolveRealtimeErrorMessage(Object error) {
+    final lower = error.toString().toLowerCase();
+    if (lower.contains('connect timeout')) {
+      return 'chat_realtime_connect_timeout'.tr;
+    }
+    if (lower.contains('auth failed') || lower.contains('access token')) {
+      return 'chat_realtime_auth_failed'.tr;
+    }
+    if (lower.contains('subscribe timeout') ||
+        lower.contains('subscription failed')) {
+      return 'chat_realtime_subscribe_failed'.tr;
+    }
+    if (lower.contains('connection closed') || lower.contains('disconnect')) {
+      return 'chat_realtime_disconnected'.tr;
+    }
+    return 'unable_connect_chat_realtime'.tr;
   }
 }

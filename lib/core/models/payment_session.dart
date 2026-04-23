@@ -12,10 +12,9 @@ class PaymentSession {
 
   factory PaymentSession.fromMap(Map<String, dynamic> map) {
     return PaymentSession(
-      sessionId:
-          formatToString(map['session_id']).isNotEmpty
-              ? formatToString(map['session_id'])
-              : formatToString(map['id']),
+      sessionId: formatToString(map['session_id']).isNotEmpty
+          ? formatToString(map['session_id'])
+          : formatToString(map['id']),
       status: formatToString(map['status']),
       redirectUrl: _toNullableString(map['redirect_url']),
       qrPayload: _toNullableString(map['qr_payload']),
@@ -54,4 +53,3 @@ class PaymentSession {
     return DateTime.tryParse(raw);
   }
 }
-

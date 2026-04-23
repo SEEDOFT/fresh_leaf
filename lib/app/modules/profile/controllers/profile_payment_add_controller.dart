@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
-import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/core/constants/payment_method_status_constants.dart';
+import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
@@ -39,7 +39,9 @@ class ProfilePaymentAddController extends GetxController {
 
   bool get isEditMode => _editingMethod != null;
   bool get requiresDetails {
-    final rule = resolvePaymentMethodFlowRule(selectedPaymentMethodType.value?.code);
+    final rule = resolvePaymentMethodFlowRule(
+      selectedPaymentMethodType.value?.code,
+    );
     return rule.requiresDetails;
   }
 
@@ -50,10 +52,10 @@ class ProfilePaymentAddController extends GetxController {
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     _bindEditArgument();
-    fetchPaymentMethodTypes();
+    await fetchPaymentMethodTypes();
   }
 
   List<TextInputFormatter> get cardNumberInputFormatters =>
@@ -150,7 +152,9 @@ class ProfilePaymentAddController extends GetxController {
           : (selectedType?.name ?? selectedType?.code ?? 'Payment');
       final paymentMethodTypeId = selectedType?.id ?? 0;
       final cardNumber = rule.requiresDetails
-          ? (isKeepingExistingCard ? (_editingMethod?.cardNumber ?? '') : cardDigits)
+          ? (isKeepingExistingCard
+                ? (_editingMethod?.cardNumber ?? '')
+                : cardDigits)
           : '';
 
       final created = PaymentMethod(
@@ -336,7 +340,8 @@ class ProfilePaymentAddController extends GetxController {
       if (allowedCodes != null && allowedCodes.isNotEmpty) {
         filteredTypes = filteredTypes
             .where(
-              (type) => allowedCodes.contains((type.code ?? '').trim().toLowerCase()),
+              (type) =>
+                  allowedCodes.contains((type.code ?? '').trim().toLowerCase()),
             )
             .toList();
       }
@@ -435,7 +440,9 @@ class ProfilePaymentAddController extends GetxController {
       _preferredPaymentMethodTypeCode = formatToString(
         argMap['preferred_payment_method_type_code'],
       ).trim().toLowerCase();
-      final allowedCodes = _extractAllowedTypeCodes(argMap['allowed_payment_method_type_codes']);
+      final allowedCodes = _extractAllowedTypeCodes(
+        argMap['allowed_payment_method_type_codes'],
+      );
       if (allowedCodes.isNotEmpty) {
         _allowedPaymentMethodTypeCodes = allowedCodes;
       }
@@ -478,7 +485,9 @@ class ProfilePaymentAddController extends GetxController {
     if ((_preferredPaymentMethodTypeCode ?? '').isNotEmpty) {
       final preferred = types
           .where(
-            (type) => (type.code ?? '').trim().toLowerCase() == _preferredPaymentMethodTypeCode,
+            (type) =>
+                (type.code ?? '').trim().toLowerCase() ==
+                _preferredPaymentMethodTypeCode,
           )
           .toList();
       if (preferred.isNotEmpty) {

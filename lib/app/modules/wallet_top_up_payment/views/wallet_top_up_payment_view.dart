@@ -97,8 +97,11 @@ class WalletTopUpPaymentView extends GetView<WalletTopUpPaymentController> {
                               child:
                                   WalletTopUpPaymentForPaymentOptionCardWidget(
                                     option: option,
-                                    isSelected: controller.selectedChannelId.value == option.id,
-                                    onTap: () => controller.selectChannel(option),
+                                    isSelected:
+                                        controller.selectedChannelId.value ==
+                                        option.id,
+                                    onTap: () =>
+                                        controller.selectChannel(option),
                                   ),
                             ),
                           )

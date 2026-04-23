@@ -36,7 +36,9 @@ class PaymentQrController extends GetxController {
 
   Future<void> refreshStatus() async {
     final current = session.value;
-    if (current == null || current.sessionId.isEmpty || isChecking.value) return;
+    if (current == null || current.sessionId.isEmpty || isChecking.value) {
+      return;
+    }
     isChecking.value = true;
     try {
       final service = Get.find<PaymentSessionService>();
@@ -77,4 +79,3 @@ class PaymentQrController extends GetxController {
     super.onClose();
   }
 }
-

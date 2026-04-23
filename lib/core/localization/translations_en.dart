@@ -483,7 +483,8 @@ const Map<String, String> translationsEn = {
   'select_payment_method_type': 'Select payment method type',
   'payment_method_type_required': 'Payment method type is required.',
   'bank_channel_payment_hint':
-      'No card details are needed. You will continue in your bank app or scan QR to pay.',
+      'No card details are needed. You will continue'
+      ' in your bank app or scan QR to pay.',
   'expiry': 'Expiry',
   'cvv': 'CVV',
   'optional': 'Optional',
@@ -507,8 +508,7 @@ const Map<String, String> translationsEn = {
   'manage_cards_wallets_checkout':
       'Manage your saved credit and debit cards for payment.',
   'no_payment_methods_yet': 'No payment methods yet',
-  'add_card_wallet_speed_checkout':
-      'Add a credit or debit card to pay faster.',
+  'add_card_wallet_speed_checkout': 'Add a credit or debit card to pay faster.',
   'invalid_payment': 'Invalid payment',
   'payment_card_unsupported': 'Unsupported or invalid card number.',
   'card_holder_required': 'Card holder name is required.',
@@ -521,6 +521,10 @@ const Map<String, String> translationsEn = {
   'expiry_month_invalid': 'Expiry month is invalid.',
   'card_expired': 'Card has expired.',
   'unable_connect_chat_realtime': 'Unable to connect realtime chat.',
+  'chat_realtime_connect_timeout': 'Realtime connection timed out.',
+  'chat_realtime_auth_failed': 'Realtime authorization failed.',
+  'chat_realtime_subscribe_failed': 'Realtime channel subscription failed.',
+  'chat_realtime_disconnected': 'Realtime connection was disconnected.',
   'unable_send_chat_message': 'Unable to send message right now.',
   'my_wallet': 'My Wallet',
   'wallet_subtitle': 'Balance & top-up',

@@ -29,7 +29,7 @@ class AiAssistantApiService extends GetxService {
       ApiEndpoints.aiChatMessages,
       data: <String, dynamic>{
         'session_id': sessionId,
-        // Backward compatibility: current 
+        // Backward compatibility: current
         // backend validation requires `message`.
         'message': prompt,
         // Keep `prompt` to match the new contract when backend supports it.

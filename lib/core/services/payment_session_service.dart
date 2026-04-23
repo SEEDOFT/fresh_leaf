@@ -5,7 +5,8 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class PaymentSessionService extends GetxService {
-  PaymentSessionService({required ApiClient apiClient}) : _apiClient = apiClient;
+  PaymentSessionService({required ApiClient apiClient})
+    : _apiClient = apiClient;
 
   final ApiClient _apiClient;
 
@@ -42,7 +43,7 @@ class PaymentSessionService extends GetxService {
         'payment_method_type_code': paymentMethodTypeCode,
         if (paymentMethodId != null && paymentMethodId > 0)
           'payment_method_id': paymentMethodId,
-        if (items != null) 'items': items,
+        'items': ?items,
       },
     );
     final apiResponse = ApiResponse.parseMap(response.data);

@@ -2,26 +2,26 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/models/ai_chat_realtime_event.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
-import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class AiAssistantRealtimeService extends GetxService {
   final StorageService _storageService = Get.find<StorageService>();
   final StreamController<AiChatRealtimeEvent> _eventController =
       StreamController<AiChatRealtimeEvent>.broadcast();
   final Dio _dio = Dio();
-  final PusherChannelsFlutter _pusher = PusherChannelsFlutter.getInstance();
 
+  WebSocketChannel? _socketChannel;
+  StreamSubscription<dynamic>? _socketSubscription;
   Completer<void>? _connectionCompleter;
   Completer<void>? _subscriptionCompleter;
 
+  String _socketId = '';
   String _activeChannel = '';
   String _pendingChannel = '';
-  bool _isInitialized = false;
   bool _isConnected = false;
 
   Stream<AiChatRealtimeEvent> get events => _eventController.stream;
@@ -44,9 +44,16 @@ class AiAssistantRealtimeService extends GetxService {
 
     _connectionCompleter = Completer<void>();
 
+    final channel = WebSocketChannel.connect(_buildSocketUri());
+    _socketChannel = channel;
+    _socketSubscription = channel.stream.listen(
+      _handleSocketMessage,
+      onError: _handleSocketError,
+      onDone: _handleSocketDone,
+      cancelOnError: false,
+    );
+
     try {
-      await _ensureInitialized();
-      await _pusher.connect();
       await _connectionCompleter!.future.timeout(
         const Duration(seconds: 15),
       );
@@ -59,14 +66,32 @@ class AiAssistantRealtimeService extends GetxService {
 
   Future<void> disconnect() async {
     if (_activeChannel.isNotEmpty) {
-      await _safeUnsubscribe(_activeChannel);
+      _sendRaw(
+        <String, dynamic>{
+          'event': 'pusher:unsubscribe',
+          'data': <String, dynamic>{'channel': _activeChannel},
+        },
+      );
+      _activeChannel = '';
     }
+
+    await _socketSubscription?.cancel();
+    _socketSubscription = null;
+    await _socketChannel?.sink.close();
+    _socketChannel = null;
+
+    _socketId = '';
     _activeChannel = '';
     _pendingChannel = '';
     _isConnected = false;
-    await _pusher.disconnect();
   }
 
+  /// Subscribes the current socket to the user-session private channel.
+  ///
+  /// Sequencing: must run after `connect()` so `socket_id` is available for
+  /// backend auth; controller calls this before sending prompts.
+  /// Side effects: unsubscribes prior channel, updates pending/active channel,
+  /// and completes subscription state futures.
   Future<void> subscribeToSessionChannel({
     required String userId,
     required String sessionId,
@@ -79,93 +104,58 @@ class AiAssistantRealtimeService extends GetxService {
     }
 
     if (_activeChannel.isNotEmpty && _activeChannel != channelName) {
-      await _safeUnsubscribe(_activeChannel);
+      _sendRaw(
+        <String, dynamic>{
+          'event': 'pusher:unsubscribe',
+          'data': <String, dynamic>{'channel': _activeChannel},
+        },
+      );
       _activeChannel = '';
     }
 
+    if (_socketId.isEmpty) {
+      throw const FormatException('Missing socket id for channel auth');
+    }
+
+    final authPayload = await _authorizePrivateChannel(
+      channelName: channelName,
+      socketId: _socketId,
+    );
+    final authSignature = _toString(authPayload['auth']);
+    if (authSignature.isEmpty) {
+      throw const FormatException('Invalid auth response from backend');
+    }
+
+    final subscriptionData = <String, dynamic>{
+      'channel': channelName,
+      'auth': authSignature,
+    };
+
+    final channelData = authPayload['channel_data'];
+    if (channelData != null) {
+      subscriptionData['channel_data'] = channelData;
+    }
+
     _pendingChannel = channelName;
+
     _subscriptionCompleter = Completer<void>();
+    _sendRaw(
+      <String, dynamic>{
+        'event': 'pusher:subscribe',
+        'data': subscriptionData,
+      },
+    );
 
     try {
-      await _pusher.subscribe(channelName: channelName);
       await _subscriptionCompleter!.future.timeout(
         const Duration(seconds: 10),
       );
       _activeChannel = channelName;
-      _pendingChannel = '';
     } on TimeoutException {
       _pendingChannel = '';
       throw TimeoutException('Realtime channel subscribe timeout');
     } finally {
       _subscriptionCompleter = null;
-    }
-  }
-
-  Future<void> _ensureInitialized() async {
-    if (_isInitialized) {
-      return;
-    }
-
-    final isSecure = AppConfig.reverbWebSocketScheme.toLowerCase() == 'wss';
-
-    await _pusher.init(
-      apiKey: AppConfig.reverbAppKey,
-      cluster: '',
-      useTLS: isSecure,
-      authEndpoint: AppConfig.reverbAuthEndpoint,
-      onConnectionStateChange: _onConnectionStateChange,
-      onSubscriptionSucceeded: _onSubscriptionSucceeded,
-      onSubscriptionError: _onSubscriptionError,
-      onError: _onError,
-      onEvent: _onEvent,
-      onAuthorizer: _onAuthorizer,
-    );
-
-    await _reinitializeWithReverbHost(
-      isSecure: isSecure,
-    );
-
-    _isInitialized = true;
-  }
-
-  Future<void> _reinitializeWithReverbHost({
-    required bool isSecure,
-  }) async {
-    final initPayload = <String, dynamic>{
-      'apiKey': AppConfig.reverbAppKey,
-      'cluster': '',
-      'host': AppConfig.reverbWebSocketHost,
-      'wsPort': AppConfig.reverbWebSocketPort,
-      'wssPort': AppConfig.reverbWebSocketPort,
-      'useTLS': isSecure,
-      'authEndpoint': AppConfig.reverbAuthEndpoint,
-    };
-
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      // Android plugin implementation checks `authorizer` as String.
-      initPayload['authorizer'] = 'true';
-    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-      // iOS plugin implementation checks `authorizer` as Bool.
-      initPayload['authorizer'] = true;
-    }
-
-    await _pusher.methodChannel.invokeMethod('init', initPayload);
-  }
-
-  Future<dynamic> _onAuthorizer(
-    String channelName,
-    String socketId,
-    dynamic options,
-  ) async {
-    try {
-      return await _authorizePrivateChannel(
-        channelName: channelName,
-        socketId: socketId,
-      );
-    } on Exception catch (error) {
-      final message = error.toString();
-      _emitFailureEvent(message);
-      rethrow;
     }
   }
 
@@ -189,19 +179,18 @@ class AiAssistantRealtimeService extends GetxService {
           headers: <String, String>{
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type':
+                'application/x-www-form-urlencoded', // Laravel Reverb expects form data
           },
         ),
       );
 
       final data = response.data;
-      final authPayload = _extractAuthorizerPayload(data);
-      final auth = _toString(authPayload['auth']);
-      if (auth.isEmpty) {
-        throw const FormatException('Invalid auth response from backend');
+      if (data == null || data.isEmpty) {
+        throw const FormatException('Empty Reverb auth response');
       }
 
-      return authPayload;
+      return data;
     } on DioException catch (error) {
       final statusCode = error.response?.statusCode;
       final responseBody = error.response?.data;
@@ -213,79 +202,111 @@ class AiAssistantRealtimeService extends GetxService {
     }
   }
 
-  Map<String, dynamic> _extractAuthorizerPayload(dynamic data) {
-    final root = _decodeMap(data);
-    if (root.containsKey('auth')) {
-      return root;
-    }
-
-    final nested = _decodeMap(root['data']);
-    if (nested.containsKey('auth')) {
-      return nested;
-    }
-
-    return root;
-  }
-
-  Future<void> _safeUnsubscribe(String channelName) async {
-    try {
-      await _pusher.unsubscribe(channelName: channelName);
-    } on Exception {
-      // Ignore unsubscribe errors during channel switches/disconnect.
-    }
-  }
-
-  void _onConnectionStateChange(String currentState, String _previousState) {
-    final state = currentState.toUpperCase();
-    if (state == 'CONNECTED') {
-      _isConnected = true;
-      _completeConnectionSuccess();
+  /// Parses raw Pusher protocol frames and dispatches lifecycle/app events.
+  ///
+  /// Sequencing: handles connection/auth/subscription protocol messages first,
+  /// then forwards domain events to `_onApplicationEvent`.
+  /// Side effects: updates connection/subscription state and can emit failure events.
+  void _handleSocketMessage(dynamic payload) {
+    final message = _decodeMap(payload);
+    if (message.isEmpty) {
       return;
     }
 
-    if (state == 'DISCONNECTED' || state == 'UNAVAILABLE' || state == 'FAILED') {
-      _isConnected = false;
-      _completeConnectionError(
-        FormatException('Realtime connection state: $currentState'),
+    final eventName = _toString(message['event']);
+    if (eventName.isEmpty) {
+      return;
+    }
+
+    if (eventName == 'pusher:connection_established') {
+      _onConnectionEstablished(message['data']);
+      return;
+    }
+
+    if (eventName == 'pusher:error') {
+      _onPusherError(message['data']);
+      return;
+    }
+
+    if (eventName == 'pusher:ping') {
+      _sendRaw(
+        <String, dynamic>{
+          'event': 'pusher:pong',
+          'data': '{}',
+        },
       );
-    }
-  }
-
-  void _onSubscriptionSucceeded(String channelName, dynamic data) {
-    if (_pendingChannel.isNotEmpty && _pendingChannel != channelName) {
       return;
     }
-    _activeChannel = channelName;
+
+    if (eventName == 'pusher_internal:subscription_succeeded' ||
+        eventName == 'pusher:subscription_succeeded') {
+      _onSubscriptionSucceeded(message);
+      return;
+    }
+
+    if (_pendingChannel.isNotEmpty) {
+      final channelName = _toString(message['channel']);
+      if (channelName == _pendingChannel &&
+          eventName == 'pusher_internal:subscription_error') {
+        const errorMessage = 'Realtime subscription failed';
+        _completeSubscriptionError(const FormatException(errorMessage));
+        _emitFailureEvent(errorMessage);
+        return;
+      }
+    }
+
+    _onApplicationEvent(eventName: eventName, data: message['data']);
+  }
+
+  void _onConnectionEstablished(dynamic data) {
+    final connectionData = _decodeMap(data);
+    final socketId = _toString(connectionData['socket_id']);
+    if (socketId.isEmpty) {
+      return;
+    }
+
+    _socketId = socketId;
+    _isConnected = true;
+    _completeConnectionSuccess();
+  }
+
+  void _onPusherError(dynamic data) {
+    final errorData = _decodeMap(data);
+    final errorText = _toString(errorData['message']).isEmpty
+        ? 'Realtime connection error'
+        : _toString(errorData['message']);
+    _completeConnectionError(FormatException(errorText));
+    _completeSubscriptionError(FormatException(errorText));
+    _emitFailureEvent(errorText);
+  }
+
+  void _onSubscriptionSucceeded(Map<String, dynamic> message) {
+    final channelName = _toString(message['channel']);
+    if (_pendingChannel.isNotEmpty && channelName != _pendingChannel) {
+      return;
+    }
+
+    if (_pendingChannel.isNotEmpty) {
+      _activeChannel = _pendingChannel;
+    }
     _pendingChannel = '';
     _completeSubscriptionSuccess();
   }
 
-  void _onSubscriptionError(String message, dynamic _error) {
-    _completeSubscriptionError(FormatException(message));
-    _emitFailureEvent(message);
-  }
-
-  void _onError(String message, int? _code, dynamic _error) {
-    _isConnected = false;
-    _completeConnectionError(FormatException(message));
-    _completeSubscriptionError(FormatException(message));
-    _emitFailureEvent(message);
-  }
-
-  void _onEvent(PusherEvent event) {
-    final eventName = event.eventName;
-    if (eventName == 'pusher:subscription_succeeded' ||
-        eventName == 'pusher_internal:subscription_succeeded') {
-      _onSubscriptionSucceeded(event.channelName, event.data);
-      return;
-    }
-
+  /// Converts backend AI event payloads into typed realtime model events.
+  ///
+  /// Side effects: publishes `AiChatRealtimeEvent` to listeners when the event
+  /// name matches supported stream event types.
+  void _onApplicationEvent({
+    required String eventName,
+    required dynamic data,
+  }) {
     final resolvedEventType = _resolveEventType(eventName);
     if (resolvedEventType == null) {
       return;
     }
 
-    final payload = _decodeMap(event.data);
+    final payload = _decodeMap(data);
     if (payload.isEmpty) {
       return;
     }
@@ -294,9 +315,56 @@ class AiAssistantRealtimeService extends GetxService {
       eventType: resolvedEventType,
       payload: payload,
     );
+
     if (!_eventController.isClosed) {
       _eventController.add(realtimeEvent);
     }
+  }
+
+  void _handleSocketError(Object error) {
+    _isConnected = false;
+    _socketId = '';
+    _activeChannel = '';
+    _pendingChannel = '';
+    final message = error.toString();
+    _completeConnectionError(error);
+    _completeSubscriptionError(error);
+    _emitFailureEvent(message);
+  }
+
+  void _handleSocketDone() {
+    _isConnected = false;
+    _socketId = '';
+    _activeChannel = '';
+    _pendingChannel = '';
+    _emitFailureEvent('Realtime connection closed');
+    _completeConnectionError(
+      const FormatException('Realtime connection closed'),
+    );
+  }
+
+  void _sendRaw(Map<String, dynamic> payload) {
+    final channel = _socketChannel;
+    if (channel == null) {
+      return;
+    }
+    channel.sink.add(jsonEncode(payload));
+  }
+
+  Uri _buildSocketUri() {
+    final isSecure = AppConfig.reverbWebSocketScheme.toLowerCase() == 'wss';
+    return Uri(
+      scheme: isSecure ? 'wss' : 'ws',
+      host: AppConfig.reverbWebSocketHost,
+      port: AppConfig.reverbWebSocketPort,
+      path: '/app/${AppConfig.reverbAppKey}',
+      queryParameters: <String, String>{
+        'protocol': '7',
+        'client': 'flutter',
+        'version': '1.0',
+        'flash': 'false',
+      },
+    );
   }
 
   Map<String, dynamic> _decodeMap(dynamic payload) {

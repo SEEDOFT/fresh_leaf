@@ -52,9 +52,11 @@ class ProductDetailController extends GetxController {
         'description': resolvedDescription,
         'link': deepLink,
       });
-      await Share.share(
-        message,
-        subject: resolvedTitle,
+      await SharePlus.instance.share(
+        ShareParams(
+          text: message,
+          subject: resolvedTitle,
+        ),
       );
     } on Exception {
       Get.snackbar(

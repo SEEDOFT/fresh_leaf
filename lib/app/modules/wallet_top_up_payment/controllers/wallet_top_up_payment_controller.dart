@@ -76,7 +76,7 @@ class WalletTopUpPaymentController extends GetxController {
     items.add(
       WalletTopUpChannelOption(
         id: 'channel-${PaymentMethodTypeCodes.creditDebit}',
-        label: creditType?.name?.trim().isNotEmpty == true
+        label: creditType?.name?.trim().isNotEmpty ?? false
             ? creditType!.name!.trim()
             : 'credit_debit_card'.tr,
         typeCode: PaymentMethodTypeCodes.creditDebit,
@@ -89,7 +89,8 @@ class WalletTopUpPaymentController extends GetxController {
       if (code.isEmpty || code == PaymentMethodTypeCodes.creditDebit) {
         continue;
       }
-      if (code != PaymentMethodTypeCodes.aba && code != PaymentMethodTypeCodes.acleda) {
+      if (code != PaymentMethodTypeCodes.aba &&
+          code != PaymentMethodTypeCodes.acleda) {
         continue;
       }
       final alreadyExists = items.any((option) => option.typeCode == code);
@@ -147,11 +148,15 @@ class WalletTopUpPaymentController extends GetxController {
   Future<void> _fetchPaymentTypes({required bool showError}) async {
     try {
       final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.userPaymentMethodTypes);
+      final response = await apiClient.getRequest(
+        ApiEndpoints.userPaymentMethodTypes,
+      );
       final apiResponse = ApiResponse.parseList(response.data);
       final parsed = apiResponse.data.map(PaymentMethodType.fromMap).toList();
       types.assignAll(
-        parsed.where((type) => (type.code ?? '').toLowerCase() != 'wallet').toList(),
+        parsed
+            .where((type) => (type.code ?? '').toLowerCase() != 'wallet')
+            .toList(),
       );
     } on DioException catch (error) {
       if (showError) {
@@ -171,7 +176,9 @@ class WalletTopUpPaymentController extends GetxController {
   }
 
   void _ensureSelection() {
-    final options = channelOptions.where((option) => !option.isCreditDebit).toList();
+    final options = channelOptions
+        .where((option) => !option.isCreditDebit)
+        .toList();
     if (options.isEmpty) {
       selectedChannelId.value = '';
       return;
@@ -188,7 +195,8 @@ class WalletTopUpPaymentController extends GetxController {
   }
 
   PaymentMethod _channelMethodFromOption(WalletTopUpChannelOption option) {
-    final type = option.type ??
+    final type =
+        option.type ??
         PaymentMethodType(
           code: option.typeCode,
           name: option.label,
@@ -201,8 +209,6 @@ class WalletTopUpPaymentController extends GetxController {
       cvv: '',
       paymentMethodTypeId: type.id ?? 0,
       paymentMethodType: type,
-      paymentMethodStatusId: null,
-      paymentMethodStatus: null,
       expiryMonth: 0,
       expiryYear: 0,
       cardHolderName: '',

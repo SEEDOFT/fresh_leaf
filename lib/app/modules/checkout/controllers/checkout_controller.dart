@@ -47,7 +47,8 @@ class CheckoutController extends GetxController {
   double get discount => subtotal >= 25 ? 2.00 : 0.0;
   double get grandTotal => subtotal + deliveryFee - discount;
 
-  int get totalItems => cart.items.fold<int>(0, (sum, item) => sum + item.quantity);
+  int get totalItems =>
+      cart.items.fold<int>(0, (sum, item) => sum + item.quantity);
 
   List<CheckoutPaymentOption> get paymentOptions {
     final items = <CheckoutPaymentOption>[
@@ -104,9 +105,9 @@ class CheckoutController extends GetxController {
     }
   }
 
-  void selectPaymentOption(String id) {
+  Future<void> selectPaymentOption(String id) async {
     if (id == creditDebitOptionId) {
-      _pickCreditDebitMethod();
+      await _pickCreditDebitMethod();
       return;
     }
     selectedOptionId.value = id;
@@ -146,7 +147,8 @@ class CheckoutController extends GetxController {
             .toList(),
       );
 
-      final isRedirectType = option.typeCode == PaymentMethodTypeCodes.aba ||
+      final isRedirectType =
+          option.typeCode == PaymentMethodTypeCodes.aba ||
           option.typeCode == PaymentMethodTypeCodes.acleda;
       if (isRedirectType) {
         final paid = await _handleRedirectPayment(session);
@@ -181,7 +183,7 @@ class CheckoutController extends GetxController {
         'session': session.toMap(),
       },
     );
-    return paid == true;
+    return paid ?? false;
   }
 
   Future<bool> _tryOpenRedirect(String? url) async {
@@ -195,7 +197,9 @@ class CheckoutController extends GetxController {
   Future<void> _fetchPaymentTypes({required bool showError}) async {
     try {
       final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.userPaymentMethodTypes);
+      final response = await apiClient.getRequest(
+        ApiEndpoints.userPaymentMethodTypes,
+      );
       final apiResponse = ApiResponse.parseList(response.data);
       final parsed = apiResponse.data.map(PaymentMethodType.fromMap).toList();
       types.assignAll(
