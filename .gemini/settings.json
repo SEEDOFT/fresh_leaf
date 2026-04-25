@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": [
+                "D:/FreshLeaf/FreshLeafApi/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

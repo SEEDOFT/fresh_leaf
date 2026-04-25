@@ -1,7 +1,7 @@
 # FreshLeaf App Documentation
 
 ## 1) What this app is
-FreshLeaf is a Flutter + GetX grocery app focused on organic products, with:
+FreshLeaf is a B2C mobile application (Flutter + GetX) built exclusively for consumers to purchase organic vegetables from registered vendors. It handles:
 - Authentication (login/register)
 - Product browsing and product detail
 - Cart and checkout

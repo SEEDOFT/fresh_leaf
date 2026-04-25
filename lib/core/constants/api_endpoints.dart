@@ -7,10 +7,10 @@ final class ApiEndpoints {
   static const String logout = '/user/auth/logout';
   static const String updatePassword = '/user/auth/password/update';
   static const String verifyPassword = '/user/auth/password/verify';
-  static const String setPin = '/user/auth/pin/set';
-  static const String updatePin = '/user/auth/pin/update';
-  static const String verifyPin = '/user/auth/pin/verify';
-  static const String resetPin = '/user/auth/pin/reset';
+  static const String setPin = '/user/pin/set';
+  static const String updatePin = '/user/pin/update';
+  static const String verifyPin = '/user/pin/verify';
+  static const String resetPin = '/user/pin/reset';
 
   // User
   static const String userProfile = '/user/profile';
