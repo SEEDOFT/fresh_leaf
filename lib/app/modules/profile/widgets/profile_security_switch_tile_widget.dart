@@ -51,7 +51,7 @@ class _SecuritySwitchTileState extends State<SecuritySwitchTile> {
           ),
           Switch(
             value: enabled,
-            activeColor: scheme.onPrimary,
+            activeThumbColor: scheme.onPrimary,
             activeTrackColor: scheme.primary,
             onChanged: (v) => setState(() => enabled = v),
           ),

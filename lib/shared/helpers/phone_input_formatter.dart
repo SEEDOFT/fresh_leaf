@@ -10,7 +10,7 @@ class PhoneInputFormatter extends TextInputFormatter {
     if (text.length > 10) return oldValue;
 
     final buffer = StringBuffer();
-    for (int i = 0; i < text.length; i++) {
+    for (var i = 0; i < text.length; i++) {
       buffer.write(text[i]);
       if (i == 2 || i == 5) {
         if (i != text.length - 1) {

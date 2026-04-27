@@ -109,8 +109,9 @@ class CartItemCardWidget extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12.scaled,
                               decoration: TextDecoration.lineThrough,
-                              color:
-                                  scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                              color: scheme.onSurfaceVariant.withValues(
+                                alpha: 0.6,
+                              ),
                             ),
                           ),
                         Text(
@@ -134,8 +135,9 @@ class CartItemCardWidget extends StatelessWidget {
                           '\$${item.price.toStringAsFixed(2)} ${'each'.tr}',
                           style: TextStyle(
                             fontSize: 10.scaled,
-                            color:
-                                scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                            color: scheme.onSurfaceVariant.withValues(
+                              alpha: 0.7,
+                            ),
                             fontWeight: FontWeight.w600,
                           ),
                         ),

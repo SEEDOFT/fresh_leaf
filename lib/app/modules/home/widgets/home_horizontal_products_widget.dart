@@ -110,10 +110,12 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
                   shareDeepLink: item.shareDeepLink.isEmpty
                       ? null
                       : item.shareDeepLink,
-                  originalPrice:
-                      item.originalPrice > 0 ? item.originalPrice : null,
-                  priceKhr:
-                      item.activePriceKhr > 0 ? item.activePriceKhr : null,
+                  originalPrice: item.originalPrice > 0
+                      ? item.originalPrice
+                      : null,
+                  priceKhr: item.activePriceKhr > 0
+                      ? item.activePriceKhr
+                      : null,
                 );
                 await Get.toNamed<void>(
                   AppRoutes.productDetail,

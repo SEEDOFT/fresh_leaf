@@ -42,36 +42,36 @@ class ProductDetailController extends GetxController {
       return;
     }
 
-    final cart = Get.find<CartController>();
-    cart.addOrIncrementItem(
-      title: product.title,
-      subtitle: product.subtitle,
-      imageUrl: product.imageUrl,
-      price: product.price,
-      originalPrice: product.originalPrice,
-      priceKhr: product.priceKhr,
-    );
+    final cart = Get.find<CartController>()
+      ..addOrIncrementItem(
+        title: product.title,
+        subtitle: product.subtitle,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        priceKhr: product.priceKhr,
+      );
 
-    // Quantity logic is handled inside addOrIncrementItem for simplicity 
-    // but usually you would loop or add a quantity param. 
+    // Quantity logic is handled inside addOrIncrementItem for simplicity
+    // but usually you would loop or add a quantity param.
     // For this app, let's just add the requested amount.
     if (quantity.value > 1) {
-       for (int i = 1; i < quantity.value; i++) {
-          cart.addOrIncrementItem(
-            title: product.title,
-            subtitle: product.subtitle,
-            imageUrl: product.imageUrl,
-            price: product.price,
-            originalPrice: product.originalPrice,
-            priceKhr: product.priceKhr,
-          );
-       }
+      for (var i = 1; i < quantity.value; i++) {
+        cart.addOrIncrementItem(
+          title: product.title,
+          subtitle: product.subtitle,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          priceKhr: product.priceKhr,
+        );
+      }
     }
 
     Get.snackbar(
       'added_to_cart'.tr,
       'added_to_cart_message'.trParams({'title': product.title.tr}),
-      snackPosition: SnackBarPosition.BOTTOM,
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 

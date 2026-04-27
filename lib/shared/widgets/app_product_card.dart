@@ -142,7 +142,9 @@ class AppProductCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 11.scaled,
                                   decoration: TextDecoration.lineThrough,
-                                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                  color: scheme.onSurfaceVariant.withValues(
+                                    alpha: 0.6,
+                                  ),
                                 ),
                               ),
                             Text(
@@ -237,14 +239,17 @@ class AppProductCard extends StatelessWidget {
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                            if (originalPrice != null && originalPrice! > price) ...[
+                            if (originalPrice != null &&
+                                originalPrice! > price) ...[
                               SizedBox(width: 8.scaled),
                               Text(
                                 '\$${originalPrice!.toStringAsFixed(2)}',
                                 style: TextStyle(
                                   fontSize: 11.scaled,
                                   decoration: TextDecoration.lineThrough,
-                                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                  color: scheme.onSurfaceVariant.withValues(
+                                    alpha: 0.6,
+                                  ),
                                 ),
                               ),
                             ],

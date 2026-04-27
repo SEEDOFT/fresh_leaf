@@ -50,7 +50,7 @@ class PinToggleCard extends StatelessWidget {
             value: value,
             onChanged: onChanged,
             activeTrackColor: scheme.primary,
-            activeColor: scheme.onPrimary,
+            activeThumbColor: scheme.onPrimary,
           ),
         ],
       ),
