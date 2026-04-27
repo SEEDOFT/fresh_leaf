@@ -6,8 +6,9 @@ license: MIT
 
 # Flutter Best Practices (FreshLeaf)
 
-## 0. Toolchain (CRITICAL)
-- **Always use FVM**: Every flutter or dart command MUST be prefixed with `fvm` (e.g., `fvm flutter run`, `fvm dart format`).
+## 0. Toolchain & Quality (CRITICAL)
+- **Always use FVM**: Every flutter or dart command MUST be prefixed with `fvm` (e.g., `fvm flutter run`).
+- **Zero Issues Pass**: Any code modification MUST pass `fvm flutter analyze` with zero errors, warnings, or info-level diagnostics.
 - Flutter Version: 3.32.2 (as defined in `.fvmrc`).
 
 ## 1. Modular Architecture (GetX)
@@ -18,6 +19,7 @@ license: MIT
   - `views/`: Main UI entry point.
   - `widgets/`: Extracted reusable components.
 - **No private nested widgets in view files.** Extract everything with a `build()` method to `widgets/` and use a barrel export.
+- **Property Setters**: For simple property updates in controllers, use actual Dart setters (`set sort(T value)`) and corresponding getters to satisfy the `use_setters_to_change_properties` and `avoid_setters_without_getters` rules.
 
 ## 2. Typing & Safety
 - **Avoid `dynamic`**: Use explicit types for all variables and API boundaries.
@@ -37,7 +39,8 @@ license: MIT
 
 ## 5. UI & Styling
 - **Line Length**: Max 80 characters. Wrap long expressions.
-- **Trailing Commas**: Always include trailing commas for cleaner diffs and formatting.
+- **Refactoring over Ignoring**: If a line exceeds 80 characters (especially complex widget trees or calculation strings), extract the logic into private helper methods or `Builder` widgets instead of using `// ignore` comments.
+- **Trailing Commas**: Always include trailing commas for cleaner diffs and better formatting.
 - **Image Fallbacks**: All `Image.network` calls MUST include `loadingBuilder` and `errorBuilder`.
 
 ## 6. Laravel API Interaction
