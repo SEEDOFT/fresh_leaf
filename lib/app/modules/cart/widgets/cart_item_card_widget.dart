@@ -104,17 +104,7 @@ class CartItemCardWidget extends StatelessWidget {
                       children: [
                         if (item.originalPrice != null &&
                             item.originalPrice! > item.price) ...[
-                          Text(
-                            // ignore: lines_longer_than_80_chars, Needed for complex calculation string
-                            '\$${(item.originalPrice! * item.quantity).toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontSize: 12.scaled,
-                              decoration: TextDecoration.lineThrough,
-                              color: scheme.onSurfaceVariant.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
-                          ),
+                          _buildOriginalPrice(),
                         ],
                         Text(
                           '\$${itemTotal.toStringAsFixed(2)}',
@@ -124,26 +114,8 @@ class CartItemCardWidget extends StatelessWidget {
                             color: scheme.primary,
                           ),
                         ),
-                        if (item.priceKhr != null)
-                          Text(
-                            '${(item.priceKhr! * item.quantity).toStringAsFixed(0)} ៛',
-                            style: TextStyle(
-                              fontSize: 12.scaled,
-                              fontWeight: FontWeight.bold,
-                              color: scheme.onSurfaceVariant,
-                            ),
-                          ),
-                        Text(
-                          // ignore: lines_longer_than_80_chars, Informational text with currency
-                          '\$${item.price.toStringAsFixed(2)} ${'each'.tr}',
-                          style: TextStyle(
-                            fontSize: 10.scaled,
-                            color: scheme.onSurfaceVariant.withValues(
-                              alpha: 0.7,
-                            ),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        if (item.priceKhr != null) _buildKhrPrice(),
+                        _buildUnitPrice(),
                       ],
                     ),
                   ],
@@ -153,6 +125,57 @@ class CartItemCardWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildOriginalPrice() {
+    final total = item.originalPrice! * item.quantity;
+    return Builder(
+      builder: (context) {
+        final scheme = Theme.of(context).colorScheme;
+        return Text(
+          '\$${total.toStringAsFixed(2)}',
+          style: TextStyle(
+            fontSize: 12.scaled,
+            decoration: TextDecoration.lineThrough,
+            color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildKhrPrice() {
+    final total = item.priceKhr! * item.quantity;
+    return Builder(
+      builder: (context) {
+        final scheme = Theme.of(context).colorScheme;
+        return Text(
+          '${total.toStringAsFixed(0)} ៛',
+          style: TextStyle(
+            fontSize: 12.scaled,
+            fontWeight: FontWeight.bold,
+            color: scheme.onSurfaceVariant,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildUnitPrice() {
+    final priceStr = item.price.toStringAsFixed(2);
+    return Builder(
+      builder: (context) {
+        final scheme = Theme.of(context).colorScheme;
+        return Text(
+          '\$$priceStr ${'each'.tr}',
+          style: TextStyle(
+            fontSize: 10.scaled,
+            color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+            fontWeight: FontWeight.w600,
+          ),
+        );
+      },
     );
   }
 }

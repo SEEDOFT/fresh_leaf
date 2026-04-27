@@ -28,7 +28,7 @@ class OrdersView extends GetView<OrdersController> {
               selectedStatus: controller.selectedStatus,
               selectedSort: controller.selectedSort,
               onStatusChanged: (status) => controller.selectedStatus = status,
-              onSortChanged: controller.setSort,
+              onSortChanged: (sort) => controller.selectedSort = sort,
             ),
           ),
           const SizedBox(height: 10),

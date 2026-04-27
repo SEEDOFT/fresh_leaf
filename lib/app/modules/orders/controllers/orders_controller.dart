@@ -17,7 +17,9 @@ class OrdersController extends GetxController {
 
   String get selectedStatus => _selectedStatus.value;
   set selectedStatus(String status) => _selectedStatus.value = status;
+
   OrderSortType get selectedSort => _selectedSort.value;
+  set selectedSort(OrderSortType sortType) => _selectedSort.value = sortType;
 
   List<String> get statusFilters => const ['All', 'Processing', 'Delivered'];
   int get visibleOrderCount => filteredOrders.length;
@@ -62,10 +64,6 @@ class OrdersController extends GetxController {
 
     groups.removeWhere((key, value) => value.isEmpty);
     return groups;
-  }
-
-  void setSort(OrderSortType sortType) {
-    _selectedSort.value = sortType;
   }
 
   @override

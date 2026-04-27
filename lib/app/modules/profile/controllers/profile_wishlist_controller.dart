@@ -98,11 +98,13 @@ class ProfileWishlistController extends GetxController {
 
   bool get hasActiveFilter => selectedCategory.value != 'All';
 
-  void setCategory(String value) {
+  String get category => selectedCategory.value;
+  set category(String value) {
     selectedCategory.value = value;
   }
 
-  void setSort(WishlistSortType value) {
+  WishlistSortType get sort => selectedSort.value;
+  set sort(WishlistSortType value) {
     selectedSort.value = value;
   }
 

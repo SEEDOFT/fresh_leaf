@@ -155,7 +155,7 @@ class _WishlistControls extends StatelessWidget {
                               selected:
                                   controller.selectedCategory.value == category,
                               onSelected: (_) =>
-                                  controller.setCategory(category),
+                                  controller.category = category,
                               labelStyle: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
@@ -183,7 +183,7 @@ class _WishlistControls extends StatelessWidget {
               ),
               PopupMenuButton<WishlistSortType>(
                 initialValue: controller.selectedSort.value,
-                onSelected: controller.setSort,
+                onSelected: (sort) => controller.sort = sort,
                 tooltip: 'wishlist_sort'.tr,
                 itemBuilder: (context) => WishlistSortType.values
                     .map(
