@@ -5,6 +5,8 @@ import 'package:fresh_leaf/app/modules/login/widgets/login_background_hero_widge
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/helpers/phone_input_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:fresh_leaf/shared/widgets/app_password_toggle.dart';
+import 'package:fresh_leaf/shared/widgets/app_phone_prefix.dart';
 import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
@@ -94,35 +96,7 @@ class LoginFormContent extends StatelessWidget {
                         PhoneInputFormatter(),
                       ],
                       hintText: '012 345 678',
-                      prefixIcon: Container(
-                        margin: EdgeInsets.only(right: 8.scaled),
-                        padding: EdgeInsets.symmetric(horizontal: 12.scaled),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            right: BorderSide(
-                              color: scheme.outline.withValues(alpha: 0.2),
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '🇰🇭',
-                              style: TextStyle(fontSize: 18.scaled),
-                            ),
-                            SizedBox(width: 4.scaled),
-                            Text(
-                              '+855',
-                              style: TextStyle(
-                                color: scheme.onSurface,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.scaled,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      prefixIcon: const AppPhonePrefix(),
                     ),
                     SizedBox(height: 28.scaled),
                     Obx(
@@ -131,14 +105,8 @@ class LoginFormContent extends StatelessWidget {
                         controller: controller.passwordController,
                         obscureText: !controller.isPasswordVisible.value,
                         hintText: '••••••••',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordVisible.value
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: scheme.onSurfaceVariant,
-                            size: 20.scaled,
-                          ),
+                        suffixIcon: AppPasswordToggle(
+                          isVisible: controller.isPasswordVisible.value,
                           onPressed: controller.togglePasswordVisibility,
                         ),
                       ),

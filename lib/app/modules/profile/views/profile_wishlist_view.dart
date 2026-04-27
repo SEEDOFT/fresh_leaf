@@ -154,8 +154,7 @@ class _WishlistControls extends StatelessWidget {
                               ),
                               selected:
                                   controller.selectedCategory.value == category,
-                              onSelected: (_) =>
-                                  controller.category = category,
+                              onSelected: (_) => controller.category = category,
                               labelStyle: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,

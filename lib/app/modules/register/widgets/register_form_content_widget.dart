@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
-import 'package:fresh_leaf/app/modules/register/widgets/register_input_field_widget.dart';
 import 'package:fresh_leaf/shared/helpers/phone_input_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:fresh_leaf/shared/widgets/app_password_toggle.dart';
+import 'package:fresh_leaf/shared/widgets/app_phone_prefix.dart';
+import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
@@ -99,7 +101,9 @@ class RegisterFormContent extends StatelessWidget {
                       fit: BoxFit.cover,
                       loadingBuilder: (context, child, progress) {
                         if (progress == null) return child;
-                        return Container(color: scheme.surfaceContainerHighest);
+                        return Container(
+                          color: scheme.surfaceContainerHighest,
+                        );
                       },
                       errorBuilder: (context, error, stackTrace) {
                         final imageScheme = Theme.of(context).colorScheme;
@@ -142,103 +146,56 @@ class RegisterFormContent extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: RegisterWidget.buildInputField(
-                      context: context,
+                    child: AppTextField(
                       label: 'first_name'.tr,
-                      hint: 'Jane',
-                      textController: controller.firstNameController,
+                      hintText: 'Jane',
+                      controller: controller.firstNameController,
                     ),
                   ),
                   SizedBox(width: 16.scaled),
                   Expanded(
-                    child: RegisterWidget.buildInputField(
-                      context: context,
+                    child: AppTextField(
                       label: 'last_name'.tr,
-                      hint: 'Doe',
-                      textController: controller.lastNameController,
+                      hintText: 'Doe',
+                      controller: controller.lastNameController,
                     ),
                   ),
                 ],
               ),
               SizedBox(height: fieldGap),
-              RegisterWidget.buildInputField(
-                context: context,
+              AppTextField(
                 label: 'phone_number'.tr,
-                hint: '012 345 678',
-                textController: controller.phoneController,
+                hintText: '012 345 678',
+                controller: controller.phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   PhoneInputFormatter(),
                 ],
-                prefixIcon: Container(
-                  margin: EdgeInsets.only(right: 8.scaled),
-                  padding: EdgeInsets.symmetric(horizontal: 12.scaled),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: scheme.outline.withValues(alpha: 0.2),
-                      ),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '🇰🇭',
-                        style: TextStyle(fontSize: 18.scaled),
-                      ),
-                      SizedBox(width: 4.scaled),
-                      Text(
-                        '+855',
-                        style: TextStyle(
-                          color: scheme.onSurface,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.scaled,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                prefixIcon: const AppPhonePrefix(),
               ),
               SizedBox(height: fieldGap),
               Obx(
-                () => RegisterWidget.buildInputField(
-                  context: context,
+                () => AppTextField(
                   label: 'password'.tr,
-                  hint: '••••••••',
-                  textController: controller.passwordController,
+                  hintText: '••••••••',
+                  controller: controller.passwordController,
                   obscureText: !controller.isPasswordVisible.value,
-                  isPassword: true,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isPasswordVisible.value
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: scheme.onSurfaceVariant,
-                      size: 20.scaled,
-                    ),
+                  suffixIcon: AppPasswordToggle(
+                    isVisible: controller.isPasswordVisible.value,
                     onPressed: controller.togglePasswordVisibility,
                   ),
                 ),
               ),
               SizedBox(height: fieldGap),
               Obx(
-                () => RegisterWidget.buildInputField(
-                  context: context,
+                () => AppTextField(
                   label: 'password_confirmation'.tr,
-                  hint: '••••••••',
-                  textController: controller.passwordConfirmController,
+                  hintText: '••••••••',
+                  controller: controller.passwordConfirmController,
                   obscureText: !controller.isPasswordConfirmVisible.value,
-                  isPassword: true,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isPasswordConfirmVisible.value
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: scheme.onSurfaceVariant,
-                      size: 20.scaled,
-                    ),
+                  suffixIcon: AppPasswordToggle(
+                    isVisible: controller.isPasswordConfirmVisible.value,
                     onPressed: controller.togglePasswordConfirmVisibility,
                   ),
                 ),
