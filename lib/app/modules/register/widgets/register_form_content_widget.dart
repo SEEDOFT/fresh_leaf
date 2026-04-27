@@ -143,7 +143,7 @@ class RegisterFormContent extends StatelessWidget {
                   Expanded(
                     child: RegisterWidget.buildInputField(
                       context: context,
-                      label: 'first_name'.tr.toUpperCase(),
+                      label: 'first_name'.tr,
                       hint: 'Jane',
                       textController: controller.firstNameController,
                     ),
@@ -152,7 +152,7 @@ class RegisterFormContent extends StatelessWidget {
                   Expanded(
                     child: RegisterWidget.buildInputField(
                       context: context,
-                      label: 'last_name'.tr.toUpperCase(),
+                      label: 'last_name'.tr,
                       hint: 'Doe',
                       textController: controller.lastNameController,
                     ),
@@ -162,17 +162,49 @@ class RegisterFormContent extends StatelessWidget {
               SizedBox(height: fieldGap),
               RegisterWidget.buildInputField(
                 context: context,
-                label: 'phone_number'.tr.toUpperCase(),
+                label: 'phone_number'.tr,
                 hint: '012 345 678',
                 textController: controller.phoneController,
                 keyboardType: TextInputType.phone,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  PhoneInputFormatter(),
+                ],
+                prefixIcon: Container(
+                  margin: EdgeInsets.only(right: 8.scaled),
+                  padding: EdgeInsets.symmetric(horizontal: 12.scaled),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(
+                        color: scheme.outline.withValues(alpha: 0.2),
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '🇰🇭',
+                        style: TextStyle(fontSize: 18.scaled),
+                      ),
+                      SizedBox(width: 4.scaled),
+                      Text(
+                        '+855',
+                        style: TextStyle(
+                          color: scheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.scaled,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: fieldGap),
               Obx(
                 () => RegisterWidget.buildInputField(
                   context: context,
-                  label: 'password'.tr.toUpperCase(),
+                  label: 'password'.tr,
                   hint: '••••••••',
                   textController: controller.passwordController,
                   obscureText: !controller.isPasswordVisible.value,
@@ -193,7 +225,7 @@ class RegisterFormContent extends StatelessWidget {
               Obx(
                 () => RegisterWidget.buildInputField(
                   context: context,
-                  label: 'password_confirmation'.tr.toUpperCase(),
+                  label: 'password_confirmation'.tr,
                   hint: '••••••••',
                   textController: controller.passwordConfirmController,
                   obscureText: !controller.isPasswordConfirmVisible.value,
@@ -213,14 +245,14 @@ class RegisterFormContent extends StatelessWidget {
               SizedBox(height: actionGap),
               Obx(
                 () => PrimaryButton(
-                  label: 'sign_up'.tr.toUpperCase(),
+                  label: 'sign_up'.tr,
                   onPressed: controller.isLoading.value
                       ? null
                       : controller.signUp,
                   isLoading: controller.isLoading.value,
                   icon: Icons.arrow_upward,
                   height: buttonHeight,
-                  borderRadius: 20,
+                  borderRadius: 16,
                 ),
               ),
               SizedBox(height: footerGap),

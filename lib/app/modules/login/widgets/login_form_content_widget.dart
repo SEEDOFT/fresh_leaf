@@ -43,10 +43,8 @@ class LoginFormContent extends StatelessWidget {
           padding: EdgeInsets.only(top: heroHeight),
           child: Material(
             color: scheme.surface,
-            shadowColor: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : const Color(0x14000000),
-            elevation: isDark ? 8 : 2,
+            shadowColor: Colors.black.withValues(alpha: 0.1),
+            elevation: 20,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(32),
@@ -75,6 +73,7 @@ class LoginFormContent extends StatelessWidget {
                         fontSize: 28.scaled,
                         fontWeight: FontWeight.w800,
                         color: scheme.onSurface,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     SizedBox(height: 8.scaled),
@@ -90,8 +89,40 @@ class LoginFormContent extends StatelessWidget {
                       label: 'phone_number'.tr,
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        PhoneInputFormatter(),
+                      ],
                       hintText: '012 345 678',
+                      prefixIcon: Container(
+                        margin: EdgeInsets.only(right: 8.scaled),
+                        padding: EdgeInsets.symmetric(horizontal: 12.scaled),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              color: scheme.outline.withValues(alpha: 0.2),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '🇰🇭',
+                              style: TextStyle(fontSize: 18.scaled),
+                            ),
+                            SizedBox(width: 4.scaled),
+                            Text(
+                              '+855',
+                              style: TextStyle(
+                                color: scheme.onSurface,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.scaled,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(height: 28.scaled),
                     Obx(
@@ -119,7 +150,7 @@ class LoginFormContent extends StatelessWidget {
                         onPressed: controller.login,
                         isLoading: controller.isLoading.value,
                         icon: Icons.arrow_forward,
-                        borderRadius: 12,
+                        borderRadius: 16,
                         height: 56.scaled,
                       ),
                     ),

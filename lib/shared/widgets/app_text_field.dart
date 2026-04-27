@@ -41,15 +41,14 @@ class AppTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label.toUpperCase(),
+          label,
           style: TextStyle(
-            fontSize: 11.scaled,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-            color: scheme.onSurfaceVariant,
+            fontSize: 14.scaled,
+            fontWeight: FontWeight.w600,
+            color: scheme.onSurface.withValues(alpha: 0.8),
           ),
         ),
-        SizedBox(height: 6.scaled),
+        SizedBox(height: 8.scaled),
         TextField(
           controller: controller,
           obscureText: obscureText,
@@ -67,23 +66,23 @@ class AppTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             filled: true,
-            fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
+            fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             contentPadding: EdgeInsets.symmetric(
-              horizontal: 14.scaled,
-              vertical: 12.scaled,
+              horizontal: 16.scaled,
+              vertical: 16.scaled,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.scaled),
+              borderRadius: BorderRadius.circular(16.scaled),
               borderSide: BorderSide(
-                color: scheme.outline.withValues(alpha: 0.5),
+                color: scheme.outline.withValues(alpha: 0.1),
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.scaled),
+              borderRadius: BorderRadius.circular(16.scaled),
               borderSide: BorderSide(
-                color: scheme.primary,
+                color: scheme.primary.withValues(alpha: 0.5),
                 width: 1.5.scaled,
               ),
             ),
