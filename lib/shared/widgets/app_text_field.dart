@@ -37,19 +37,19 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.toUpperCase(),
           style: TextStyle(
-            fontSize: 14.scaled,
-            fontWeight: FontWeight.w600,
-            color: scheme.onSurface.withValues(alpha: 0.8),
+            fontSize: 11.scaled,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: scheme.onSurfaceVariant,
           ),
         ),
-        SizedBox(height: 8.scaled),
+        SizedBox(height: 6.scaled),
         TextField(
           controller: controller,
           obscureText: obscureText,
@@ -67,23 +67,23 @@ class AppTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             filled: true,
-            fillColor: isDark 
-                ? scheme.surfaceContainerHighest.withValues(alpha: 0.4)
-                : scheme.surfaceContainerHighest.withValues(alpha: 0.6),
+            fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.7),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.scaled,
-              vertical: 16.scaled,
+              horizontal: 14.scaled,
+              vertical: 12.scaled,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.scaled),
-              borderSide: const BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.circular(12.scaled),
+              borderSide: BorderSide(
+                color: scheme.outline.withValues(alpha: 0.5),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.scaled),
+              borderRadius: BorderRadius.circular(12.scaled),
               borderSide: BorderSide(
-                color: scheme.primary.withValues(alpha: 0.5),
+                color: scheme.primary,
                 width: 1.5.scaled,
               ),
             ),
