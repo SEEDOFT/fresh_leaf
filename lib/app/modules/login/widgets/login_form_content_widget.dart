@@ -23,7 +23,6 @@ class LoginFormContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final keyboardVisible = media.viewInsets.bottom > 0;
 
     final heroHeight = (constraints.maxHeight * 0.42).clamp(230.0, 360.0);

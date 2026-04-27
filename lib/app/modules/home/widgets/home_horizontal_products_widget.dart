@@ -74,7 +74,9 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
               title: item.title.tr,
               subtitle: item.subtitle.tr,
               imageUrl: item.image,
-              price: item.priceValue,
+              price: item.activePrice > 0 ? item.activePrice : item.priceValue,
+              originalPrice: item.originalPrice > 0 ? item.originalPrice : null,
+              priceKhr: item.activePriceKhr > 0 ? item.activePriceKhr : null,
               badge: item.badge.tr,
               onTap: () async {
                 final product = ProductInfo(

@@ -9,6 +9,8 @@ class AppProductCard extends StatelessWidget {
     required this.title,
     required this.imageUrl,
     required this.price,
+    this.originalPrice,
+    this.priceKhr,
     this.subtitle,
     this.badge,
     this.onTap,
@@ -22,6 +24,8 @@ class AppProductCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final double price;
+  final double? originalPrice;
+  final double? priceKhr;
   final String? subtitle;
   final String? badge;
   final VoidCallback? onTap;
@@ -127,14 +131,38 @@ class AppProductCard extends StatelessWidget {
                     const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          '\$${price.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: 16.scaled,
-                            fontWeight: FontWeight.bold,
-                            color: scheme.primary,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (originalPrice != null && originalPrice! > price)
+                              Text(
+                                '\$${originalPrice!.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 11.scaled,
+                                  decoration: TextDecoration.lineThrough,
+                                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                ),
+                              ),
+                            Text(
+                              '\$${price.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontSize: 16.scaled,
+                                fontWeight: FontWeight.bold,
+                                color: scheme.primary,
+                              ),
+                            ),
+                            if (priceKhr != null)
+                              Text(
+                                '${priceKhr!.toStringAsFixed(0)} ៛',
+                                style: TextStyle(
+                                  fontSize: 11.scaled,
+                                  fontWeight: FontWeight.w600,
+                                  color: scheme.onSurfaceVariant,
+                                ),
+                              ),
+                          ],
                         ),
                         if (onActionTap != null)
                           _CircleActionButton(
@@ -197,12 +225,41 @@ class AppProductCard extends StatelessWidget {
                       ),
                     ],
                     SizedBox(height: 8.scaled),
-                    Text(
-                      '\$${price.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        color: scheme.primary,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              '\$${price.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: scheme.primary,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            if (originalPrice != null && originalPrice! > price) ...[
+                              SizedBox(width: 8.scaled),
+                              Text(
+                                '\$${originalPrice!.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 11.scaled,
+                                  decoration: TextDecoration.lineThrough,
+                                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        if (priceKhr != null)
+                          Text(
+                            '${priceKhr!.toStringAsFixed(0)} ៛',
+                            style: TextStyle(
+                              fontSize: 11.scaled,
+                              fontWeight: FontWeight.w600,
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

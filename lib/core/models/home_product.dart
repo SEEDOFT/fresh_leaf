@@ -14,6 +14,10 @@ class HomeProduct {
     this.storage = '',
     this.shareSlug = '',
     this.shareDeepLink = '',
+    this.activePrice = 0.0,
+    this.activePriceKhr = 0.0,
+    this.discountPercentage = 0,
+    this.originalPrice = 0.0,
   });
 
   factory HomeProduct.fromMap(Map<String, dynamic> map) {
@@ -37,6 +41,10 @@ class HomeProduct {
       storage: formatToString(map['storage']),
       shareSlug: formatToString(map['shareSlug']),
       shareDeepLink: formatToString(map['shareDeepLink']),
+      activePrice: toDouble(map['activePrice']),
+      activePriceKhr: toDouble(map['activePriceKhr']),
+      discountPercentage: toInt(map['discountPercentage']),
+      originalPrice: toDouble(map['originalPrice']),
     );
   }
 
@@ -52,6 +60,12 @@ class HomeProduct {
   final String storage;
   final String shareSlug;
   final String shareDeepLink;
+  final double activePrice;
+  final double activePriceKhr;
+  final int discountPercentage;
+  final double originalPrice;
+
+  bool get hasDiscount => discountPercentage > 0;
 
   double get priceValue {
     try {
@@ -75,6 +89,10 @@ class HomeProduct {
     String? storage,
     String? shareSlug,
     String? shareDeepLink,
+    double? activePrice,
+    double? activePriceKhr,
+    int? discountPercentage,
+    double? originalPrice,
   }) {
     return HomeProduct(
       image: image ?? this.image,
@@ -89,6 +107,10 @@ class HomeProduct {
       storage: storage ?? this.storage,
       shareSlug: shareSlug ?? this.shareSlug,
       shareDeepLink: shareDeepLink ?? this.shareDeepLink,
+      activePrice: activePrice ?? this.activePrice,
+      activePriceKhr: activePriceKhr ?? this.activePriceKhr,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      originalPrice: originalPrice ?? this.originalPrice,
     );
   }
 
@@ -106,6 +128,10 @@ class HomeProduct {
       'storage': storage,
       'shareSlug': shareSlug,
       'shareDeepLink': shareDeepLink,
+      'activePrice': activePrice,
+      'activePriceKhr': activePriceKhr,
+      'discountPercentage': discountPercentage,
+      'originalPrice': originalPrice,
     };
   }
 }
