@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/login/controllers/login_controller.dart';
 import 'package:fresh_leaf/app/modules/login/widgets/login_background_hero_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/helpers/phone_input_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_text_field.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';

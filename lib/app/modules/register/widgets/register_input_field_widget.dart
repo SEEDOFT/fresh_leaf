@@ -8,6 +8,7 @@ class RegisterWidget {
     required String label,
     required String hint,
     required TextEditingController textController,
+    Widget? prefixIcon,
     String? prefixText,
     Widget? suffixIcon,
     bool obscureText = false,
@@ -23,6 +24,7 @@ class RegisterWidget {
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       suffixIcon: suffixIcon,
+      prefixIcon: prefixIcon,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
 import 'package:fresh_leaf/app/modules/register/widgets/register_input_field_widget.dart';
+import 'package:fresh_leaf/shared/helpers/phone_input_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
