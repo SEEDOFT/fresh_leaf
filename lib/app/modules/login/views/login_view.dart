@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/login/controllers/login_controller.dart';
-import 'package:fresh_leaf/app/modules/login/widgets/login_widget.dart';
+import 'package:fresh_leaf/app/modules/login/widgets/login_form_content_widget.dart';
+import 'package:fresh_leaf/shared/widgets/organic_background_widget.dart';
 import 'package:get/get.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -12,25 +13,20 @@ class LoginView extends GetView<LoginController> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: IntrinsicHeight(
-                    child: LoginFormContent(
-                      controller: controller,
-                      constraints: constraints,
-                    ),
+        body: Stack(
+          children: [
+            const OrganicBackgroundWidget(),
+            SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: LoginFormContent(
+                    controller: controller,
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );

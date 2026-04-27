@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
-import 'package:fresh_leaf/app/modules/register/widgets/register_widget.dart';
+import 'package:fresh_leaf/app/modules/register/widgets/register_form_content_widget.dart';
+import 'package:fresh_leaf/shared/widgets/organic_background_widget.dart';
 import 'package:get/get.dart';
 
 class RegisterView extends GetView<RegisterController> {
@@ -8,30 +9,24 @@ class RegisterView extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        backgroundColor: scaffoldBg,
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: RegisterFormContent(
-                        controller: controller,
-                        constraints: constraints,
-                      ),
-                    );
-                  },
+        body: Stack(
+          children: [
+            const OrganicBackgroundWidget(),
+            SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: RegisterFormContent(
+                    controller: controller,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
