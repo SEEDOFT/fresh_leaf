@@ -4,6 +4,7 @@ This project enforces:
 
 - `include: package:very_good_analysis/analysis_options.yaml`
 - local overrides from [analysis_options.yaml](D:/Flutter/fresh_leaf/analysis_options.yaml)
+- **Always use FVM**: Every command MUST be prefixed with `fvm` (e.g., `fvm flutter run`).
 
 AI agents must follow these rules whenever writing or modifying code.
 

@@ -6,6 +6,10 @@ license: MIT
 
 # Flutter Best Practices (FreshLeaf)
 
+## 0. Toolchain (CRITICAL)
+- **Always use FVM**: Every flutter or dart command MUST be prefixed with `fvm` (e.g., `fvm flutter run`, `fvm dart format`).
+- Flutter Version: 3.32.2 (as defined in `.fvmrc`).
+
 ## 1. Modular Architecture (GetX)
 - Each feature must live in `lib/app/modules/<feature_name>/`.
 - Structure within a module:
