@@ -7,6 +7,8 @@ class CartItem {
     required this.imageUrl,
     required this.price,
     required this.quantity,
+    this.originalPrice,
+    this.priceKhr,
   });
 
   final String title;
@@ -14,6 +16,8 @@ class CartItem {
   final String imageUrl;
   final double price;
   final int quantity;
+  final double? originalPrice;
+  final double? priceKhr;
 
   CartItem copyWith({
     String? title,
@@ -21,6 +25,8 @@ class CartItem {
     String? imageUrl,
     double? price,
     int? quantity,
+    double? originalPrice,
+    double? priceKhr,
   }) {
     return CartItem(
       title: title ?? this.title,
@@ -28,6 +34,8 @@ class CartItem {
       imageUrl: imageUrl ?? this.imageUrl,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
+      originalPrice: originalPrice ?? this.originalPrice,
+      priceKhr: priceKhr ?? this.priceKhr,
     );
   }
 }
@@ -86,6 +94,8 @@ class CartController extends GetxController {
     required String subtitle,
     required String imageUrl,
     required double price,
+    double? originalPrice,
+    double? priceKhr,
   }) {
     final index = items.indexWhere(
       (item) => item.title == title && item.subtitle == subtitle,
@@ -104,6 +114,8 @@ class CartController extends GetxController {
         imageUrl: imageUrl,
         price: price,
         quantity: 1,
+        originalPrice: originalPrice,
+        priceKhr: priceKhr,
       ),
     );
   }

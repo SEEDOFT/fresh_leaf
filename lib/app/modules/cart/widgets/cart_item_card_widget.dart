@@ -102,6 +102,17 @@ class CartItemCardWidget extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        if (item.originalPrice != null &&
+                            item.originalPrice! > item.price)
+                          Text(
+                            '\$${(item.originalPrice! * item.quantity).toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontSize: 12.scaled,
+                              decoration: TextDecoration.lineThrough,
+                              color:
+                                  scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                            ),
+                          ),
                         Text(
                           '\$${itemTotal.toStringAsFixed(2)}',
                           style: TextStyle(
@@ -110,11 +121,21 @@ class CartItemCardWidget extends StatelessWidget {
                             color: scheme.primary,
                           ),
                         ),
+                        if (item.priceKhr != null)
+                          Text(
+                            '${(item.priceKhr! * item.quantity).toStringAsFixed(0)} ៛',
+                            style: TextStyle(
+                              fontSize: 12.scaled,
+                              fontWeight: FontWeight.bold,
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
                         Text(
                           '\$${item.price.toStringAsFixed(2)} ${'each'.tr}',
                           style: TextStyle(
-                            fontSize: 11.scaled,
-                            color: scheme.onSurfaceVariant,
+                            fontSize: 10.scaled,
+                            color:
+                                scheme.onSurfaceVariant.withValues(alpha: 0.7),
                             fontWeight: FontWeight.w600,
                           ),
                         ),

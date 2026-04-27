@@ -13,6 +13,8 @@ class ProductInfo {
     required this.storage,
     this.shareSlug,
     this.shareDeepLink,
+    this.originalPrice,
+    this.priceKhr,
   });
 
   factory ProductInfo.fromMap(Map<String, dynamic> map) {
@@ -30,6 +32,8 @@ class ProductInfo {
       shareDeepLink: formatToString(
         map['shareDeepLink'] ?? map['share_deep_link'],
       ),
+      originalPrice: toDouble(map['originalPrice'] ?? map['original_price']),
+      priceKhr: toDouble(map['priceKhr'] ?? map['price_khr']),
     );
   }
 
@@ -44,6 +48,8 @@ class ProductInfo {
   final String storage;
   final String? shareSlug;
   final String? shareDeepLink;
+  final double? originalPrice;
+  final double? priceKhr;
 
   ProductInfo copyWith({
     String? title,
@@ -57,6 +63,8 @@ class ProductInfo {
     String? storage,
     String? shareSlug,
     String? shareDeepLink,
+    double? originalPrice,
+    double? priceKhr,
   }) {
     return ProductInfo(
       title: title ?? this.title,
@@ -70,6 +78,8 @@ class ProductInfo {
       storage: storage ?? this.storage,
       shareSlug: shareSlug ?? this.shareSlug,
       shareDeepLink: shareDeepLink ?? this.shareDeepLink,
+      originalPrice: originalPrice ?? this.originalPrice,
+      priceKhr: priceKhr ?? this.priceKhr,
     );
   }
 
@@ -86,6 +96,8 @@ class ProductInfo {
       'storage': storage,
       'shareSlug': shareSlug,
       'shareDeepLink': shareDeepLink,
+      'originalPrice': originalPrice,
+      'priceKhr': priceKhr,
     };
   }
 }
