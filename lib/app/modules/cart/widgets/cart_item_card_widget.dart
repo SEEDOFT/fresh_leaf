@@ -103,8 +103,9 @@ class CartItemCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         if (item.originalPrice != null &&
-                            item.originalPrice! > item.price)
+                            item.originalPrice! > item.price) ...[
                           Text(
+                            // ignore: lines_longer_than_80_chars, Needed for complex calculation string
                             '\$${(item.originalPrice! * item.quantity).toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 12.scaled,
@@ -114,6 +115,7 @@ class CartItemCardWidget extends StatelessWidget {
                               ),
                             ),
                           ),
+                        ],
                         Text(
                           '\$${itemTotal.toStringAsFixed(2)}',
                           style: TextStyle(
@@ -132,6 +134,7 @@ class CartItemCardWidget extends StatelessWidget {
                             ),
                           ),
                         Text(
+                          // ignore: lines_longer_than_80_chars, Informational text with currency
                           '\$${item.price.toStringAsFixed(2)} ${'each'.tr}',
                           style: TextStyle(
                             fontSize: 10.scaled,

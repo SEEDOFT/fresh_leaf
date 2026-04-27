@@ -86,7 +86,7 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
                 value: controller.notificationsEnabled.value,
                 contentPadding: EdgeInsets.zero,
                 title: Text('notifications'.tr),
-                activeThumbColor: scheme.onPrimary,
+                activeColor: scheme.onPrimary,
                 onChanged: (value) =>
                     controller.toggleNotification(enabled: value),
               ),
