@@ -89,7 +89,13 @@ fvm flutter test
   - `documentations/BUILD_FOR_CLIENT.md`
   - `documentations/SECURE_CONFIG_SETUP.md`
 
-## 9) Helpful References
+## 9) Product & Catalog Policy
+
+- All product names and descriptions MUST be provided in both English and Khmer.
+- Organic products MUST include mandatory traceability data: Farm Name/Location, Farming Method (Certified Organic, Pesticide Free, or Naturally Grown), and optional Harvest Date.
+- Use localized unit labels (kg, bunch, bundle) for pricing to ensure clarity for Khmer users.
+
+## 10) Helpful References
 
 - Architecture summary: `documentations/development_summary.md`
 - Lint/coding policy: `documentations/VERY_GOOD_RULES.md`

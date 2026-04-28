@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
@@ -8,10 +9,14 @@ import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/category_service.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
+import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/firebase_options.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -20,6 +25,9 @@ final class AppBootstrap {
 
   static Future<String> initialize() async {
     await GetStorage.init();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await _registerServices();
     return _resolveInitialRoute();
   }
@@ -32,12 +40,26 @@ final class AppBootstrap {
     final secureConfig = SecureConfigService();
     await secureConfig.init();
 
+    final apiClient = ApiClient(storageService: storage);
+
     Get
       ..put<StorageService>(storage, permanent: true)
       ..put<SecureConfigService>(secureConfig, permanent: true)
-      ..put<ApiClient>(ApiClient(storageService: storage), permanent: true)
+      ..put<ApiClient>(apiClient, permanent: true)
+      ..put<CategoryService>(
+        CategoryService(apiClient: apiClient),
+        permanent: true,
+      )
+      ..put<ProductService>(
+        ProductService(apiClient: apiClient),
+        permanent: true,
+      )
       ..put<PaymentSessionService>(
-        PaymentSessionService(apiClient: Get.find<ApiClient>()),
+        PaymentSessionService(apiClient: apiClient),
+        permanent: true,
+      )
+      ..put<NotificationService>(
+        NotificationService(apiClient: apiClient),
         permanent: true,
       )
       ..put<AiChatStorageService>(AiChatStorageService(), permanent: true)
@@ -50,6 +72,8 @@ final class AppBootstrap {
         AppSettingsController(storageService: storage),
         permanent: true,
       );
+
+    await Get.find<NotificationService>().init();
   }
 
   static Future<String> _resolveInitialRoute() async {

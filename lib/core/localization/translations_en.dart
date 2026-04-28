@@ -567,4 +567,7 @@ const Map<String, String> translationsEn = {
   'top_up_mock': 'Top Up via Mock Payment',
   'payment_order': 'Payment for Order #@id',
   'top_up_success': 'Top up of @amount was successful',
+  'certified_organic': 'Certified Organic',
+  'pesticide_free': 'Pesticide Free',
+  'naturally_grown': 'Naturally Grown',
 };

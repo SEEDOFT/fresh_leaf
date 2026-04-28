@@ -4,6 +4,7 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
@@ -85,6 +86,12 @@ class RegisterController extends GetxController {
         }
         await storageService.saveToken(token);
         await apiClient.updateAuthToken(token);
+
+        // Upload FCM token for notifications
+        if (Get.isRegistered<NotificationService>()) {
+          await Get.find<NotificationService>().uploadToken();
+        }
+
         await Get.offAllNamed<void>(AppRoutes.login);
       } else {
         Get.snackbar(

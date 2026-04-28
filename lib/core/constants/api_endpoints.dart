@@ -18,6 +18,10 @@ final class ApiEndpoints {
   static const String userAddresses = '/user/addresses';
   static const String userAddress = '/user/addresses/{id}';
   static const String userWallets = '/user/wallets';
+  // Categories
+  static const String categories = '/categories';
+  static const String categoryBySlug = '/categories/{slug}';
+
   // Payment Methods
   static const String userPaymentMethods = '/user/payment-methods';
   static const String userPaymentMethod = '/user/payment-methods/{id}';
@@ -25,10 +29,13 @@ final class ApiEndpoints {
   static const String userWalletTopUpSessions = '/user/wallets/top-up/sessions';
   static const String userCheckoutSessions = '/user/checkout/sessions';
   static const String userPaymentSession = '/user/payments/sessions/{id}';
+  static const String userDevices = '/user/devices';
+  static const String userDeviceByToken = '/user/devices/{token}';
 
   // Products
   static const String products = '/user/products';
   static const String productById = '/user/products/{id}';
+  static const String vendorProducts = '/vendor/products';
   static const String productCategories = '/user/products/categories';
   static const String productSearch = '/user/products/search';
 

@@ -4,6 +4,7 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
@@ -93,6 +94,12 @@ class ProfileController extends GetxController {
     isLoading.value = true;
     try {
       final api = Get.find<ApiClient>();
+
+      // Deactivate FCM token on backend before logging out
+      if (Get.isRegistered<NotificationService>()) {
+        await Get.find<NotificationService>().deleteToken();
+      }
+
       await api.postRequest(ApiEndpoints.logout);
     } on DioException catch (e) {
       Get.snackbar('logout_failed'.tr, e.message ?? 'unable_logout'.tr);
