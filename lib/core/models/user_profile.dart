@@ -2,6 +2,7 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 
 class UserProfile {
   const UserProfile({
+    required this.id,
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -18,6 +19,7 @@ class UserProfile {
         : map;
 
     return UserProfile(
+      id: toInt(source['id']),
       firstName: formatToString(source['first_name'] ?? source['firstName']),
       lastName: formatToString(source['last_name'] ?? source['lastName']),
       email: formatToString(source['email']),
@@ -31,6 +33,7 @@ class UserProfile {
     );
   }
 
+  final int id;
   final String firstName;
   final String lastName;
   final String email;
@@ -41,6 +44,7 @@ class UserProfile {
   final DateTime? updatedAt;
 
   UserProfile copyWith({
+    int? id,
     String? firstName,
     String? lastName,
     String? email,
@@ -51,6 +55,7 @@ class UserProfile {
     DateTime? updatedAt,
   }) {
     return UserProfile(
+      id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
@@ -63,6 +68,7 @@ class UserProfile {
   }
 
   Map<String, dynamic> toMap() => {
+    'id': id,
     'first_name': firstName,
     'last_name': lastName,
     'email': email,

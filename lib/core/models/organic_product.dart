@@ -82,7 +82,8 @@ class OrganicProduct {
   String get localizedName =>
       Get.locale?.languageCode == 'km' ? (nameKm ?? nameEn) : nameEn;
 
-  String get localizedDescription => (Get.locale?.languageCode == 'km'
+  String get localizedDescription =>
+      (Get.locale?.languageCode == 'km'
           ? (descriptionKm ?? descriptionEn)
           : descriptionEn) ??
       '';

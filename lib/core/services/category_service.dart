@@ -15,9 +15,7 @@ class CategoryService extends GetxService {
       final apiResponse = ApiResponse.parseList(response.data);
 
       if (apiResponse.isSuccess) {
-        return apiResponse.data
-            .map(OrganicCategory.fromMap)
-            .toList();
+        return apiResponse.data.map(OrganicCategory.fromMap).toList();
       }
       return [];
     } on Exception catch (_) {

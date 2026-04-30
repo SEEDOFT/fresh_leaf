@@ -92,7 +92,9 @@ class ProfilePersonalDetailsController extends GetxController {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       final mapData = apiResponse.data;
+      final currentProfile = Get.find<StorageService>().userProfile;
       final mergedProfile = UserProfile(
+        id: toInt(mapData['id'], defaultValue: currentProfile?.id ?? 0),
         firstName: formatToString(
           mapData['first_name'],
           defaultValue: firstNameController.text.trim(),

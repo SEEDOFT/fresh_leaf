@@ -1,3 +1,5 @@
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class HelpArticle {
@@ -14,11 +16,14 @@ class HelpArticle {
 
 class ProfileHelpCenterController extends GetxController {
   final RxList<HelpArticle> articles = <HelpArticle>[].obs;
+  final RxInt unreadSupportCount = 0.obs;
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   @override
   void onInit() {
     super.onInit();
     _seedArticles();
+    _fetchUnreadCount();
   }
 
   void _seedArticles() {
@@ -49,5 +54,23 @@ class ProfileHelpCenterController extends GetxController {
         category: 'ai',
       ),
     ]);
+  }
+
+  Future<void> _fetchUnreadCount() async {
+    try {
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.supportUnreadCount,
+      );
+      final data = response.data;
+      if (data is Map<String, dynamic> && data['count'] != null) {
+        unreadSupportCount.value = data['count'] as int;
+      }
+    } on Exception {
+      // Ignore errors for unread count
+    }
+  }
+
+  void refreshUnreadCount() {
+    _fetchUnreadCount();
   }
 }

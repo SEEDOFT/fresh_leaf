@@ -56,7 +56,7 @@ class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
   }
 }
 
-class _SupportShortcuts extends StatelessWidget {
+class _SupportShortcuts extends GetView<ProfileHelpCenterController> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -65,16 +65,25 @@ class _SupportShortcuts extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _SupportButton(
-            icon: Icons.headset_mic_outlined,
-            label: 'Chat with support',
-            color: scheme.primary,
-            onTap: () => Get.snackbar(
-              'Support',
-              'Live chat coming soon.',
-            ),
-            width: media.size.width,
-          ),
+          child: Obx(() {
+            final unread = controller.unreadSupportCount.value;
+
+            return Badge(
+              isLabelVisible: unread > 0,
+              label: Text(unread.toString()),
+              offset: const Offset(-4, 4),
+              child: _SupportButton(
+                icon: Icons.headset_mic_outlined,
+                label: 'Chat with support',
+                color: scheme.primary,
+                onTap: () {
+                  controller.unreadSupportCount.value = 0; // Optimistic clear
+                  Get.toNamed<void>('/support_chat');
+                },
+                width: media.size.width,
+              ),
+            );
+          }),
         ),
         const SizedBox(width: 10),
         Expanded(

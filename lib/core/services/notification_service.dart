@@ -28,8 +28,9 @@ class NotificationService extends GetxService {
   }
 
   Future<void> _initializeLocalNotifications() async {
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings();
 
     const initSettings = InitializationSettings(
@@ -117,6 +118,13 @@ class NotificationService extends GetxService {
 
   void _handleNotificationClick(Map<String, dynamic> data) {
     final route = data['route'] as String?;
+    final type = data['type'] as String?;
+
+    if (type == 'support_chat') {
+      Get.toNamed<void>(AppRoutes.supportChat);
+      return;
+    }
+
     if (route != null && route.isNotEmpty) {
       Get.toNamed<void>(route);
     } else {

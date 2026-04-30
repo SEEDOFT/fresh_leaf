@@ -12,6 +12,7 @@ final class AppRoutes {
   static const cart = '/cart';
   static const checkout = '/checkout';
   static const aiAssistant = '/ai_assistant';
+  static const supportChat = '/support_chat';
   static const orders = '/orders';
   static const profile = '/profile';
   static const productDetail = '/product_detail';

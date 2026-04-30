@@ -63,6 +63,8 @@ import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
 import 'package:fresh_leaf/app/modules/search/views/search_view.dart';
 import 'package:fresh_leaf/app/modules/splash/bindings/splash_binding.dart';
 import 'package:fresh_leaf/app/modules/splash/views/splash_view.dart';
+import 'package:fresh_leaf/app/modules/support_chat/bindings/support_chat_binding.dart';
+import 'package:fresh_leaf/app/modules/support_chat/views/support_chat_view.dart';
 import 'package:fresh_leaf/app/modules/wallet/bindings/wallet_binding.dart';
 import 'package:fresh_leaf/app/modules/wallet/views/wallet_view.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up/bindings/wallet_top_up_binding.dart';
@@ -144,6 +146,12 @@ final class AppPages {
       name: AppRoutes.aiAssistant,
       page: () => const AiAssistantView(),
       binding: AiAssistantBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.supportChat,
+      page: () => const SupportChatView(),
+      binding: SupportChatBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

@@ -338,9 +338,10 @@ sequenceDiagram
 - This rule is now applied in profile personal details update flow so image updates work consistently.
 
 ---
-
 ## 20) Recent updates (April 2026)
 - **Push Notifications (Firebase)**: Implemented end-to-end FCM notifications. Created `NotificationService` in Flutter and automated triggers in Laravel for new orders and status updates.
 - **Organic Product Ecosystem**: Integrated 6 scientifically classified organic vegetable categories based on botanical plant parts. Updated database schema and admin resources for full English/Khmer support, including organic traceability (farm location, farming method, harvest date).
 - **Admin UI & UX**: Localized the entire Filament Admin panel. Integrated `Noto Sans Khmer` font and moved language preferences to per-profile tables for a better management experience.
 - **Strict Coding Standards**: Applied `static` callables rule across the API and enforced zero-issue pass for Flutter analysis.
+- **Real-Time Customer Support**: Built a Telegram-style chat interface for direct user-to-admin communication. Features include file attachments (`file_picker`), real-time sync with typing indicators via Reverb WebSocket events, and FCM push notifications with unread badge counters.
+--- End of content ---

@@ -57,6 +57,11 @@ final class ApiEndpoints {
   static const String aiChatMessages = '/ai/chat/messages';
   static const String aiChatHistory = '/ai/chat/history';
 
+  // Support Chat
+  static const String supportTicket = '/user/support/ticket';
+  static const String supportUnreadCount = '/user/support/unread-count';
+  static const String supportMessages = '/user/support/messages';
+
   // Favorites/Wishlist
   static const String wishlist = '/user/wishlist';
   static const String wishlistItem = '/user/wishlist/items/{id}';
