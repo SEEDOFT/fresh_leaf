@@ -58,7 +58,7 @@ class BackgroundHeroWidget extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: 24.scaled,
+          bottom: 50.scaled,
           left: 24.scaled,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

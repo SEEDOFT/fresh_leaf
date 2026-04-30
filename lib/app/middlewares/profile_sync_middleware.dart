@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 
@@ -28,6 +29,11 @@ class ProfileSyncMiddleware extends GetMiddleware {
     final storage = Get.find<StorageService>();
     final hasToken = storage.token?.isNotEmpty ?? false;
     if (!hasToken) return;
+
+    // Ensure FCM token is synced with backend
+    if (Get.isRegistered<NotificationService>()) {
+      unawaited(Get.find<NotificationService>().uploadToken());
+    }
 
     try {
       final apiClient = Get.find<ApiClient>();

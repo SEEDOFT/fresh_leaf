@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
-import 'package:file_picker/file_picker.dart' as fp;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -113,7 +113,7 @@ class SupportChatController extends GetxController {
     }
   }
 
-  Future<void> sendMessage({fp.PlatformFile? file}) async {
+  Future<void> sendMessage({PlatformFile? file}) async {
     final text = messageController.text.trim();
     if ((text.isEmpty && file == null) || activeTicket.value == null) return;
 
@@ -145,7 +145,7 @@ class SupportChatController extends GetxController {
         messages.add(SupportMessage.fromMap(apiResponse.data));
         _scrollToBottom();
       }
-    } on Exception {
+    } on Exception catch(_) {
       Get.snackbar('Error', 'Failed to send message');
     } finally {
       isSending.value = false;
@@ -153,13 +153,18 @@ class SupportChatController extends GetxController {
   }
 
   Future<void> pickFile() async {
-    final result = await fp.FilePicker.pickFiles(
-      type: fp.FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
-    );
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
+      );
 
-    if (result != null && result.files.isNotEmpty) {
-      await sendMessage(file: result.files.first);
+      if (result != null && result.files.isNotEmpty) {
+        await sendMessage(file: result.files.first);
+      }
+    } on Exception catch (e) {
+      debugPrint('Error picking file: $e');
+      Get.snackbar('Error', 'Failed to pick file');
     }
   }
 

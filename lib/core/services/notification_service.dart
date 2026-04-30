@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -17,12 +19,21 @@ class NotificationService extends GetxService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
+  StreamSubscription<String>? _tokenRefreshSubscription;
+
+  static const String _highImportanceChannelId = 'high_importance_channel';
+  static const String _highImportanceChannelName =
+      'High Importance Notifications';
+  static const String _highImportanceChannelDescription =
+      'This channel is used for important notifications.';
 
   /// Initialize the notification service.
   Future<NotificationService> init() async {
     await _initializeLocalNotifications();
     await _requestPermissions();
+    await _configureForegroundPresentation();
     _listenToMessages();
+    _listenToTokenRefresh();
     await _handleInitialMessage();
     return this;
   }
@@ -48,12 +59,48 @@ class NotificationService extends GetxService {
         }
       },
     );
+
+    if (Platform.isAndroid) {
+      const androidChannel = AndroidNotificationChannel(
+        _highImportanceChannelId,
+        _highImportanceChannelName,
+        description: _highImportanceChannelDescription,
+        importance: Importance.max,
+      );
+
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.createNotificationChannel(androidChannel);
+    }
   }
 
   Future<void> _requestPermissions() async {
-    if (Platform.isIOS) {
+    if (Platform.isAndroid) {
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestNotificationsPermission();
+      return;
+    }
+
+    if (Platform.isIOS || Platform.isMacOS) {
       await _fcm.requestPermission();
     }
+  }
+
+  Future<void> _configureForegroundPresentation() async {
+    if (!Platform.isIOS && !Platform.isMacOS) {
+      return;
+    }
+
+    await _fcm.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   void _listenToMessages() {
@@ -62,12 +109,23 @@ class NotificationService extends GetxService {
       debugPrint('Got a message whilst in the foreground!');
       debugPrint('Message data: ${message.data}');
 
+      final type = message.data['type'] as String?;
+
+      if (type == 'support_chat') {
+        // Only show notification if NOT currently on the support chat screen
+        if (Get.currentRoute != AppRoutes.supportChat) {
+          unawaited(_showLocalNotification(message));
+        }
+
+        // Always try to refresh unread count if help center is open
+        if (Get.isRegistered<ProfileHelpCenterController>()) {
+          Get.find<ProfileHelpCenterController>().refreshUnreadCount();
+        }
+        return;
+      }
+
       if (message.notification != null) {
-        debugPrint(
-          'Message also contained a notification: '
-          '${message.notification?.title}',
-        );
-        _showLocalNotification(message);
+        unawaited(_showLocalNotification(message));
       }
     });
 
@@ -97,10 +155,9 @@ class NotificationService extends GetxService {
         body: notification.body,
         notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
-            'high_importance_channel',
-            'High Importance Notifications',
-            channelDescription:
-                'This channel is used for important notifications.',
+            _highImportanceChannelId,
+            _highImportanceChannelName,
+            channelDescription: _highImportanceChannelDescription,
             importance: Importance.max,
             priority: Priority.high,
             icon: android?.smallIcon,
@@ -114,6 +171,12 @@ class NotificationService extends GetxService {
         payload: jsonEncode(message.data),
       );
     }
+  }
+
+  void _listenToTokenRefresh() {
+    _tokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((token) {
+      unawaited(_uploadTokenValue(token));
+    });
   }
 
   void _handleNotificationClick(Map<String, dynamic> data) {
@@ -147,18 +210,22 @@ class NotificationService extends GetxService {
   Future<void> uploadToken() async {
     final token = await getToken();
     if (token != null) {
-      try {
-        await apiClient.postRequest(
-          ApiEndpoints.userDevices,
-          data: {
-            'device_token': token,
-            'device_type': Platform.isAndroid ? 'android' : 'ios',
-          },
-        );
-        debugPrint('FCM Token uploaded successfully');
-      } on Exception catch (e) {
-        debugPrint('Error uploading FCM token: $e');
-      }
+      await _uploadTokenValue(token);
+    }
+  }
+
+  Future<void> _uploadTokenValue(String token) async {
+    try {
+      await apiClient.postRequest(
+        ApiEndpoints.userDevices,
+        data: {
+          'device_token': token,
+          'device_type': Platform.isAndroid ? 'android' : 'ios',
+        },
+      );
+      debugPrint('FCM Token uploaded successfully');
+    } on Exception catch (e) {
+      debugPrint('Error uploading FCM token: $e');
     }
   }
 
@@ -175,5 +242,11 @@ class NotificationService extends GetxService {
         debugPrint('Error deleting FCM token: $e');
       }
     }
+  }
+
+  @override
+  void onClose() {
+    unawaited(_tokenRefreshSubscription?.cancel());
+    super.onClose();
   }
 }

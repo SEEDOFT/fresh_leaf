@@ -23,70 +23,78 @@ class SupportChatView extends GetView<SupportChatController> {
         padding: EdgeInsets.zero,
         appBar: const CustomAppBar(title: 'Customer Support'),
         body: ColoredBox(
-          // Telegram-like chat background with theme support
-          color: isDark ? scheme.surface : const Color(0xFFE5DDD5),
+          color:
+              isDark ? scheme.surface : const Color(0xFFE5DDD5),
           child: Column(
             children: [
               Expanded(
-                child: Obx(
-                  () {
-                    if (controller.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                child: Obx(() {
+                  // Access reactive variables early
+                  // to avoid "Improper use of GetX"
+                  final isLoading = controller.isLoading.value;
+                  final messages = controller.messages;
+                  final isAdminTyping = controller.isAdminTyping.value;
 
-                    if (controller.messages.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'Start a conversation with our team',
-                          style: TextStyle(
-                            color: isDark ? Colors.white54 : Colors.black54,
-                          ),
+                  if (isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (messages.isEmpty && !isAdminTyping) {
+                    return Center(
+                      child: Text(
+                        'Start a conversation with our team',
+                        style: TextStyle(
+                          color: isDark ? Colors.white54 : Colors.black54,
                         ),
-                      );
-                    }
-
-                    return ListView.separated(
-                      controller: controller.scrollController,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
                       ),
-                      itemCount: controller.messages.length +
-                          (controller.isAdminTyping.value ? 1 : 0),
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 8,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (index == controller.messages.length) {
-                          return _buildTypingIndicator(isDark);
-                        }
+                    );
+                  }
 
-                        final msg = controller.messages[index];
-                        final isMe = msg.isUser;
+                  return ListView.builder(
+                    controller: controller.scrollController,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 16,
+                    ),
+                    // We use builder instead of separated
+                    // to avoid issues with extra elements
+                    itemCount: messages.length + (isAdminTyping ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == messages.length) {
+                        return _buildTypingIndicator(isDark);
+                      }
 
-                        return Row(
-                          mainAxisAlignment: isMe
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if (!isMe) ...[
-                              const CircleAvatar(
-                                radius: 14,
-                                backgroundColor: AppColors.primary,
-                                child: Icon(
-                                  Icons.headset_mic,
-                                  size: 16,
-                                  color: Colors.white,
+                      final msg = messages[index];
+                      final isMe = msg.isUser;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Align(
+                          alignment: isMe
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              if (!isMe) ...[
+                                const CircleAvatar(
+                                  radius: 14,
+                                  backgroundColor: AppColors.primary,
+                                  child: Icon(
+                                    Icons.headset_mic,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                            ],
-                            Flexible(
-                              child: Container(
+                                const SizedBox(width: 8),
+                              ],
+                              Container(
                                 constraints: BoxConstraints(
                                   maxWidth:
-                                      MediaQuery.of(context).size.width * 0.75,
+                                      MediaQuery.of(context).size.width * 0.72,
                                 ),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 14,
@@ -95,20 +103,20 @@ class SupportChatView extends GetView<SupportChatController> {
                                 decoration: BoxDecoration(
                                   color: isMe
                                       ? (isDark
-                                          ? const Color(0xFF1E3616)
-                                          : const Color(0xFFE1FFC7))
+                                            ? const Color(0xFF1E3616)
+                                            : const Color(0xFFE1FFC7))
                                       : (isDark
-                                          ? Colors.grey[800]
-                                          : Colors.white),
-                                  borderRadius:
-                                      BorderRadius.circular(16).copyWith(
-                                    bottomRight: isMe
-                                        ? const Radius.circular(4)
-                                        : const Radius.circular(16),
-                                    bottomLeft: !isMe
-                                        ? const Radius.circular(4)
-                                        : const Radius.circular(16),
-                                  ),
+                                            ? Colors.grey[800]
+                                            : Colors.white),
+                                  borderRadius: BorderRadius.circular(16)
+                                      .copyWith(
+                                        bottomRight: isMe
+                                            ? const Radius.circular(4)
+                                            : const Radius.circular(16),
+                                        bottomLeft: !isMe
+                                            ? const Radius.circular(4)
+                                            : const Radius.circular(16),
+                                      ),
                                   boxShadow: const [
                                     BoxShadow(
                                       color: Colors.black12,
@@ -121,11 +129,13 @@ class SupportChatView extends GetView<SupportChatController> {
                                   crossAxisAlignment: isMe
                                       ? CrossAxisAlignment.end
                                       : CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     if (msg.filePath != null)
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 6),
+                                        padding: const EdgeInsets.only(
+                                          bottom: 6,
+                                        ),
                                         child: _buildAttachmentPreview(
                                           msg.filePath!,
                                           isDark,
@@ -173,41 +183,17 @@ class SupportChatView extends GetView<SupportChatController> {
                                   ],
                                 ),
                               ),
-                            ),
-                            if (isMe) ...[
-                              const SizedBox(width: 8),
-                              Obx(() {
-                                final userProfile =
-                                    Get.find<StorageService>().userProfile;
-                                final imageUrl = userProfile?.image ?? '';
-
-                                return CircleAvatar(
-                                  radius: 14,
-                                  backgroundColor: scheme.primaryContainer,
-                                  backgroundImage: imageUrl.isNotEmpty
-                                      ? NetworkImage(
-                                          '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$imageUrl',
-                                        )
-                                      : null,
-                                  child: imageUrl.isEmpty
-                                      ? Text(
-                                          userProfile?.firstName[0] ?? 'M',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: scheme.onPrimaryContainer,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      : null,
-                                );
-                              }),
+                              if (isMe) ...[
+                                const SizedBox(width: 8),
+                                _buildUserAvatar(scheme),
+                              ],
                             ],
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
               ),
               _buildComposer(isDark, scheme),
             ],
@@ -217,8 +203,36 @@ class SupportChatView extends GetView<SupportChatController> {
     );
   }
 
+  Widget _buildUserAvatar(ColorScheme scheme) {
+    final userProfile = Get.find<StorageService>().userProfile;
+    final imageUrl = userProfile?.image ?? '';
+
+    return CircleAvatar(
+      radius: 14,
+      backgroundColor: scheme.primaryContainer,
+      backgroundImage: imageUrl.isNotEmpty
+          ? NetworkImage(
+              '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$imageUrl',
+            )
+          : null,
+      child: imageUrl.isEmpty
+          ? Text(
+              (userProfile?.firstName.isNotEmpty ?? false)
+                  ? userProfile!.firstName[0]
+                  : 'M',
+              style: TextStyle(
+                fontSize: 10,
+                color: scheme.onPrimaryContainer,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          : null,
+    );
+  }
+
   Widget _buildAttachmentPreview(String filePath, bool isDark) {
-    final isImage = filePath.endsWith('.jpg') ||
+    final isImage =
+        filePath.endsWith('.jpg') ||
         filePath.endsWith('.jpeg') ||
         filePath.endsWith('.png');
 
@@ -266,6 +280,7 @@ class SupportChatView extends GetView<SupportChatController> {
     return Padding(
       padding: const EdgeInsets.only(left: 36, top: 4, bottom: 4),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Admin is typing',
@@ -346,25 +361,27 @@ class SupportChatView extends GetView<SupportChatController> {
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
-              child: Obx(
-                () => controller.isSending.value
-                    ? const Padding(
-                        padding: EdgeInsets.all(12),
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      )
-                    : IconButton(
-                        onPressed: controller.sendMessage,
-                        icon: const Icon(Icons.send),
+              child: Obx(() {
+                final isSending = controller.isSending.value;
+                if (isSending) {
+                  return const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
                         color: Colors.white,
+                        strokeWidth: 2,
                       ),
-              ),
+                    ),
+                  );
+                }
+                return IconButton(
+                  onPressed: controller.sendMessage,
+                  icon: const Icon(Icons.send),
+                  color: Colors.white,
+                );
+              }),
             ),
           ],
         ),
