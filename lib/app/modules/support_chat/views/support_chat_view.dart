@@ -23,8 +23,7 @@ class SupportChatView extends GetView<SupportChatController> {
         padding: EdgeInsets.zero,
         appBar: const CustomAppBar(title: 'Customer Support'),
         body: ColoredBox(
-          color:
-              isDark ? scheme.surface : const Color(0xFFE5DDD5),
+          color: isDark ? scheme.surface : const Color(0xFFE5DDD5),
           child: Column(
             children: [
               Expanded(
@@ -82,7 +81,7 @@ class SupportChatView extends GetView<SupportChatController> {
                               if (!isMe) ...[
                                 const CircleAvatar(
                                   radius: 14,
-                                  backgroundColor: AppColors.primary,
+                                  // backgroundColor: AppColors.primary,
                                   child: Icon(
                                     Icons.headset_mic,
                                     size: 16,

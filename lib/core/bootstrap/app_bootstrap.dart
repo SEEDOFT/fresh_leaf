@@ -9,7 +9,6 @@ import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:fresh_leaf/core/services/category_service.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
@@ -46,10 +45,6 @@ final class AppBootstrap {
       ..put<StorageService>(storage, permanent: true)
       ..put<SecureConfigService>(secureConfig, permanent: true)
       ..put<ApiClient>(apiClient, permanent: true)
-      ..put<CategoryService>(
-        CategoryService(apiClient: apiClient),
-        permanent: true,
-      )
       ..put<ProductService>(
         ProductService(apiClient: apiClient),
         permanent: true,
@@ -101,7 +96,7 @@ final class AppBootstrap {
         storage.userProfile = UserProfile.fromMap(apiResponse.data);
         return AppRoutes.dashboard;
       }
-    } on DioException catch (_) {
+    } on DioException {
       // Fall back to auth flow
     }
 

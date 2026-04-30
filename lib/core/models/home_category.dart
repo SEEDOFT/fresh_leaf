@@ -1,4 +1,11 @@
-enum HomeCategoryIcon { leaf, apple, mushroom, lemon }
+enum HomeCategoryIcon {
+  leaf,
+  fruit,
+  rootAndTuber,
+  bulmAndStem,
+  legume,
+  indigenousAndWild,
+}
 
 class HomeCategory {
   const HomeCategory({
@@ -19,14 +26,18 @@ class HomeCategory {
     );
   }
 
-  static HomeCategoryIcon fromString(String value) {
+  static HomeCategoryIcon fromStringUpdate(String value) {
     switch (value) {
-      case 'apple':
-        return HomeCategoryIcon.apple;
-      case 'mushroom':
-        return HomeCategoryIcon.mushroom;
-      case 'lemon':
-        return HomeCategoryIcon.lemon;
+      case 'fruit':
+        return HomeCategoryIcon.fruit;
+      case 'rootAndTuber':
+        return HomeCategoryIcon.rootAndTuber;
+      case 'bulmAndStem':
+        return HomeCategoryIcon.bulmAndStem;
+      case 'legume':
+        return HomeCategoryIcon.legume;
+      case 'indigenousAndWild':
+        return HomeCategoryIcon.indigenousAndWild;
       case 'leaf':
       default:
         return HomeCategoryIcon.leaf;

@@ -164,7 +164,7 @@ class CheckoutController extends GetxController {
           fallback: 'unable_create_payment_session'.tr,
         ),
       );
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('save_failed'.tr, 'unable_create_payment_session'.tr);
     } finally {
       isPlacingOrder.value = false;
@@ -219,7 +219,7 @@ class CheckoutController extends GetxController {
           ),
         );
       }
-    } on Exception catch (_) {
+    } on Exception {
       if (showError) {
         Get.snackbar('fetch_failed'.tr, 'unable_load_payment_method_types'.tr);
       }

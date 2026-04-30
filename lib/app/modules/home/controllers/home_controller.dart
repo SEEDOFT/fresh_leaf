@@ -24,16 +24,20 @@ class HomeController extends GetxController {
       titleKey: 'home_category_leafy_greens',
     ),
     const HomeCategory(
-      icon: HomeCategoryIcon.apple,
+      icon: HomeCategoryIcon.rootAndTuber,
       titleKey: 'home_category_root_veg',
     ),
     const HomeCategory(
-      icon: HomeCategoryIcon.mushroom,
+      icon: HomeCategoryIcon.bulmAndStem,
       titleKey: 'home_category_mushrooms',
     ),
     const HomeCategory(
-      icon: HomeCategoryIcon.lemon,
+      icon: HomeCategoryIcon.legume,
       titleKey: 'home_category_citrus',
+    ),
+    const HomeCategory(
+      icon: HomeCategoryIcon.indigenousAndWild,
+      titleKey: 'home_category_indigenous_and_wild',
     ),
   ].obs;
 

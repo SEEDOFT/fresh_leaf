@@ -442,7 +442,7 @@ const Map<String, String> translationsEn = {
   'message_copied': 'Message copied to clipboard',
   'copy': 'Copy',
   'thinking': 'Thinking...',
-  'ai_analyzing_larder': 'AI ANALYZING LARDER',
+  'ai_analyzing_larder': 'AI ANALYZING',
   'fetching_orders': 'Fetching your orders...',
   'require_pin_orders': 'Require PIN for Orders',
   'ask_pin_order_details': 'Ask for PIN before opening order details.',

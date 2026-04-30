@@ -4,7 +4,7 @@ String formatToString(dynamic value, {String defaultValue = ''}) {
   if (value == null) return defaultValue;
   try {
     return value.toString();
-  } on Exception catch (_) {
+  } on Exception {
     return defaultValue;
   }
 }
@@ -27,7 +27,7 @@ DateTime toDateTime(dynamic value, {DateTime? defaultValue}) {
       return DateTime.fromMillisecondsSinceEpoch(value.toInt());
     }
     return defaultValue;
-  } on Exception catch (_) {
+  } on Exception {
     return defaultValue;
   }
 }
@@ -47,7 +47,7 @@ bool toBool(dynamic value, {bool defaultValue = false}) {
       }
     }
     return defaultValue;
-  } on Exception catch (_) {
+  } on Exception {
     return defaultValue;
   }
 }
@@ -66,7 +66,7 @@ double toDouble(dynamic value, {double defaultValue = 0.0}) {
       return parsed ?? defaultValue;
     }
     return defaultValue;
-  } on Exception catch (_) {
+  } on Exception {
     return defaultValue;
   }
 }
@@ -91,7 +91,7 @@ int toInt(dynamic value, {int defaultValue = 0}) {
       return defaultValue;
     }
     return defaultValue;
-  } on Exception catch (_) {
+  } on Exception {
     return defaultValue;
   }
 }

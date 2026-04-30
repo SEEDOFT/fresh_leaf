@@ -1,4 +1,3 @@
-import 'package:fresh_leaf/core/models/organic_category.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
@@ -18,8 +17,6 @@ class OrganicProduct {
     this.farmNameLocation,
     this.farmingMethod,
     this.harvestDate,
-    this.organicCategoryId,
-    this.organicCategory,
     this.productCategoryId,
     this.nutritionData,
     this.shelfLifeDays,
@@ -47,12 +44,6 @@ class OrganicProduct {
       harvestDate: map['harvest_date'] != null
           ? DateTime.tryParse(map['harvest_date'].toString())
           : null,
-      organicCategoryId: map['organic_category_id'] as int?,
-      organicCategory: map['organic_category'] != null
-          ? OrganicCategory.fromMap(
-              map['organic_category'] as Map<String, dynamic>,
-            )
-          : null,
       productCategoryId: map['product_category_id'] as int?,
       nutritionData: map['nutrition_data'] as Map<String, dynamic>?,
       shelfLifeDays: map['shelf_life_days'] as int?,
@@ -73,8 +64,6 @@ class OrganicProduct {
   final String? farmNameLocation;
   final String? farmingMethod;
   final DateTime? harvestDate;
-  final int? organicCategoryId;
-  final OrganicCategory? organicCategory;
   final int? productCategoryId;
   final Map<String, dynamic>? nutritionData;
   final int? shelfLifeDays;
@@ -117,8 +106,6 @@ class OrganicProduct {
       'harvest_date': harvestDate?.toIso8601String(),
       'is_active': isActive,
       'is_organic': isOrganic,
-      'organic_category_id': organicCategoryId,
-      'organic_category': organicCategory?.toMap(),
       'product_category_id': productCategoryId,
       'nutrition_data': nutritionData,
       'shelf_life_days': shelfLifeDays,

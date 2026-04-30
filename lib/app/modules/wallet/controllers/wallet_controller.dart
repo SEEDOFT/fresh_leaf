@@ -110,7 +110,7 @@ class WalletController extends GetxController {
           ),
         );
       }
-    } on Exception catch (_) {
+    } on Exception {
       if (showError) {
         Get.snackbar('fetch_failed'.tr, 'unable_load_wallets'.tr);
       }

@@ -166,7 +166,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         ),
       );
       return false;
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar(
         'verification_failed'.tr,
         'password_verification_failed'.tr,
@@ -207,7 +207,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         ),
       );
       return false;
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('set_pin_failed'.tr, 'unable_set_pin'.tr);
       return false;
     }
@@ -250,7 +250,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         ),
       );
       return false;
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('update_pin_failed'.tr, 'unable_update_pin'.tr);
       return false;
     }
@@ -291,7 +291,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
         ),
       );
       return false;
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('reset_pin_failed'.tr, 'unable_update_pin'.tr);
       return false;
     }

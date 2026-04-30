@@ -145,7 +145,7 @@ class SupportChatController extends GetxController {
         messages.add(SupportMessage.fromMap(apiResponse.data));
         _scrollToBottom();
       }
-    } on Exception catch(_) {
+    } on Exception {
       Get.snackbar('Error', 'Failed to send message');
     } finally {
       isSending.value = false;

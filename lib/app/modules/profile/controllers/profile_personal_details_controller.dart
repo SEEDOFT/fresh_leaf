@@ -178,9 +178,9 @@ class ProfilePersonalDetailsController extends GetxController {
       if (Get.isRegistered<ProfileController>()) {
         Get.find<ProfileController>().setProfile(latestProfile);
       }
-    } on DioException catch (_) {
+    } on DioException {
       Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     }
   }

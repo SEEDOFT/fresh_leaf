@@ -85,7 +85,7 @@ class PinSecurityService {
 
       Get.snackbar('Invalid PIN', message);
       return false;
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('Invalid PIN', 'Unable to verify PIN right now');
       return false;
     }

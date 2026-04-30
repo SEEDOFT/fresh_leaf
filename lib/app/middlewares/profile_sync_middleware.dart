@@ -47,7 +47,7 @@ class ProfileSyncMiddleware extends GetMiddleware {
         storage.userProfile = UserProfile.fromMap(apiResponse.data);
       }
       _syncedOnce = true;
-    } on Exception catch (_) {
+    } on Exception {
       // If fetching fails, allow navigation;
       //downstream screens can handle refresh errors.
     }

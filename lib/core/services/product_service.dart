@@ -16,7 +16,7 @@ class ProductService extends GetxService {
   }) async {
     try {
       final params = <String, dynamic>{'per_page': perPage};
-      if (categoryId != null) params['organic_category_id'] = categoryId;
+      if (categoryId != null) params['product_category_id'] = categoryId;
       if (query != null) params['query'] = query;
 
       final response = await apiClient.getRequest(
@@ -34,7 +34,7 @@ class ProductService extends GetxService {
             .toList();
       }
       return [];
-    } on Exception catch (_) {
+    } on Exception {
       return [];
     }
   }
@@ -50,7 +50,7 @@ class ProductService extends GetxService {
         return OrganicProduct.fromMap(apiResponse.data);
       }
       return null;
-    } on Exception catch (_) {
+    } on Exception {
       return null;
     }
   }
@@ -63,7 +63,7 @@ class ProductService extends GetxService {
       );
       final apiResponse = ApiResponse.parseMap(response.data);
       return apiResponse.isSuccess;
-    } on Exception catch (_) {
+    } on Exception {
       return false;
     }
   }

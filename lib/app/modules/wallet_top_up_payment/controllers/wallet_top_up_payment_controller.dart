@@ -168,7 +168,7 @@ class WalletTopUpPaymentController extends GetxController {
           ),
         );
       }
-    } on Exception catch (_) {
+    } on Exception {
       if (showError) {
         Get.snackbar('fetch_failed'.tr, 'unable_load_payment_method_types'.tr);
       }

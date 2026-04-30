@@ -71,7 +71,7 @@ class HomeProduct {
     try {
       final cleaned = priceText.replaceAll(RegExp(r'[^0-9\.]'), '');
       return toDouble(cleaned);
-    } on Exception catch (_) {
+    } on Exception {
       return 0;
     }
   }

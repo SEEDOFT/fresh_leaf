@@ -33,7 +33,7 @@ class _FreshLeafAppState extends State<FreshLeafApp> {
   Future<void> _requestStartupPermissions() async {
     try {
       await PermissionService.requestAll();
-    } on Exception catch (_) {
+    } on Exception {
       // best-effort only
     }
   }

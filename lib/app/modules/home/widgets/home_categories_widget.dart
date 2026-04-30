@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/home_category.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:get/get.dart';
 
 class HomeCategoriesWidget extends StatelessWidget {
@@ -91,14 +92,18 @@ class HomeCategoriesWidget extends StatelessWidget {
 
   IconData _iconFor(HomeCategoryIcon icon) {
     switch (icon) {
-      case HomeCategoryIcon.apple:
-        return Icons.apple;
-      case HomeCategoryIcon.mushroom:
-        return Icons.grass; // closest built-in
-      case HomeCategoryIcon.lemon:
-        return Icons.emoji_nature;
+      case HomeCategoryIcon.fruit:
+        return MdiIcons.foodApple; // 🍎 Actual apple icon (not just a symbol)
+      case HomeCategoryIcon.rootAndTuber:
+        return MdiIcons.carrot; // 🥕 Carrot — closest to root/tuber crops
+      case HomeCategoryIcon.bulmAndStem:
+        return MdiIcons.corn; // 🌽 Corn — good for bulb/stem veggies
+      case HomeCategoryIcon.legume:
+        return MdiIcons.peanut; // 🥜 Peanut — directly represents legumes
+      case HomeCategoryIcon.indigenousAndWild:
+        return MdiIcons.sprout; // 🌱 Sprout — evokes wild/foraged plants
       case HomeCategoryIcon.leaf:
-        return Icons.eco;
+        return MdiIcons.leaf; // 🍃 Leaf — exact match, also in MDI
     }
   }
 }

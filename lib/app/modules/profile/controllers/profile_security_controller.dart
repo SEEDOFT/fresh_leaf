@@ -60,7 +60,7 @@ class ProfileSecurityController extends GetxController {
           fallback: 'password_verification_failed'.tr,
         ),
       );
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar(
         'verification_failed'.tr,
         'password_verification_failed'.tr,
@@ -173,7 +173,7 @@ class ProfileSecurityController extends GetxController {
           ),
         );
         return false;
-      } on Exception catch (_) {
+      } on Exception {
         Get.snackbar('update_failed'.tr, 'unable_update_password'.tr);
         return false;
       }

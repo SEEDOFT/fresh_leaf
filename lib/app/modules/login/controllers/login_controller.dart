@@ -117,7 +117,7 @@ class LoginController extends GetxController {
 
       final profile = UserProfile.fromMap(apiResponse.data);
       _applyProfile(profile, storage);
-    } on DioException catch (_) {
+    } on DioException {
       if (fallbackProfile != null) {
         _applyProfile(fallbackProfile, storage);
       }

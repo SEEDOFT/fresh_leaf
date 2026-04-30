@@ -218,12 +218,12 @@ class ProfilePaymentAddController extends GetxController {
           fallback: 'unable_save_payment_method'.tr,
         ),
       );
-    } on FormatException catch (_) {
+    } on FormatException {
       Get.snackbar(
         'save_failed'.tr,
         'unable_save_payment_method'.tr,
       );
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar(
         'save_failed'.tr,
         'unable_save_payment_method'.tr,
@@ -357,7 +357,7 @@ class ProfilePaymentAddController extends GetxController {
           fallback: 'unable_load_payment_method_types'.tr,
         ),
       );
-    } on Exception catch (_) {
+    } on Exception {
       paymentMethodTypes.clear();
       selectedPaymentMethodType.value = null;
       Get.snackbar('fetch_failed'.tr, 'unable_load_payment_method_types'.tr);

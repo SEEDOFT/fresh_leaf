@@ -196,7 +196,7 @@ class ProfileAddressEditController extends GetxController {
       } else {
         searchResults.clear();
       }
-    } on DioException catch (_) {
+    } on DioException {
       searchResults.clear();
       Get.snackbar('search_failed'.tr, 'unable_search_location'.tr);
     } finally {
@@ -259,7 +259,7 @@ class ProfileAddressEditController extends GetxController {
       selectedPoint.value = point;
       mapController.move(point, 16);
       await _reverseGeocode(point);
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('location_error'.tr, 'unable_get_current_location'.tr);
     } finally {
       isLocating.value = false;
@@ -499,7 +499,7 @@ class ProfileAddressEditController extends GetxController {
       } else {
         selectedLabel.value = _formatCoords(point);
       }
-    } on Exception catch (_) {
+    } on Exception {
       selectedLabel.value = _formatCoords(point);
     } finally {
       isReverseLoading.value = false;

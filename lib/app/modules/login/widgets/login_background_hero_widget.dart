@@ -64,7 +64,7 @@ class BackgroundHeroWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'FreshLeaf',
+                'FreshLeaf Organics',
                 style: TextStyle(
                   fontSize: 48.scaled,
                   fontWeight: FontWeight.w900,

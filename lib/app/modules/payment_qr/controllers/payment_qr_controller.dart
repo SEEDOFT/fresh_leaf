@@ -56,7 +56,7 @@ class PaymentQrController extends GetxController {
           fallback: 'unable_check_payment_status'.tr,
         ),
       );
-    } on Exception catch (_) {
+    } on Exception {
       Get.snackbar('fetch_failed'.tr, 'unable_check_payment_status'.tr);
     } finally {
       isChecking.value = false;

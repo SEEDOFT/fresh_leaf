@@ -119,7 +119,7 @@ class OrdersController extends GetxController {
   DateTime _tryParseOrderDate(String input) {
     try {
       return _dateFormat.parse(input);
-    } on Exception catch (_) {
+    } on Exception {
       return DateTime(1970);
     }
   }

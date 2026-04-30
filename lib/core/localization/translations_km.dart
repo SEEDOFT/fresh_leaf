@@ -444,7 +444,7 @@ const Map<String, String> translationsKm = {
   'message_copied': 'បានចម្លងសារទៅ clipboard',
   'copy': 'ចម្លង',
   'thinking': 'កំពុងគិត...',
-  'ai_analyzing_larder': 'AI កំពុងវិភាគឃ្លាំង',
+  'ai_analyzing_larder': 'AI កំពុងវិភាគ',
   'fetching_orders': 'កំពុងទាញយកការបញ្ជាទិញរបស់អ្នក...',
   'require_pin_orders': 'តម្រូវ PIN សម្រាប់ការបញ្ជាទិញ',
   'ask_pin_order_details': 'សួរ PIN មុនពេលបើកព័ត៌មានលម្អិតការបញ្ជាទិញ។',
