@@ -199,9 +199,16 @@ class NotificationService extends GetxService {
   /// Get the current FCM token.
   Future<String?> getToken() async {
     try {
-      return await _fcm.getToken();
+      final token = await _fcm.getToken();
+      if (token != null) {
+        final tok = token.length > 15 ? '${token.substring(0, 15)}...' : token;
+        debugPrint('[NotificationService] FCM Token: $tok');
+      } else {
+        debugPrint('[NotificationService] FCM Token is null');
+      }
+      return token;
     } on Exception catch (e) {
-      debugPrint('Error getting FCM token: $e');
+      debugPrint('[NotificationService] Error getting FCM token: $e');
       return null;
     }
   }
@@ -210,22 +217,27 @@ class NotificationService extends GetxService {
   Future<void> uploadToken() async {
     final token = await getToken();
     if (token != null) {
+      debugPrint('[NotificationService] Uploading FCM token...');
       await _uploadTokenValue(token);
+    } else {
+      debugPrint('[NotificationService] No token to upload');
     }
   }
 
   Future<void> _uploadTokenValue(String token) async {
+    final tok = token.length > 15 ? '${token.substring(0, 15)}...' : token;
+    debugPrint('[NotificationService] Upload token: $tok');
     try {
-      await apiClient.postRequest(
+      final response = await apiClient.postRequest(
         ApiEndpoints.userDevices,
         data: {
           'device_token': token,
           'device_type': Platform.isAndroid ? 'android' : 'ios',
         },
       );
-      debugPrint('FCM Token uploaded successfully');
+      debugPrint('[NotificationService] FCM Token uploaded: $response');
     } on Exception catch (e) {
-      debugPrint('Error uploading FCM token: $e');
+      debugPrint('[NotificationService] Error uploading FCM token: $e');
     }
   }
 
