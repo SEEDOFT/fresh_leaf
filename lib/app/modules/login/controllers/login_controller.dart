@@ -61,7 +61,6 @@ class LoginController extends GetxController {
         }
 
         await storageService.saveToken(token);
-        await apiClient.updateAuthToken(token);
 
         // Upload FCM token for notifications
         if (Get.isRegistered<NotificationService>()) {

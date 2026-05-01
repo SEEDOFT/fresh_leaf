@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart' hide FormData, Response;
 
 class ApiClient extends GetxService {
   ApiClient({required this.storageService}) {
-    dio = Dio(
-      BaseOptions(
+    _dio = dio.Dio(
+      dio.BaseOptions(
         baseUrl: AppConfig.apiUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 20),
@@ -21,8 +21,8 @@ class ApiClient extends GetxService {
       ),
     );
 
-    dio.interceptors.add(
-      InterceptorsWrapper(
+    _dio.interceptors.add(
+      dio.InterceptorsWrapper(
         onRequest: (options, handler) {
           final token = storageService.token;
           final languageCode = storageService.languageCode ?? 'km';
@@ -38,8 +38,8 @@ class ApiClient extends GetxService {
     );
 
     if (kDebugMode) {
-      dio.interceptors.add(
-        LogInterceptor(
+      _dio.interceptors.add(
+        dio.LogInterceptor(
           requestBody: true,
           responseBody: true,
           requestHeader: false,
@@ -49,9 +49,8 @@ class ApiClient extends GetxService {
       );
     }
 
-    // Error logging in JSON for easier debugging
-    dio.interceptors.add(
-      InterceptorsWrapper(
+    _dio.interceptors.add(
+      dio.InterceptorsWrapper(
         onError: (err, handler) {
           if (kDebugMode) {
             final payload = {
@@ -72,21 +71,21 @@ class ApiClient extends GetxService {
     );
   }
 
-  late final Dio dio;
+  late final dio.Dio _dio;
   final StorageService storageService;
 
   Future<void> updateAuthToken(String? token) async {
     await storageService.saveToken(token);
   }
 
-  Future<Response<Map<String, dynamic>>> getRequest(
+  Future<dio.Response<Map<String, dynamic>>> getRequest(
     String path, {
     Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onReceiveProgress,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
+    dio.ProgressCallback? onReceiveProgress,
   }) {
-    return dio.get<Map<String, dynamic>>(
+    return _dio.get<Map<String, dynamic>>(
       path,
       queryParameters: queryParameters,
       options: options,
@@ -95,16 +94,73 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<Map<String, dynamic>>> postRequest(
+  Future<dio.Response<Map<String, dynamic>>> postRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
+    dio.ProgressCallback? onSendProgress,
+    dio.ProgressCallback? onReceiveProgress,
   }) {
-    return dio.post<Map<String, dynamic>>(
+    final resolvedOptions = _resolveOptions(options, data);
+    return _dio.post<Map<String, dynamic>>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: resolvedOptions,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
+  Future<dio.Response<Map<String, dynamic>>> postMultipart(
+    String path, {
+    required dio.FormData data,
+    Map<String, dynamic>? queryParameters,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
+    dio.ProgressCallback? onSendProgress,
+    dio.ProgressCallback? onReceiveProgress,
+  }) {
+    return _dio.post<Map<String, dynamic>>(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: dio.Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
+  dio.Options _resolveOptions(dio.Options? provided, dynamic data) {
+    if (data is dio.FormData) {
+      return dio.Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          ...?provided?.headers,
+        },
+      );
+    }
+    return provided ?? dio.Options();
+  }
+
+  Future<dio.Response<Map<String, dynamic>>> putRequest(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
+    dio.ProgressCallback? onSendProgress,
+    dio.ProgressCallback? onReceiveProgress,
+  }) {
+    return _dio.put<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -115,16 +171,16 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<Map<String, dynamic>>> putRequest(
+  Future<dio.Response<Map<String, dynamic>>> patchRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
+    dio.ProgressCallback? onSendProgress,
+    dio.ProgressCallback? onReceiveProgress,
   }) {
-    return dio.put<Map<String, dynamic>>(
+    return _dio.patch<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
@@ -135,38 +191,36 @@ class ApiClient extends GetxService {
     );
   }
 
-  Future<Response<Map<String, dynamic>>> patchRequest(
+  Future<dio.Response<Map<String, dynamic>>> deleteRequest(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
   }) {
-    return dio.patch<Map<String, dynamic>>(
+    return _dio.delete<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
       options: options,
       cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
     );
   }
 
-  Future<Response<Map<String, dynamic>>> deleteRequest(
-    String path, {
+  Future<dio.Response<T>> externalRequest<T>(
+    String url, {
+    String method = 'GET',
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
+    dio.Options? options,
+    dio.CancelToken? cancelToken,
   }) {
-    return dio.delete<Map<String, dynamic>>(
-      path,
+    final resolvedOptions = (options ?? dio.Options()).copyWith(method: method);
+    return _dio.request<T>(
+      url,
       data: data,
       queryParameters: queryParameters,
-      options: options,
+      options: resolvedOptions,
       cancelToken: cancelToken,
     );
   }

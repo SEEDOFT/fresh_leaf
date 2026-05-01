@@ -29,16 +29,8 @@ final class AppConfig {
     'REVERB_APP_KEY',
   );
 
-  static const reverbAuthEndpointPath = String.fromEnvironment(
+  static const reverbAuthEndpoint = String.fromEnvironment(
     'REVERB_AUTH_ENDPOINT',
     defaultValue: '/broadcasting/auth',
   );
-
-  static String get reverbAuthEndpoint {
-    final normalizedApiUrl = apiUrl.replaceAll(RegExp(r'/+$'), '');
-    final normalizedAuthPath = reverbAuthEndpointPath.startsWith('/')
-        ? reverbAuthEndpointPath
-        : '/$reverbAuthEndpointPath';
-    return '$normalizedApiUrl$normalizedAuthPath';
-  }
 }

@@ -7,6 +7,7 @@ import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SupportChatView extends GetView<SupportChatController> {
   const SupportChatView({super.key});
@@ -27,172 +28,181 @@ class SupportChatView extends GetView<SupportChatController> {
           child: Column(
             children: [
               Expanded(
-                child: Obx(() {
-                  // Access reactive variables early
-                  // to avoid "Improper use of GetX"
-                  final isLoading = controller.isLoading.value;
-                  final messages = controller.messages;
-                  final isAdminTyping = controller.isAdminTyping.value;
+                child: Obx(
+                  () {
+                    final isLoading = controller.isLoading.value;
+                    final messages = controller.messages;
 
-                  if (isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+                    if (isLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                  if (messages.isEmpty && !isAdminTyping) {
-                    return Center(
-                      child: Text(
-                        'Start a conversation with our team',
-                        style: TextStyle(
-                          color: isDark ? Colors.white54 : Colors.black54,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    controller: controller.scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 16,
-                    ),
-                    // We use builder instead of separated
-                    // to avoid issues with extra elements
-                    itemCount: messages.length + (isAdminTyping ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == messages.length) {
-                        return _buildTypingIndicator(isDark);
-                      }
-
-                      final msg = messages[index];
-                      final isMe = msg.isUser;
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Align(
-                          alignment: isMe
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              if (!isMe) ...[
-                                const CircleAvatar(
-                                  radius: 14,
-                                  // backgroundColor: AppColors.primary,
-                                  child: Icon(
-                                    Icons.headset_mic,
-                                    size: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                              Container(
-                                constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.72,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isMe
-                                      ? (isDark
-                                            ? const Color(0xFF1E3616)
-                                            : const Color(0xFFE1FFC7))
-                                      : (isDark
-                                            ? Colors.grey[800]
-                                            : Colors.white),
-                                  borderRadius: BorderRadius.circular(16)
-                                      .copyWith(
-                                        bottomRight: isMe
-                                            ? const Radius.circular(4)
-                                            : const Radius.circular(16),
-                                        bottomLeft: !isMe
-                                            ? const Radius.circular(4)
-                                            : const Radius.circular(16),
-                                      ),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 1,
-                                      offset: Offset(0, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: isMe
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (msg.filePath != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 6,
-                                        ),
-                                        child: _buildAttachmentPreview(
-                                          msg.filePath!,
-                                          isDark,
-                                        ),
-                                      ),
-                                    if (msg.message.isNotEmpty)
-                                      Text(
-                                        msg.message,
-                                        style: TextStyle(
-                                          color: isDark
-                                              ? Colors.white
-                                              : Colors.black87,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    const SizedBox(height: 2),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          msg.createdAt != null
-                                              ? DateFormat('HH:mm').format(
-                                                  msg.createdAt!.toLocal(),
-                                                )
-                                              : '',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                            color: isDark
-                                                ? Colors.white54
-                                                : Colors.black45,
-                                          ),
-                                        ),
-                                        if (isMe) ...[
-                                          const SizedBox(width: 4),
-                                          Icon(
-                                            Icons.done_all,
-                                            size: 14,
-                                            color: isDark
-                                                ? Colors.blue[300]
-                                                : Colors.blue,
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (isMe) ...[
-                                const SizedBox(width: 8),
-                                _buildUserAvatar(scheme),
-                              ],
-                            ],
+                    if (messages.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'Start a conversation with our team',
+                          style: TextStyle(
+                            color: isDark ? Colors.white54 : Colors.black54,
                           ),
                         ),
                       );
-                    },
-                  );
-                }),
+                    }
+
+                    return ListView.builder(
+                      controller: controller.scrollController,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 16,
+                      ),
+                      itemCount: messages.length +
+                          (controller.isAdminTyping.value ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == messages.length) {
+                          final lastMsg =
+                              messages.isNotEmpty ? messages.last : null;
+                          final isLastFromAdmin =
+                              lastMsg != null && !lastMsg.isUser;
+                          return Align(
+                            alignment: isLastFromAdmin
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: _buildTypingIndicator(isDark),
+                          );
+                        }
+
+                        final msg = messages[index];
+                        final isMe = msg.isUser;
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Align(
+                            alignment: isMe
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                if (!isMe) ...[
+                                  const CircleAvatar(
+                                    radius: 14,
+                                    // backgroundColor: AppColors.primary,
+                                    child: Icon(
+                                      Icons.headset_mic,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                                Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                        0.72,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isMe
+                                        ? (isDark
+                                              ? const Color(0xFF1E3616)
+                                              : const Color(0xFFE1FFC7))
+                                        : (isDark
+                                              ? Colors.grey[800]
+                                              : Colors.white),
+                                    borderRadius: BorderRadius.circular(16)
+                                        .copyWith(
+                                          bottomRight: isMe
+                                              ? const Radius.circular(4)
+                                              : const Radius.circular(16),
+                                          bottomLeft: !isMe
+                                              ? const Radius.circular(4)
+                                              : const Radius.circular(16),
+                                        ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 1,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: isMe
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (msg.filePath != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 6,
+                                          ),
+                                          child: _buildAttachmentPreview(
+                                            context,
+                                            msg.filePath!,
+                                            isDark,
+                                          ),
+                                        ),
+                                      if (msg.message.isNotEmpty)
+                                        Text(
+                                          msg.message,
+                                          style: TextStyle(
+                                            color: isDark
+                                                ? Colors.white
+                                                : Colors.black87,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      const SizedBox(height: 2),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            msg.createdAt != null
+                                                ? DateFormat('HH:mm').format(
+                                                    msg.createdAt!.toLocal(),
+                                                  )
+                                                : '',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: isDark
+                                                  ? Colors.white54
+                                                  : Colors.black45,
+                                            ),
+                                          ),
+                                          if (isMe) ...[
+                                            const SizedBox(width: 4),
+                                            Icon(
+                                              Icons.done_all,
+                                              size: 14,
+                                              color: isDark
+                                                  ? Colors.blue[300]
+                                                  : Colors.blue,
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (isMe) ...[
+                                  const SizedBox(width: 8),
+                                  _buildUserAvatar(scheme),
+                                ],
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
               _buildComposer(isDark, scheme),
             ],
@@ -229,48 +239,58 @@ class SupportChatView extends GetView<SupportChatController> {
     );
   }
 
-  Widget _buildAttachmentPreview(String filePath, bool isDark) {
+  Widget _buildAttachmentPreview(
+    BuildContext context,
+    String filePath,
+    bool isDark,
+  ) {
     final isImage =
         filePath.endsWith('.jpg') ||
         filePath.endsWith('.jpeg') ||
         filePath.endsWith('.png');
 
     if (isImage) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.network(
-          '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath',
-          fit: BoxFit.cover,
+      return GestureDetector(
+        onTap: () => _showFullScreenImage(context, filePath),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath',
+            fit: BoxFit.cover,
+          ),
         ),
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.insert_drive_file,
-            color: isDark ? Colors.white70 : Colors.black54,
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              filePath.split('/').last,
-              style: TextStyle(
-                color: isDark ? Colors.white : Colors.black87,
-                fontSize: 13,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+    return GestureDetector(
+      onTap: () => _downloadFile(filePath),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.insert_drive_file,
+              color: isDark ? Colors.white70 : Colors.black54,
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                filePath.split('/').last,
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black87,
+                  fontSize: 13,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -362,21 +382,36 @@ class SupportChatView extends GetView<SupportChatController> {
               ),
               child: Obx(() {
                 final isSending = controller.isSending.value;
-                if (isSending) {
-                  return const Padding(
-                    padding: EdgeInsets.all(12),
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
+                final isUploading = controller.isUploading.value;
+                final uploadProgress = controller.uploadProgress.value;
+
+                if (isSending || isUploading) {
+                  return SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          value: isUploading ? uploadProgress : null,
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                        if (isUploading)
+                          Text(
+                            '${(uploadProgress * 100).toInt()}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ],
                     ),
                   );
                 }
                 return IconButton(
-                  onPressed: controller.sendMessage,
+                  onPressed: () => controller.sendMessage(),
                   icon: const Icon(Icons.send),
                   color: Colors.white,
                 );
@@ -386,5 +421,49 @@ class SupportChatView extends GetView<SupportChatController> {
         ),
       ),
     );
+  }
+
+  void _showFullScreenImage(BuildContext context, String filePath) {
+    final imageUrl =
+        '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath';
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        backgroundColor: Colors.black,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          children: [
+            Center(
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8,
+              right: 8,
+              child: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.close, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _downloadFile(String filePath) async {
+    final url =
+        '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath';
+    try {
+      await SharePlus.instance.share(ShareParams(uri: Uri.parse(url)));
+    } on Exception catch (_) {
+      Get.snackbar('Error', 'Could not open file');
+    }
   }
 }

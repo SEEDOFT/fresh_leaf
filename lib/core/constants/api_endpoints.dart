@@ -65,4 +65,18 @@ final class ApiEndpoints {
   // Favorites/Wishlist
   static const String wishlist = '/user/wishlist';
   static const String wishlistItem = '/user/wishlist/items/{id}';
+  static const String addToWishlist = '/user/wishlist/add';
+  static const String removeFromWishlist = '/user/wishlist/remove';
+
+  // Home
+  static const String homeProducts = '/home/products';
+  static const String homeCategories = '/home/categories';
+
+  // Organic Products
+  static const String organicProducts = '/organic-products';
+  static const String organicProductDetail = '/organic-products/{id}';
+
+  // Search
+  static const String search = '/products/search';
+  static const String searchSuggestions = '/products/search/suggestions';
 }

@@ -1,20 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/models/support_message.dart';
-import 'package:fresh_leaf/core/services/storage_service.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class SupportRealtimeService extends GetxService {
-  final StorageService _storageService = Get.find<StorageService>();
+  final ApiClient _apiClient = Get.find<ApiClient>();
   final StreamController<SupportMessage> _messageController =
       StreamController<SupportMessage>.broadcast();
   final StreamController<String> _typingController =
       StreamController<String>.broadcast();
-  final Dio _dio = Dio();
 
   WebSocketChannel? _socketChannel;
   StreamSubscription<dynamic>? _socketSubscription;
@@ -106,17 +104,12 @@ class SupportRealtimeService extends GetxService {
     String channel,
     String socketId,
   ) async {
-    final token = _storageService.token;
-    final response = await _dio.post<Map<String, dynamic>>(
+    final response = await _apiClient.postRequest(
       AppConfig.reverbAuthEndpoint,
-      data: {'socket_id': socketId, 'channel_name': channel},
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      ),
+      data: <String, dynamic>{
+        'socket_id': socketId,
+        'channel_name': channel,
+      },
     );
     return response.data ?? <String, dynamic>{};
   }

@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/models/ai_chat_realtime_event.dart';
-import 'package:fresh_leaf/core/services/storage_service.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class AiAssistantRealtimeService extends GetxService {
-  final StorageService _storageService = Get.find<StorageService>();
+  final ApiClient _apiClient = Get.find<ApiClient>();
   final StreamController<AiChatRealtimeEvent> _eventController =
       StreamController<AiChatRealtimeEvent>.broadcast();
-  final Dio _dio = Dio();
 
   WebSocketChannel? _socketChannel;
   StreamSubscription<dynamic>? _socketSubscription;
@@ -163,26 +162,13 @@ class AiAssistantRealtimeService extends GetxService {
     required String channelName,
     required String socketId,
   }) async {
-    final token = _storageService.token;
-    if (token == null || token.isEmpty) {
-      throw const FormatException('Missing access token for Reverb auth');
-    }
-
     try {
-      final response = await _dio.post<Map<String, dynamic>>(
+      final response = await _apiClient.postRequest(
         AppConfig.reverbAuthEndpoint,
         data: <String, dynamic>{
           'socket_id': socketId,
           'channel_name': channelName,
         },
-        options: Options(
-          headers: <String, String>{
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-            'Content-Type':
-                'application/x-www-form-urlencoded', // Laravel Reverb expects form data
-          },
-        ),
       );
 
       final data = response.data;
@@ -191,7 +177,7 @@ class AiAssistantRealtimeService extends GetxService {
       }
 
       return data;
-    } on DioException catch (error) {
+    } on dio.DioException catch (error) {
       final statusCode = error.response?.statusCode;
       final responseBody = error.response?.data;
       final responseText = responseBody == null ? '' : jsonEncode(responseBody);

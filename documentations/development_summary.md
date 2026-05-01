@@ -33,6 +33,7 @@ The project uses **modular GetX structure** (`bindings`, `controllers`, `views`,
 - `lib/app/modules/*` → feature modules
 - `lib/app/routes/*` → named routes and route registration
 - `lib/core/services/*` → API, storage, permission, security helpers
+- `lib/core/repositories/*` → data access layer (abstracts API from controllers)
 - `lib/core/models/*` → shared app models
 - `lib/core/theme/*` → color/size/style system
 
@@ -344,4 +345,85 @@ sequenceDiagram
 - **Admin UI & UX**: Localized the entire Filament Admin panel. Integrated `Noto Sans Khmer` font and moved language preferences to per-profile tables for a better management experience.
 - **Strict Coding Standards**: Applied `static` callables rule across the API and enforced zero-issue pass for Flutter analysis.
 - **Real-Time Customer Support**: Built a Telegram-style chat interface for direct user-to-admin communication. Features include file attachments (`file_picker`), real-time sync with typing indicators via Reverb WebSocket events, and FCM push notifications with unread badge counters.
+
+---
+
+## 21) Repository Pattern (May 2026)
+
+The app now uses a **repository pattern** to abstract data access from controllers. This provides:
+- Clean separation of concerns (controllers focus on UI, repos handle data)
+- Easier testing with mockable repositories
+- Consistent error handling and data transformation
+- Mock data fallback for development without API
+
+### Architecture
+
+```
+lib/core/
+├── repositories/           # NEW: Data access layer
+│   ├── home_repository.dart      # Home categories & products
+│   ├── product_repository.dart  # Product CRUD, search, wishlist
+│   └── location_repository.dart # Geocoding services
+├── services/
+│   └── api_client.dart    # HTTP client (Dio + interceptors)
+└── models/
+```
+
+### Key Repositories
+
+| Repository | Purpose |
+|------------|---------|
+| `HomeRepository` | Fetches home categories & featured products with mock fallback |
+| `ProductRepository` | Product list, detail, search, wishlist operations |
+| `LocationRepository` | Reverse geocoding using Nominatim API |
+
+### Usage Example
+
+```dart
+// In HomeController
+class HomeController extends GetxController {
+  final HomeRepository _homeRepository = HomeRepository();
+  final LocationRepository _locationRepository = LocationRepository();
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadHomeData();
+    unawaited(fetchCurrentLocation());
+  }
+
+  Future<void> loadHomeData() async {
+    try {
+      final results = await Future.wait([
+        _homeRepository.getCategories(),
+        _homeRepository.getFeaturedProducts(),
+      ]);
+      categories.value = results[0];
+      pickedThisMorning.value = results[1];
+    } catch (e) {
+      // Fallback to mock data
+      categories.value = _homeRepository.getMockCategories();
+    }
+  }
+}
+```
+
+### External API Calls
+
+For third-party APIs (like geocoding), use `ApiClient.externalRequest()`:
+```dart
+final response = await _apiClient.externalRequest<Map<String, dynamic>>(
+  'https://nominatim.openstreetmap.org/reverse',
+  queryParameters: {...},
+);
+```
+
+### Migration Guide
+
+When creating new features:
+1. Create a repository in `lib/core/repositories/`
+2. Implement async methods with error handling
+3. Include mock/fallback data for development
+4. Inject repository in controller via `final _repo = RepositoryName();`
+
 --- End of content ---

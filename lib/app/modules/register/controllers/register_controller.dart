@@ -85,7 +85,6 @@ class RegisterController extends GetxController {
           return;
         }
         await storageService.saveToken(token);
-        await apiClient.updateAuthToken(token);
 
         // Upload FCM token for notifications
         if (Get.isRegistered<NotificationService>()) {
