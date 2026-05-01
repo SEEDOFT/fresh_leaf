@@ -21,12 +21,22 @@ class SupportRealtimeService extends GetxService {
   Completer<void>? _connectionCompleter;
   Completer<void>? _subscriptionCompleter;
 
+  Timer? _reconnectTimer;
+  Timer? _pingTimer;
+  int _reconnectAttempts = 0;
+  static const int _maxReconnectAttempts = 5;
+  static const Duration _reconnectDelay = Duration(seconds: 3);
+  static const Duration _pingInterval = Duration(seconds: 30);
+
   String _socketId = '';
   String _activeChannel = '';
   bool _isConnected = false;
+  int? _currentTicketId;
 
   Stream<SupportMessage> get messages => _messageController.stream;
   Stream<String> get typingEvents => _typingController.stream;
+
+  bool get isConnected => _isConnected;
 
   Future<void> connect() async {
     if (_isConnected) return;
@@ -46,8 +56,14 @@ class SupportRealtimeService extends GetxService {
 
     try {
       await _connectionCompleter!.future.timeout(const Duration(seconds: 15));
+      _startPingTimer();
+      _reconnectAttempts = 0;
+    } on TimeoutException {
+      _connectionCompleter = null;
+      _scheduleReconnect();
     } on Exception {
       _connectionCompleter = null;
+      _scheduleReconnect();
       rethrow;
     } finally {
       _connectionCompleter = null;
@@ -55,6 +71,7 @@ class SupportRealtimeService extends GetxService {
   }
 
   Future<void> subscribeToTicket(int ticketId) async {
+    _currentTicketId = ticketId;
     await connect();
     final channelName = 'private-support.ticket.$ticketId';
     if (_activeChannel == channelName && _isConnected) return;
@@ -77,6 +94,12 @@ class SupportRealtimeService extends GetxService {
     await _subscriptionCompleter!.future.timeout(const Duration(seconds: 10));
     _activeChannel = channelName;
     _subscriptionCompleter = null;
+  }
+
+  Future<void> resubscribe() async {
+    if (_currentTicketId != null && _isConnected) {
+      await subscribeToTicket(_currentTicketId!);
+    }
   }
 
   Future<Map<String, dynamic>> _authorize(
@@ -108,6 +131,7 @@ class SupportRealtimeService extends GetxService {
       _socketId = decodedData['socket_id'] as String;
       _isConnected = true;
       _connectionCompleter?.complete();
+      _reconnectAttempts = 0;
     } else if (event == 'pusher_internal:subscription_succeeded') {
       _subscriptionCompleter?.complete();
     } else if (event == 'SupportMessageSent') {
@@ -118,6 +142,11 @@ class SupportRealtimeService extends GetxService {
       final typingData =
           jsonDecode(data['data'] as String) as Map<String, dynamic>;
       _typingController.add(typingData['sender_type'] as String);
+    } else if (event == 'pusher:ping') {
+      _sendRaw(<String, dynamic>{
+        'event': 'pusher:pong',
+        'data': '{}',
+      });
     }
   }
 
@@ -126,10 +155,52 @@ class SupportRealtimeService extends GetxService {
 
   void _handleSocketError() {
     _isConnected = false;
+    _stopPingTimer();
     _connectionCompleter?.completeError('Socket error');
+    _scheduleReconnect();
   }
 
-  void _handleSocketDone() => _isConnected = false;
+  void _handleSocketDone() {
+    _isConnected = false;
+    _stopPingTimer();
+    _scheduleReconnect();
+  }
+
+  void _scheduleReconnect() {
+    if (_reconnectAttempts >= _maxReconnectAttempts) {
+      return;
+    }
+
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer(_reconnectDelay, () async {
+      _reconnectAttempts++;
+      try {
+        await connect();
+        if (_currentTicketId != null) {
+          await resubscribe();
+        }
+      } on Exception {
+        // Reconnect will be scheduled again by error handler
+      }
+    });
+  }
+
+  void _startPingTimer() {
+    _stopPingTimer();
+    _pingTimer = Timer.periodic(_pingInterval, (_) {
+      if (_isConnected && _socketId.isNotEmpty) {
+        _sendRaw(<String, dynamic>{
+          'event': 'pusher:ping',
+          'data': '{}',
+        });
+      }
+    });
+  }
+
+  void _stopPingTimer() {
+    _pingTimer?.cancel();
+    _pingTimer = null;
+  }
 
   Uri _buildSocketUri() {
     final isSecure = AppConfig.reverbWebSocketScheme.toLowerCase() == 'wss';
@@ -148,6 +219,8 @@ class SupportRealtimeService extends GetxService {
 
   @override
   void onClose() {
+    _reconnectTimer?.cancel();
+    _stopPingTimer();
     unawaited(_socketSubscription?.cancel());
     unawaited(_socketChannel?.sink.close());
     unawaited(_messageController.close());
