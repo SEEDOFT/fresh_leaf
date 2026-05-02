@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -151,6 +152,24 @@ class LoginController extends GetxController {
     storage.userProfile = profile;
     if (Get.isRegistered<ProfileController>()) {
       Get.find<ProfileController>().setProfile(profile);
+    }
+
+    // Sync preferences from backend to local app settings
+    if (Get.isRegistered<AppSettingsController>()) {
+      final settings = Get.find<AppSettingsController>();
+
+      // Update locale
+      if (profile.locale.isNotEmpty) {
+        settings.setLocale(Locale(profile.locale), syncToBackend: false);
+      }
+
+      // Update theme
+      final mode = switch (profile.preferTheme) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      };
+      settings.setThemeMode(mode, syncToBackend: false);
     }
   }
 

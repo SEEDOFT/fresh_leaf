@@ -117,6 +117,14 @@ class ProfilePersonalDetailsController extends GetxController {
           mapData['phone_number'],
           defaultValue: normalizeCambodiaPhoneForApi(phoneController.text),
         ),
+        locale: formatToString(
+          mapData['locale'],
+          defaultValue: currentProfile?.locale ?? 'en',
+        ),
+        preferTheme: formatToString(
+          mapData['prefer_theme'] ?? mapData['preferTheme'],
+          defaultValue: currentProfile?.preferTheme ?? 'system',
+        ),
         setPin: toBool(
           mapData['set_pin'] ?? mapData['setPin'],
           defaultValue: _initialProfile?.setPin ?? false,

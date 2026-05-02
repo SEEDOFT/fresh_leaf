@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 
@@ -38,21 +40,49 @@ class AppSettingsController extends GetxController {
     notificationsEnabled.value = _storageService.notificationsEnabled;
   }
 
-  Future<void> setThemeMode(ThemeMode mode) async {
+  Future<void> setThemeMode(ThemeMode mode, {bool syncToBackend = true}) async {
     themeMode.value = mode;
-    await _storageService.saveThemeMode(_mapThemeMode(mode));
+    final themeStr = _mapThemeMode(mode);
+    await _storageService.saveThemeMode(themeStr);
     Get.changeThemeMode(mode);
+    if (syncToBackend) {
+      await _syncPreferencesWithBackend(preferTheme: themeStr);
+    }
   }
 
-  Future<void> setLocale(Locale value) async {
+  Future<void> setLocale(Locale value, {bool syncToBackend = true}) async {
     locale.value = value;
     await _storageService.saveLocale(value.languageCode, value.countryCode);
     await Get.updateLocale(value);
+    if (syncToBackend) {
+      await _syncPreferencesWithBackend(localeCode: value.languageCode);
+    }
   }
 
   Future<void> setNotificationsEnabled({required bool enabled}) async {
     notificationsEnabled.value = enabled;
     await _storageService.saveNotificationsEnabled(enabled: enabled);
+  }
+
+  Future<void> _syncPreferencesWithBackend({
+    String? preferTheme,
+    String? localeCode,
+  }) async {
+    final token = _storageService.token;
+    if (token == null || token.isEmpty) return;
+
+    try {
+      final apiClient = Get.find<ApiClient>();
+      await apiClient.patchRequest(
+        ApiEndpoints.userUpdateProfile,
+        data: {
+          if (preferTheme != null) 'prefer_theme': preferTheme,
+          if (localeCode != null) 'locale': localeCode,
+        },
+      );
+    } on Exception catch (e) {
+      debugPrint('Failed to sync preferences with backend: $e');
+    }
   }
 
   String _mapThemeMode(ThemeMode mode) {

@@ -4,40 +4,40 @@ final class ApiEndpoints {
   // Auth
   static const String login = '/user/auth/login';
   static const String register = '/user/auth/register';
-  static const String logout = '/user/auth/logout';
-  static const String updatePassword = '/user/auth/password/update';
-  static const String verifyPassword = '/user/auth/password/verify';
+  static const String logout = '/auth/logout';
+  static const String updatePassword = '/auth/password/update';
+  static const String verifyPassword = '/auth/password/verify';
   static const String setPin = '/user/pin/set';
   static const String updatePin = '/user/pin/update';
   static const String verifyPin = '/user/pin/verify';
   static const String resetPin = '/user/pin/reset';
 
   // User
-  static const String userProfile = '/user/profile';
-  static const String userUpdateProfile = '/user/profile';
-  static const String userAddresses = '/user/addresses';
-  static const String userAddress = '/user/addresses/{id}';
-  static const String userWallets = '/user/wallets';
+  static const String userProfile = '/profile';
+  static const String userUpdateProfile = '/profile';
+  static const String userAddresses = '/addresses';
+  static const String userAddress = '/addresses/{id}';
+  static const String userWallets = '/wallets';
   // Categories
   static const String categories = '/categories';
   static const String categoryBySlug = '/categories/{slug}';
 
   // Payment Methods
-  static const String userPaymentMethods = '/user/payment-methods';
-  static const String userPaymentMethod = '/user/payment-methods/{id}';
-  static const String userPaymentMethodTypes = '/user/payment-method-types';
-  static const String userWalletTopUpSessions = '/user/wallets/top-up/sessions';
+  static const String userPaymentMethods = '/payment-methods';
+  static const String userPaymentMethod = '/payment-methods/{id}';
+  static const String userPaymentMethodTypes = '/payment-method-types';
+  static const String userWalletTopUpSessions = '/wallets/top-up/sessions';
   static const String userCheckoutSessions = '/user/checkout/sessions';
   static const String userPaymentSession = '/user/payments/sessions/{id}';
-  static const String userDevices = '/user/devices';
-  static const String userDeviceByToken = '/user/devices/{token}';
+  static const String userDevices = '/devices';
+  static const String userDeviceByToken = '/devices/{token}';
 
   // Products
-  static const String products = '/user/products';
-  static const String productById = '/user/products/{id}';
-  static const String vendorProducts = '/vendor/products';
-  static const String productCategories = '/user/products/categories';
-  static const String productSearch = '/user/products/search';
+  static const String products = '/products';
+  static const String productById = '/products/{id}';
+  static const String vendorProducts = '/products';
+  static const String productCategories = '/products/categories';
+  static const String productSearch = '/products/search';
 
   // Cart
   static const String cart = '/user/cart';

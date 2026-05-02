@@ -8,6 +8,8 @@ class UserProfile {
     required this.email,
     required this.image,
     required this.phoneNumber,
+    this.locale = 'en',
+    this.preferTheme = 'system',
     this.setPin = false,
     this.createdAt,
     this.updatedAt,
@@ -27,6 +29,10 @@ class UserProfile {
       phoneNumber: formatToString(
         source['phone_number'] ?? source['phoneNumber'],
       ),
+      locale: formatToString(source['locale'] ?? 'en'),
+      preferTheme: formatToString(
+        source['prefer_theme'] ?? source['preferTheme'] ?? 'system',
+      ),
       setPin: toBool(source['set_pin'] ?? source['setPin']),
       createdAt: toDateTime(source['created_at'] ?? source['createdAt']),
       updatedAt: toDateTime(source['updated_at'] ?? source['updatedAt']),
@@ -39,6 +45,8 @@ class UserProfile {
   final String email;
   final String image;
   final String phoneNumber;
+  final String locale;
+  final String preferTheme;
   final bool setPin;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -50,6 +58,8 @@ class UserProfile {
     String? email,
     String? image,
     String? phoneNumber,
+    String? locale,
+    String? preferTheme,
     bool? setPin,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -61,6 +71,8 @@ class UserProfile {
       email: email ?? this.email,
       image: image ?? this.image,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      locale: locale ?? this.locale,
+      preferTheme: preferTheme ?? this.preferTheme,
       setPin: setPin ?? this.setPin,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -74,6 +86,8 @@ class UserProfile {
     'email': email,
     'image': image,
     'phone_number': phoneNumber,
+    'locale': locale,
+    'prefer_theme': preferTheme,
     'set_pin': setPin,
     'created_at': createdAt?.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),

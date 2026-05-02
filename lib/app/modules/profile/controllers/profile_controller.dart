@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -68,6 +70,23 @@ class ProfileController extends GetxController {
       final profile = UserProfile.fromMap(apiResponse.data);
       Get.find<StorageService>().userProfile = profile;
       setProfile(profile);
+
+      // Sync preferences from backend to local app settings
+      if (Get.isRegistered<AppSettingsController>()) {
+        final settings = Get.find<AppSettingsController>();
+        if (profile.locale.isNotEmpty) {
+          await settings.setLocale(
+            Locale(profile.locale),
+            syncToBackend: false,
+          );
+        }
+        final mode = switch (profile.preferTheme) {
+          'light' => ThemeMode.light,
+          'dark' => ThemeMode.dark,
+          _ => ThemeMode.system,
+        };
+        await settings.setThemeMode(mode, syncToBackend: false);
+      }
     } on DioException catch (e) {
       Get.snackbar(
         'update_failed'.tr,

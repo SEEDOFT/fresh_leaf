@@ -56,12 +56,14 @@ class SupportChatView extends GetView<SupportChatController> {
                         horizontal: 12,
                         vertical: 16,
                       ),
-                      itemCount: messages.length +
+                      itemCount:
+                          messages.length +
                           (controller.isAdminTyping.value ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == messages.length) {
-                          final lastMsg =
-                              messages.isNotEmpty ? messages.last : null;
+                          final lastMsg = messages.isNotEmpty
+                              ? messages.last
+                              : null;
                           final isLastFromAdmin =
                               lastMsg != null && !lastMsg.isUser;
                           return Align(
