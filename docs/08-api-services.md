@@ -65,6 +65,14 @@ Future<Response> postRequest(
   Options? options,
 });
 
+// POST with file upload (multipart)
+Future<Response<Map<String, dynamic>>> postMultipart(
+  String path, {
+  required FormData data,
+  ProgressCallback? onSendProgress,
+  ProgressCallback? onReceiveProgress,
+});
+
 // PUT request
 Future<Response> putRequest(
   String path, {

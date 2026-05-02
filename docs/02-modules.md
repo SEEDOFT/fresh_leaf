@@ -435,9 +435,68 @@ class AiAssistantController extends GetxController {
 - **View**: `support_chat_view.dart`
 - **Route**: `/supportChat`
 - **Key Features**:
-  - Real-time message sync
-  - Typing indicators
-  - File attachments
+  - Real-time message sync via Pusher/Reverb
+  - Typing indicators (3s timeout)
+  - File attachments (camera/gallery via image_picker)
+  - Full-screen image viewer with pinch-to-zoom
+  - File download and share
+
+```dart
+// lib/app/modules/support_chat/controllers/support_chat_controller.dart
+class SupportChatController extends GetxController {
+  final ApiClient _apiClient = Get.find();
+  final SupportRealtimeService _realtimeService = Get.find();
+
+  final ticket = Rxn<SupportTicket>();
+  final messages = <SupportMessage>[].obs;
+  final isTyping = false.obs;
+  final isLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initChat();
+    _listenToRealtimeEvents();
+  }
+
+  void _initChat() async {
+    isLoading.value = true;
+    // Load ticket and messages
+    final response = await _apiClient.getRequest(ApiEndpoints.supportTicket);
+    if (response.statusCode == 200) {
+      ticket.value = SupportTicket.fromMap(response.data['data']);
+      await loadMessages();
+    }
+    isLoading.value = false;
+  }
+
+  void _listenToRealtimeEvents() {
+    _realtimeService.onMessageReceived((message) {
+      if (message.supportTicketId == ticket.value?.id) {
+        messages.add(message);
+      }
+    });
+
+    _realtimeService.onTypingReceived((isTyping) {
+      this.isTyping.value = isTyping;
+    });
+  }
+
+  Future<void> sendMessage(String message, {File? file}) async {
+    final formData = FormData.fromMap({
+      'message': message,
+      if (file != null) 'file': await MultipartFile.fromFile(file.path),
+    });
+
+    await _apiClient.postMultipart(
+      ApiEndpoints.supportSendMessage,
+      data: formData,
+    );
+
+    await loadMessages();
+  }
+}
+```
 
 ---
 

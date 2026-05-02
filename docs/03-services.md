@@ -32,110 +32,78 @@ lib/core/
 
 The main HTTP client using Dio with interceptors for authentication.
 
+**Key Features:**
+- Automatic token injection via interceptor
+- Multipart file upload support
+- External request support for third-party APIs
+- Detailed debug logging for FCM token operations
+
 ```dart
 // lib/core/services/api_client.dart
 class ApiClient extends GetxService {
   late final Dio _dio;
-  
-  ApiClient() {
+  final StorageService storageService;
+
+  ApiClient({required this.storageService}) {
     _dio = Dio(BaseOptions(
       baseUrl: AppConfig.apiUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: const Duration(seconds: 15),
+      receiveTimeout: const Duration(seconds: 20),
+      sendTimeout: const Duration(seconds: 20),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
     ));
-    
+
     _setupInterceptors();
   }
-  
+
   void _setupInterceptors() {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        // Add auth token
-        final storage = Get.find<StorageService>();
-        final token = storage.token;
-        
+        // Auto-inject auth token from storage
+        final token = storageService.token;
+        final languageCode = storageService.languageCode ?? 'km';
+        options.headers['Accept-Language'] = _toApiLanguage(languageCode);
+
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
+        } else {
+          options.headers.remove('Authorization');
         }
-        
-        // Add language
-        options.headers['Accept-Language'] = storage.locale ?? 'en';
-        
+
         return handler.next(options);
       },
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
       onError: (error, handler) {
-        // Handle specific errors
-        if (error.response?.statusCode == 401) {
-          // Token expired - redirect to login
-          Get.find<StorageService>().clearToken();
-          Get.offAllNamed(AppRoutes.login);
-        }
+        debugPrint('[ApiClient] Error: ${error.message}');
         return handler.next(error);
       },
     ));
   }
-  
-  // GET request
-  Future<Response<T>> getRequest<T>(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-  }) {
-    return _dio.get<T>(path, queryParameters: queryParameters);
-  }
-  
-  // POST request
-  Future<Response<T>> postRequest<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-  }) {
-    return _dio.post<T>(path, data: data, queryParameters: queryParameters);
-  }
-  
-  // PUT request
-  Future<Response<T>> putRequest<T>(
-    String path, {
-    dynamic data,
-  }) {
-    return _dio.put<T>(path, data: data);
-  }
-  
-  // PATCH request
-  Future<Response<T>> patchRequest<T>(
-    String path, {
-    dynamic data,
-  }) {
-    return _dio.patch<T>(path, data: data);
-  }
-  
-  // DELETE request
-  Future<Response<T>> deleteRequest<T>(
-    String path, {
-    dynamic data,
-  }) {
-    return _dio.delete<T>(path, data: data);
-  }
-  
-  // Multipart request (for file uploads)
-  Future<Response<T>> multipartRequest<T>(
+
+  // Standard HTTP methods
+  Future<Response<Map<String, dynamic>>> getRequest(String path, {...});
+  Future<Response<Map<String, dynamic>>> postRequest(String path, {...});
+  Future<Response<Map<String, dynamic>>> putRequest(String path, {...});
+  Future<Response<Map<String, dynamic>>> patchRequest(String path, {...});
+  Future<Response<Map<String, dynamic>>> deleteRequest(String path, {...});
+
+  // File upload
+  Future<Response<Map<String, dynamic>>> postMultipart(
     String path, {
     required FormData data,
-  }) {
-    return _dio.post<T>(
-      path,
-      data: data,
-      options: Options(
-        headers: {'Content-Type': 'multipart/form-data'},
-      ),
-    );
-  }
+    ProgressCallback? onSendProgress,
+  });
+
+  // Third-party API calls (e.g., geocoding)
+  Future<Response<T>> externalRequest<T>(
+    String url, {
+    String method = 'GET',
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  });
 }
 ```
 
@@ -390,40 +358,76 @@ class SupportRealtimeService extends GetxService {
 
 ## Notification Service
 
+Handles Firebase Cloud Messaging (FCM) for push notifications. Supports foreground, background, and terminated app states.
+
+**Key Features:**
+- FCM token management with automatic upload on login
+- Local notifications for foreground messages
+- Typing indicator updates for support chat
+- Debug logging for troubleshooting token issues
+
 ```dart
 // lib/core/services/notification_service.dart
 class NotificationService extends GetxService {
-  FirebaseMessaging? _firebaseMessaging;
-  
-  Future<void> initialize() async {
-    _firebaseMessaging = FirebaseMessaging.instance;
-    
-    // Get FCM token
-    final token = await _firebaseMessaging?.getToken();
-    if (token != null) {
-      await _registerToken(token);
+  final ApiClient apiClient;
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+
+  Future<NotificationService> init() async {
+    await _initializeLocalNotifications();
+    await _requestPermissions();
+    _listenToMessages();
+    _listenToTokenRefresh();
+    await _handleInitialMessage();
+    return this;
+  }
+
+  // Get FCM token (with debug logging)
+  Future<String?> getToken() async {
+    try {
+      final token = await _fcm.getToken();
+      debugPrint('[NotificationService] FCM Token: ${token?.substring(0, 15)}...');
+      return token;
+    } on Exception catch (e) {
+      debugPrint('[NotificationService] Error getting FCM token: $e');
+      return null;
     }
-    
-    // Handle background messages
-    FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
-    
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
   }
-  
-  Future<void> _registerToken(String token) async {
-    await Get.find<ApiClient>().postRequest(
-      ApiEndpoints.userDevices,
-      data: {'device_token': token},
-    );
+
+  // Upload token to backend (with debug logging)
+  Future<void> uploadToken() async {
+    final token = await getToken();
+    if (token != null) {
+      debugPrint('[NotificationService] Uploading FCM token...');
+      await _uploadTokenValue(token);
+    }
   }
-  
-  void _handleForegroundMessage(RemoteMessage message) {
-    // Show local notification
-    // Navigate to relevant screen
+
+  // Handle foreground messages
+  void _listenToMessages() {
+    FirebaseMessaging.onMessage.listen((message) {
+      final type = message.data['type'];
+
+      if (type == 'support_chat') {
+        // Show notification only if not on support chat screen
+        if (Get.currentRoute != AppRoutes.supportChat) {
+          _showLocalNotification(message);
+        }
+        // Refresh unread count if help center is open
+        if (Get.isRegistered<ProfileHelpCenterController>()) {
+          Get.find<ProfileHelpCenterController>().refreshUnreadCount();
+        }
+      }
+    });
+  }
+
+  // Token refresh listener
+  void _listenToTokenRefresh() {
+    _fcm.onTokenRefresh.listen((token) {
+      unawaited(_uploadTokenValue(token));
+    });
   }
 }
-```
 
 ## Service Registration (Bootstrap)
 

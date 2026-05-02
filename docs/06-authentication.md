@@ -75,12 +75,9 @@ class LoginController extends GetxController {
       final apiResponse = ApiResponse.parseMap(response.data);
       
       if (apiResponse.isSuccess) {
-        // Save token
+        // Save token to StorageService (interceptor reads from there)
         final token = apiResponse.data['token'];
         await Get.find<StorageService>().saveToken(token);
-        
-        // Update API client auth header
-        Get.find<ApiClient>().updateToken(token);
         
         // Fetch and save user profile
         await _syncUserProfile();
