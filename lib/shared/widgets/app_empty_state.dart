@@ -29,7 +29,7 @@ class AppEmptyState extends StatelessWidget {
 
     return Center(
       child: Container(
-        width: containerWidth ?? (screenWidth - 56),
+        width: containerWidth ?? screenWidth,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         decoration: BoxDecoration(
           color: scheme.surface,

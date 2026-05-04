@@ -2,8 +2,8 @@ final class ApiEndpoints {
   ApiEndpoints._();
 
   // Auth
-  static const String login = '/user/auth/login';
-  static const String register = '/user/auth/register';
+  static const String login = '/auth/login';
+  static const String register = '/auth/register';
   static const String logout = '/auth/logout';
   static const String updatePassword = '/auth/password/update';
   static const String verifyPassword = '/auth/password/verify';
@@ -13,24 +13,24 @@ final class ApiEndpoints {
   static const String resetPin = '/user/pin/reset';
 
   // User
-  static const String userProfile = '/profile';
-  static const String userUpdateProfile = '/profile';
-  static const String userAddresses = '/addresses';
-  static const String userAddress = '/addresses/{id}';
-  static const String userWallets = '/wallets';
+  static const String userProfile = '/user/profile';
+  static const String userUpdateProfile = '/user/profile';
+  static const String userAddresses = '/user/addresses';
+  static const String userAddress = '/user/addresses/{id}';
+  static const String userWallets = '/user/wallets';
   // Categories
   static const String categories = '/categories';
   static const String categoryBySlug = '/categories/{slug}';
 
   // Payment Methods
-  static const String userPaymentMethods = '/payment-methods';
-  static const String userPaymentMethod = '/payment-methods/{id}';
-  static const String userPaymentMethodTypes = '/payment-method-types';
-  static const String userWalletTopUpSessions = '/wallets/top-up/sessions';
+  static const String userPaymentMethods = '/user/payment-methods';
+  static const String userPaymentMethod = '/user/payment-methods/{id}';
+  static const String userPaymentMethodTypes = '/user/payment-method-types';
+  static const String userWalletTopUpSessions = '/user/wallets/top-up/sessions';
   static const String userCheckoutSessions = '/user/checkout/sessions';
   static const String userPaymentSession = '/user/payments/sessions/{id}';
-  static const String userDevices = '/devices';
-  static const String userDeviceByToken = '/devices/{token}';
+  static const String userDevices = '/user/devices';
+  static const String userDeviceByToken = '/user/devices/{token}';
 
   // Products
   static const String products = '/products';
@@ -51,11 +51,11 @@ final class ApiEndpoints {
   static const String orderCancel = '/user/orders/{id}/cancel';
 
   // AI Assistant
-  static const String aiSuggestions = '/ai/suggestions';
-  static const String aiChat = '/ai/chat';
-  static const String aiChatSessions = '/ai/chat/sessions';
-  static const String aiChatMessages = '/ai/chat/messages';
-  static const String aiChatHistory = '/ai/chat/history';
+  static const String aiSuggestions = '/user/ai/suggestions';
+  static const String aiChat = '/user/ai/chat';
+  static const String aiChatSessions = '/user/ai/chat/sessions';
+  static const String aiChatMessages = '/user/ai/chat/messages';
+  static const String aiChatHistory = '/user/ai/chat/history';
 
   // Support Chat
   static const String supportTicket = '/user/support/ticket';

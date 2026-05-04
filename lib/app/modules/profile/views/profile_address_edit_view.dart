@@ -306,6 +306,7 @@ class ProfileAddressEditView extends GetView<ProfileAddressEditController> {
                               const SizedBox(height: 18),
                               SizedBox(
                                 width: media.size.width,
+                                height: media.size.height * 0.05,
                                 child: FilledButton.icon(
                                   onPressed: controller.isSaving.value
                                       ? null

@@ -78,6 +78,7 @@ class AddressesView extends GetView<ProfileAddressesController> {
                             const SizedBox(height: 12),
                             SizedBox(
                               width: media.size.width,
+                              height: media.size.height * 0.05,
                               child: FilledButton.icon(
                                 onPressed: controller.openCreateAddress,
                                 icon: const Icon(

@@ -66,7 +66,7 @@ class BackgroundHeroWidget extends StatelessWidget {
               Text(
                 'FreshLeaf Organics',
                 style: TextStyle(
-                  fontSize: 48.scaled,
+                  fontSize: 34.scaled,
                   fontWeight: FontWeight.w900,
                   color: titleColor,
                   letterSpacing: -1,

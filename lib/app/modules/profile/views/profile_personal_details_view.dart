@@ -34,7 +34,7 @@ class ProfilePersonalDetailsView
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _AvatarBlock(controller: controller),
+            Center(child: _AvatarBlock(controller: controller)),
             const SizedBox(height: 16),
             const PersonalDetailsIntroCard(),
             const SizedBox(height: 16),

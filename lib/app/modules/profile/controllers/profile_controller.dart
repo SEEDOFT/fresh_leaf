@@ -43,7 +43,7 @@ class ProfileController extends GetxController {
   }
 
   void setProfile(UserProfile profile) {
-    userName.value = '${profile.firstName} ${profile.lastName}'.trim();
+    userName.value = '${profile.lastName} ${profile.firstName}'.trim();
     email.value = profile.email;
     image.value = profile.image;
     phone.value = profile.phoneNumber;

@@ -37,4 +37,34 @@ class SupportMessage {
 
   bool get isAdmin => senderType == 'admin';
   bool get isUser => senderType == 'user';
+
+  SupportMessage copyWith({
+    int? id,
+    int? supportTicketId,
+    String? senderType,
+    int? senderId,
+    String? message,
+    String? filePath,
+    DateTime? createdAt,
+  }) {
+    return SupportMessage(
+      id: id ?? this.id,
+      supportTicketId: supportTicketId ?? this.supportTicketId,
+      senderType: senderType ?? this.senderType,
+      senderId: senderId ?? this.senderId,
+      message: message ?? this.message,
+      filePath: filePath ?? this.filePath,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'support_ticket_id': supportTicketId,
+    'sender_type': senderType,
+    'sender_id': senderId,
+    'message': message,
+    'file_path': filePath,
+    'created_at': createdAt?.toIso8601String(),
+  };
 }

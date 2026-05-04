@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
-import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
@@ -221,11 +220,7 @@ class SupportChatView extends GetView<SupportChatController> {
     return CircleAvatar(
       radius: 14,
       backgroundColor: scheme.primaryContainer,
-      backgroundImage: imageUrl.isNotEmpty
-          ? NetworkImage(
-              '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$imageUrl',
-            )
-          : null,
+      backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
       child: imageUrl.isEmpty
           ? Text(
               (userProfile?.firstName.isNotEmpty ?? false)
@@ -257,8 +252,24 @@ class SupportChatView extends GetView<SupportChatController> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
-            '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath',
-            fit: BoxFit.cover,
+            filePath,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 50,
+                height: 50,
+                color: Colors.grey[300],
+                child: const Icon(Icons.error, color: Colors.red),
+              );
+            },
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                width: 50,
+                height: 50,
+                color: Colors.grey[300],
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            },
           ),
         ),
       );
@@ -426,8 +437,6 @@ class SupportChatView extends GetView<SupportChatController> {
   }
 
   void _showFullScreenImage(BuildContext context, String filePath) {
-    final imageUrl =
-        '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath';
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => Dialog(
@@ -440,7 +449,7 @@ class SupportChatView extends GetView<SupportChatController> {
                 minScale: 0.5,
                 maxScale: 4,
                 child: Image.network(
-                  imageUrl,
+                  filePath,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -460,11 +469,9 @@ class SupportChatView extends GetView<SupportChatController> {
   }
 
   Future<void> _downloadFile(String filePath) async {
-    final url =
-        '${AppConfig.apiUrl.replaceAll('/api/v1', '')}/storage/$filePath';
     try {
-      await SharePlus.instance.share(ShareParams(uri: Uri.parse(url)));
-    } on Exception catch (_) {
+      await SharePlus.instance.share(ShareParams(uri: Uri.parse(filePath)));
+    } on Exception {
       Get.snackbar('Error', 'Could not open file');
     }
   }

@@ -112,7 +112,7 @@ class SupportChatController extends GetxController {
           data: {'ticket_id': activeTicket.value!.id},
         );
       } on Exception {
-        // Do nothing now
+        //
       }
     }
   }
