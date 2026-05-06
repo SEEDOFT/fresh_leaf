@@ -367,6 +367,21 @@ Key differences from standard requests:
 - No automatic base URL prefixing
 - Uses same Dio instance for consistency
 
+#### AI Assistant
+
+```dart
+// lib/core/services/ai_assistant_api_service.dart
+class AiAssistantApiService extends GetxService {
+  // Check AI service availability
+  Future<bool> checkStatus() async {
+    final response = await _apiClient.getRequest(ApiEndpoints.aiStatus);
+    final apiResponse = ApiResponse.parseMap(response.data);
+    final data = _extractDataMap(apiResponse.data);
+    return data['available'] == true;
+  }
+}
+```
+
 ## Error Handling
 
 ### Error Response Format
@@ -432,6 +447,21 @@ Future<void> fetchProducts() async {
     }
   } finally {
     isLoading.value = false;
+  }
+}
+```
+
+#### AI Assistant API Service
+
+```dart
+// lib/core/services/ai_assistant_api_service.dart
+class AiAssistantApiService extends GetxService {
+  // Check AI service availability
+  Future<bool> checkStatus() async {
+    final response = await _apiClient.getRequest(ApiEndpoints.aiStatus);
+    final apiResponse = ApiResponse.parseMap(response.data);
+    final data = _extractDataMap(apiResponse.data);
+    return data['available'] == true;
   }
 }
 ```

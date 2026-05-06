@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/ai_chat_message.dart';
 import 'package:fresh_leaf/core/models/ai_chat_send_message_result.dart';
-import 'package:fresh_leaf/core/models/ai_chat_session.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
@@ -11,14 +10,20 @@ import 'package:get/get.dart';
 class AiAssistantApiService extends GetxService {
   final ApiClient _apiClient = Get.find<ApiClient>();
 
-  Future<AiChatSession> createSession() async {
+  Future<Map<String, dynamic>> createSession() async {
     final response = await _apiClient.postRequest(
       ApiEndpoints.aiChatSessions,
       data: <String, dynamic>{},
     );
     final apiResponse = ApiResponse.parseMap(response.data);
-    final sessionMap = _extractDataMap(apiResponse.data);
-    return AiChatSession.fromMap(sessionMap);
+    return _extractDataMap(apiResponse.data);
+  }
+
+  Future<bool> checkStatus() async {
+    final response = await _apiClient.getRequest(ApiEndpoints.aiStatus);
+    final apiResponse = ApiResponse.parseMap(response.data);
+    final data = _extractDataMap(apiResponse.data);
+    return data['available'] == true;
   }
 
   Future<AiChatSendMessageResult> sendMessage({

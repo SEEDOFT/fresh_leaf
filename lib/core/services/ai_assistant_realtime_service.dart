@@ -34,13 +34,6 @@ class AiAssistantRealtimeService extends GetxService {
       return;
     }
 
-    if (AppConfig.reverbWebSocketHost.isEmpty) {
-      throw const FormatException('Missing REVERB_WS_HOST configuration');
-    }
-    if (AppConfig.reverbAppKey.isEmpty) {
-      throw const FormatException('Missing REVERB_APP_KEY configuration');
-    }
-
     _connectionCompleter = Completer<void>();
 
     final channel = WebSocketChannel.connect(_buildSocketUri());

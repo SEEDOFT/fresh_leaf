@@ -18,6 +18,29 @@ class AiAssistantView extends GetView<AiAssistantController> {
         body: Column(
           children: [
             const AiAssistantAppBar(),
+            Obx(
+              () => controller.isAiServiceAvailable.value
+                  ? const SizedBox.shrink()
+                  : Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      color: Colors.red.shade100,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.red),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'ai_service_unavailable_banner'.tr,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
             Expanded(
               child: Obx(
                 () {

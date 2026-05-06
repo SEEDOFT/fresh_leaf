@@ -144,6 +144,9 @@ const Map<String, String> translationsKm = {
   'ai_empty_title': 'សូមស្វាគមន៍មកកាន់ FreshLeaf AI',
   'ai_empty_subtitle': 'សួរអំពីស្តុក តម្លៃ ឬព័ត៌មានផលិតផលដើម្បីចាប់ផ្តើម។',
   'ai_prompt_hint': 'សួរ FreshLeaf អ្វីក៏បាន...',
+  'ai_service_unavailable': 'សេវាកម្ម AI មិនមានសម្រាប់ប្រើប្រាស់ទេ',
+  'ai_service_unavailable_banner':
+      'សេវាកម្ម AI បច្ចុប្បន្នកំពុងផ្អាកដំណើរការ ឬមិនអាចភ្ជាប់បាន។ សូមព្យាយាមម្តងទៀតនៅពេលក្រោយ។',
   'account': 'គណនី',
   'personal_details': 'ព័ត៌មានផ្ទាល់ខ្លួន',
   'pin_security': 'សុវត្ថិភាព PIN',

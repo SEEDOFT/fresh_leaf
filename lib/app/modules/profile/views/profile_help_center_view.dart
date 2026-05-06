@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
   const ProfileHelpCenterView({super.key});
 
-  static const _companyName = 'Fresh Leaf';
+  static const _companyName = 'FreshLeaf Organics';
   static const _supportEmail = 'support@freshleaf.com';
   static const _supportPhone = '+855 12 345 678';
   static const _officeAddress = 'Phnom Penh, Cambodia';
@@ -85,16 +85,16 @@ class _SupportShortcuts extends GetView<ProfileHelpCenterController> {
             );
           }),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _SupportButton(
-            icon: Icons.smart_toy_outlined,
-            label: 'Virtual AI assistant',
-            color: scheme.secondary,
-            onTap: () => Get.toNamed<void>('/ai_assistant'),
-            width: media.size.width,
-          ),
-        ),
+        // const SizedBox(width: 10),
+        // Expanded(
+        //   child: _SupportButton(
+        //     icon: Icons.smart_toy_outlined,
+        //     label: 'Virtual AI assistant',
+        //     color: scheme.secondary,
+        //     onTap: () => Get.toNamed<void>('/ai_assistant'),
+        //     width: media.size.width,
+        //   ),
+        // ),
       ],
     );
   }

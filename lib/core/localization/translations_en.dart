@@ -145,6 +145,9 @@ const Map<String, String> translationsEn = {
   'ai_empty_subtitle':
       'Ask about inventory, pricing, or product insights to get started.',
   'ai_prompt_hint': 'Ask FreshLeaf anything...',
+  'ai_service_unavailable': 'AI Service Unavailable',
+  'ai_service_unavailable_banner':
+      'The AI service is currently down or unreachable. Please try again later.',
   'account': 'Account',
   'personal_details': 'Personal Details',
   'pin_security': 'PIN Security',

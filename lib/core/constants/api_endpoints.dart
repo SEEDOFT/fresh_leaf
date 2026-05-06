@@ -7,30 +7,30 @@ final class ApiEndpoints {
   static const String logout = '/auth/logout';
   static const String updatePassword = '/auth/password/update';
   static const String verifyPassword = '/auth/password/verify';
-  static const String setPin = '/user/pin/set';
-  static const String updatePin = '/user/pin/update';
-  static const String verifyPin = '/user/pin/verify';
-  static const String resetPin = '/user/pin/reset';
+  static const String setPin = '/pin/set';
+  static const String updatePin = '/pin/update';
+  static const String verifyPin = '/pin/verify';
+  static const String resetPin = '/pin/reset';
 
   // User
-  static const String userProfile = '/user/profile';
-  static const String userUpdateProfile = '/user/profile';
-  static const String userAddresses = '/user/addresses';
-  static const String userAddress = '/user/addresses/{id}';
-  static const String userWallets = '/user/wallets';
+  static const String userProfile = '/profile';
+  static const String userUpdateProfile = '/profile';
+  static const String userAddresses = '/addresses';
+  static const String userAddress = '/addresses/{id}';
+  static const String userWallets = '/wallets';
   // Categories
   static const String categories = '/categories';
   static const String categoryBySlug = '/categories/{slug}';
 
   // Payment Methods
-  static const String userPaymentMethods = '/user/payment-methods';
-  static const String userPaymentMethod = '/user/payment-methods/{id}';
-  static const String userPaymentMethodTypes = '/user/payment-method-types';
-  static const String userWalletTopUpSessions = '/user/wallets/top-up/sessions';
-  static const String userCheckoutSessions = '/user/checkout/sessions';
-  static const String userPaymentSession = '/user/payments/sessions/{id}';
-  static const String userDevices = '/user/devices';
-  static const String userDeviceByToken = '/user/devices/{token}';
+  static const String userPaymentMethods = '/payment-methods';
+  static const String userPaymentMethod = '/payment-methods/{id}';
+  static const String userPaymentMethodTypes = '/payment-method-types';
+  static const String userWalletTopUpSessions = '/wallets/top-up/sessions';
+  static const String userCheckoutSessions = '/checkout/sessions';
+  static const String userPaymentSession = '/payments/sessions/{id}';
+  static const String userDevices = '/devices';
+  static const String userDeviceByToken = '/devices/{token}';
 
   // Products
   static const String products = '/products';
@@ -40,33 +40,34 @@ final class ApiEndpoints {
   static const String productSearch = '/products/search';
 
   // Cart
-  static const String cart = '/user/cart';
-  static const String cartItem = '/user/cart/items/{itemId}';
-  static const String cartApplyCoupon = '/user/cart/apply-coupon';
-  static const String cartRemoveCoupon = '/user/cart/remove-coupon';
+  static const String cart = '/cart';
+  static const String cartItem = '/cart/items/{itemId}';
+  static const String cartApplyCoupon = '/cart/apply-coupon';
+  static const String cartRemoveCoupon = '/cart/remove-coupon';
 
   // Orders
-  static const String orders = '/user/orders';
-  static const String orderById = '/user/orders/{id}';
-  static const String orderCancel = '/user/orders/{id}/cancel';
+  static const String orders = '/orders';
+  static const String orderById = '/orders/{id}';
+  static const String orderCancel = '/orders/{id}/cancel';
 
   // AI Assistant
-  static const String aiSuggestions = '/user/ai/suggestions';
-  static const String aiChat = '/user/ai/chat';
-  static const String aiChatSessions = '/user/ai/chat/sessions';
-  static const String aiChatMessages = '/user/ai/chat/messages';
-  static const String aiChatHistory = '/user/ai/chat/history';
+  static const String aiSuggestions = '/ai/suggestions';
+  static const String aiChat = '/ai/chat';
+  static const String aiChatSessions = '/ai/chat/sessions';
+  static const String aiChatMessages = '/ai/chat/messages';
+  static const String aiChatHistory = '/ai/chat/history';
+  static const String aiStatus = '/ai/status';
 
   // Support Chat
-  static const String supportTicket = '/user/support/ticket';
-  static const String supportUnreadCount = '/user/support/unread-count';
-  static const String supportMessages = '/user/support/messages';
+  static const String supportTicket = '/support/ticket';
+  static const String supportUnreadCount = '/support/unread-count';
+  static const String supportMessages = '/support/messages';
 
   // Favorites/Wishlist
-  static const String wishlist = '/user/wishlist';
-  static const String wishlistItem = '/user/wishlist/items/{id}';
-  static const String addToWishlist = '/user/wishlist/add';
-  static const String removeFromWishlist = '/user/wishlist/remove';
+  static const String wishlist = '/wishlist';
+  static const String wishlistItem = '/wishlist/items/{id}';
+  static const String addToWishlist = '/wishlist/add';
+  static const String removeFromWishlist = '/wishlist/remove';
 
   // Home
   static const String homeProducts = '/home/products';

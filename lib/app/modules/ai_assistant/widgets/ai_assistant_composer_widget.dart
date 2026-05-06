@@ -15,37 +15,44 @@ class AiAssistantComposer extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller.inputController,
-              minLines: 1,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'ai_prompt_hint'.tr,
-                filled: true,
-                fillColor: scheme.surfaceContainerHighest,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
+      child: Obx(
+        () => Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller.inputController,
+                enabled:
+                    controller.isAiServiceAvailable.value &&
+                    !controller.isLoading.value,
+                minLines: 1,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: controller.isAiServiceAvailable.value
+                      ? 'ai_prompt_hint'.tr
+                      : 'ai_service_unavailable'.tr,
+                  filled: true,
+                  fillColor: scheme.surfaceContainerHighest,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Obx(
-            () => SizedBox(
+            const SizedBox(width: 12),
+            SizedBox(
               height: 48,
               width: 48,
               child: ElevatedButton(
-                onPressed: controller.isLoading.value
-                    ? null
-                    : controller.sendMessage,
+                onPressed:
+                    (controller.isAiServiceAvailable.value &&
+                        !controller.isLoading.value)
+                    ? controller.sendMessage
+                    : null,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   shape: const CircleBorder(),
@@ -68,8 +75,8 @@ class AiAssistantComposer extends StatelessWidget {
                       ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

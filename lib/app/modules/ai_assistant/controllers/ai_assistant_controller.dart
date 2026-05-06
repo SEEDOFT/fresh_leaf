@@ -14,6 +14,7 @@ class AiAssistantController extends GetxController {
   static const Duration _aiResponseTimeout = Duration(seconds: 45);
 
   final RxBool isLoading = false.obs;
+  final RxBool isAiServiceAvailable = true.obs;
   final RxBool isRealtimeReady = false.obs;
   final RxString lastRealtimeError = ''.obs;
   final AiChatStorageService _storage = Get.find<AiChatStorageService>();
@@ -37,7 +38,16 @@ class AiAssistantController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     _hydrateMessages();
+    await checkAiServiceStatus();
     await _initializeRealtimeChat(showError: false);
+  }
+
+  Future<void> checkAiServiceStatus() async {
+    try {
+      isAiServiceAvailable.value = await _apiService.checkStatus();
+    } on Exception {
+      isAiServiceAvailable.value = false;
+    }
   }
 
   @override
@@ -68,7 +78,7 @@ class AiAssistantController extends GetxController {
       _userId ??= await _apiService.resolveUserId();
       if (_sessionId == null || _sessionId!.isEmpty) {
         final session = await _apiService.createSession();
-        _sessionId = session.sessionId;
+        _sessionId = session['session_id'] as String?;
         _historyLoaded = false;
       }
 
