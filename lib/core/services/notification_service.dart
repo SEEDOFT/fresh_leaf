@@ -35,6 +35,7 @@ class NotificationService extends GetxService {
     _listenToMessages();
     _listenToTokenRefresh();
     await _handleInitialMessage();
+    print('[NotificationService] Init complete');
     return this;
   }
 
@@ -53,11 +54,20 @@ class NotificationService extends GetxService {
       settings: initSettings,
       onDidReceiveNotificationResponse: (response) {
         final payload = response.payload;
+        print(
+          '[NotificationService] onDidReceiveNotificationResponse:'
+          ' payload=$payload',
+        );
         if (payload != null) {
           final data = jsonDecode(payload) as Map<String, dynamic>;
           _handleNotificationClick(data);
         }
       },
+    );
+
+    print(
+      '[NotificationService] Local notifications initialized:'
+      ' androidSettings=$androidSettings, iosSettings=$iosSettings',
     );
 
     if (Platform.isAndroid) {
@@ -73,21 +83,27 @@ class NotificationService extends GetxService {
             AndroidFlutterLocalNotificationsPlugin
           >()
           ?.createNotificationChannel(androidChannel);
+
+      print('[NotificationService] Android notification channel created');
     }
   }
 
   Future<void> _requestPermissions() async {
     if (Platform.isAndroid) {
-      await _localNotifications
+      final granted = await _localNotifications
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
           >()
           ?.requestNotificationsPermission();
+
+      print('[NotificationService] Android permissions: granted=$granted');
       return;
     }
 
     if (Platform.isIOS || Platform.isMacOS) {
-      await _fcm.requestPermission();
+      final granted = await _fcm.requestPermission();
+
+      print('[NotificationService] iOS permissions: granted=$granted');
     }
   }
 
@@ -101,17 +117,21 @@ class NotificationService extends GetxService {
       badge: true,
       sound: true,
     );
+
+    print('[NotificationService] Foreground presentation configured');
   }
 
   void _listenToMessages() {
     // Foreground messages
     FirebaseMessaging.onMessage.listen((message) {
-      debugPrint('Got a message whilst in the foreground!');
-      debugPrint('Message data: ${message.data}');
-
       final type = message.data['type'] as String?;
+      print(
+        '[NotificationService] onMessage (foreground):'
+        ' type=$type, data=${message.data}',
+      );
 
       if (type == 'support_chat') {
+        print('[NotificationService] Handling support_chat notification');
         // Only show notification if NOT currently on the support chat screen
         if (Get.currentRoute != AppRoutes.supportChat) {
           unawaited(_showLocalNotification(message));
@@ -125,22 +145,37 @@ class NotificationService extends GetxService {
       }
 
       if (message.notification != null) {
+        print(
+          '[NotificationService] Showing notification:'
+          ' title=${message.notification?.title}',
+        );
         unawaited(_showLocalNotification(message));
       }
     });
 
     // Background messages (when app is opened from background)
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint('A new onMessageOpenedApp event was published!');
+      print(
+        '[NotificationService] onMessageOpenedApp (background):'
+        ' data=${message.data}',
+      );
       _handleNotificationClick(message.data);
     });
+
+    print('[NotificationService] Listening to FCM messages');
   }
 
   Future<void> _handleInitialMessage() async {
     // When app is opened from terminated state
     final initialMessage = await _fcm.getInitialMessage();
     if (initialMessage != null) {
+      print(
+        '[NotificationService] Initial message found:'
+        ' data=${initialMessage.data}',
+      );
       _handleNotificationClick(initialMessage.data);
+    } else {
+      print('[NotificationService] No initial message found');
     }
   }
 
@@ -149,8 +184,14 @@ class NotificationService extends GetxService {
     final android = message.notification?.android;
 
     if (notification != null) {
+      final id = notification.hashCode;
+      print(
+        '[NotificationService] Showing local notification:'
+        ' id=$id, title=${notification.title}, body=${notification.body}',
+      );
+
       await _localNotifications.show(
-        id: notification.hashCode,
+        id: id,
         title: notification.title,
         body: notification.body,
         notificationDetails: NotificationDetails(
@@ -170,28 +211,45 @@ class NotificationService extends GetxService {
         ),
         payload: jsonEncode(message.data),
       );
+
+      print('[NotificationService] Local notification shown with id: $id');
+    } else {
+      print('[NotificationService] Notification is null, not showing');
     }
   }
 
   void _listenToTokenRefresh() {
     _tokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((token) {
+      print(
+        '[NotificationService] Token refreshed: ${token.substring(0, 15)}...',
+      );
       unawaited(_uploadTokenValue(token));
     });
+
+    print('[NotificationService] Listening to token refresh');
   }
 
   void _handleNotificationClick(Map<String, dynamic> data) {
     final route = data['route'] as String?;
     final type = data['type'] as String?;
 
+    print(
+      '[NotificationService] Handling notification click:'
+      ' route=$route, type=$type, data=$data',
+    );
+
     if (type == 'support_chat') {
+      print('[NotificationService] Navigating to support_chat');
       Get.toNamed<void>(AppRoutes.supportChat);
       return;
     }
 
     if (route != null && route.isNotEmpty) {
+      print('[NotificationService] Navigating to: $route');
       Get.toNamed<void>(route);
     } else {
       // Default to notifications list if no route provided
+      print('[NotificationService] Navigating to default notifications');
       Get.toNamed<void>(AppRoutes.notifications);
     }
   }
@@ -202,13 +260,13 @@ class NotificationService extends GetxService {
       final token = await _fcm.getToken();
       if (token != null) {
         final tok = token.length > 15 ? '${token.substring(0, 15)}...' : token;
-        debugPrint('[NotificationService] FCM Token: $tok');
+        print('[NotificationService] FCM Token received: $tok');
       } else {
-        debugPrint('[NotificationService] FCM Token is null');
+        print('[NotificationService] FCM Token is null');
       }
       return token;
     } on Exception catch (e) {
-      debugPrint('[NotificationService] Error getting FCM token: $e');
+      print('[NotificationService] Error getting FCM token: $e');
       return null;
     }
   }
@@ -217,16 +275,16 @@ class NotificationService extends GetxService {
   Future<void> uploadToken() async {
     final token = await getToken();
     if (token != null) {
-      debugPrint('[NotificationService] Uploading FCM token...');
+      print('[NotificationService] Uploading FCM token...');
       await _uploadTokenValue(token);
     } else {
-      debugPrint('[NotificationService] No token to upload');
+      print('[NotificationService] No token to upload');
     }
   }
 
   Future<void> _uploadTokenValue(String token) async {
     final tok = token.length > 15 ? '${token.substring(0, 15)}...' : token;
-    debugPrint('[NotificationService] Upload token: $tok');
+    print('[NotificationService] Upload token: $tok');
     try {
       final response = await apiClient.postRequest(
         ApiEndpoints.userDevices,
@@ -235,9 +293,11 @@ class NotificationService extends GetxService {
           'device_type': Platform.isAndroid ? 'android' : 'ios',
         },
       );
-      debugPrint('[NotificationService] FCM Token uploaded: $response');
+      print(
+        '[NotificationService] FCM Token uploaded successfully: $response',
+      );
     } on Exception catch (e) {
-      debugPrint('[NotificationService] Error uploading FCM token: $e');
+      print('[NotificationService] Error uploading FCM token: $e');
     }
   }
 
@@ -249,9 +309,9 @@ class NotificationService extends GetxService {
         await apiClient.deleteRequest(
           ApiEndpoints.userDeviceByToken.replaceFirst('{token}', token),
         );
-        debugPrint('FCM Token deleted successfully');
+        print('FCM Token deleted successfully');
       } on Exception catch (e) {
-        debugPrint('Error deleting FCM token: $e');
+        print('Error deleting FCM token: $e');
       }
     }
   }
@@ -259,6 +319,7 @@ class NotificationService extends GetxService {
   @override
   void onClose() {
     unawaited(_tokenRefreshSubscription?.cancel());
+    print('[NotificationService] Service closed');
     super.onClose();
   }
 }
