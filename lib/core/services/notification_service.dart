@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print
+// This file intentionally has print() statements for error logging in production.
+// The kDebugMode check hides most verbose logs, but error logs must always show.
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -352,8 +356,8 @@ class NotificationService extends GetxService {
       final response = await apiClient.postRequest(
         ApiEndpoints.userDevices,
         data: {
-          'device_token' => token,
-          'device_type' => Platform.isAndroid ? 'android' : 'ios',
+          'device_token': token,
+          'device_type': Platform.isAndroid ? 'android' : 'ios',
         },
       );
 
