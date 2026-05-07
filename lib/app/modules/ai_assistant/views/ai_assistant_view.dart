@@ -45,7 +45,10 @@ class AiAssistantView extends GetView<AiAssistantController> {
               child: Obx(
                 () {
                   if (controller.messages.isEmpty) {
-                    return const AiAssistantEmptyState();
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: AiAssistantEmptyState(),
+                    );
                   }
 
                   return ListView.separated(
