@@ -1,7 +1,3 @@
-// ignore_for_file: avoid_print
-// This file intentionally has print() statements for error logging in production.
-// The kDebugMode check hides most verbose logs, but error logs must always show.
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
