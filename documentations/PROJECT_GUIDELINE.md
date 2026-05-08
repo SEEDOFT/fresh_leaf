@@ -5,8 +5,8 @@ This guide is the practical day-to-day handbook for contributors.
 ## 1) Prerequisites
 
 - Java 21
-- Flutter 3.32.2 (via FVM)
-- Dart SDK compatible with `^3.8.1`
+- Flutter stable (via FVM)
+- Dart SDK compatible with `^3.9.0`
 - Android Gradle wrapper 8.14 (already pinned in repo)
 
 ## 2) Setup Flow

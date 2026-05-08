@@ -8,8 +8,8 @@ FreshLeaf is a B2C mobile application built with Flutter and GetX for consumers 
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| Flutter | 3.32.2 | UI Framework |
-| Dart | ^3.8.1 | Language |
+| Flutter | stable | UI Framework |
+| Dart | ^3.9.0 | Language |
 | GetX | Latest | State management, routing, DI |
 | Dio | Latest | HTTP client |
 | GetStorage | Latest | Local persistence |

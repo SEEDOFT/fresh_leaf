@@ -7,8 +7,8 @@ wishlist, and AI assistant chat.
 
 ## Toolchain Baseline
 
-- Flutter: `3.32.2` (pinned in `.fvmrc`)
-- Dart SDK: `^3.8.1` (from `pubspec.yaml`)
+- Flutter: `stable` (pinned in `.fvmrc`)
+- Dart SDK: `^3.9.0` (from `pubspec.yaml`)
 - Java: `21` (pinned in `.mise.toml`)
 - Gradle wrapper: `8.14`
 - Android minSdk: `24` (required by `flutter_secure_storage 10.0.0`)
@@ -24,7 +24,7 @@ mise install
 mise trust
 dart pub global activate fvm
 fvm install
-fvm use 3.32.2
+fvm use stable
 fvm flutter pub get
 java -version
 fvm flutter --version
@@ -37,7 +37,7 @@ macOS/Linux:
 ```bash
 mise install && mise trust
 dart pub global activate fvm
-fvm install && fvm use 3.32.2
+fvm install && fvm use stable
 fvm flutter pub get
 java -version
 fvm flutter --version
@@ -57,7 +57,7 @@ mise trust
 ```bash
 dart pub global activate fvm
 fvm install
-fvm use 3.32.2
+fvm use stable
 fvm flutter pub get
 ```
 

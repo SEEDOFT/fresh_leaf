@@ -66,7 +66,7 @@ fresh_leaf/
 
 | Technology | Purpose |
 |------------|---------|
-| Flutter 3.32.2 | UI Framework |
+| Flutter stable | UI Framework |
 | GetX | State management, routing, DI |
 | Dio | HTTP client |
 | GetStorage | Local persistence |

@@ -76,8 +76,8 @@ class AppSettingsController extends GetxController {
       await apiClient.patchRequest(
         ApiEndpoints.userUpdateProfile,
         data: {
-          if (preferTheme != null) 'prefer_theme': preferTheme,
-          if (localeCode != null) 'locale': localeCode,
+          'prefer_theme': ?preferTheme,
+          'locale': ?localeCode,
         },
       );
     } on Exception catch (e) {

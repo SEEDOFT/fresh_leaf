@@ -436,10 +436,13 @@ class SupportChatView extends GetView<SupportChatController> {
     );
   }
 
-  void _showFullScreenImage(BuildContext context, String filePath) {
-    showDialog<void>(
+  Future<void> _showFullScreenImage(
+    BuildContext context,
+    String filePath,
+  ) async {
+    await showDialog<void>(
       context: context,
-      builder: (BuildContext context) => Dialog(
+      builder: (_) => Dialog(
         backgroundColor: Colors.black,
         insetPadding: EdgeInsets.zero,
         child: Stack(

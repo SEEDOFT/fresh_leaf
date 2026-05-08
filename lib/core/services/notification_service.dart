@@ -253,7 +253,9 @@ class NotificationService extends GetxService {
       }
     } else {
       // Always log this as it might indicate an issue
-      print('[NotificationService] Notification is null, not showing');
+      if (kDebugMode) {
+        print('[NotificationService] Notification is null, not showing');
+      }
     }
   }
 
@@ -321,7 +323,9 @@ class NotificationService extends GetxService {
       }
       return token;
     } on Exception catch (e) {
-      print('[NotificationService] Error getting FCM token: $e');
+      if (kDebugMode) {
+        print('[NotificationService] Error getting FCM token: $e');
+      }
       return null;
     }
   }
@@ -363,7 +367,9 @@ class NotificationService extends GetxService {
         );
       }
     } on Exception catch (e) {
-      print('[NotificationService] Error uploading FCM token: $e');
+      if (kDebugMode) {
+        print('[NotificationService] Error uploading FCM token: $e');
+      }
     }
   }
 
@@ -379,8 +385,10 @@ class NotificationService extends GetxService {
           print('FCM Token deleted successfully');
         }
       } on Exception catch (e) {
+      if (kDebugMode) {
         print('Error deleting FCM token: $e');
       }
+    }
     }
   }
 
