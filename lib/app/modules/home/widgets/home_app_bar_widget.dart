@@ -100,18 +100,36 @@ class HomeAppBarWidget extends GetView<HomeController> {
               ),
             ],
           ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(
-              minWidth: 40.scaled,
-              minHeight: 40.scaled,
-            ),
-            icon: Icon(
-              Icons.notifications_outlined,
-              size: 22.scaled,
-              color: scheme.onSurface,
-            ),
-            onPressed: () async => await Get.toNamed(AppRoutes.notifications),
+          Row(
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 40.scaled,
+                  minHeight: 40.scaled,
+                ),
+                icon: Icon(
+                  Icons.favorite_border_rounded,
+                  size: 22.scaled,
+                  color: scheme.onSurface,
+                ),
+                onPressed: () async => await Get.toNamed(AppRoutes.wishlist),
+              ),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 40.scaled,
+                  minHeight: 40.scaled,
+                ),
+                icon: Icon(
+                  Icons.notifications_outlined,
+                  size: 22.scaled,
+                  color: scheme.onSurface,
+                ),
+                onPressed: () async =>
+                    await Get.toNamed(AppRoutes.notifications),
+              ),
+            ],
           ),
         ],
       ),

@@ -27,6 +27,7 @@ Welcome to the FreshLeaf Flutter mobile application documentation. This folder c
 - [16. Localization](16-localization.md) - EN/KM translations
 - [17. State Management](17-state-management.md) - GetX patterns
 - [18. API Integration](18-api-integration.md) - API client & endpoints
+- [19. Wishlist](19-wishlist.md) - User product wishlist management
 
 ### Additional
 - [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions

@@ -37,6 +37,7 @@ class OrderDetailController extends GetxController {
 
   ProductInfo toProductInfo(Map<String, dynamic> item) {
     return ProductInfo(
+      id: item['id'] as int? ?? 0,
       title: item['name'] as String? ?? 'product'.tr,
       subtitle: 'order_product_subtitle'.tr,
       description: 'order_product_description'.tr,

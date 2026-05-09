@@ -1,4 +1,5 @@
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 class ProductDetailController extends GetxController {
   late final ProductInfo product;
+  final WishlistController wishlistController = Get.find<WishlistController>();
 
   final RxInt quantity = 1.obs;
 
@@ -36,6 +38,12 @@ class ProductDetailController extends GetxController {
     if (quantity.value > 1) quantity.value--;
   }
 
+  Future<void> toggleWishlist() async {
+    await wishlistController.toggleWishlist(product);
+  }
+
+  bool get isFavorite => wishlistController.isFavorite(product.id);
+
   void addToCart() {
     if (!Get.isRegistered<CartController>()) {
       Get.snackbar('unavailable'.tr, 'cart_not_ready'.tr);
@@ -52,9 +60,6 @@ class ProductDetailController extends GetxController {
         priceKhr: product.priceKhr,
       );
 
-    // Quantity logic is handled inside addOrIncrementItem for simplicity
-    // but usually you would loop or add a quantity param.
-    // For this app, let's just add the requested amount.
     if (quantity.value > 1) {
       for (var i = 1; i < quantity.value; i++) {
         cart.addOrIncrementItem(

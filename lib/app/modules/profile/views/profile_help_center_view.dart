@@ -1,3 +1,5 @@
+// lint: intentionally ignoring discarded_futures
+// ignore_for_file: discarded_futures
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';

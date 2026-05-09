@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/core/models/home_product.dart';
 import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
@@ -7,17 +10,19 @@ import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:get/get.dart';
 
-class HomeHorizontalProductsWidget extends StatelessWidget {
+class HomeHorizontalProductsWidget extends GetView<HomeController> {
   const HomeHorizontalProductsWidget({
     required this.pickedThisMorning,
     super.key,
   });
 
-  final List<HomeProduct> pickedThisMorning;
+  final List<dynamic> pickedThisMorning;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final wishlistController = Get.find<WishlistController>();
+
     if (pickedThisMorning.isEmpty) {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.scaled),
@@ -67,62 +72,73 @@ class HomeHorizontalProductsWidget extends StatelessWidget {
         itemCount: pickedThisMorning.length,
         separatorBuilder: (_, _) => SizedBox(width: 16.scaled),
         itemBuilder: (context, index) {
-          final item = pickedThisMorning[index];
+          final item = pickedThisMorning[index] as HomeProduct;
+          final productInfo = ProductInfo(
+            id: item.id,
+            title: item.title.tr,
+            subtitle: item.subtitle.tr,
+            description:
+                (item.description.isEmpty
+                        ? 'seasonal_pick_description'
+                        : item.description)
+                    .tr,
+            imageUrl: item.image,
+            tags: (item.tags.isEmpty ? ['organic', 'fresh'] : item.tags)
+                .map<String>((e) => e.tr)
+                .toList(),
+            price: item.priceValue,
+            origin: (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
+            harvest:
+                (item.harvest.isEmpty ? 'harvested_this_week' : item.harvest)
+                    .tr,
+            storage:
+                (item.storage.isEmpty
+                        ? 'refrigerate_extend_freshness'
+                        : item.storage)
+                    .tr,
+            shareSlug: ProductShareHelper.resolveSlug(
+              title: item.title.tr,
+              shareSlug: item.shareSlug,
+            ),
+            shareDeepLink: item.shareDeepLink.isEmpty
+                ? null
+                : item.shareDeepLink,
+            originalPrice: item.originalPrice > 0 ? item.originalPrice : null,
+            priceKhr: item.activePriceKhr > 0 ? item.activePriceKhr : null,
+          );
+
           return SizedBox(
             width: 200.scaled,
-            child: AppProductCard(
-              title: item.title.tr,
-              subtitle: item.subtitle.tr,
-              imageUrl: item.image,
-              price: item.activePrice > 0 ? item.activePrice : item.priceValue,
-              originalPrice: item.originalPrice > 0 ? item.originalPrice : null,
-              priceKhr: item.activePriceKhr > 0 ? item.activePriceKhr : null,
-              badge: item.badge.tr,
-              onTap: () async {
-                final product = ProductInfo(
-                  title: item.title.tr,
-                  subtitle: item.subtitle.tr,
-                  description:
-                      (item.description.isEmpty
-                              ? 'seasonal_pick_description'
-                              : item.description)
-                          .tr,
-                  imageUrl: item.image,
-                  tags: (item.tags.isEmpty ? ['organic', 'fresh'] : item.tags)
-                      .map((e) => e.tr)
-                      .toList(),
-                  price: item.priceValue,
-                  origin: (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
-                  harvest:
-                      (item.harvest.isEmpty
-                              ? 'harvested_this_week'
-                              : item.harvest)
-                          .tr,
-                  storage:
-                      (item.storage.isEmpty
-                              ? 'refrigerate_extend_freshness'
-                              : item.storage)
-                          .tr,
-                  shareSlug: ProductShareHelper.resolveSlug(
-                    title: item.title.tr,
-                    shareSlug: item.shareSlug,
-                  ),
-                  shareDeepLink: item.shareDeepLink.isEmpty
-                      ? null
-                      : item.shareDeepLink,
-                  originalPrice: item.originalPrice > 0
-                      ? item.originalPrice
-                      : null,
-                  priceKhr: item.activePriceKhr > 0
-                      ? item.activePriceKhr
-                      : null,
-                );
-                await Get.toNamed<void>(
-                  AppRoutes.productDetail,
-                  arguments: product,
-                );
-              },
-              onActionTap: () {},
+            child: Obx(
+              () => AppProductCard(
+                title: item.title.tr,
+                subtitle: item.subtitle.tr,
+                imageUrl: item.image,
+                price: item.activePrice > 0
+                    ? item.activePrice
+                    : item.priceValue,
+                originalPrice: item.originalPrice > 0
+                    ? item.originalPrice
+                    : null,
+                priceKhr: item.activePriceKhr > 0 ? item.activePriceKhr : null,
+                badge: item.badge.tr,
+                isFavorite: wishlistController.isFavorite(item.id),
+                onFavoriteTap: () =>
+                    wishlistController.toggleWishlist(productInfo),
+                onTap: () async {
+                  await Get.toNamed<void>(
+                    AppRoutes.productDetail,
+                    arguments: productInfo,
+                  );
+                },
+                onActionTap: () =>
+                    Get.find<CartController>().addOrIncrementItem(
+                      title: item.title,
+                      subtitle: item.subtitle,
+                      imageUrl: item.image,
+                      price: item.priceValue,
+                    ),
+              ),
             ),
           );
         },

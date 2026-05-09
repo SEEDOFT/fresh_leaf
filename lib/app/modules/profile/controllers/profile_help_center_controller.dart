@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
@@ -23,7 +25,7 @@ class ProfileHelpCenterController extends GetxController {
   void onInit() {
     super.onInit();
     _seedArticles();
-    _fetchUnreadCount();
+    unawaited(_fetchUnreadCount());
   }
 
   void _seedArticles() {
@@ -70,7 +72,7 @@ class ProfileHelpCenterController extends GetxController {
     }
   }
 
-  void refreshUnreadCount() {
-    _fetchUnreadCount();
+  Future<void> refreshUnreadCount() async {
+    await _fetchUnreadCount();
   }
 }

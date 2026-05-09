@@ -2,6 +2,7 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 
 class HomeProduct {
   const HomeProduct({
+    required this.id,
     required this.image,
     required this.title,
     required this.subtitle,
@@ -29,6 +30,7 @@ class HomeProduct {
     }
 
     return HomeProduct(
+      id: toInt(map['id']),
       image: formatToString(map['image']),
       title: formatToString(map['title']),
       subtitle: formatToString(map['subtitle']),
@@ -48,6 +50,7 @@ class HomeProduct {
     );
   }
 
+  final int id;
   final String image;
   final String title;
   final String subtitle;
@@ -77,6 +80,7 @@ class HomeProduct {
   }
 
   HomeProduct copyWith({
+    int? id,
     String? image,
     String? title,
     String? subtitle,
@@ -95,6 +99,7 @@ class HomeProduct {
     double? originalPrice,
   }) {
     return HomeProduct(
+      id: id ?? this.id,
       image: image ?? this.image,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
@@ -116,6 +121,7 @@ class HomeProduct {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'image': image,
       'title': title,
       'subtitle': subtitle,

@@ -1,3 +1,5 @@
+// lint: intentionally ignoring discarded_futures
+// ignore_for_file: discarded_futures
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
@@ -160,7 +162,10 @@ class LoginController extends GetxController {
 
       // Update locale
       if (profile.locale.isNotEmpty) {
-        settings.setLocale(Locale(profile.locale), syncToBackend: false);
+        // Fire and forget - intentionally not awaiting
+        Future<void>.value(
+          settings.setLocale(Locale(profile.locale), syncToBackend: false),
+        );
       }
 
       // Update theme
@@ -169,7 +174,7 @@ class LoginController extends GetxController {
         'dark' => ThemeMode.dark,
         _ => ThemeMode.system,
       };
-      settings.setThemeMode(mode, syncToBackend: false);
+      Future<void>.value(settings.setThemeMode(mode, syncToBackend: false));
     }
   }
 

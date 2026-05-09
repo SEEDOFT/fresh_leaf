@@ -75,6 +75,7 @@ class HomeRepository {
   List<HomeProduct> getMockProducts() {
     return const [
       HomeProduct(
+        id: 1,
         image:
             'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=600',
         title: 'home_product_heritage_carrots_title',
@@ -89,6 +90,7 @@ class HomeRepository {
         shareSlug: 'heritage-carrots',
       ),
       HomeProduct(
+        id: 2,
         image:
             'https://images.unsplash.com/photo-1604544025999-4c8d550e0d5a?q=80&w=600',
         title: 'home_product_golden_oysters_title',

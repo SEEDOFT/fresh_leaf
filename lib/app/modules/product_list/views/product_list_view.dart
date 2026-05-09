@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_list/controllers/product_list_controller.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,8 @@ class ProductListView extends GetView<ProductListController> {
   @override
   Widget build(BuildContext context) {
     final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
+    final wishlistController = Get.find<WishlistController>();
+
     return Scaffold(
       backgroundColor: scaffoldBg,
       appBar: CustomAppBar(title: 'all_products'.tr),
@@ -60,18 +64,25 @@ class ProductListView extends GetView<ProductListController> {
                       itemCount: controller.products.length,
                       itemBuilder: (context, index) {
                         final product = controller.products[index];
-                        return AppProductCard(
-                          title: product.title.tr,
-                          subtitle: product.subtitle.tr,
-                          imageUrl: product.imageUrl,
-                          price: product.price,
-                          onTap: () async {
-                            await Get.toNamed<void>(
-                              '/product_detail',
-                              arguments: product,
-                            );
-                          },
-                          onActionTap: () {},
+                        return Obx(
+                          () => AppProductCard(
+                            title: product.title.tr,
+                            subtitle: product.subtitle.tr,
+                            imageUrl: product.imageUrl,
+                            price: product.price,
+                            isFavorite: wishlistController.isFavorite(
+                              product.id,
+                            ),
+                            onFavoriteTap: () =>
+                                wishlistController.toggleWishlist(product),
+                            onTap: () async {
+                              await Get.toNamed<void>(
+                                AppRoutes.productDetail,
+                                arguments: product,
+                              );
+                            },
+                            onActionTap: () {},
+                          ),
                         );
                       },
                     );

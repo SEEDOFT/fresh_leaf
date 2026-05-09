@@ -85,6 +85,7 @@ class SearchController extends GetxController {
 
   Future<void> openProduct(HomeProduct item) async {
     final product = ProductInfo(
+      id: item.id,
       title: item.title.tr,
       subtitle: item.subtitle.tr,
       description:

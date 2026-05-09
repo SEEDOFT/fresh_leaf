@@ -20,6 +20,7 @@ class ProductListController extends GetxController {
         isLoading.value = false,
         products.value = const [
           ProductInfo(
+            id: 101,
             title: 'product_heritage_carrots_title',
             subtitle: 'product_heritage_carrots_subtitle',
             description: 'product_heritage_carrots_description',
@@ -33,6 +34,7 @@ class ProductListController extends GetxController {
             shareSlug: 'heritage-carrots',
           ),
           ProductInfo(
+            id: 102,
             title: 'product_golden_oysters_title',
             subtitle: 'product_golden_oysters_subtitle',
             description: 'product_golden_oysters_description',
@@ -46,6 +48,7 @@ class ProductListController extends GetxController {
             shareSlug: 'golden-oysters',
           ),
           ProductInfo(
+            id: 103,
             title: 'product_leafy_greens_title',
             subtitle: 'product_leafy_greens_subtitle',
             description: 'product_leafy_greens_description',
@@ -59,6 +62,7 @@ class ProductListController extends GetxController {
             shareSlug: 'leafy-greens',
           ),
           ProductInfo(
+            id: 104,
             title: 'product_citrus_bundle_title',
             subtitle: 'product_citrus_bundle_subtitle',
             description: 'product_citrus_bundle_description',
@@ -72,6 +76,7 @@ class ProductListController extends GetxController {
             shareSlug: 'citrus-bundle',
           ),
           ProductInfo(
+            id: 105,
             title: 'product_rainbow_chard_title',
             subtitle: 'product_rainbow_chard_subtitle',
             description: 'product_rainbow_chard_description',
@@ -85,6 +90,7 @@ class ProductListController extends GetxController {
             shareSlug: 'rainbow-chard',
           ),
           ProductInfo(
+            id: 106,
             title: 'product_wild_mushrooms_title',
             subtitle: 'product_wild_mushrooms_subtitle',
             description: 'product_wild_mushrooms_description',
@@ -98,6 +104,7 @@ class ProductListController extends GetxController {
             shareSlug: 'wild-mushrooms',
           ),
           ProductInfo(
+            id: 107,
             title: 'product_artisan_bread_title',
             subtitle: 'product_artisan_bread_subtitle',
             description: 'product_artisan_bread_description',
@@ -111,6 +118,7 @@ class ProductListController extends GetxController {
             shareSlug: 'artisan-bread',
           ),
           ProductInfo(
+            id: 108,
             title: 'product_pasture_eggs_title',
             subtitle: 'product_pasture_eggs_subtitle',
             description: 'product_pasture_eggs_description',

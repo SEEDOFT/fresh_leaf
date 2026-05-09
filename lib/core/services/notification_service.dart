@@ -1,3 +1,5 @@
+// lint: ignoring discarded_futures intentionally for fire-and-forget calls
+// ignore_for_file: discarded_futures
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -385,10 +387,10 @@ class NotificationService extends GetxService {
           print('FCM Token deleted successfully');
         }
       } on Exception catch (e) {
-      if (kDebugMode) {
-        print('Error deleting FCM token: $e');
+        if (kDebugMode) {
+          print('Error deleting FCM token: $e');
+        }
       }
-    }
     }
   }
 

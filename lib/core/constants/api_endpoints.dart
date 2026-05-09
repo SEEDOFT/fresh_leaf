@@ -65,9 +65,7 @@ final class ApiEndpoints {
 
   // Favorites/Wishlist
   static const String wishlist = '/wishlist';
-  static const String wishlistItem = '/wishlist/items/{id}';
-  static const String addToWishlist = '/wishlist/add';
-  static const String removeFromWishlist = '/wishlist/remove';
+  static const String wishlistToggle = '/wishlist/toggle';
 
   // Home
   static const String homeProducts = '/home/products';

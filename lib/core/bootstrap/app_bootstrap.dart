@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
+import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
@@ -15,6 +16,7 @@ import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/core/services/wishlist_service.dart';
 import 'package:fresh_leaf/firebase_options.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -49,6 +51,10 @@ final class AppBootstrap {
         ProductService(apiClient: apiClient),
         permanent: true,
       )
+      ..put<WishlistService>(
+        WishlistService(apiClient: apiClient),
+        permanent: true,
+      )
       ..put<PaymentSessionService>(
         PaymentSessionService(apiClient: apiClient),
         permanent: true,
@@ -65,6 +71,10 @@ final class AppBootstrap {
       )
       ..put<AppSettingsController>(
         AppSettingsController(storageService: storage),
+        permanent: true,
+      )
+      ..put<WishlistController>(
+        WishlistController(wishlistService: Get.find<WishlistService>()),
         permanent: true,
       );
 

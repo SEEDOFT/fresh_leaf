@@ -108,32 +108,4 @@ class ProductRepository {
       return [];
     }
   }
-
-  Future<bool> addToWishlist(int productId) async {
-    try {
-      final response = await _apiClient.postRequest(
-        ApiEndpoints.addToWishlist.replaceAll(
-          '{productId}',
-          productId.toString(),
-        ),
-      );
-      return response.statusCode == 200;
-    } on Exception {
-      return false;
-    }
-  }
-
-  Future<bool> removeFromWishlist(int productId) async {
-    try {
-      final response = await _apiClient.deleteRequest(
-        ApiEndpoints.removeFromWishlist.replaceAll(
-          '{productId}',
-          productId.toString(),
-        ),
-      );
-      return response.statusCode == 200;
-    } on Exception {
-      return false;
-    }
-  }
 }

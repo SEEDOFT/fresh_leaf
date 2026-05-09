@@ -1,3 +1,5 @@
+// lint: intentionally ignoring discarded_futures
+// ignore_for_file: discarded_futures
 import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
@@ -38,7 +40,7 @@ class SupportChatController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _initializeChat();
+    unawaited(_initializeChat());
   }
 
   Future<void> _initializeChat() async {
@@ -107,9 +109,11 @@ class SupportChatController extends GetxController {
     if (now.difference(_lastTypingSent).inSeconds > 2) {
       _lastTypingSent = now;
       try {
-        _apiClient.postRequest(
-          '${ApiEndpoints.supportMessages.replaceAll('/messages', '')}/typing',
-          data: {'ticket_id': activeTicket.value!.id},
+        unawaited(
+          _apiClient.postRequest(
+            '${ApiEndpoints.supportMessages.replaceAll('/messages', '')}/typing',
+            data: {'ticket_id': activeTicket.value!.id},
+          ),
         );
       } on Exception {
         //

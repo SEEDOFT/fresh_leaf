@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
@@ -14,7 +14,7 @@ class WishlistItemCard extends StatelessWidget {
     super.key,
   });
 
-  final WishlistItem item;
+  final ProductInfo item;
   final VoidCallback onRemove;
   final VoidCallback onAddToCart;
   final VoidCallback onOpen;
@@ -61,28 +61,29 @@ class WishlistItemCard extends StatelessWidget {
                       top: Radius.circular(22),
                     ),
                   ),
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: scheme.surface.withValues(alpha: 0.88),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        item.tag,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: scheme.primary,
+                  if (item.tags.isNotEmpty)
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: scheme.surface.withValues(alpha: 0.88),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          item.tags.first,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: scheme.primary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   Positioned(
                     top: 8,
                     right: 8,

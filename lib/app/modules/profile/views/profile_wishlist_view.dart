@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_wishlist_widget.dart';
+import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
@@ -15,13 +16,17 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
       backgroundColor: scaffoldBg,
       appBar: CustomAppBar(title: 'wishlist'.tr),
       body: Obx(() {
+        if (controller.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
         if (controller.items.isEmpty) {
           return const WishlistEmptyWidget();
         }
 
         final visible = controller.visibleItems;
-        final leftColumn = <WishlistItem>[];
-        final rightColumn = <WishlistItem>[];
+        final leftColumn = <ProductInfo>[];
+        final rightColumn = <ProductInfo>[];
         for (var i = 0; i < visible.length; i++) {
           if (i.isEven) {
             leftColumn.add(visible[i]);
@@ -35,82 +40,68 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
           children: [
             _WishlistControls(controller: controller),
             const SizedBox(height: 14),
-            if (visible.isEmpty)
-              WishlistEmptyWidget(
-                title: 'wishlist_filter_empty_title'.tr,
-                subtitle: 'wishlist_filter_empty_subtitle'.tr,
-                showAction: false,
-              )
-            else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: leftColumn
-                          .map(
-                            (item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: WishlistItemCard(
-                                item: item,
-                                imageHeight: _imageHeightFor(
-                                  item,
-                                  isLeft: true,
-                                ),
-                                onOpen: () =>
-                                    controller.openProductDetail(item),
-                                onRemove: () => controller.removeItem(item),
-                                onAddToCart: () => controller.addToCart(item),
-                              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: leftColumn
+                        .map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: WishlistItemCard(
+                              item: item,
+                              imageHeight: _imageHeightFor(item, isLeft: true),
+                              onOpen: () => controller.openProductDetail(item),
+                              onRemove: () => controller.removeItem(item),
+                              onAddToCart: () => controller.addToCart(item),
                             ),
-                          )
-                          .toList(),
-                    ),
+                          ),
+                        )
+                        .toList(),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      children: rightColumn
-                          .map(
-                            (item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: WishlistItemCard(
-                                item: item,
-                                imageHeight: _imageHeightFor(
-                                  item,
-                                  isLeft: false,
-                                ),
-                                onOpen: () =>
-                                    controller.openProductDetail(item),
-                                onRemove: () => controller.removeItem(item),
-                                onAddToCart: () => controller.addToCart(item),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ),
-            if (visible.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text(
-                'wishlist_hint_tap_card'.tr,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: scheme.onSurfaceVariant,
-                  fontSize: 12,
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    children: rightColumn
+                        .map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: WishlistItemCard(
+                              item: item,
+                              imageHeight: _imageHeightFor(item, isLeft: false),
+                              onOpen: () => controller.openProductDetail(item),
+                              onRemove: () => controller.removeItem(item),
+                              onAddToCart: () => controller.addToCart(item),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'wishlist_hint_tap_card'.tr,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 12,
               ),
-            ],
+            ),
           ],
         );
       }),
     );
   }
 
-  double _imageHeightFor(WishlistItem item, {required bool isLeft}) {
-    final seed = item.title.length + item.tag.length + (isLeft ? 1 : 2);
+  double _imageHeightFor(ProductInfo item, {required bool isLeft}) {
+    final seed =
+        item.title.length +
+        (item.tags.firstOrNull?.length ?? 0) +
+        (isLeft ? 1 : 2);
     final variation = seed % 3;
     if (variation == 0) return 148;
     if (variation == 1) return 176;

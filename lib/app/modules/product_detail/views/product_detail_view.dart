@@ -20,9 +20,16 @@ class ProductDetailView extends GetView<ProductDetailController> {
             onPressed: controller.shareProduct,
             tooltip: 'share_product'.tr,
           ),
-          IconButton(
-            icon: Icon(Icons.favorite_border, color: scheme.onSurface),
-            onPressed: () {},
+          Obx(
+            () => IconButton(
+              icon: Icon(
+                controller.isFavorite
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                color: controller.isFavorite ? scheme.error : scheme.onSurface,
+              ),
+              onPressed: controller.toggleWishlist,
+            ),
           ),
         ],
       ),
@@ -71,15 +78,19 @@ class ProductDetailView extends GetView<ProductDetailController> {
             ),
           ),
           const SizedBox(height: 24),
-          QuantityRowWidget(
-            quantity: controller.quantity.value,
-            onIncrement: controller.increment,
-            onDecrement: controller.decrement,
+          Obx(
+            () => QuantityRowWidget(
+              quantity: controller.quantity.value,
+              onIncrement: controller.increment,
+              onDecrement: controller.decrement,
+            ),
           ),
           const SizedBox(height: 20),
-          AddButtonWidget(
-            total: controller.total,
-            onPressed: () {},
+          Obx(
+            () => AddButtonWidget(
+              total: controller.total,
+              onPressed: controller.addToCart,
+            ),
           ),
           const SizedBox(height: 24),
         ],

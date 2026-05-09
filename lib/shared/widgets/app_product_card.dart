@@ -18,6 +18,8 @@ class AppProductCard extends StatelessWidget {
     this.layout = AppProductCardLayout.grid,
     this.actionIcon = Icons.add,
     this.actionLabel,
+    this.isFavorite = false,
+    this.onFavoriteTap,
     super.key,
   });
 
@@ -33,6 +35,8 @@ class AppProductCard extends StatelessWidget {
   final AppProductCardLayout layout;
   final IconData actionIcon;
   final String? actionLabel;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +100,27 @@ class AppProductCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  Positioned(
+                    top: 8.scaled,
+                    right: 8.scaled,
+                    child: GestureDetector(
+                      onTap: onFavoriteTap,
+                      child: Container(
+                        padding: EdgeInsets.all(6.scaled),
+                        decoration: BoxDecoration(
+                          color: scheme.surface.withValues(alpha: 0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFavorite
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_outline_rounded,
+                          size: 18.scaled,
+                          color: isFavorite ? scheme.error : scheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

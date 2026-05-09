@@ -1,0 +1,4 @@
+[mcp_servers.dart]
+command = "fvm"
+args = ["dart", "mcp-server"]
+cwd = "."
