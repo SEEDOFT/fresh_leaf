@@ -48,7 +48,7 @@ class HomeCategoriesWidget extends StatelessWidget {
         ),
         SizedBox(height: 16.scaled),
         SizedBox(
-          height: 110.scaled,
+          height: 120.scaled,
           child: ListView.separated(
             padding: EdgeInsets.symmetric(horizontal: 24.scaled),
             scrollDirection: Axis.horizontal,
@@ -57,12 +57,15 @@ class HomeCategoriesWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               final cat = categories[index];
               return Container(
-                width: 80.scaled,
+                width: 85.scaled,
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(24.scaled),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 16.scaled),
+                padding: EdgeInsets.symmetric(
+                  vertical: 12.scaled,
+                  horizontal: 8.scaled,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -70,14 +73,17 @@ class HomeCategoriesWidget extends StatelessWidget {
                       _iconFor(cat.icon),
                       color: scheme.onSurface,
                     ),
-                    SizedBox(height: 12.scaled),
+                    SizedBox(height: 8.scaled),
                     Text(
                       cat.titleKey.tr,
                       textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 12.scaled,
+                        fontSize: 11.scaled,
                         fontWeight: FontWeight.w600,
                         color: scheme.onSurface,
+                        height: 1.1,
                       ),
                     ),
                   ],

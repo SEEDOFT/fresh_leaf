@@ -65,7 +65,7 @@ class HomeHorizontalProductsWidget extends GetView<HomeController> {
     }
 
     return SizedBox(
-      height: 280.scaled,
+      height: 300.scaled,
       child: ListView.separated(
         padding: EdgeInsets.symmetric(horizontal: 24.scaled),
         scrollDirection: Axis.horizontal,

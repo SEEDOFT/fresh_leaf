@@ -51,23 +51,23 @@ class HomeRepository {
     return const [
       HomeCategory(
         icon: HomeCategoryIcon.leaf,
-        titleKey: 'home_category_leafy_greens',
+        titleKey: 'home_category_leaf',
       ),
       HomeCategory(
         icon: HomeCategoryIcon.rootAndTuber,
-        titleKey: 'home_category_root_veg',
+        titleKey: 'home_category_rootAndTuber',
       ),
       HomeCategory(
         icon: HomeCategoryIcon.bulmAndStem,
-        titleKey: 'home_category_mushrooms',
+        titleKey: 'home_category_bulmAndStem',
       ),
       HomeCategory(
         icon: HomeCategoryIcon.legume,
-        titleKey: 'home_category_citrus',
+        titleKey: 'home_category_legume',
       ),
       HomeCategory(
         icon: HomeCategoryIcon.indigenousAndWild,
-        titleKey: 'home_category_indigenous_and_wild',
+        titleKey: 'home_category_indigenousAndWild',
       ),
     ];
   }

@@ -1,5 +1,3 @@
-// lint: ignoring discarded_futures intentionally for fire-and-forget calls
-// ignore_for_file: discarded_futures
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -58,7 +56,7 @@ class NotificationService extends GetxService {
 
     await _localNotifications.initialize(
       settings: initSettings,
-      onDidReceiveNotificationResponse: (response) {
+      onDidReceiveNotificationResponse: (response) async {
         final payload = response.payload;
 
         if (kDebugMode) {
@@ -70,7 +68,7 @@ class NotificationService extends GetxService {
 
         if (payload != null) {
           final data = jsonDecode(payload) as Map<String, dynamic>;
-          _handleNotificationClick(data);
+          await _handleNotificationClick(data);
         }
       },
     );
@@ -143,7 +141,7 @@ class NotificationService extends GetxService {
 
   void _listenToMessages() {
     // Foreground messages
-    FirebaseMessaging.onMessage.listen((message) {
+    FirebaseMessaging.onMessage.listen((message) async {
       final type = message.data['type'] as String?;
 
       if (kDebugMode) {
@@ -164,7 +162,7 @@ class NotificationService extends GetxService {
 
         // Always try to refresh unread count if help center is open
         if (Get.isRegistered<ProfileHelpCenterController>()) {
-          Get.find<ProfileHelpCenterController>().refreshUnreadCount();
+          await Get.find<ProfileHelpCenterController>().refreshUnreadCount();
         }
         return;
       }
@@ -181,14 +179,14 @@ class NotificationService extends GetxService {
     });
 
     // Background messages (when app is opened from background)
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
       if (kDebugMode) {
         print(
           '[NotificationService] onMessageOpenedApp (background):'
           ' data=${message.data}',
         );
       }
-      _handleNotificationClick(message.data);
+      await _handleNotificationClick(message.data);
     });
 
     if (kDebugMode) {
@@ -206,7 +204,7 @@ class NotificationService extends GetxService {
           ' data=${initialMessage.data}',
         );
       }
-      _handleNotificationClick(initialMessage.data);
+      await _handleNotificationClick(initialMessage.data);
     } else {
       if (kDebugMode) {
         print('[NotificationService] No initial message found');
@@ -276,7 +274,7 @@ class NotificationService extends GetxService {
     }
   }
 
-  void _handleNotificationClick(Map<String, dynamic> data) {
+  Future<void> _handleNotificationClick(Map<String, dynamic> data) async {
     final route = data['route'] as String?;
     final type = data['type'] as String?;
 
@@ -291,7 +289,7 @@ class NotificationService extends GetxService {
       if (kDebugMode) {
         print('[NotificationService] Navigating to support_chat');
       }
-      Get.toNamed<void>(AppRoutes.supportChat);
+      await Get.toNamed<void>(AppRoutes.supportChat);
       return;
     }
 
@@ -299,13 +297,13 @@ class NotificationService extends GetxService {
       if (kDebugMode) {
         print('[NotificationService] Navigating to: $route');
       }
-      Get.toNamed<void>(route);
+      await Get.toNamed<void>(route);
     } else {
       // Default to notifications list if no route provided
       if (kDebugMode) {
         print('[NotificationService] Navigating to default notifications');
       }
-      Get.toNamed<void>(AppRoutes.notifications);
+      await Get.toNamed<void>(AppRoutes.notifications);
     }
   }
 
