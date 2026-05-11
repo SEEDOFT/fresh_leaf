@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
-import 'package:fresh_leaf/core/services/storage_service.dart';
+import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_attachment_preview_widget.dart';
+import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_composer_widget.dart';
+import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_typing_indicator_widget.dart';
+import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_user_avatar_widget.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
 
 class SupportChatView extends GetView<SupportChatController> {
   const SupportChatView({super.key});
@@ -40,10 +42,49 @@ class SupportChatView extends GetView<SupportChatController> {
 
                     if (messages.isEmpty) {
                       return Center(
-                        child: Text(
-                          'Start a conversation with our team',
-                          style: TextStyle(
-                            color: isDark ? Colors.white54 : Colors.black54,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.chat_bubble_outline,
+                                  size: 64,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                'Welcome to Support',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'How can we help you today? Send us a '
+                                'message and our team will get back to '
+                                'you as soon as possible.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  height: 1.5,
+                                  color: isDark
+                                      ? Colors.white54
+                                      : Colors.black54,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -69,7 +110,10 @@ class SupportChatView extends GetView<SupportChatController> {
                             alignment: isLastFromAdmin
                                 ? Alignment.centerLeft
                                 : Alignment.centerRight,
-                            child: _buildTypingIndicator(isDark),
+                            child: SupportChatBuildTypingIndicatorWidget(
+                              scheme: scheme,
+                              isDark: isDark,
+                            ),
                           );
                         }
 
@@ -144,11 +188,11 @@ class SupportChatView extends GetView<SupportChatController> {
                                           padding: const EdgeInsets.only(
                                             bottom: 6,
                                           ),
-                                          child: _buildAttachmentPreview(
-                                            context,
-                                            msg.filePath!,
-                                            isDark,
-                                          ),
+                                          child:
+                                              SupportChatBuildAttachmentPreviewWidget(
+                                                filePath: msg.filePath!,
+                                                isDark: isDark,
+                                              ),
                                         ),
                                       if (msg.message.isNotEmpty)
                                         Text(
@@ -194,7 +238,12 @@ class SupportChatView extends GetView<SupportChatController> {
                                 ),
                                 if (isMe) ...[
                                   const SizedBox(width: 8),
-                                  _buildUserAvatar(scheme),
+                                  SupportChatBuildUserAvatarWidget(
+                                    userProfile: controller.userProfile,
+                                    imageUrl:
+                                        controller.userProfile?.image ?? '',
+                                    scheme: scheme,
+                                  ),
                                 ],
                               ],
                             ),
@@ -205,277 +254,15 @@ class SupportChatView extends GetView<SupportChatController> {
                   },
                 ),
               ),
-              _buildComposer(isDark, scheme),
+              SupportChatBuildComposerWidget(
+                scheme: scheme,
+                isDark: isDark,
+                controller: controller,
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildUserAvatar(ColorScheme scheme) {
-    final userProfile = Get.find<StorageService>().userProfile;
-    final imageUrl = userProfile?.image ?? '';
-
-    return CircleAvatar(
-      radius: 14,
-      backgroundColor: scheme.primaryContainer,
-      backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-      child: imageUrl.isEmpty
-          ? Text(
-              (userProfile?.firstName.isNotEmpty ?? false)
-                  ? userProfile!.firstName[0]
-                  : 'M',
-              style: TextStyle(
-                fontSize: 10,
-                color: scheme.onPrimaryContainer,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-          : null,
-    );
-  }
-
-  Widget _buildAttachmentPreview(
-    BuildContext context,
-    String filePath,
-    bool isDark,
-  ) {
-    final isImage =
-        filePath.endsWith('.jpg') ||
-        filePath.endsWith('.jpeg') ||
-        filePath.endsWith('.png');
-
-    if (isImage) {
-      return GestureDetector(
-        onTap: () => _showFullScreenImage(context, filePath),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            filePath,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: 50,
-                height: 50,
-                color: Colors.grey[300],
-                child: const Icon(Icons.error, color: Colors.red),
-              );
-            },
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                width: 50,
-                height: 50,
-                color: Colors.grey[300],
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            },
-          ),
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () => _downloadFile(filePath),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.insert_drive_file,
-              color: isDark ? Colors.white70 : Colors.black54,
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                filePath.split('/').last,
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black87,
-                  fontSize: 13,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTypingIndicator(bool isDark) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 36, top: 4, bottom: 4),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Admin is typing',
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? Colors.white54 : Colors.black54,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-          const SizedBox(width: 4),
-          SizedBox(
-            width: 14,
-            height: 14,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: AppColors.primary.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildComposer(bool isDark, ColorScheme scheme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      color: scheme.surface,
-      child: SafeArea(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? scheme.surfaceContainerHighest
-                      : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      onPressed: controller.pickFile,
-                      icon: const Icon(Icons.attach_file),
-                      color: isDark ? Colors.white70 : Colors.grey[600],
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: controller.messageController,
-                        onChanged: (_) => controller.notifyTyping(),
-                        minLines: 1,
-                        maxLines: 5,
-                        style: TextStyle(
-                          color: isDark ? Colors.white : Colors.black87,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Message',
-                          hintStyle: TextStyle(
-                            color: isDark ? Colors.white38 : Colors.grey[500],
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 12,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              child: Obx(() {
-                final isSending = controller.isSending.value;
-                final isUploading = controller.isUploading.value;
-                final uploadProgress = controller.uploadProgress.value;
-
-                if (isSending || isUploading) {
-                  return SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          value: isUploading ? uploadProgress : null,
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                        if (isUploading)
-                          Text(
-                            '${(uploadProgress * 100).toInt()}%',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                }
-                return IconButton(
-                  onPressed: () => controller.sendMessage(),
-                  icon: const Icon(Icons.send),
-                  color: Colors.white,
-                );
-              }),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showFullScreenImage(
-    BuildContext context,
-    String filePath,
-  ) async {
-    await showDialog<void>(
-      context: context,
-      builder: (_) => Dialog(
-        backgroundColor: Colors.black,
-        insetPadding: EdgeInsets.zero,
-        child: Stack(
-          children: [
-            Center(
-              child: InteractiveViewer(
-                minScale: 0.5,
-                maxScale: 4,
-                child: Image.network(
-                  filePath,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
-              right: 8,
-              child: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _downloadFile(String filePath) async {
-    try {
-      await SharePlus.instance.share(ShareParams(uri: Uri.parse(filePath)));
-    } on Exception {
-      Get.snackbar('Error', 'Could not open file');
-    }
   }
 }

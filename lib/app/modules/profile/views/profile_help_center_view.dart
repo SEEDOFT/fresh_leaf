@@ -1,8 +1,7 @@
-// lint: intentionally ignoring discarded_futures
-// ignore_for_file: discarded_futures
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
@@ -78,9 +77,9 @@ class _SupportShortcuts extends GetView<ProfileHelpCenterController> {
                 icon: Icons.headset_mic_outlined,
                 label: 'Chat with support',
                 color: scheme.primary,
-                onTap: () {
+                onTap: () async {
                   controller.unreadSupportCount.value = 0; // Optimistic clear
-                  Get.toNamed<void>('/support_chat');
+                  await Get.toNamed<void>(AppRoutes.supportTickets);
                 },
                 width: media.size.width,
               ),

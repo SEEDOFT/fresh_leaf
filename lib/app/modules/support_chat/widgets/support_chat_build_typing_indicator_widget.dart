@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+
+class SupportChatBuildTypingIndicatorWidget extends StatelessWidget {
+  const SupportChatBuildTypingIndicatorWidget({
+    required this.scheme,
+    required this.isDark,
+    super.key,
+  });
+
+  final ColorScheme scheme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 36, top: 4, bottom: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Admin is typing',
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? Colors.white54 : Colors.black54,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          const SizedBox(width: 4),
+          SizedBox(
+            width: 14,
+            height: 14,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: scheme.primary.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

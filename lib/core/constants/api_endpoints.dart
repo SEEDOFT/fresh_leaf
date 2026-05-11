@@ -59,9 +59,10 @@ final class ApiEndpoints {
   static const String aiStatus = '/ai/status';
 
   // Support Chat
+  static const String supportTickets = '/support/tickets';
   static const String supportTicket = '/support/ticket';
-  static const String supportUnreadCount = '/support/unread-count';
   static const String supportMessages = '/support/messages';
+  static const String supportUnreadCount = '/support/unread-count';
 
   // Favorites/Wishlist
   static const String wishlist = '/wishlist';

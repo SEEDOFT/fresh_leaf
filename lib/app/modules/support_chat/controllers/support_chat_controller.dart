@@ -1,5 +1,3 @@
-// lint: intentionally ignoring discarded_futures
-// ignore_for_file: discarded_futures
 import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
@@ -8,7 +6,9 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/support_message.dart';
 import 'package:fresh_leaf/core/models/support_ticket.dart';
+import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/services/support_realtime_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +29,7 @@ class SupportChatController extends GetxController {
   final Rxn<SupportTicket> activeTicket = Rxn<SupportTicket>();
   final messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
+  final UserProfile? userProfile = Get.find<StorageService>().userProfile;
 
   static const int maxFileSizeBytes = 5 * 1024 * 1024;
 
@@ -46,21 +47,19 @@ class SupportChatController extends GetxController {
   Future<void> _initializeChat() async {
     isLoading.value = true;
     try {
-      final response = await _apiClient.getRequest(
-        ApiEndpoints.supportTicket,
-      );
-      final apiResponse = ApiResponse.parseMap(response.data);
-
-      if (apiResponse.isSuccess) {
-        activeTicket.value = SupportTicket.fromMap(apiResponse.data);
+      final args = Get.arguments as Map<String, dynamic>?;
+      if (args != null && args['ticket'] is SupportTicket) {
+        activeTicket.value = args['ticket'] as SupportTicket;
         await _loadMessages();
         await _realtimeService.subscribeToTicket(activeTicket.value!.id);
 
         _realtimeService.messages.listen((msg) {
           if (msg.supportTicketId == activeTicket.value?.id) {
-            messages.add(msg);
-            isAdminTyping.value = false;
-            _scrollToBottom();
+            if (!messages.any((m) => m.id == msg.id)) {
+              messages.add(msg);
+              isAdminTyping.value = false;
+              _scrollToBottom();
+            }
           }
         });
 
@@ -73,6 +72,10 @@ class SupportChatController extends GetxController {
             });
           }
         });
+      } else {
+        Get
+          ..snackbar('Error', 'No ticket provided')
+          ..back<void>();
       }
     } on Exception {
       Get.snackbar('Error', 'Failed to initialize support chat');
@@ -308,10 +311,12 @@ class SupportChatController extends GetxController {
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent + 100,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
+        unawaited(
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent + 100,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          ),
         );
       }
     });

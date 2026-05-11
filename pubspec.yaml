@@ -13,6 +13,7 @@ dependencies:
   firebase_messaging: ^16.2.0
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
   flutter_local_notifications: ^21.0.0
   flutter_localizations:
     sdk: flutter

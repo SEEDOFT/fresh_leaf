@@ -18,7 +18,7 @@ class WishlistService extends GetxService {
         final data = apiResponse.data['items'] as List<dynamic>?;
         if (data == null) return [];
 
-        return data.map((item) {
+        return data.cast<Map<String, dynamic>>().map((item) {
           final inventory = item['vendor_inventory'] as Map<String, dynamic>;
           final product = inventory['product'] as Map<String, dynamic>;
 

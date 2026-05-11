@@ -37,7 +37,7 @@ class NotificationService extends GetxService {
     await _handleInitialMessage();
 
     if (kDebugMode) {
-      print('[NotificationService] Init complete');
+      debugPrint('[NotificationService] Init complete');
     }
 
     return this;
@@ -60,7 +60,7 @@ class NotificationService extends GetxService {
         final payload = response.payload;
 
         if (kDebugMode) {
-          print(
+          debugPrint(
             '[NotificationService] onDidReceiveNotificationResponse:'
             ' payload=$payload',
           );
@@ -74,7 +74,7 @@ class NotificationService extends GetxService {
     );
 
     if (kDebugMode) {
-      print(
+      debugPrint(
         '[NotificationService] Local notifications initialized:'
         ' androidSettings=$androidSettings, iosSettings=$iosSettings',
       );
@@ -95,7 +95,9 @@ class NotificationService extends GetxService {
           ?.createNotificationChannel(androidChannel);
 
       if (kDebugMode) {
-        print('[NotificationService] Android notification channel created');
+        debugPrint(
+          '[NotificationService] Android notification channel created',
+        );
       }
     }
   }
@@ -109,7 +111,9 @@ class NotificationService extends GetxService {
           ?.requestNotificationsPermission();
 
       if (kDebugMode) {
-        print('[NotificationService] Android permissions: granted=$granted');
+        debugPrint(
+          '[NotificationService] Android permissions: granted=$granted',
+        );
       }
       return;
     }
@@ -118,7 +122,7 @@ class NotificationService extends GetxService {
       final granted = await _fcm.requestPermission();
 
       if (kDebugMode) {
-        print('[NotificationService] iOS permissions: granted=$granted');
+        debugPrint('[NotificationService] iOS permissions: granted=$granted');
       }
     }
   }
@@ -135,7 +139,7 @@ class NotificationService extends GetxService {
     );
 
     if (kDebugMode) {
-      print('[NotificationService] Foreground presentation configured');
+      debugPrint('[NotificationService] Foreground presentation configured');
     }
   }
 
@@ -145,7 +149,7 @@ class NotificationService extends GetxService {
       final type = message.data['type'] as String?;
 
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[NotificationService] onMessage (foreground):'
           ' type=$type, data=${message.data}',
         );
@@ -153,10 +157,13 @@ class NotificationService extends GetxService {
 
       if (type == 'support_chat') {
         if (kDebugMode) {
-          print('[NotificationService] Handling support_chat notification');
+          debugPrint(
+            '[NotificationService] Handling support_chat notification',
+          );
         }
         // Only show notification if NOT currently on the support chat screen
-        if (Get.currentRoute != AppRoutes.supportChat) {
+        if (Get.currentRoute != AppRoutes.supportChat &&
+            Get.currentRoute != AppRoutes.supportTickets) {
           unawaited(_showLocalNotification(message));
         }
 
@@ -169,7 +176,7 @@ class NotificationService extends GetxService {
 
       if (message.notification != null) {
         if (kDebugMode) {
-          print(
+          debugPrint(
             '[NotificationService] Showing notification:'
             ' title=${message.notification?.title}',
           );
@@ -181,7 +188,7 @@ class NotificationService extends GetxService {
     // Background messages (when app is opened from background)
     FirebaseMessaging.onMessageOpenedApp.listen((message) async {
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[NotificationService] onMessageOpenedApp (background):'
           ' data=${message.data}',
         );
@@ -190,7 +197,7 @@ class NotificationService extends GetxService {
     });
 
     if (kDebugMode) {
-      print('[NotificationService] Listening to FCM messages');
+      debugPrint('[NotificationService] Listening to FCM messages');
     }
   }
 
@@ -199,7 +206,7 @@ class NotificationService extends GetxService {
     final initialMessage = await _fcm.getInitialMessage();
     if (initialMessage != null) {
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[NotificationService] Initial message found:'
           ' data=${initialMessage.data}',
         );
@@ -207,7 +214,7 @@ class NotificationService extends GetxService {
       await _handleNotificationClick(initialMessage.data);
     } else {
       if (kDebugMode) {
-        print('[NotificationService] No initial message found');
+        debugPrint('[NotificationService] No initial message found');
       }
     }
   }
@@ -220,7 +227,7 @@ class NotificationService extends GetxService {
       final id = notification.hashCode;
 
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[NotificationService] Showing local notification:'
           ' id=$id, title=${notification.title}, body=${notification.body}',
         );
@@ -249,12 +256,15 @@ class NotificationService extends GetxService {
       );
 
       if (kDebugMode) {
-        print('[NotificationService] Local notification shown with id: $id');
+        debugPrint(
+          '[NotificationService] Local '
+          'notification shown with id: $id',
+        );
       }
     } else {
       // Always log this as it might indicate an issue
       if (kDebugMode) {
-        print('[NotificationService] Notification is null, not showing');
+        debugPrint('[NotificationService] Notification is null, not showing');
       }
     }
   }
@@ -262,7 +272,7 @@ class NotificationService extends GetxService {
   void _listenToTokenRefresh() {
     _tokenRefreshSubscription ??= _fcm.onTokenRefresh.listen((token) {
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[NotificationService] Token refreshed: ${token.substring(0, 15)}...',
         );
       }
@@ -270,7 +280,7 @@ class NotificationService extends GetxService {
     });
 
     if (kDebugMode) {
-      print('[NotificationService] Listening to token refresh');
+      debugPrint('[NotificationService] Listening to token refresh');
     }
   }
 
@@ -279,7 +289,7 @@ class NotificationService extends GetxService {
     final type = data['type'] as String?;
 
     if (kDebugMode) {
-      print(
+      debugPrint(
         '[NotificationService] Handling notification click:'
         ' route=$route, type=$type, data=$data',
       );
@@ -287,21 +297,21 @@ class NotificationService extends GetxService {
 
     if (type == 'support_chat') {
       if (kDebugMode) {
-        print('[NotificationService] Navigating to support_chat');
+        debugPrint('[NotificationService] Navigating to support_tickets');
       }
-      await Get.toNamed<void>(AppRoutes.supportChat);
+      await Get.toNamed<void>(AppRoutes.supportTickets);
       return;
     }
 
     if (route != null && route.isNotEmpty) {
       if (kDebugMode) {
-        print('[NotificationService] Navigating to: $route');
+        debugPrint('[NotificationService] Navigating to: $route');
       }
       await Get.toNamed<void>(route);
     } else {
       // Default to notifications list if no route provided
       if (kDebugMode) {
-        print('[NotificationService] Navigating to default notifications');
+        debugPrint('[NotificationService] Navigating to default notifications');
       }
       await Get.toNamed<void>(AppRoutes.notifications);
     }
@@ -314,17 +324,17 @@ class NotificationService extends GetxService {
       if (token != null) {
         final tok = token.length > 15 ? '${token.substring(0, 15)}...' : token;
         if (kDebugMode) {
-          print('[NotificationService] FCM Token received: $tok');
+          debugPrint('[NotificationService] FCM Token received: $tok');
         }
       } else {
         if (kDebugMode) {
-          print('[NotificationService] FCM Token is null');
+          debugPrint('[NotificationService] FCM Token is null');
         }
       }
       return token;
     } on Exception catch (e) {
       if (kDebugMode) {
-        print('[NotificationService] Error getting FCM token: $e');
+        debugPrint('[NotificationService] Error getting FCM token: $e');
       }
       return null;
     }
@@ -335,12 +345,12 @@ class NotificationService extends GetxService {
     final token = await getToken();
     if (token != null) {
       if (kDebugMode) {
-        print('[NotificationService] Uploading FCM token...');
+        debugPrint('[NotificationService] Uploading FCM token...');
       }
       await _uploadTokenValue(token);
     } else {
       if (kDebugMode) {
-        print('[NotificationService] No token to upload');
+        debugPrint('[NotificationService] No token to upload');
       }
     }
   }
@@ -349,7 +359,7 @@ class NotificationService extends GetxService {
     final tok = token.length > 15 ? '${token.substring(0, 15)}...' : token;
 
     if (kDebugMode) {
-      print('[NotificationService] Upload token: $tok');
+      debugPrint('[NotificationService] Upload token: $tok');
     }
 
     try {
@@ -362,13 +372,13 @@ class NotificationService extends GetxService {
       );
 
       if (kDebugMode) {
-        print(
+        debugPrint(
           '[NotificationService] FCM Token uploaded successfully: $response',
         );
       }
     } on Exception catch (e) {
       if (kDebugMode) {
-        print('[NotificationService] Error uploading FCM token: $e');
+        debugPrint('[NotificationService] Error uploading FCM token: $e');
       }
     }
   }
@@ -382,11 +392,11 @@ class NotificationService extends GetxService {
           ApiEndpoints.userDeviceByToken.replaceFirst('{token}', token),
         );
         if (kDebugMode) {
-          print('FCM Token deleted successfully');
+          debugPrint('FCM Token deleted successfully');
         }
       } on Exception catch (e) {
         if (kDebugMode) {
-          print('Error deleting FCM token: $e');
+          debugPrint('Error deleting FCM token: $e');
         }
       }
     }
@@ -396,7 +406,7 @@ class NotificationService extends GetxService {
   void onClose() {
     unawaited(_tokenRefreshSubscription?.cancel());
     if (kDebugMode) {
-      print('[NotificationService] Service closed');
+      debugPrint('[NotificationService] Service closed');
     }
     super.onClose();
   }

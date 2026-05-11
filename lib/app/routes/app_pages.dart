@@ -65,6 +65,8 @@ import 'package:fresh_leaf/app/modules/splash/bindings/splash_binding.dart';
 import 'package:fresh_leaf/app/modules/splash/views/splash_view.dart';
 import 'package:fresh_leaf/app/modules/support_chat/bindings/support_chat_binding.dart';
 import 'package:fresh_leaf/app/modules/support_chat/views/support_chat_view.dart';
+import 'package:fresh_leaf/app/modules/support_tickets/bindings/support_tickets_binding.dart';
+import 'package:fresh_leaf/app/modules/support_tickets/views/support_tickets_view.dart';
 import 'package:fresh_leaf/app/modules/wallet/bindings/wallet_binding.dart';
 import 'package:fresh_leaf/app/modules/wallet/views/wallet_view.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up/bindings/wallet_top_up_binding.dart';
@@ -146,6 +148,12 @@ final class AppPages {
       name: AppRoutes.aiAssistant,
       page: () => const AiAssistantView(),
       binding: AiAssistantBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.supportTickets,
+      page: () => const SupportTicketsView(),
+      binding: SupportTicketsBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

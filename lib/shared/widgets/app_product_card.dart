@@ -163,7 +163,8 @@ class AppProductCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (originalPrice != null && originalPrice! > price)
+                              if (originalPrice != null &&
+                                  originalPrice! > price)
                                 Text(
                                   '\$${originalPrice!.toStringAsFixed(2)}',
                                   style: TextStyle(
