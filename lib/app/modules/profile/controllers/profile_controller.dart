@@ -80,7 +80,7 @@ class ProfileController extends GetxController {
             syncToBackend: false,
           );
         }
-        final mode = switch (profile.preferTheme) {
+        final mode = switch (profile.theme) {
           'light' => ThemeMode.light,
           'dark' => ThemeMode.dark,
           _ => ThemeMode.system,

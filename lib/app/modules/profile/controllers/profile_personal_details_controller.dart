@@ -119,11 +119,11 @@ class ProfilePersonalDetailsController extends GetxController {
         ),
         locale: formatToString(
           mapData['locale'],
-          defaultValue: currentProfile?.locale ?? 'en',
+          defaultValue: currentProfile?.locale ?? 'km',
         ),
-        preferTheme: formatToString(
-          mapData['prefer_theme'] ?? mapData['preferTheme'],
-          defaultValue: currentProfile?.preferTheme ?? 'system',
+        theme: formatToString(
+          mapData['theme'] ?? mapData['theme'],
+          defaultValue: currentProfile?.theme ?? 'system',
         ),
         setPin: toBool(
           mapData['set_pin'] ?? mapData['setPin'],

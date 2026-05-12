@@ -169,7 +169,7 @@ class LoginController extends GetxController {
       }
 
       // Update theme
-      final mode = switch (profile.preferTheme) {
+      final mode = switch (profile.theme) {
         'light' => ThemeMode.light,
         'dark' => ThemeMode.dark,
         _ => ThemeMode.system,

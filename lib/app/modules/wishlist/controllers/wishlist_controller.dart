@@ -5,9 +5,7 @@ import 'package:fresh_leaf/core/services/wishlist_service.dart';
 import 'package:get/get.dart';
 
 class WishlistController extends GetxController {
-  WishlistController({required this.wishlistService});
-
-  final WishlistService wishlistService;
+  final WishlistService wishlistService = Get.find<WishlistService>();
 
   final RxList<ProductInfo> _items = <ProductInfo>[].obs;
   final RxBool _isLoading = false.obs;

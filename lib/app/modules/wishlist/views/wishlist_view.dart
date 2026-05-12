@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wishlist/controllers/wishlist_controller.dart';
+import 'package:fresh_leaf/app/modules/wishlist/widgets/wishlist_empty_state_widget.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
@@ -29,7 +30,7 @@ class WishlistView extends GetView<WishlistController> {
         }
 
         if (controller.items.isEmpty) {
-          return _buildEmptyState(scheme);
+          return WishlistEmptyStateWidget(scheme: scheme);
         }
 
         return RefreshIndicator(
@@ -61,42 +62,6 @@ class WishlistView extends GetView<WishlistController> {
           ),
         );
       }),
-    );
-  }
-
-  Widget _buildEmptyState(ColorScheme scheme) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.favorite_border_rounded,
-            size: 64.scaled,
-            color: scheme.onSurfaceVariant.withValues(alpha: 0.3),
-          ),
-          SizedBox(height: 16.scaled),
-          Text(
-            'wishlist_empty_title'.tr,
-            style: TextStyle(
-              fontSize: 18.scaled,
-              fontWeight: FontWeight.bold,
-              color: scheme.onSurface,
-            ),
-          ),
-          SizedBox(height: 8.scaled),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48.scaled),
-            child: Text(
-              'wishlist_empty_subtitle'.tr,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.scaled,
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

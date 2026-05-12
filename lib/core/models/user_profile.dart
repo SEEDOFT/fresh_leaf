@@ -8,11 +8,11 @@ class UserProfile {
     required this.email,
     required this.image,
     required this.phoneNumber,
-    this.locale = 'en',
-    this.preferTheme = 'system',
-    this.setPin = false,
-    this.createdAt,
-    this.updatedAt,
+    required this.locale,
+    required this.theme,
+    required this.setPin,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory UserProfile.fromMap(Map<String, dynamic> map) {
@@ -29,9 +29,9 @@ class UserProfile {
       phoneNumber: formatToString(
         source['phone_number'] ?? source['phoneNumber'],
       ),
-      locale: formatToString(source['locale'] ?? 'en'),
-      preferTheme: formatToString(
-        source['prefer_theme'] ?? source['preferTheme'] ?? 'system',
+      locale: formatToString(source['locale'] ?? 'km'),
+      theme: formatToString(
+        source['theme'] ?? source['theme'] ?? 'system',
       ),
       setPin: toBool(source['set_pin'] ?? source['setPin']),
       createdAt: toDateTime(source['created_at'] ?? source['createdAt']),
@@ -46,7 +46,7 @@ class UserProfile {
   final String image;
   final String phoneNumber;
   final String locale;
-  final String preferTheme;
+  final String theme;
   final bool setPin;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -59,7 +59,7 @@ class UserProfile {
     String? image,
     String? phoneNumber,
     String? locale,
-    String? preferTheme,
+    String? theme,
     bool? setPin,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -72,7 +72,7 @@ class UserProfile {
       image: image ?? this.image,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       locale: locale ?? this.locale,
-      preferTheme: preferTheme ?? this.preferTheme,
+      theme: theme ?? this.theme,
       setPin: setPin ?? this.setPin,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -87,7 +87,7 @@ class UserProfile {
     'image': image,
     'phone_number': phoneNumber,
     'locale': locale,
-    'prefer_theme': preferTheme,
+    'theme': theme,
     'set_pin': setPin,
     'created_at': createdAt?.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),

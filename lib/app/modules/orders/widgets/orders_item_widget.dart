@@ -3,16 +3,21 @@ import 'package:fresh_leaf/core/models/order.dart';
 import 'package:get/get.dart';
 
 class OrderItemWidget extends StatelessWidget {
-  const OrderItemWidget({required this.order, super.key, this.onTap});
+  const OrderItemWidget({
+    required this.order,
+    required this.scheme,
+    super.key,
+    this.onTap,
+  });
 
   final Order order;
   final VoidCallback? onTap;
+  final ColorScheme scheme;
 
   bool get _delivered => order.status == 'Delivered';
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final borderColor = scheme.outline.withValues(alpha: 0.22);
     final badgeBg = _delivered
         ? scheme.primaryContainer.withValues(alpha: 0.65)
