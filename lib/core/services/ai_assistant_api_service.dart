@@ -62,7 +62,7 @@ class AiAssistantApiService extends GetxService {
       final role = formatToString(item['role']).toLowerCase();
       final status = formatToString(item['status'], defaultValue: 'done');
       return AiChatMessage(
-        text: text,
+        text: text.isNotEmpty ? text : formatToString(item['error']),
         isUser: role == 'user',
         isStreaming: status == 'queued' || status == 'streaming',
         sessionId: sessionId,

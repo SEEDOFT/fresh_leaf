@@ -31,6 +31,7 @@ class AiChatRealtimeEvent {
       snakeKey: 'full_text',
       camelKey: 'fullText',
     );
+    final normalizedError = formatToString(normalizedPayload['error']);
 
     return AiChatRealtimeEvent(
       eventType: eventType,
@@ -58,11 +59,13 @@ class AiChatRealtimeEvent {
         snakeKey: 'text_chunk',
         camelKey: 'textChunk',
       ),
-      fullText: normalizedFullText.isNotEmpty
-          ? normalizedFullText
-          : formatToString(
-              normalizedPayload['content'] ?? normalizedPayload['text'],
-            ),
+      fullText: normalizedError.isNotEmpty
+          ? normalizedError
+          : (normalizedFullText.isNotEmpty
+                ? normalizedFullText
+                : formatToString(
+                    normalizedPayload['content'] ?? normalizedPayload['text'],
+                  )),
     );
   }
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 
-class SupportChatBuildUserAvatarWidget extends StatelessWidget {
-  const SupportChatBuildUserAvatarWidget({
+class SupportChatUserAvatarWidget extends StatelessWidget {
+  const SupportChatUserAvatarWidget({
     required this.userProfile,
     required this.imageUrl,
     required this.scheme,

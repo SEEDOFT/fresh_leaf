@@ -418,12 +418,12 @@ final response = await _apiClient.externalRequest<Map<String, dynamic>>(
 );
 ```
 
-### Migration Guide
+---
+## 22) Backend Optimization (May 2026)
 
-When creating new features:
-1. Create a repository in `lib/core/repositories/`
-2. Implement async methods with error handling
-3. Include mock/fallback data for development
-4. Inject repository in controller via `final _repo = RepositoryName();`
+The backend has undergone a major refactoring of its chat infrastructure (both AI Assistant and Support Chat) to improve stability and scalability:
+- **Centralized Components**: Chat logic has been extracted into standalone Livewire components (`App\Livewire\AiAssistantChat` and `App\Livewire\SupportChat`), ensuring a consistent and reusable implementation.
+- **Intelligent Polling**: Traditional `wire:poll` has been replaced with high-performance JavaScript polling using `async/await`. This prevents UI flickering and ensures that background updates only occur when a message is actively processing.
+- **Asset Reorganization**: Core CSS and JS assets are now centralized and organized by domain, significantly reducing duplication across the admin and vendor panels.
 
 --- End of content ---

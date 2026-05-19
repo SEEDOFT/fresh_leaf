@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SupportChatBuildTypingIndicatorWidget extends StatelessWidget {
-  const SupportChatBuildTypingIndicatorWidget({
+class SupportChatTypingIndicatorWidget extends StatelessWidget {
+  const SupportChatTypingIndicatorWidget({
     required this.scheme,
     required this.isDark,
     super.key,

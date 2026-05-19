@@ -389,7 +389,8 @@ class NotificationService extends GetxService {
     if (token != null) {
       try {
         await apiClient.deleteRequest(
-          ApiEndpoints.userDeviceByToken.replaceFirst('{token}', token),
+          ApiEndpoints.userDevices,
+          data: {'device_token': token},
         );
         if (kDebugMode) {
           debugPrint('FCM Token deleted successfully');

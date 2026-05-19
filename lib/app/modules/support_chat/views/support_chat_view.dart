@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
-import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_attachment_preview_widget.dart';
-import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_composer_widget.dart';
-import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_typing_indicator_widget.dart';
-import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_build_user_avatar_widget.dart';
+import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_widgets.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
@@ -110,7 +107,7 @@ class SupportChatView extends GetView<SupportChatController> {
                             alignment: isLastFromAdmin
                                 ? Alignment.centerLeft
                                 : Alignment.centerRight,
-                            child: SupportChatBuildTypingIndicatorWidget(
+                            child: SupportChatTypingIndicatorWidget(
                               scheme: scheme,
                               isDark: isDark,
                             ),
@@ -133,7 +130,7 @@ class SupportChatView extends GetView<SupportChatController> {
                                 if (!isMe) ...[
                                   const CircleAvatar(
                                     radius: 14,
-                                    // backgroundColor: AppColors.primary,
+                                    backgroundColor: AppColors.primary,
                                     child: Icon(
                                       Icons.headset_mic,
                                       size: 16,
@@ -189,7 +186,7 @@ class SupportChatView extends GetView<SupportChatController> {
                                             bottom: 6,
                                           ),
                                           child:
-                                              SupportChatBuildAttachmentPreviewWidget(
+                                              SupportChatAttachmentPreviewWidget(
                                                 filePath: msg.filePath!,
                                                 isDark: isDark,
                                               ),
@@ -238,7 +235,7 @@ class SupportChatView extends GetView<SupportChatController> {
                                 ),
                                 if (isMe) ...[
                                   const SizedBox(width: 8),
-                                  SupportChatBuildUserAvatarWidget(
+                                  SupportChatUserAvatarWidget(
                                     userProfile: controller.userProfile,
                                     imageUrl:
                                         controller.userProfile?.image ?? '',
@@ -254,7 +251,7 @@ class SupportChatView extends GetView<SupportChatController> {
                   },
                 ),
               ),
-              SupportChatBuildComposerWidget(
+              SupportChatComposerWidget(
                 scheme: scheme,
                 isDark: isDark,
                 controller: controller,

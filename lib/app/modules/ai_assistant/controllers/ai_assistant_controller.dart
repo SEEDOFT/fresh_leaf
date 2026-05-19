@@ -173,13 +173,14 @@ class AiAssistantController extends GetxController {
         prompt: prompt,
       );
     } on Exception catch (error) {
+      final errorText = _apiService.parseError(
+        error,
+        fallback: 'unable_send_chat_message'.tr,
+      );
       final lastIndex = _latestAssistantStreamingIndex();
       if (lastIndex >= 0) {
         messages[lastIndex] = messages[lastIndex].copyWith(
-          text: _apiService.parseError(
-            error,
-            fallback: 'unable_send_chat_message'.tr,
-          ),
+          text: errorText,
           isStreaming: false,
           status: 'failed',
         );
@@ -187,6 +188,7 @@ class AiAssistantController extends GetxController {
       _stopStreamWatchdog();
       await _persistMessages();
       _scheduleAutoScroll();
+      Get.snackbar('fetch_failed'.tr, errorText);
     } finally {
       isLoading.value = false;
     }
@@ -482,6 +484,14 @@ class AiAssistantController extends GetxController {
         return;
       }
 
+      final synced = await _syncLatestAssistantFromHistory(
+        index: lastIndex,
+        preferredMessageId: messages[lastIndex].messageId ?? '',
+      );
+      if (synced) {
+        return;
+      }
+
       messages[lastIndex] = messages[lastIndex].copyWith(
         text: 'Unable to receive realtime response. Please try again.',
         isStreaming: false,
@@ -534,26 +544,36 @@ class AiAssistantController extends GetxController {
       return;
     }
 
+    await _syncLatestAssistantFromHistory(
+      preferredMessageId: event.messageId,
+      index: event.messageId.isNotEmpty
+          ? _indexByMessageId(event.messageId)
+          : _latestAssistantIndex(),
+    );
+  }
+
+  Future<bool> _syncLatestAssistantFromHistory({
+    required String preferredMessageId,
+    required int index,
+  }) async {
+    final sessionId = _sessionId;
+    if (sessionId == null || sessionId.isEmpty || index < 0) {
+      return false;
+    }
+
     try {
       final history = await _apiService.fetchHistory(sessionId: sessionId);
       final finalAssistant = _resolveAssistantMessageFromHistory(
         history: history,
-        preferredMessageId: event.messageId,
+        preferredMessageId: preferredMessageId,
       );
       if (finalAssistant == null || finalAssistant.text.trim().isEmpty) {
-        return;
-      }
-
-      final index = event.messageId.isNotEmpty
-          ? _indexByMessageId(event.messageId)
-          : _latestAssistantIndex();
-      if (index < 0) {
-        return;
+        return false;
       }
 
       final current = messages[index];
       if (current.text == finalAssistant.text && !current.isStreaming) {
-        return;
+        return true;
       }
 
       messages[index] = current.copyWith(
@@ -566,8 +586,10 @@ class AiAssistantController extends GetxController {
       );
       _queuePersistMessages();
       _queueAutoScroll();
+      return true;
     } on Exception {
       // Keep event-stream result when sync fails.
+      return false;
     }
   }
 

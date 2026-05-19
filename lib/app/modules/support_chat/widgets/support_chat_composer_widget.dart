@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
-class SupportChatBuildComposerWidget extends StatelessWidget {
-  const SupportChatBuildComposerWidget({
+class SupportChatComposerWidget extends StatelessWidget {
+  const SupportChatComposerWidget({
     required this.scheme,
     required this.controller,
     required this.isDark,
@@ -66,6 +66,12 @@ class SupportChatBuildComposerWidget extends StatelessWidget {
                             fontSize: 15,
                           ),
                           border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.transparent,
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 4,
@@ -80,6 +86,7 @@ class SupportChatBuildComposerWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
+            // Send Button
             Container(
               width: 48,
               height: 48,

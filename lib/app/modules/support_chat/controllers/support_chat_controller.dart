@@ -32,6 +32,7 @@ class SupportChatController extends GetxController {
   final UserProfile? userProfile = Get.find<StorageService>().userProfile;
 
   static const int maxFileSizeBytes = 5 * 1024 * 1024;
+  static const String admin = 'admin';
 
   Timer? _typingTimer;
   DateTime _lastTypingSent = DateTime.now().subtract(
@@ -64,7 +65,7 @@ class SupportChatController extends GetxController {
         });
 
         _realtimeService.typingEvents.listen((senderType) {
-          if (senderType == 'admin') {
+          if (senderType == admin) {
             isAdminTyping.value = true;
             _typingTimer?.cancel();
             _typingTimer = Timer(const Duration(seconds: 3), () {

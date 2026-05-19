@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -46,7 +47,10 @@ class AppSettingsController extends GetxController {
     await _storageService.saveThemeMode(themeStr);
     Get.changeThemeMode(mode);
     if (syncToBackend) {
-      await _syncPreferencesWithBackend(preferTheme: themeStr);
+      await _syncPreferencesWithBackend(
+        theme: themeStr,
+        localeCode: locale.value.languageCode,
+      );
     }
   }
 
@@ -55,7 +59,10 @@ class AppSettingsController extends GetxController {
     await _storageService.saveLocale(value.languageCode, value.countryCode);
     await Get.updateLocale(value);
     if (syncToBackend) {
-      await _syncPreferencesWithBackend(localeCode: value.languageCode);
+      await _syncPreferencesWithBackend(
+        theme: _mapThemeMode(themeMode.value),
+        localeCode: value.languageCode,
+      );
     }
   }
 
@@ -65,23 +72,24 @@ class AppSettingsController extends GetxController {
   }
 
   Future<void> _syncPreferencesWithBackend({
-    String? preferTheme,
-    String? localeCode,
+    required String theme,
+    required String localeCode,
   }) async {
     final token = _storageService.token;
     if (token == null || token.isEmpty) return;
 
     try {
-      final apiClient = Get.find<ApiClient>();
-      await apiClient.patchRequest(
+      await Get.find<ApiClient>().patchRequest(
         ApiEndpoints.userUpdateProfile,
         data: {
-          'prefer_theme': ?preferTheme,
-          'locale': ?localeCode,
+          'theme': theme,
+          'locale': localeCode,
         },
       );
     } on Exception catch (e) {
-      debugPrint('Failed to sync preferences with backend: $e');
+      if (kDebugMode) {
+        debugPrint('Failed to sync preferences with backend: $e');
+      }
     }
   }
 

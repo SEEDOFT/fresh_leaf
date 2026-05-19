@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
-class SupportChatBuildAttachmentPreviewWidget extends StatelessWidget {
-  const SupportChatBuildAttachmentPreviewWidget({
+class SupportChatAttachmentPreviewWidget extends StatelessWidget {
+  const SupportChatAttachmentPreviewWidget({
     required this.filePath,
     required this.isDark,
     super.key,

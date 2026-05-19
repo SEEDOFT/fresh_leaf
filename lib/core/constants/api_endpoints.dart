@@ -30,7 +30,6 @@ final class ApiEndpoints {
   static const String userCheckoutSessions = '/checkout/sessions';
   static const String userPaymentSession = '/payments/sessions/{id}';
   static const String userDevices = '/devices';
-  static const String userDeviceByToken = '/devices/{token}';
 
   // Products
   static const String products = '/products';

@@ -73,7 +73,7 @@ class ProfilePinController extends GetxController {
 
     isSaving.value = true;
     try {
-      final api = Get.find<ApiClient>();
+      final apiClient = Get.find<ApiClient>();
       final payloads = <Map<String, dynamic>>[
         {
           'current_pin': currentPin,
@@ -91,7 +91,7 @@ class ProfilePinController extends GetxController {
       var updated = false;
       for (final payload in payloads) {
         try {
-          final response = await api.postRequest(
+          final response = await apiClient.postRequest(
             ApiEndpoints.updatePin,
             data: payload,
           );

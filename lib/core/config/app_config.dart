@@ -31,6 +31,30 @@ final class AppConfig {
 
   static const reverbAuthEndpoint = String.fromEnvironment(
     'REVERB_AUTH_ENDPOINT',
-    defaultValue: '/broadcasting/auth',
+  );
+
+  // Firebase Credentials
+  static const firebaseAndroidApiKey = String.fromEnvironment(
+    'FIREBASE_ANDROID_API_KEY',
+  );
+
+  static const firebaseIosApiKey = String.fromEnvironment(
+    'FIREBASE_IOS_API_KEY',
+  );
+
+  static const firebaseAppId = String.fromEnvironment(
+    'FIREBASE_APP_ID',
+  );
+
+  static const firebaseMessagingSenderId = String.fromEnvironment(
+    'FIREBASE_MESSAGE_SENDER_ID',
+  );
+
+  static const firebaseProjectId = String.fromEnvironment(
+    'FIREBASE_PROJECT_ID',
+  );
+
+  static const firebaseStorageBucket = String.fromEnvironment(
+    'FIREBASE_STORAGE_BUCKET',
   );
 }

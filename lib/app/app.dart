@@ -10,10 +10,7 @@ import 'package:fresh_leaf/core/widgets/app_shell_scaffold.dart';
 import 'package:get/get.dart';
 
 class FreshLeafApp extends StatefulWidget {
-  const FreshLeafApp({
-    required this.initialRoute,
-    super.key,
-  });
+  const FreshLeafApp({required this.initialRoute, super.key});
 
   final String initialRoute;
 

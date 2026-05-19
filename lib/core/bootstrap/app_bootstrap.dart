@@ -37,7 +37,6 @@ final class AppBootstrap {
     final storage = StorageService();
     await storage.init();
 
-    // Initialize secure config service with environment variables
     final secureConfig = SecureConfigService();
     await secureConfig.init();
 

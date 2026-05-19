@@ -1,3 +1,4 @@
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/support_ticket.dart';
@@ -47,7 +48,7 @@ class SupportTicketsController extends GetxController {
       if (apiResponse.isSuccess) {
         final newTicket = SupportTicket.fromMap(apiResponse.data);
         await Get.toNamed<void>(
-          ApiEndpoints.supportMessages,
+          AppRoutes.supportChat,
           arguments: {'ticket': newTicket},
         );
         await loadTickets();
