@@ -11,6 +11,7 @@ class OnboardingTextContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final pageNumber = index + 1;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,7 +28,7 @@ class OnboardingTextContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            'onboarding_badge'.tr,
+            'onboarding_badge_$pageNumber'.tr,
             style: TextStyle(
               fontSize: 12.scaled,
               fontWeight: FontWeight.w800,
@@ -48,11 +49,11 @@ class OnboardingTextContent extends StatelessWidget {
             ),
             children: [
               TextSpan(
-                text: '${'onboarding_title_top'.tr}\n',
+                text: '${'onboarding_title_top_$pageNumber'.tr}\n',
                 style: TextStyle(color: scheme.onSurface),
               ),
               TextSpan(
-                text: 'onboarding_title_bottom'.tr,
+                text: 'onboarding_title_bottom_$pageNumber'.tr,
                 style: TextStyle(color: scheme.primary),
               ),
             ],
@@ -60,7 +61,7 @@ class OnboardingTextContent extends StatelessWidget {
         ),
         SizedBox(height: 16.scaled),
         Text(
-          'onboarding_subtitle'.tr,
+          'onboarding_subtitle_$pageNumber'.tr,
           style: TextStyle(
             fontSize: 16.scaled,
             color: scheme.onSurfaceVariant,

@@ -2,12 +2,24 @@ const Map<String, String> translationsEn = {
   'skip': 'Skip',
   'next': 'Next',
   'get_started': 'Get Started',
-  'onboarding_badge': 'THE DIGITAL LARDER',
-  'onboarding_title_top': 'Freshness',
-  'onboarding_title_bottom': 'Delivered.',
-  'onboarding_subtitle':
-      'Sourcing the finest seasonal produce directly '
-      'from boutique organic farms to your kitchen.',
+  'onboarding_badge_1': 'ORGANIC FARM-TO-TABLE',
+  'onboarding_title_top_1': 'From Our Farm,',
+  'onboarding_title_bottom_1': 'To Your Door.',
+  'onboarding_subtitle_1': 'Experience the convenience of receiving seasonal, '
+  'pesticide-free harvest delivered straight from our partner'
+  ' farms to your kitchen.',
+  'onboarding_badge_2': '100% TRANSPARENT',
+  'onboarding_title_top_2': 'Quality You Can',
+  'onboarding_title_bottom_2': 'Trust.',
+  'onboarding_subtitle_2': 'We partner with local boutique '
+  'farmers who prioritize soil health, ethical practices, '
+  'and non-GMO varieties.',
+  'onboarding_badge_3': 'AI-POWERED',
+  'onboarding_title_top_3': 'Smart Fresh',
+  'onboarding_title_bottom_3': 'Shopping.',
+  'onboarding_subtitle_3': 'Our AI learns your kitchen habits to '
+  'curate the freshest seasonal basket for you, saving you '
+  'time and reducing food waste.',
   'ethically_sourced': 'Ethically Sourced',
   'carbon_neutral_delivery': '100% Carbon Neutral Delivery',
   'welcome_back': 'Welcome back',

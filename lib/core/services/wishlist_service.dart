@@ -10,6 +10,10 @@ class WishlistService extends GetxService {
   final ApiClient apiClient;
 
   Future<List<ProductInfo>> getWishlist() async {
+    final token = apiClient.storageService.token;
+    if (token == null || token.isEmpty) {
+      return [];
+    }
     try {
       final response = await apiClient.getRequest(ApiEndpoints.wishlist);
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -43,6 +47,10 @@ class WishlistService extends GetxService {
   }
 
   Future<bool> toggleWishlist(int vendorInventoryId) async {
+    final token = apiClient.storageService.token;
+    if (token == null || token.isEmpty) {
+      return false;
+    }
     try {
       final response = await apiClient.postRequest(
         ApiEndpoints.wishlistToggle,
