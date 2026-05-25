@@ -145,8 +145,15 @@ class ApiResponse<T> {
   }
 
   static List<Map<String, dynamic>> _toMapList(dynamic value) {
-    if (value is List) {
-      return value
+    dynamic listData = value;
+    if (listData is Map &&
+        listData.containsKey('data') &&
+        listData['data'] is List) {
+      listData = listData['data'];
+    }
+
+    if (listData is List) {
+      return listData
           .whereType<Map<dynamic, dynamic>>()
           .map<Map<String, dynamic>>(
             (item) => item.map<String, dynamic>(

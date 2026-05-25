@@ -11,6 +11,7 @@ class ProfilePaymentEmptyState extends StatelessWidget {
       icon: Icons.credit_card_off_outlined,
       title: 'no_payment_methods_yet'.tr,
       subtitle: 'add_card_wallet_speed_checkout'.tr,
+      margin: EdgeInsets.zero,
     );
   }
 }

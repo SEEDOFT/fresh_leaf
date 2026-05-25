@@ -63,7 +63,7 @@ class OrdersView extends GetView<OrdersController> {
                         scheme: scheme,
                         onOrderTap: (order) async => await Get.toNamed<void>(
                           AppRoutes.orderDetail,
-                          arguments: order.toMap(),
+                          arguments: order,
                         ),
                       ),
                     ),

@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 enum OrderSortType {
   newest,
@@ -9,7 +10,8 @@ enum OrderSortType {
 }
 
 class OrdersController extends GetxController {
-  static final DateFormat _dateFormat = DateFormat('MMM d, yyyy');
+  final OrderService _orderService = Get.find<OrderService>();
+
   final RxBool isLoading = false.obs;
   final RxList<Order> orders = <Order>[].obs;
   final RxString _selectedStatus = 'All'.obs;
@@ -21,28 +23,36 @@ class OrdersController extends GetxController {
   OrderSortType get selectedSort => _selectedSort.value;
   set selectedSort(OrderSortType sortType) => _selectedSort.value = sortType;
 
-  List<String> get statusFilters => const ['All', 'Processing', 'Delivered'];
+  List<String> get statusFilters => const [
+    'All',
+    'Pending',
+    'Processing',
+    'Delivered',
+    'Cancelled',
+  ];
   int get visibleOrderCount => filteredOrders.length;
 
   List<Order> get filteredOrders {
     final current = _selectedStatus.value;
     final list = current == 'All'
         ? List<Order>.from(orders)
-        : orders.where((order) => order.status == current).toList();
+        : orders.where((order) => order.statusName == current).toList();
 
     switch (_selectedSort.value) {
       case OrderSortType.newest:
         list.sort(
-          (a, b) =>
-              _tryParseOrderDate(b.date).compareTo(_tryParseOrderDate(a.date)),
+          (a, b) => (b.createdAt ?? DateTime(1970)).compareTo(
+            a.createdAt ?? DateTime(1970),
+          ),
         );
       case OrderSortType.oldest:
         list.sort(
-          (a, b) =>
-              _tryParseOrderDate(a.date).compareTo(_tryParseOrderDate(b.date)),
+          (a, b) => (a.createdAt ?? DateTime(1970)).compareTo(
+            b.createdAt ?? DateTime(1970),
+          ),
         );
       case OrderSortType.highestTotal:
-        list.sort((a, b) => b.total.compareTo(a.total));
+        list.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
     }
 
     return list;
@@ -57,7 +67,7 @@ class OrdersController extends GetxController {
     };
 
     for (final order in filteredOrders) {
-      final orderDate = _tryParseOrderDate(order.date);
+      final orderDate = order.createdAt ?? DateTime(1970);
       final section = _groupLabel(orderDate);
       groups[section]!.add(order);
     }
@@ -69,58 +79,16 @@ class OrdersController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadOrders();
+    unawaited(loadOrders());
   }
 
-  void loadOrders() {
+  Future<void> loadOrders() async {
     isLoading.value = true;
-    // Simulate network delay
-    Future.delayed(
-      const Duration(seconds: 2),
-      () => {
-        isLoading.value = false,
-        orders.value = const [
-          Order(
-            id: 'ORD001',
-            date: 'Jan 15, 2026',
-            total: 45.50,
-            status: 'Delivered',
-            items: [
-              {'name': 'Heritage Carrots', 'quantity': 1, 'price': 4.50},
-              {'name': 'Golden Oysters', 'quantity': 2, 'price': 8.00},
-            ],
-          ),
-          Order(
-            id: 'ORD002',
-            date: 'Jan 10, 2026',
-            total: 23.75,
-            status: 'Processing',
-            items: [
-              {'name': 'Leafy Greens', 'quantity': 3, 'price': 3.25},
-              {'name': 'Citrus Bundle', 'quantity': 1, 'price': 12.00},
-            ],
-          ),
-          Order(
-            id: 'ORD003',
-            date: 'Jan 5, 2026',
-            total: 67.80,
-            status: 'Delivered',
-            items: [
-              {'name': 'Rainbow Chard', 'quantity': 2, 'price': 5.90},
-              {'name': 'Wild Mushrooms', 'quantity': 1, 'price': 15.00},
-              {'name': 'Artisan Bread', 'quantity': 2, 'price': 8.00},
-            ],
-          ),
-        ],
-      },
-    );
-  }
-
-  DateTime _tryParseOrderDate(String input) {
     try {
-      return _dateFormat.parse(input);
-    } on Exception {
-      return DateTime(1970);
+      final fetchedOrders = await _orderService.getOrders();
+      orders.assignAll(fetchedOrders);
+    } finally {
+      isLoading.value = false;
     }
   }
 

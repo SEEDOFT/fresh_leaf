@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/config/app_config.dart';
 
 class AppNetworkImage extends StatelessWidget {
   const AppNetworkImage({
@@ -21,10 +22,21 @@ class AppNetworkImage extends StatelessWidget {
     final radius = borderRadius ?? BorderRadius.zero;
     final scheme = Theme.of(context).colorScheme;
 
+    var displayUrl = url;
+    if (displayUrl.isNotEmpty &&
+        !displayUrl.startsWith('http') &&
+        !displayUrl.startsWith('data:')) {
+      if (displayUrl.startsWith('/')) {
+        displayUrl = '${AppConfig.apiUrl}$displayUrl';
+      } else {
+        displayUrl = '${AppConfig.apiUrl}/storage/$displayUrl';
+      }
+    }
+
     return ClipRRect(
       borderRadius: radius,
       child: Image.network(
-        url,
+        displayUrl,
         height: height,
         width: width,
         fit: fit,

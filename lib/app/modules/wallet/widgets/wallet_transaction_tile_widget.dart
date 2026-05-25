@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +21,7 @@ class WalletTransactionTileWidget extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isCredit = tx.isCredit;
     final displayAmount = currency == 'USD'
-        ? tx.amount.toStringAsFixed(2)
+        ? formatPrice(tx.amount)
         : NumberFormat('#,###').format(tx.amount);
 
     return Container(

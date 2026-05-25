@@ -43,12 +43,11 @@ class CheckoutController extends GetxController {
       'channel-${PaymentMethodTypeCodes.creditDebit}';
 
   double get subtotal => cart.subtotal;
-  double get deliveryFee => cart.deliveryFee;
-  double get discount => subtotal >= 25 ? 2.00 : 0.0;
-  double get grandTotal => subtotal + deliveryFee - discount;
+  double get discount => 0;
+  double get grandTotal => subtotal - discount;
 
   int get totalItems =>
-      cart.items.fold<int>(0, (sum, item) => sum + item.quantity);
+      cart.items.fold<int>(0, (sum, item) => sum + item.quantity.toInt());
 
   List<CheckoutPaymentOption> get paymentOptions {
     final items = <CheckoutPaymentOption>[
@@ -138,10 +137,10 @@ class CheckoutController extends GetxController {
         items: cart.items
             .map(
               (item) => <String, dynamic>{
-                'title': item.title,
-                'subtitle': item.subtitle,
+                'title': item.vendorInventory?.displayTitle ?? '',
+                'subtitle': item.vendorInventory?.displaySubtitle ?? '',
                 'quantity': item.quantity,
-                'price': item.price,
+                'price': item.vendorInventory?.price ?? 0.0,
               },
             )
             .toList(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/models/home_category.dart';
-import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:fresh_leaf/core/constants/app_sizes.dart';
+import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -11,7 +11,7 @@ class HomeCategoriesWidget extends StatelessWidget {
     super.key,
   });
 
-  final List<HomeCategory> categories;
+  final List<ProductCategory> categories;
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,14 @@ class HomeCategoriesWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.scaled),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.p24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'browse_categories'.tr,
                 style: TextStyle(
-                  fontSize: 20.scaled,
+                  fontSize: AppSizes.s20,
                   fontWeight: FontWeight.bold,
                   color: scheme.onSurface,
                 ),
@@ -37,7 +37,7 @@ class HomeCategoriesWidget extends StatelessWidget {
                 child: Text(
                   'view_all'.tr,
                   style: TextStyle(
-                    fontSize: 13.scaled,
+                    fontSize: AppSizes.s13,
                     fontWeight: FontWeight.w600,
                     color: scheme.primary.withValues(alpha: 0.8),
                   ),
@@ -46,25 +46,25 @@ class HomeCategoriesWidget extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16.scaled),
+        SizedBox(height: AppSizes.p16),
         SizedBox(
-          height: 120.scaled,
+          height: AppSizes.categoryCardHeight,
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: 24.scaled),
+            padding: EdgeInsets.symmetric(horizontal: AppSizes.p24),
             scrollDirection: Axis.horizontal,
             itemCount: categories.length,
-            separatorBuilder: (_, _) => SizedBox(width: 12.scaled),
+            separatorBuilder: (_, _) => SizedBox(width: AppSizes.p12),
             itemBuilder: (context, index) {
               final cat = categories[index];
               return Container(
-                width: 85.scaled,
+                width: AppSizes.categoryCardWidth,
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(24.scaled),
+                  borderRadius: BorderRadius.circular(AppSizes.radius24),
                 ),
                 padding: EdgeInsets.symmetric(
-                  vertical: 12.scaled,
-                  horizontal: 8.scaled,
+                  vertical: AppSizes.p12,
+                  horizontal: AppSizes.p8,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -73,14 +73,14 @@ class HomeCategoriesWidget extends StatelessWidget {
                       _iconFor(cat.icon),
                       color: scheme.onSurface,
                     ),
-                    SizedBox(height: 8.scaled),
+                    SizedBox(height: AppSizes.p8),
                     Text(
-                      cat.titleKey.tr,
+                      cat.name,
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11.scaled,
+                        fontSize: AppSizes.s11,
                         fontWeight: FontWeight.w600,
                         color: scheme.onSurface,
                         height: 1.1,
@@ -96,20 +96,20 @@ class HomeCategoriesWidget extends StatelessWidget {
     );
   }
 
-  IconData _iconFor(HomeCategoryIcon icon) {
+  IconData _iconFor(ProductCategoryIcon icon) {
     switch (icon) {
-      case HomeCategoryIcon.fruit:
-        return MdiIcons.foodApple; // 🍎 Actual apple icon (not just a symbol)
-      case HomeCategoryIcon.rootAndTuber:
-        return MdiIcons.carrot; // 🥕 Carrot — closest to root/tuber crops
-      case HomeCategoryIcon.bulmAndStem:
-        return MdiIcons.corn; // 🌽 Corn — good for bulb/stem veggies
-      case HomeCategoryIcon.legume:
-        return MdiIcons.peanut; // 🥜 Peanut — directly represents legumes
-      case HomeCategoryIcon.indigenousAndWild:
-        return MdiIcons.sprout; // 🌱 Sprout — evokes wild/foraged plants
-      case HomeCategoryIcon.leaf:
-        return MdiIcons.leaf; // 🍃 Leaf — exact match, also in MDI
+      case ProductCategoryIcon.fruit:
+        return MdiIcons.foodApple;
+      case ProductCategoryIcon.rootAndTuber:
+        return MdiIcons.carrot;
+      case ProductCategoryIcon.bulbAndStem:
+        return MdiIcons.corn;
+      case ProductCategoryIcon.legume:
+        return MdiIcons.peanut;
+      case ProductCategoryIcon.indigenousAndWild:
+        return MdiIcons.sprout;
+      case ProductCategoryIcon.leaf:
+        return MdiIcons.leaf;
     }
   }
 }

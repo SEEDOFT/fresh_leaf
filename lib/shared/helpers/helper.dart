@@ -1,4 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+
+String formatPrice(double price) {
+  final formatter = NumberFormat('#,##0.00');
+  return formatter.format(price);
+}
+
+String formatPriceNoDecimals(double price) {
+  final formatter = NumberFormat('#,##0');
+  return formatter.format(price);
+}
 
 String formatToString(dynamic value, {String defaultValue = ''}) {
   if (value == null) return defaultValue;

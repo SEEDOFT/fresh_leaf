@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/services/wishlist_service.dart';
 import 'package:get/get.dart';
 
@@ -9,10 +9,10 @@ class WishlistController extends GetxController {
 
   final WishlistService wishlistService;
 
-  final RxList<ProductInfo> _items = <ProductInfo>[].obs;
+  final RxList<VendorInventory> _items = <VendorInventory>[].obs;
   final RxBool _isLoading = false.obs;
 
-  List<ProductInfo> get items => _items;
+  List<VendorInventory> get items => _items;
   bool get isLoading => _isLoading.value;
 
   @override
@@ -31,7 +31,7 @@ class WishlistController extends GetxController {
     }
   }
 
-  Future<void> toggleWishlist(ProductInfo product) async {
+  Future<void> toggleWishlist(VendorInventory product) async {
     final isFav = isFavorite(product.id);
 
     // Optimistic UI update

@@ -40,7 +40,8 @@ final class ApiEndpoints {
 
   // Cart
   static const String cart = '/cart';
-  static const String cartItem = '/cart/items/{itemId}';
+  static const String cartById = '/cart/{id}';
+  static const String cartCheckout = '/cart/checkout';
   static const String cartApplyCoupon = '/cart/apply-coupon';
   static const String cartRemoveCoupon = '/cart/remove-coupon';
 
@@ -48,6 +49,7 @@ final class ApiEndpoints {
   static const String orders = '/orders';
   static const String orderById = '/orders/{id}';
   static const String orderCancel = '/orders/{id}/cancel';
+  static const String orderConfirmReceipt = '/orders/{id}/confirm-receipt';
 
   // AI Assistant
   static const String aiSuggestions = '/ai/suggestions';
@@ -60,16 +62,14 @@ final class ApiEndpoints {
   // Support Chat
   static const String supportTickets = '/support/tickets';
   static const String supportTicket = '/support/ticket';
+  static const String supportTyping = '/support/typing';
+  static const String supportMessage = '/support/message';
   static const String supportMessages = '/support/messages';
   static const String supportUnreadCount = '/support/unread-count';
 
   // Favorites/Wishlist
   static const String wishlist = '/wishlist';
   static const String wishlistToggle = '/wishlist/toggle';
-
-  // Home
-  static const String homeProducts = '/home/products';
-  static const String homeCategories = '/home/categories';
 
   // Organic Products
   static const String organicProducts = '/organic-products';

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 class CheckoutSummaryCardWidget extends StatelessWidget {
   const CheckoutSummaryCardWidget({
     required this.subtotal,
-    required this.deliveryFee,
     required this.discount,
     required this.total,
     required this.isPlacingOrder,
@@ -16,7 +15,6 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
   });
 
   final double subtotal;
-  final double deliveryFee;
   final double discount;
   final double total;
   final bool isPlacingOrder;
@@ -35,17 +33,14 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
             label: 'subtotal'.tr,
             amount: subtotal,
           ),
-          const SizedBox(height: 8),
-          SummaryRow(
-            label: 'delivery_fee'.tr,
-            amount: deliveryFee,
-          ),
-          const SizedBox(height: 8),
-          SummaryRow(
-            label: 'discount'.tr,
-            amount: -discount,
-            isDiscount: true,
-          ),
+          if (discount > 0) ...[
+            const SizedBox(height: 8),
+            SummaryRow(
+              label: 'discount'.tr,
+              amount: -discount,
+              isDiscount: true,
+            ),
+          ],
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Divider(

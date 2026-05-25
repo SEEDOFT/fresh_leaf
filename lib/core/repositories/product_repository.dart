@@ -1,16 +1,17 @@
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
-import 'package:fresh_leaf/core/models/organic_product.dart';
 import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class ProductRepository {
   final ApiClient _apiClient = Get.find<ApiClient>();
 
-  Future<List<OrganicProduct>> getOrganicProducts({
+  Future<List<VendorInventory>> getOrganicProducts({
     int page = 1,
     int limit = 20,
     int? categoryId,
+    String? searchQuery,
   }) async {
     try {
       final queryParams = <String, dynamic>{
@@ -20,6 +21,9 @@ class ProductRepository {
       if (categoryId != null) {
         queryParams['category_id'] = categoryId;
       }
+      if (searchQuery != null) {
+        queryParams['q'] = searchQuery;
+      }
 
       final response = await _apiClient.getRequest(
         ApiEndpoints.organicProducts,
@@ -27,11 +31,18 @@ class ProductRepository {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        final data = response.data!['data'] as List?;
-        if (data != null) {
-          return data
+        final rawData = response.data!['data'];
+        final dataList = (rawData is Map)
+            ? (rawData['vendor_inventories'] ??
+                      rawData['products'] ??
+                      rawData['data'])
+                  as List<dynamic>?
+            : rawData as List<dynamic>?;
+
+        if (dataList != null) {
+          return dataList
               .map(
-                (json) => OrganicProduct.fromMap(json as Map<String, dynamic>),
+                (json) => VendorInventory.fromMap(json as Map<String, dynamic>),
               )
               .toList();
         }
@@ -42,7 +53,7 @@ class ProductRepository {
     }
   }
 
-  Future<OrganicProduct?> getOrganicProductDetail(int productId) async {
+  Future<VendorInventory?> getOrganicProductDetail(int productId) async {
     try {
       final response = await _apiClient.getRequest(
         ApiEndpoints.organicProductDetail.replaceAll(
@@ -52,7 +63,7 @@ class ProductRepository {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        return OrganicProduct.fromMap(
+        return VendorInventory.fromMap(
           response.data!['data'] as Map<String, dynamic>,
         );
       }

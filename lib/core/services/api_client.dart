@@ -124,15 +124,12 @@ class ApiClient extends GetxService {
     dio.ProgressCallback? onSendProgress,
     dio.ProgressCallback? onReceiveProgress,
   }) {
+    final resolvedOptions = _resolveMultipartOptions(options);
     return _dio.post<Map<String, dynamic>>(
       path,
       data: data,
       queryParameters: queryParameters,
-      options: dio.Options(
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      ),
+      options: resolvedOptions,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
@@ -149,6 +146,15 @@ class ApiClient extends GetxService {
       );
     }
     return provided ?? dio.Options();
+  }
+
+  dio.Options _resolveMultipartOptions(dio.Options? provided) {
+    return (provided ?? dio.Options()).copyWith(
+      headers: <String, dynamic>{
+        'Content-Type': 'multipart/form-data',
+        ...?provided?.headers,
+      },
+    );
   }
 
   Future<dio.Response<Map<String, dynamic>>> putRequest(

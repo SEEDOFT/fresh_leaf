@@ -1,122 +1,78 @@
+import 'dart:async';
+import 'package:fresh_leaf/core/models/cart_item.dart' as core_models;
+import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:get/get.dart';
 
-class CartItem {
-  const CartItem({
-    required this.title,
-    required this.subtitle,
-    required this.imageUrl,
-    required this.price,
-    required this.quantity,
-    this.originalPrice,
-    this.priceKhr,
-  });
-
-  final String title;
-  final String subtitle;
-  final String imageUrl;
-  final double price;
-  final int quantity;
-  final double? originalPrice;
-  final double? priceKhr;
-
-  CartItem copyWith({
-    String? title,
-    String? subtitle,
-    String? imageUrl,
-    double? price,
-    int? quantity,
-    double? originalPrice,
-    double? priceKhr,
-  }) {
-    return CartItem(
-      title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
-      imageUrl: imageUrl ?? this.imageUrl,
-      price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-      originalPrice: originalPrice ?? this.originalPrice,
-      priceKhr: priceKhr ?? this.priceKhr,
-    );
-  }
-}
-
 class CartController extends GetxController {
-  final RxList<CartItem> items = <CartItem>[
-    const CartItem(
-      title: 'Heritage Carrots',
-      subtitle: 'Rainbow bunch, 500g',
-      imageUrl:
-          'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=600',
-      price: 4.50,
-      quantity: 2,
-    ),
-    const CartItem(
-      title: 'Golden Oysters',
-      subtitle: 'Wild harvested, 200g',
-      imageUrl:
-          'https://images.unsplash.com/photo-1604544025999-4c8d550e0d5a?q=80&w=600',
-      price: 8,
-      quantity: 1,
-    ),
-  ].obs;
+  final CartService _cartService = Get.find<CartService>();
+
+  final RxList<core_models.CartItem> items = <core_models.CartItem>[].obs;
+  final RxBool isLoading = true.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    unawaited(fetchCart());
+  }
+
+  Future<void> fetchCart() async {
+    isLoading.value = true;
+    try {
+      final fetchedItems = await _cartService.getCart();
+      items.assignAll(fetchedItems);
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   double get subtotal {
     return items.fold(
       0,
-      (sum, item) => sum + (item.price * item.quantity),
+      (sum, item) => sum + item.subtotal,
     );
   }
 
-  double get deliveryFee => items.isEmpty ? 0 : 1.75;
+  double get total => subtotal;
 
-  double get total => subtotal + deliveryFee;
-
-  void increaseQuantity(int index) {
+  Future<void> increaseQuantity(int index) async {
     final current = items[index];
-    items[index] = current.copyWith(quantity: current.quantity + 1);
+    final success = await _cartService.updateCartItem(
+      current.id,
+      current.quantity + 1,
+    );
+    if (success) {
+      await fetchCart();
+    }
   }
 
-  void decreaseQuantity(int index) {
+  Future<void> decreaseQuantity(int index) async {
     final current = items[index];
     if (current.quantity <= 1) {
-      items.removeAt(index);
+      final success = await _cartService.removeCartItem(current.id);
+      if (success) {
+        items.removeAt(index);
+      }
       return;
     }
-    items[index] = current.copyWith(quantity: current.quantity - 1);
+    final success = await _cartService.updateCartItem(
+      current.id,
+      current.quantity - 1,
+    );
+    if (success) {
+      await fetchCart();
+    }
   }
 
   void clearCart() {
     items.clear();
   }
 
-  void addOrIncrementItem({
-    required String title,
-    required String subtitle,
-    required String imageUrl,
-    required double price,
-    double? originalPrice,
-    double? priceKhr,
-  }) {
-    final index = items.indexWhere(
-      (item) => item.title == title && item.subtitle == subtitle,
-    );
-
-    if (index >= 0) {
-      final current = items[index];
-      items[index] = current.copyWith(quantity: current.quantity + 1);
-      return;
+  Future<void> addToCart(int vendorInventoryId, double quantity) async {
+    final success = await _cartService.addToCart(vendorInventoryId, quantity);
+    if (success) {
+      await fetchCart();
+    } else {
+      Get.snackbar('error'.tr, 'failed_to_add_to_cart'.tr);
     }
-
-    items.add(
-      CartItem(
-        title: title,
-        subtitle: subtitle,
-        imageUrl: imageUrl,
-        price: price,
-        quantity: 1,
-        originalPrice: originalPrice,
-        priceKhr: priceKhr,
-      ),
-    );
   }
 }

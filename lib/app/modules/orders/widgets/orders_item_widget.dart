@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class OrderItemWidget extends StatelessWidget {
   const OrderItemWidget({
@@ -14,7 +16,7 @@ class OrderItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final ColorScheme scheme;
 
-  bool get _delivered => order.status == 'Delivered';
+  bool get _delivered => order.statusName == 'Delivered';
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +82,7 @@ class OrderItemWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  order.id,
+                  order.orderNumber,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -91,7 +93,9 @@ class OrderItemWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              order.date,
+              order.createdAt != null
+                  ? DateFormat('MMM d, yyyy').format(order.createdAt!)
+                  : '',
               style: TextStyle(
                 fontSize: 13,
                 color: scheme.onSurfaceVariant,
@@ -107,7 +111,7 @@ class OrderItemWidget extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$${order.total.toStringAsFixed(2)}',
+                  '\$${formatPrice(order.totalAmount)}',
                   style: TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w800,
@@ -168,7 +172,7 @@ class OrderItemWidget extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  '${item['quantity']}x',
+                  '${item.quantity.toInt()}x',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -178,7 +182,7 @@ class OrderItemWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    item['name'] as String? ?? '-',
+                    item.productNameSnapshot,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -188,7 +192,7 @@ class OrderItemWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '\$${((item['price'] as num?) ?? 0).toStringAsFixed(2)}',
+                  '\$${formatPrice(item.subtotal)}',
                   style: TextStyle(
                     fontSize: 13,
                     color: mutedColor,
@@ -225,13 +229,13 @@ class OrderItemWidget extends StatelessWidget {
   }
 
   String get _translatedStatus {
-    switch (order.status) {
+    switch (order.statusName) {
       case 'Delivered':
         return 'delivered'.tr;
       case 'Processing':
         return 'processing'.tr;
       default:
-        return order.status;
+        return order.statusName ?? 'unknown'.tr;
     }
   }
 }

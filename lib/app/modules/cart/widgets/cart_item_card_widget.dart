@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+
+import 'package:fresh_leaf/core/models/cart_item.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:fresh_leaf/shared/widgets/app_quantity_selector.dart';
@@ -21,7 +23,11 @@ class CartItemCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemTotal = item.price * item.quantity;
+    final itemTotal = item.subtotal;
+    final price = item.vendorInventory?.finalPrice ?? 0.0;
+    final originalPrice = item.vendorInventory?.price ?? 0.0;
+    final hasDiscount = (item.vendorInventory?.discountPercentage ?? 0) > 0;
+    final currencySymbol = item.vendorInventory?.currencySymbol ?? r'$';
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -42,7 +48,7 @@ class CartItemCardWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppNetworkImage(
-            url: item.imageUrl,
+            url: item.vendorInventory?.displayImageUrl ?? '',
             width: 86.scaled,
             height: 86.scaled,
             borderRadius: BorderRadius.circular(16.scaled),
@@ -57,7 +63,7 @@ class CartItemCardWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        item.title,
+                        item.vendorInventory?.displayTitle ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -80,7 +86,7 @@ class CartItemCardWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 2.scaled),
                 Text(
-                  item.subtitle,
+                  item.vendorInventory?.displaySubtitle ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -93,30 +99,40 @@ class CartItemCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     AppQuantitySelector(
-                      quantity: item.quantity,
+                      quantity: item.quantity.toInt(),
                       onIncrement: onPlus,
                       onDecrement: onMinus,
                       borderRadius: 20.scaled,
                     ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (item.originalPrice != null &&
-                            item.originalPrice! > item.price) ...[
-                          _buildOriginalPrice(),
-                        ],
-                        Text(
-                          '\$${itemTotal.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontSize: 18.scaled,
-                            fontWeight: FontWeight.w900,
-                            color: scheme.primary,
+                    SizedBox(width: 8.scaled),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              '$currencySymbol${formatPrice(itemTotal)}',
+                              style: TextStyle(
+                                fontSize: 18.scaled,
+                                fontWeight: FontWeight.w900,
+                                color: scheme.primary,
+                              ),
+                            ),
                           ),
-                        ),
-                        if (item.priceKhr != null) _buildKhrPrice(),
-                        _buildUnitPrice(),
-                      ],
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: _buildUnitPrice(
+                              price,
+                              originalPrice,
+                              currencySymbol,
+                              hasDiscount,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -128,47 +144,47 @@ class CartItemCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildOriginalPrice() {
-    final total = item.originalPrice! * item.quantity;
-    return Builder(
-      builder: (context) {
-        final scheme = Theme.of(context).colorScheme;
-        return Text(
-          '\$${total.toStringAsFixed(2)}',
-          style: TextStyle(
-            fontSize: 12.scaled,
-            decoration: TextDecoration.lineThrough,
-            color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
-          ),
-        );
-      },
-    );
-  }
+  Widget _buildUnitPrice(
+    double price,
+    double originalPrice,
+    String currencySymbol,
+    bool hasDiscount,
+  ) {
+    final priceStr = formatPrice(price);
+    final origPriceStr = formatPrice(originalPrice);
 
-  Widget _buildKhrPrice() {
-    final total = item.priceKhr! * item.quantity;
     return Builder(
       builder: (context) {
         final scheme = Theme.of(context).colorScheme;
-        return Text(
-          '${total.toStringAsFixed(0)} ៛',
-          style: TextStyle(
-            fontSize: 12.scaled,
-            fontWeight: FontWeight.bold,
-            color: scheme.onSurfaceVariant,
-          ),
-        );
-      },
-    );
-  }
 
-  Widget _buildUnitPrice() {
-    final priceStr = item.price.toStringAsFixed(2);
-    return Builder(
-      builder: (context) {
-        final scheme = Theme.of(context).colorScheme;
+        if (hasDiscount) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '$currencySymbol$origPriceStr',
+                style: TextStyle(
+                  fontSize: 10.scaled,
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
+              SizedBox(width: 4.scaled),
+              Text(
+                '$currencySymbol$priceStr ${'each'.tr}',
+                style: TextStyle(
+                  fontSize: 10.scaled,
+                  color: scheme.error,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          );
+        }
+
         return Text(
-          '\$$priceStr ${'each'.tr}',
+          '$currencySymbol$priceStr ${'each'.tr}',
           style: TextStyle(
             fontSize: 10.scaled,
             color: scheme.onSurfaceVariant.withValues(alpha: 0.7),

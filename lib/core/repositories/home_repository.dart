@@ -1,23 +1,24 @@
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
-import 'package:fresh_leaf/core/models/home_category.dart';
-import 'package:fresh_leaf/core/models/home_product.dart';
+import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class HomeRepository {
   final ApiClient _apiClient = Get.find<ApiClient>();
 
-  Future<List<HomeCategory>> getCategories() async {
+  Future<List<ProductCategory>> getCategories() async {
     try {
       final response = await _apiClient.getRequest(
-        ApiEndpoints.homeCategories,
+        ApiEndpoints.categories,
       );
 
       if (response.statusCode == 200 && response.data != null) {
         final data = response.data!['data'] as List?;
         if (data != null) {
           return data
-              .map((json) => HomeCategory.fromMap(json as Map<String, dynamic>))
+              .map(
+                (json) => ProductCategory.fromMap(json as Map<String, dynamic>),
+              )
               .toList();
         }
       }
@@ -27,82 +28,32 @@ class HomeRepository {
     }
   }
 
-  Future<List<HomeProduct>> getFeaturedProducts() async {
-    try {
-      final response = await _apiClient.getRequest(
-        ApiEndpoints.homeProducts,
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        final data = response.data!['data'] as List?;
-        if (data != null) {
-          return data
-              .map((json) => HomeProduct.fromMap(json as Map<String, dynamic>))
-              .toList();
-        }
-      }
-      return getMockProducts();
-    } on Exception {
-      return getMockProducts();
-    }
-  }
-
-  List<HomeCategory> getMockCategories() {
-    return const [
-      HomeCategory(
-        icon: HomeCategoryIcon.leaf,
-        titleKey: 'home_category_leaf',
-      ),
-      HomeCategory(
-        icon: HomeCategoryIcon.rootAndTuber,
-        titleKey: 'home_category_rootAndTuber',
-      ),
-      HomeCategory(
-        icon: HomeCategoryIcon.bulmAndStem,
-        titleKey: 'home_category_bulmAndStem',
-      ),
-      HomeCategory(
-        icon: HomeCategoryIcon.legume,
-        titleKey: 'home_category_legume',
-      ),
-      HomeCategory(
-        icon: HomeCategoryIcon.indigenousAndWild,
-        titleKey: 'home_category_indigenousAndWild',
-      ),
-    ];
-  }
-
-  List<HomeProduct> getMockProducts() {
-    return const [
-      HomeProduct(
+  List<ProductCategory> getMockCategories() {
+    return [
+      const ProductCategory(
         id: 1,
-        image:
-            'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=600',
-        title: 'home_product_heritage_carrots_title',
-        subtitle: 'home_product_heritage_carrots_subtitle',
-        priceText: r'$4.50',
-        badge: 'home_product_heritage_carrots_badge',
-        description: 'seasonal_pick_description',
-        tags: ['organic', 'fresh'],
-        origin: 'local_farm',
-        harvest: 'harvested_this_week',
-        storage: 'refrigerate_extend_freshness',
-        shareSlug: 'heritage-carrots',
+        icon: ProductCategoryIcon.leaf,
+        name: 'Leafy Vegetables',
       ),
-      HomeProduct(
-        id: 2,
-        image:
-            'https://images.unsplash.com/photo-1604544025999-4c8d550e0d5a?q=80&w=600',
-        title: 'home_product_golden_oysters_title',
-        subtitle: 'home_product_golden_oysters_subtitle',
-        priceText: r'$8.00',
-        badge: 'home_product_golden_oysters_badge',
-        description: 'seasonal_pick_description',
-        tags: ['organic', 'fresh'],
-        origin: 'local_farm',
-        harvest: 'harvested_this_week',
-        storage: 'refrigerate_extend_freshness',
-        shareSlug: 'golden-oysters',
+      const ProductCategory(
+        id: 3,
+        icon: ProductCategoryIcon.rootAndTuber,
+        name: 'Root & Tuber Crops',
+      ),
+      const ProductCategory(
+        id: 4,
+        icon: ProductCategoryIcon.bulbAndStem,
+        name: 'Bulb & Stem Vegetables',
+      ),
+      const ProductCategory(
+        id: 5,
+        icon: ProductCategoryIcon.legume,
+        name: 'Legumes',
+      ),
+      const ProductCategory(
+        id: 6,
+        icon: ProductCategoryIcon.indigenousAndWild,
+        name: 'Indigenous & Wild Plants',
       ),
     ];
   }

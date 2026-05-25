@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +15,7 @@ class WishlistItemCard extends StatelessWidget {
     super.key,
   });
 
-  final ProductInfo item;
+  final VendorInventory item;
   final VoidCallback onRemove;
   final VoidCallback onAddToCart;
   final VoidCallback onOpen;
@@ -54,14 +55,15 @@ class WishlistItemCard extends StatelessWidget {
               Stack(
                 children: [
                   AppNetworkImage(
-                    url: item.imageUrl,
+                    url: item.displayImageUrl,
                     width: double.infinity,
                     height: imageHeight,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(22),
                     ),
                   ),
-                  if (item.tags.isNotEmpty)
+                  if (item.certificationType != null &&
+                      item.certificationType!.isNotEmpty)
                     Positioned(
                       top: 10,
                       left: 10,
@@ -75,7 +77,7 @@ class WishlistItemCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
-                          item.tags.first,
+                          item.certificationType!,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
@@ -109,7 +111,7 @@ class WishlistItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.title,
+                      item.displayTitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -121,7 +123,7 @@ class WishlistItemCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      item.subtitle,
+                      item.displaySubtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -134,7 +136,8 @@ class WishlistItemCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            '\$${item.price.toStringAsFixed(2)}',
+                            '${item.currencySymbol ?? r'$'}'
+                            '${formatPrice(item.price)}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w900,

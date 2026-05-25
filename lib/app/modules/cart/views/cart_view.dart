@@ -59,6 +59,9 @@ class CartView extends GetView<CartController> {
             ),
             Expanded(
               child: Obx(() {
+                if (controller.isLoading.value && controller.items.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 if (controller.items.isEmpty) {
                   return const CartEmptyWidget();
                 }
@@ -89,7 +92,6 @@ class CartView extends GetView<CartController> {
                   ? const SizedBox.shrink()
                   : CartSummaryWidget(
                       subtotal: controller.subtotal,
-                      deliveryFee: controller.deliveryFee,
                       total: controller.total,
                       itemCount: controller.items.length,
                       width: screenWidth - 20,

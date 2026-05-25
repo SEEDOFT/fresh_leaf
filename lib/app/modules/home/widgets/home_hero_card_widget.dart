@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/constants/app_sizes.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
-import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:get/get.dart';
 
@@ -23,17 +23,17 @@ class HomeHeroCardWidget extends StatelessWidget {
         ? scheme.surface.withValues(alpha: 0.88)
         : AppColors.primaryGreen.withValues(alpha: 0.9);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.scaled),
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
       child: SizedBox(
-        height: 240.scaled,
+        height: AppSizes.s240,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24.scaled),
+          borderRadius: BorderRadius.circular(AppSizes.s24),
           child: Stack(
             children: [
               AppNetworkImage(
                 url:
                     'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=1000',
-                height: 240.scaled,
+                height: AppSizes.s240,
                 width: media.size.width,
               ),
               Container(
@@ -47,34 +47,34 @@ class HomeHeroCardWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                padding: EdgeInsets.all(16.scaled),
+                padding: EdgeInsets.all(AppSizes.s16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 10.scaled,
-                        vertical: 4.scaled,
+                        horizontal: AppSizes.s10,
+                        vertical: AppSizes.s4,
                       ),
                       decoration: BoxDecoration(
                         color: tagBackground,
-                        borderRadius: BorderRadius.circular(12.scaled),
+                        borderRadius: BorderRadius.circular(AppSizes.s12),
                       ),
                       child: Text(
                         'limited_edition'.tr,
                         style: TextStyle(
-                          fontSize: 10.scaled,
+                          fontSize: AppSizes.s10,
                           fontWeight: FontWeight.bold,
                           color: tagForeground,
                         ),
                       ),
                     ),
-                    SizedBox(height: 12.scaled),
+                    SizedBox(height: AppSizes.s12),
                     Text(
                       'seasonal_organic_harvest'.tr,
                       style: TextStyle(
-                        fontSize: 32.scaled,
+                        fontSize: AppSizes.s32,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
                         height: 1.1,
@@ -84,12 +84,12 @@ class HomeHeroCardWidget extends StatelessWidget {
                       children: [
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 16.scaled,
-                            vertical: 10.scaled,
+                            horizontal: AppSizes.s16,
+                            vertical: AppSizes.s10,
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(20.scaled),
+                            borderRadius: BorderRadius.circular(AppSizes.s20),
                           ),
                           child: Row(
                             children: [
@@ -98,14 +98,14 @@ class HomeHeroCardWidget extends StatelessWidget {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 13.scaled,
+                                  fontSize: AppSizes.s13,
                                 ),
                               ),
-                              SizedBox(width: 8.scaled),
+                              SizedBox(width: AppSizes.s8),
                               Icon(
                                 Icons.arrow_forward,
                                 color: Colors.white,
-                                size: 16.scaled,
+                                size: AppSizes.s16,
                               ),
                             ],
                           ),

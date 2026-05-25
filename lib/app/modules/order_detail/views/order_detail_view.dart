@@ -20,7 +20,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
       appBar: CustomAppBar(
         title: controller.order.value == null
             ? 'order_details'.tr
-            : 'Order ${controller.order.value!.id}',
+            : 'Order ${controller.order.value!.orderNumber}',
       ),
       body: Obx(() {
         if (controller.isCheckingAccess.value) {
@@ -62,11 +62,13 @@ class OrderDetailView extends GetView<OrderDetailController> {
                   item: item,
                   width: screenWidth - 32,
                   onOpenProduct: () async {
-                    final product = controller.toProductInfo(item);
-                    await Get.toNamed<void>(
-                      AppRoutes.productDetail,
-                      arguments: product,
-                    );
+                    final vendorInventory = item.vendorInventory;
+                    if (vendorInventory != null) {
+                      await Get.toNamed<void>(
+                        AppRoutes.productDetail,
+                        arguments: vendorInventory,
+                      );
+                    }
                   },
                 ),
               ),
@@ -78,6 +80,33 @@ class OrderDetailView extends GetView<OrderDetailController> {
               borderRadius: 14,
               height: 50,
             ),
+            if (order.statusName == 'PENDING') ...[
+              const SizedBox(height: 12),
+              PrimaryButton(
+                onPressed: controller.isUpdating.value
+                    ? null
+                    : controller.cancelOrder,
+                label: 'cancel_order'.tr,
+                borderRadius: 14,
+                height: 50,
+                backgroundColor: scheme.errorContainer,
+                foregroundColor: scheme.onErrorContainer,
+              ),
+            ],
+            if (order.statusName == 'DELIVERED' ||
+                order.statusName == 'PREPARING') ...[
+              const SizedBox(height: 12),
+              PrimaryButton(
+                onPressed: controller.isUpdating.value
+                    ? null
+                    : controller.confirmReceipt,
+                label: 'confirm_receipt'.tr,
+                borderRadius: 14,
+                height: 50,
+                backgroundColor: scheme.primary,
+                foregroundColor: scheme.onPrimary,
+              ),
+            ],
           ],
         );
       }),

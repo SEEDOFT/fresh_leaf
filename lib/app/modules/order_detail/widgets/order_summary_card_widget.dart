@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_card.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class OrderSummaryCard extends StatelessWidget {
   const OrderSummaryCard({
@@ -15,7 +17,7 @@ class OrderSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final delivered = order.status == 'Delivered';
+    final delivered = order.statusName == 'DELIVERED';
     final scheme = Theme.of(context).colorScheme;
     final statusBg = delivered
         ? scheme.primaryContainer.withValues(alpha: 0.6)
@@ -38,11 +40,13 @@ class OrderSummaryCard extends StatelessWidget {
                   color: statusBg,
                 ),
                 child: Text(
-                  order.status == 'Delivered'
+                  order.statusName == 'DELIVERED'
                       ? 'delivered'.tr
-                      : order.status == 'Processing'
+                      : order.statusName == 'PENDING'
+                      ? 'pending'.tr
+                      : order.statusName == 'PREPARING'
                       ? 'processing'.tr
-                      : order.status,
+                      : order.statusName ?? 'unknown'.tr,
                   style: TextStyle(
                     color: statusColor,
                     fontWeight: FontWeight.w700,
@@ -52,7 +56,9 @@ class OrderSummaryCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                order.date,
+                order.createdAt != null
+                    ? DateFormat('MMM d, yyyy').format(order.createdAt!)
+                    : '',
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 12,
@@ -63,7 +69,7 @@ class OrderSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            '\$${order.total.toStringAsFixed(2)}',
+            '\$${formatPrice(order.totalAmount)}',
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w800,

@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
-import 'package:fresh_leaf/core/models/home_category.dart';
-import 'package:fresh_leaf/core/models/home_product.dart';
+import 'package:fresh_leaf/core/models/product_category.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/repositories/home_repository.dart';
 import 'package:fresh_leaf/core/repositories/location_repository.dart';
 import 'package:fresh_leaf/core/services/permission_service.dart';
+import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final HomeRepository _homeRepository = HomeRepository();
   final LocationRepository _locationRepository = LocationRepository();
+  final ProductService _productService = Get.find<ProductService>();
 
   final RxString _searchQuery = ''.obs;
   final RxString locationName = ''.obs;
@@ -19,22 +21,22 @@ class HomeController extends GetxController {
   final RxBool isResolvingLocation = false.obs;
   final RxBool isLoadingProducts = false.obs;
 
-  final RxList<HomeCategory> categories = <HomeCategory>[].obs;
-  final RxList<HomeProduct> pickedThisMorning = <HomeProduct>[].obs;
+  final RxList<ProductCategory> categories = <ProductCategory>[].obs;
+  final RxList<VendorInventory> pickedThisMorning = <VendorInventory>[].obs;
 
   String get searchQuery => _searchQuery.value;
   set searchQuery(String value) => _searchQuery.value = value;
 
-  List<HomeProduct> get filteredPickedThisMorning {
+  List<VendorInventory> get filteredPickedThisMorning {
     final query = _searchQuery.value.trim().toLowerCase();
     if (query.isEmpty) {
       return pickedThisMorning.toList();
     }
 
     return pickedThisMorning.where((item) {
-      final title = item.title.toLowerCase();
-      final subtitle = item.subtitle.toLowerCase();
-      final badge = item.badge.toLowerCase();
+      final title = item.displayTitle.toLowerCase();
+      final subtitle = item.displaySubtitle.toLowerCase();
+      final badge = item.certificationType?.toLowerCase() ?? '';
       return title.contains(query) ||
           subtitle.contains(query) ||
           badge.contains(query);
@@ -54,14 +56,14 @@ class HomeController extends GetxController {
     try {
       final results = await Future.wait([
         _homeRepository.getCategories(),
-        _homeRepository.getFeaturedProducts(),
+        _productService.getProducts(perPage: 10),
       ]);
 
-      categories.value = results[0] as List<HomeCategory>;
-      pickedThisMorning.value = results[1] as List<HomeProduct>;
+      categories.value = results[0] as List<ProductCategory>;
+      pickedThisMorning.value = results[1] as List<VendorInventory>;
     } on Exception {
       categories.value = _homeRepository.getMockCategories();
-      pickedThisMorning.value = _homeRepository.getMockProducts();
+      pickedThisMorning.value = [];
     } finally {
       isLoadingProducts.value = false;
     }

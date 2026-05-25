@@ -1,0 +1,70 @@
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:get/get.dart';
+
+class OrderService extends GetxService {
+  OrderService({required this.apiClient});
+
+  final ApiClient apiClient;
+
+  Future<List<Order>> getOrders() async {
+    try {
+      final response = await apiClient.getRequest(
+        ApiEndpoints.orders,
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+
+      if (apiResponse.isSuccess && apiResponse.data['data'] != null) {
+        final dataList = apiResponse.data['data'] as List<dynamic>;
+        return dataList
+            .map((item) => Order.fromMap(item as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } on Exception {
+      return [];
+    }
+  }
+
+  Future<Order?> getOrder(int id) async {
+    try {
+      final response = await apiClient.getRequest(
+        ApiEndpoints.orderById.replaceAll('{id}', id.toString()),
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+
+      if (apiResponse.isSuccess && apiResponse.data['data'] != null) {
+        return Order.fromMap(apiResponse.data['data'] as Map<String, dynamic>);
+      }
+      return null;
+    } on Exception {
+      return null;
+    }
+  }
+
+  Future<bool> cancelOrder(int id) async {
+    try {
+      final response = await apiClient.postRequest(
+        ApiEndpoints.orderCancel.replaceAll('{id}', id.toString()),
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      return apiResponse.isSuccess;
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<bool> confirmReceipt(int id) async {
+    try {
+      final response = await apiClient.postRequest(
+        ApiEndpoints.orderConfirmReceipt.replaceAll('{id}', id.toString()),
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      return apiResponse.isSuccess;
+    } on Exception {
+      return false;
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+
+import 'package:fresh_leaf/core/models/cart_item.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 
 class CheckoutItemRowWidget extends StatelessWidget {
@@ -12,7 +14,9 @@ class CheckoutItemRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = item.price * item.quantity;
+    final total = item.subtotal;
+    final price = item.vendorInventory?.price ?? 0.0;
+    final currencySymbol = item.vendorInventory?.currencySymbol ?? r'$';
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -25,7 +29,7 @@ class CheckoutItemRowWidget extends StatelessWidget {
       child: Row(
         children: [
           AppNetworkImage(
-            url: item.imageUrl,
+            url: item.vendorInventory?.displayImageUrl ?? '',
             width: 52,
             height: 52,
             borderRadius: BorderRadius.circular(12),
@@ -36,7 +40,7 @@ class CheckoutItemRowWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.title,
+                  item.vendorInventory?.displayTitle ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -45,7 +49,9 @@ class CheckoutItemRowWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${item.quantity} x \$${item.price.toStringAsFixed(2)}',
+                  '${item.quantity.toInt()}'
+                  ' x'
+                  ' $currencySymbol${formatPrice(price)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,
@@ -55,7 +61,7 @@ class CheckoutItemRowWidget extends StatelessWidget {
             ),
           ),
           Text(
-            '\$${total.toStringAsFixed(2)}',
+            '$currencySymbol${formatPrice(total)}',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,

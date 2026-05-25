@@ -34,6 +34,7 @@ class SupportRealtimeService extends GetxService {
   Stream<SupportMessage> get messages => _messageController.stream;
   Stream<String> get typingEvents => _typingController.stream;
 
+  String get socketId => _socketId;
   bool get isConnected => _isConnected;
 
   Future<void> connect() async {

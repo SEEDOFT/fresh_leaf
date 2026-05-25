@@ -1,6 +1,6 @@
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
-import 'package:fresh_leaf/core/models/organic_product.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
@@ -9,15 +9,15 @@ class ProductService extends GetxService {
 
   final ApiClient apiClient;
 
-  Future<List<OrganicProduct>> getProducts({
+  Future<List<VendorInventory>> getProducts({
     int? categoryId,
     String? query,
     int perPage = 15,
   }) async {
     try {
       final params = <String, dynamic>{'per_page': perPage};
-      if (categoryId != null) params['product_category_id'] = categoryId;
-      if (query != null) params['query'] = query;
+      if (categoryId != null) params['category_id'] = categoryId;
+      if (query != null) params['search'] = query;
 
       final response = await apiClient.getRequest(
         ApiEndpoints.products,
@@ -28,10 +28,20 @@ class ProductService extends GetxService {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        final dataList = apiResponse.data['data'] as List<dynamic>;
-        return dataList
-            .map((item) => OrganicProduct.fromMap(item as Map<String, dynamic>))
-            .toList();
+        final rawData = apiResponse.data;
+        final dataList =
+            (rawData['vendor_inventories'] ??
+                    rawData['products'] ??
+                    rawData['data'])
+                as List<dynamic>?;
+
+        if (dataList != null) {
+          return dataList
+              .map(
+                (item) => VendorInventory.fromMap(item as Map<String, dynamic>),
+              )
+              .toList();
+        }
       }
       return [];
     } on Exception {
@@ -39,7 +49,7 @@ class ProductService extends GetxService {
     }
   }
 
-  Future<OrganicProduct?> getProduct(int id) async {
+  Future<VendorInventory?> getProduct(int id) async {
     try {
       final response = await apiClient.getRequest(
         ApiEndpoints.productById.replaceFirst('{id}', id.toString()),
@@ -47,7 +57,7 @@ class ProductService extends GetxService {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        return OrganicProduct.fromMap(apiResponse.data);
+        return VendorInventory.fromMap(apiResponse.data);
       }
       return null;
     } on Exception {

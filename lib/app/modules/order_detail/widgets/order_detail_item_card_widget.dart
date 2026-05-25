@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class OrderDetailItemCard extends StatelessWidget {
@@ -9,15 +11,16 @@ class OrderDetailItemCard extends StatelessWidget {
     super.key,
   });
 
-  final Map<String, dynamic> item;
+  final OrderItem item;
   final double width;
   final VoidCallback onOpenProduct;
 
   @override
   Widget build(BuildContext context) {
-    final quantity = (item['quantity'] as num?)?.toInt() ?? 1;
-    final unitPrice = (item['price'] as num?)?.toDouble() ?? 0.0;
-    final total = unitPrice * quantity;
+    final quantity = item.quantity.toInt();
+    final total = item.subtotal;
+    final unitPrice = quantity > 0 ? total / quantity : 0.0;
+    final currencySymbol = item.vendorInventory?.currencySymbol ?? r'$';
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -35,7 +38,7 @@ class OrderDetailItemCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item['name'] as String? ?? 'product'.tr,
+                  item.productNameSnapshot,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -44,7 +47,7 @@ class OrderDetailItemCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '\$${total.toStringAsFixed(2)}',
+                '$currencySymbol${formatPrice(total)}',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -55,7 +58,7 @@ class OrderDetailItemCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '$quantity x \$${unitPrice.toStringAsFixed(2)}',
+            '$quantity x $currencySymbol${formatPrice(unitPrice)}',
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontSize: 12,
@@ -66,7 +69,7 @@ class OrderDetailItemCard extends StatelessWidget {
           SizedBox(
             width: width - 28,
             child: OutlinedButton.icon(
-              onPressed: onOpenProduct,
+              onPressed: item.vendorInventory != null ? onOpenProduct : null,
               icon: const Icon(Icons.open_in_new, size: 15),
               label: Text(
                 'open_product'.tr,

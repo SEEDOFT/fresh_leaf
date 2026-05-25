@@ -115,8 +115,14 @@ class SupportChatController extends GetxController {
       try {
         unawaited(
           _apiClient.postRequest(
-            '${ApiEndpoints.supportMessages.replaceAll('/messages', '')}/typing',
+            ApiEndpoints.supportTyping,
             data: {'ticket_id': activeTicket.value!.id},
+            options: dio.Options(
+              headers: {
+                if (_realtimeService.socketId.isNotEmpty)
+                  'X-Socket-ID': _realtimeService.socketId,
+              },
+            ),
           ),
         );
       } on Exception {
@@ -139,14 +145,23 @@ class SupportChatController extends GetxController {
       });
 
       final response = await _apiClient.postRequest(
-        ApiEndpoints.supportMessages,
+        ApiEndpoints.supportMessage,
         data: formData,
+        options: dio.Options(
+          headers: {
+            if (_realtimeService.socketId.isNotEmpty)
+              'X-Socket-ID': _realtimeService.socketId,
+          },
+        ),
       );
 
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        messages.add(SupportMessage.fromMap(apiResponse.data));
+        final newMsg = SupportMessage.fromMap(apiResponse.data);
+        if (!messages.any((m) => m.id == newMsg.id)) {
+          messages.add(newMsg);
+        }
         _scrollToBottom();
       }
     } on Exception {
@@ -287,8 +302,14 @@ class SupportChatController extends GetxController {
       });
 
       final response = await _apiClient.postMultipart(
-        ApiEndpoints.supportMessages,
+        ApiEndpoints.supportMessage,
         data: formData,
+        options: dio.Options(
+          headers: {
+            if (_realtimeService.socketId.isNotEmpty)
+              'X-Socket-ID': _realtimeService.socketId,
+          },
+        ),
         onSendProgress: (sent, total) {
           uploadProgress.value = sent / total;
         },
@@ -297,7 +318,10 @@ class SupportChatController extends GetxController {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        messages.add(SupportMessage.fromMap(apiResponse.data));
+        final newMsg = SupportMessage.fromMap(apiResponse.data);
+        if (!messages.any((m) => m.id == newMsg.id)) {
+          messages.add(newMsg);
+        }
         _scrollToBottom();
       }
     } on Exception {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
 import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_widgets.dart';
+import 'package:fresh_leaf/core/models/support_message.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
@@ -180,17 +181,7 @@ class SupportChatView extends GetView<SupportChatController> {
                                         : CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      if (msg.filePath != null)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 6,
-                                          ),
-                                          child:
-                                              SupportChatAttachmentPreviewWidget(
-                                                filePath: msg.filePath!,
-                                                isDark: isDark,
-                                              ),
-                                        ),
+                                      _buildAttachment(msg, isDark),
                                       if (msg.message.isNotEmpty)
                                         Text(
                                           msg.message,
@@ -259,6 +250,17 @@ class SupportChatView extends GetView<SupportChatController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAttachment(SupportMessage msg, bool isDark) {
+    if (msg.filePath == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: SupportChatAttachmentPreviewWidget(
+        filePath: msg.filePath!,
+        isDark: isDark,
       ),
     );
   }

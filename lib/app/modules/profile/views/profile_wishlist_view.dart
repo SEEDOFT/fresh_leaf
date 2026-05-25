@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_wishlist_widget.dart';
-import 'package:fresh_leaf/core/models/product_info.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
@@ -25,8 +25,8 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
         }
 
         final visible = controller.visibleItems;
-        final leftColumn = <ProductInfo>[];
-        final rightColumn = <ProductInfo>[];
+        final leftColumn = <VendorInventory>[];
+        final rightColumn = <VendorInventory>[];
         for (var i = 0; i < visible.length; i++) {
           if (i.isEven) {
             leftColumn.add(visible[i]);
@@ -97,10 +97,10 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
     );
   }
 
-  double _imageHeightFor(ProductInfo item, {required bool isLeft}) {
+  double _imageHeightFor(VendorInventory item, {required bool isLeft}) {
     final seed =
-        item.title.length +
-        (item.tags.firstOrNull?.length ?? 0) +
+        item.displayTitle.length +
+        (item.certificationType?.length ?? 0) +
         (isLeft ? 1 : 2);
     final variation = seed % 3;
     if (variation == 0) return 148;

@@ -13,7 +13,8 @@ class ProductDetailView extends GetView<ProductDetailController> {
     final scheme = Theme.of(context).colorScheme;
     return AppScaffold(
       appBar: CustomAppBar(
-        title: '',
+        title: controller.title,
+        showCartButton: true,
         actions: [
           IconButton(
             icon: Icon(Icons.share_outlined, color: scheme.onSurface),
@@ -36,12 +37,13 @@ class ProductDetailView extends GetView<ProductDetailController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeroImageWidget(imageUrl: controller.imageUrl),
+          HeroImageWidget(imageUrls: controller.allImages),
           const SizedBox(height: 20),
           TitleRowWidget(
             title: controller.title,
             origin: controller.origin,
             total: controller.total,
+            controller: controller,
           ),
           const SizedBox(height: 8),
           Text(
@@ -81,8 +83,11 @@ class ProductDetailView extends GetView<ProductDetailController> {
           Obx(
             () => QuantityRowWidget(
               quantity: controller.quantity.value,
+              unitSymbol: controller.product.unitSymbol,
               onIncrement: controller.increment,
               onDecrement: controller.decrement,
+              onChanged: (val) => controller.updateQuantity(val.toDouble()),
+              allowDecimal: controller.allowDecimal,
             ),
           ),
           const SizedBox(height: 20),
@@ -90,6 +95,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
             () => AddButtonWidget(
               total: controller.total,
               onPressed: controller.addToCart,
+              controller: controller,
             ),
           ),
           const SizedBox(height: 24),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:fresh_leaf/core/constants/app_sizes.dart';
 import 'package:get/get.dart';
 
 class HomeAppBarWidget extends GetView<HomeController> {
@@ -11,25 +11,25 @@ class HomeAppBarWidget extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.scaled),
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Obx(
             () => InkWell(
-              borderRadius: BorderRadius.circular(12.scaled),
+              borderRadius: BorderRadius.circular(AppSizes.s12),
               onTap: controller.fetchCurrentLocation,
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 4.scaled,
-                  vertical: 2.scaled,
+                  horizontal: AppSizes.s4,
+                  vertical: AppSizes.s2,
                 ),
                 child: Row(
                   children: [
                     if (controller.isResolvingLocation.value)
                       SizedBox(
-                        width: 20.scaled,
-                        height: 20.scaled,
+                        width: AppSizes.s20,
+                        height: AppSizes.s20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           color: scheme.onSurface,
@@ -39,14 +39,14 @@ class HomeAppBarWidget extends GetView<HomeController> {
                       Icon(
                         Icons.location_on,
                         color: scheme.onSurface,
-                        size: 20.scaled,
+                        size: AppSizes.s20,
                       ),
-                    SizedBox(width: 8.scaled),
+                    SizedBox(width: AppSizes.s8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: 110.scaled,
+                          width: AppSizes.s110,
                           child: Text(
                             controller.locationName.value.isEmpty
                                 ? 'home_location_name'.tr
@@ -54,13 +54,13 @@ class HomeAppBarWidget extends GetView<HomeController> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 12.scaled,
+                              fontSize: AppSizes.s12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: 110.scaled,
+                          width: AppSizes.s110,
                           child: Text(
                             controller.locationRegion.value.isEmpty
                                 ? 'home_location_region'.tr
@@ -68,7 +68,7 @@ class HomeAppBarWidget extends GetView<HomeController> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 12.scaled,
+                              fontSize: AppSizes.s12,
                               color: scheme.onSurface.withValues(alpha: 0.7),
                             ),
                           ),
@@ -85,7 +85,7 @@ class HomeAppBarWidget extends GetView<HomeController> {
               Text(
                 'FreshLeaf',
                 style: TextStyle(
-                  fontSize: 16.scaled,
+                  fontSize: AppSizes.s16,
                   fontWeight: FontWeight.w900,
                   color: scheme.onSurface,
                 ),
@@ -93,7 +93,7 @@ class HomeAppBarWidget extends GetView<HomeController> {
               Text(
                 'home_brand_subtitle'.tr,
                 style: TextStyle(
-                  fontSize: 14.scaled,
+                  fontSize: AppSizes.s14,
                   fontWeight: FontWeight.w600,
                   color: scheme.onSurface,
                 ),
@@ -105,12 +105,12 @@ class HomeAppBarWidget extends GetView<HomeController> {
               IconButton(
                 padding: EdgeInsets.zero,
                 constraints: BoxConstraints(
-                  minWidth: 40.scaled,
-                  minHeight: 40.scaled,
+                  minWidth: AppSizes.s40,
+                  minHeight: AppSizes.s40,
                 ),
                 icon: Icon(
                   Icons.favorite_border_rounded,
-                  size: 22.scaled,
+                  size: AppSizes.s22,
                   color: scheme.onSurface,
                 ),
                 onPressed: () async => await Get.toNamed(AppRoutes.wishlist),
@@ -118,12 +118,12 @@ class HomeAppBarWidget extends GetView<HomeController> {
               IconButton(
                 padding: EdgeInsets.zero,
                 constraints: BoxConstraints(
-                  minWidth: 40.scaled,
-                  minHeight: 40.scaled,
+                  minWidth: AppSizes.s40,
+                  minHeight: AppSizes.s40,
                 ),
                 icon: Icon(
                   Icons.notifications_outlined,
-                  size: 22.scaled,
+                  size: AppSizes.s22,
                   color: scheme.onSurface,
                 ),
                 onPressed: () async =>

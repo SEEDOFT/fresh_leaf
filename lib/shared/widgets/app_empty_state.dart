@@ -10,6 +10,7 @@ class AppEmptyState extends StatelessWidget {
     this.iconBackgroundColor,
     this.iconColor,
     this.containerWidth,
+    this.margin = const EdgeInsets.symmetric(horizontal: 16),
     super.key,
   });
 
@@ -21,6 +22,7 @@ class AppEmptyState extends StatelessWidget {
   final Color? iconBackgroundColor;
   final Color? iconColor;
   final double? containerWidth;
+  final EdgeInsetsGeometry margin;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class AppEmptyState extends StatelessWidget {
     return Center(
       child: Container(
         width: containerWidth ?? screenWidth,
+        margin: margin,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         decoration: BoxDecoration(
           color: scheme.surface,

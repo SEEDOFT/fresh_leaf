@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_card.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:fresh_leaf/shared/widgets/summary_row.dart';
@@ -8,7 +7,6 @@ import 'package:get/get.dart';
 class CartSummaryWidget extends StatelessWidget {
   const CartSummaryWidget({
     required this.subtotal,
-    required this.deliveryFee,
     required this.total,
     required this.itemCount,
     required this.width,
@@ -17,7 +15,6 @@ class CartSummaryWidget extends StatelessWidget {
   });
 
   final double subtotal;
-  final double deliveryFee;
   final double total;
   final int itemCount;
   final double width;
@@ -25,7 +22,7 @@ class CartSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final discount = subtotal >= 25 ? 2.00 : 0.0;
+    const discount = 0.0;
     final grandTotal = total - discount;
     final scheme = Theme.of(context).colorScheme;
 
@@ -40,20 +37,20 @@ class CartSummaryWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.local_shipping_outlined,
-                  size: 18,
-                  color: AppColors.accentBrown,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'delivery_eta'.tr,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: scheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                // const Icon(
+                //   Icons.local_shipping_outlined,
+                //   size: 18,
+                //   color: AppColors.accentBrown,
+                // ),
+                // const SizedBox(width: 6),
+                // Text(
+                //   'delivery_eta'.tr,
+                //   style: TextStyle(
+                //     fontSize: 12,
+                //     color: scheme.onSurfaceVariant,
+                //     fontWeight: FontWeight.w600,
+                //   ),
+                // ),
                 const Spacer(),
                 Text(
                   (itemCount == 1 ? 'items_count_one' : 'items_count_other')
@@ -71,17 +68,14 @@ class CartSummaryWidget extends StatelessWidget {
               label: 'subtotal'.tr,
               amount: subtotal,
             ),
-            const SizedBox(height: 8),
-            SummaryRow(
-              label: 'delivery'.tr,
-              amount: deliveryFee,
-            ),
-            const SizedBox(height: 8),
-            SummaryRow(
-              label: 'discount'.tr,
-              amount: -discount,
-              isDiscount: true,
-            ),
+            if (discount > 0) ...[
+              const SizedBox(height: 8),
+              SummaryRow(
+                label: 'discount'.tr,
+                amount: -discount,
+                isDiscount: true,
+              ),
+            ],
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Divider(

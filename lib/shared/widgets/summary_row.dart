@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 
 class SummaryRow extends StatelessWidget {
   const SummaryRow({
@@ -46,7 +47,7 @@ class SummaryRow extends StatelessWidget {
           ),
         ),
         Text(
-          '${amount < 0 ? '-' : ''}\$${amount.abs().toStringAsFixed(2)}',
+          '${amount < 0 ? '-' : ''}\$${formatPrice(amount.abs())}',
           style: TextStyle(
             fontSize: emphasize ? 19 : 15,
             fontWeight: FontWeight.w800,

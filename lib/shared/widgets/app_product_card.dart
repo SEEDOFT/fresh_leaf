@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 
@@ -11,6 +12,7 @@ class AppProductCard extends StatelessWidget {
     required this.price,
     this.originalPrice,
     this.priceKhr,
+    this.currencySymbol,
     this.subtitle,
     this.badge,
     this.onTap,
@@ -28,6 +30,7 @@ class AppProductCard extends StatelessWidget {
   final double price;
   final double? originalPrice;
   final double? priceKhr;
+  final String? currencySymbol;
   final String? subtitle;
   final String? badge;
   final VoidCallback? onTap;
@@ -166,7 +169,8 @@ class AppProductCard extends StatelessWidget {
                               if (originalPrice != null &&
                                   originalPrice! > price)
                                 Text(
-                                  '\$${originalPrice!.toStringAsFixed(2)}',
+                                  '${currencySymbol ?? r'$'}'
+                                  '${formatPrice(originalPrice!)}',
                                   style: TextStyle(
                                     fontSize: 11.scaled,
                                     decoration: TextDecoration.lineThrough,
@@ -177,7 +181,8 @@ class AppProductCard extends StatelessWidget {
                                   maxLines: 1,
                                 ),
                               Text(
-                                '\$${price.toStringAsFixed(2)}',
+                                '${currencySymbol ?? r'$'}'
+                                '${formatPrice(price)}',
                                 style: TextStyle(
                                   fontSize: 16.scaled,
                                   fontWeight: FontWeight.bold,
@@ -187,7 +192,7 @@ class AppProductCard extends StatelessWidget {
                               ),
                               if (priceKhr != null)
                                 Text(
-                                  '${priceKhr!.toStringAsFixed(0)} ៛',
+                                  '${formatPriceNoDecimals(priceKhr!)} ៛',
                                   style: TextStyle(
                                     fontSize: 11.scaled,
                                     fontWeight: FontWeight.w600,
@@ -265,7 +270,7 @@ class AppProductCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              '\$${price.toStringAsFixed(2)}',
+                              '${currencySymbol ?? r'$'}${formatPrice(price)}',
                               style: TextStyle(
                                 color: scheme.primary,
                                 fontWeight: FontWeight.w800,
@@ -275,7 +280,8 @@ class AppProductCard extends StatelessWidget {
                                 originalPrice! > price) ...[
                               SizedBox(width: 8.scaled),
                               Text(
-                                '\$${originalPrice!.toStringAsFixed(2)}',
+                                '${currencySymbol ?? r'$'}'
+                                '${formatPrice(originalPrice!)}',
                                 style: TextStyle(
                                   fontSize: 11.scaled,
                                   decoration: TextDecoration.lineThrough,
@@ -289,7 +295,7 @@ class AppProductCard extends StatelessWidget {
                         ),
                         if (priceKhr != null)
                           Text(
-                            '${priceKhr!.toStringAsFixed(0)} ៛',
+                            '${formatPriceNoDecimals(priceKhr!)} ៛',
                             style: TextStyle(
                               fontSize: 11.scaled,
                               fontWeight: FontWeight.w600,

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart' hide SearchController;
 import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';
 import 'package:fresh_leaf/app/modules/search/widgets/search_widget.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
-import 'package:fresh_leaf/core/models/product_info.dart';
-import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
+import 'package:fresh_leaf/shared/widgets/skeleton_loading_widget.dart';
 import 'package:get/get.dart';
 
 class SearchView extends GetView<SearchController> {
@@ -87,6 +86,10 @@ class SearchView extends GetView<SearchController> {
             const SizedBox(height: 10),
             Expanded(
               child: Obx(() {
+                if (controller.isLoading) {
+                  return const ProductListSkeleton();
+                }
+
                 final items = controller.results;
                 if (items.isEmpty) {
                   return const SearchEmptyWidget();
@@ -98,57 +101,17 @@ class SearchView extends GetView<SearchController> {
                   separatorBuilder: (_, _) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = items[index];
-                    final productInfo = ProductInfo(
-                      id: item.id,
-                      title: item.title.tr,
-                      subtitle: item.subtitle.tr,
-                      description:
-                          (item.description.isEmpty
-                                  ? 'seasonal_pick_description'
-                                  : item.description)
-                              .tr,
-                      imageUrl: item.image,
-                      tags:
-                          (item.tags.isEmpty ? ['organic', 'fresh'] : item.tags)
-                              .map<String>((e) => e.tr)
-                              .toList(),
-                      price: item.priceValue,
-                      origin:
-                          (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
-                      harvest:
-                          (item.harvest.isEmpty
-                                  ? 'harvested_this_week'
-                                  : item.harvest)
-                              .tr,
-                      storage:
-                          (item.storage.isEmpty
-                                  ? 'refrigerate_extend_freshness'
-                                  : item.storage)
-                              .tr,
-                      shareSlug: ProductShareHelper.resolveSlug(
-                        title: item.title.tr,
-                        shareSlug: item.shareSlug,
-                      ),
-                      shareDeepLink: item.shareDeepLink.isEmpty
-                          ? null
-                          : item.shareDeepLink,
-                      originalPrice: item.originalPrice > 0
-                          ? item.originalPrice
-                          : null,
-                      priceKhr: item.activePriceKhr > 0
-                          ? item.activePriceKhr
-                          : null,
-                    );
 
                     return AppProductCard(
-                      title: item.title.tr,
-                      subtitle: item.subtitle.tr,
-                      imageUrl: item.image,
-                      price: item.priceValue,
+                      title: item.displayTitle.tr,
+                      subtitle: item.displaySubtitle.tr,
+                      imageUrl: item.displayImageUrl,
+                      price: item.price,
+                      currencySymbol: item.currencySymbol,
                       layout: AppProductCardLayout.list,
                       isFavorite: wishlistController.isFavorite(item.id),
                       onFavoriteTap: () =>
-                          wishlistController.toggleWishlist(productInfo),
+                          wishlistController.toggleWishlist(item),
                       onTap: () => controller.openProduct(item),
                     );
                   },

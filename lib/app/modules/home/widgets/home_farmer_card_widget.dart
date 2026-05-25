@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:fresh_leaf/core/constants/app_sizes.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 
 class HomeFarmerCardWidget extends StatelessWidget {
@@ -9,53 +9,53 @@ class HomeFarmerCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.scaled),
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
       child: Container(
-        padding: EdgeInsets.all(24.scaled),
+        padding: EdgeInsets.all(AppSizes.s24),
         decoration: BoxDecoration(
           color: scheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(32.scaled),
+          borderRadius: BorderRadius.circular(AppSizes.s32),
         ),
         child: Column(
           children: [
             CircleAvatar(
-              radius: 40.scaled,
+              radius: AppSizes.s40,
               backgroundImage: const NetworkImage(
                 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&w=600',
               ),
             ),
-            SizedBox(height: 16.scaled),
+            SizedBox(height: AppSizes.s16),
             Text(
               'FEATURED FARMER',
               style: TextStyle(
-                fontSize: 10.scaled,
+                fontSize: AppSizes.s10,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
                 color: scheme.onSurfaceVariant,
               ),
             ),
-            SizedBox(height: 4.scaled),
+            SizedBox(height: AppSizes.s4),
             Text(
               "Meet Miller's Organic",
               style: TextStyle(
-                fontSize: 20.scaled,
+                fontSize: AppSizes.s20,
                 fontWeight: FontWeight.w900,
                 color: scheme.onSurface,
               ),
             ),
-            SizedBox(height: 12.scaled),
+            SizedBox(height: AppSizes.s12),
             Text(
               'Supplying our community with pesticide-free heirloom '
               'produce since 1994. Every bunch of kale helps support'
               ' local biodiversity.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 13.scaled,
+                fontSize: AppSizes.s13,
                 color: scheme.onSurfaceVariant,
                 height: 1.5,
               ),
             ),
-            SizedBox(height: 20.scaled),
+            SizedBox(height: AppSizes.s20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -64,22 +64,22 @@ class HomeFarmerCardWidget extends StatelessWidget {
                   icon: Icons.check_circle,
                   backgroundColor: scheme.surface,
                   foregroundColor: scheme.onSurface,
-                  borderRadius: 20.scaled,
+                  borderRadius: AppSizes.s20,
                   padding: EdgeInsets.symmetric(
-                    horizontal: 12.scaled,
-                    vertical: 8.scaled,
+                    horizontal: AppSizes.s12,
+                    vertical: AppSizes.s8,
                   ),
                 ),
-                SizedBox(width: 8.scaled),
+                SizedBox(width: AppSizes.s8),
                 AppBadge(
                   label: '12 Miles Away',
                   icon: Icons.local_shipping,
                   backgroundColor: scheme.surface,
                   foregroundColor: scheme.onSurface,
-                  borderRadius: 20.scaled,
+                  borderRadius: AppSizes.s20,
                   padding: EdgeInsets.symmetric(
-                    horizontal: 12.scaled,
-                    vertical: 8.scaled,
+                    horizontal: AppSizes.s12,
+                    vertical: AppSizes.s8,
                   ),
                 ),
               ],

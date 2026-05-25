@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -87,7 +88,7 @@ class WalletBalanceCardWidget extends StatelessWidget {
             () {
               final isVisible = controller.isBalanceVisible.value;
               final amountText = isUsd
-                  ? '$symbol${balance.value.toStringAsFixed(2)}'
+                  ? '$symbol${formatPrice(balance.value)}'
                   : '${NumberFormat('#,###').format(balance.value)} $symbol';
               final hiddenText = isUsd ? '$symbol••••••' : '•••••• $symbol';
               return Text(

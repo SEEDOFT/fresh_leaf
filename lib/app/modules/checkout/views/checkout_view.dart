@@ -90,7 +90,6 @@ class CheckoutView extends GetView<CheckoutController> {
             const SizedBox(height: 14),
             CheckoutSummaryCardWidget(
               subtotal: controller.subtotal,
-              deliveryFee: controller.deliveryFee,
               discount: controller.discount,
               total: controller.grandTotal,
               isPlacingOrder: controller.isPlacingOrder.value,

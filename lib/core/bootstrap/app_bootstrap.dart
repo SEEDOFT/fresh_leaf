@@ -10,8 +10,10 @@ import 'package:fresh_leaf/core/services/ai_assistant_api_service.dart';
 import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/notification_service.dart';
+import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
@@ -48,6 +50,14 @@ final class AppBootstrap {
       ..put<ApiClient>(apiClient, permanent: true)
       ..put<ProductService>(
         ProductService(apiClient: apiClient),
+        permanent: true,
+      )
+      ..put<CartService>(
+        CartService(apiClient: apiClient),
+        permanent: true,
+      )
+      ..put<OrderService>(
+        OrderService(apiClient: apiClient),
         permanent: true,
       )
       ..put<WishlistService>(

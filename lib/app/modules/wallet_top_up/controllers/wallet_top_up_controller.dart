@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
 import 'package:fresh_leaf/core/models/payment_session.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,7 +21,7 @@ class WalletTopUpController extends GetxController {
 
   String get formattedAmount {
     if (selectedCurrency.value == 'USD') {
-      return '\$${selectedAmount.value.toStringAsFixed(2)}';
+      return '\$${formatPrice(selectedAmount.value)}';
     }
     return '${selectedAmount.value.toInt()} ៛';
   }

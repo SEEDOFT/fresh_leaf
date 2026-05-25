@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/constants/app_sizes.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
-import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:get/get.dart';
 
@@ -25,12 +25,12 @@ class HomeAIBannerWidget extends StatelessWidget {
         ? scheme.onSecondaryContainer
         : AppColors.primaryGreen;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.scaled),
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
       child: Container(
-        padding: EdgeInsets.all(20.scaled),
+        padding: EdgeInsets.all(AppSizes.s20),
         decoration: BoxDecoration(
           color: bannerColor,
-          borderRadius: BorderRadius.circular(24.scaled),
+          borderRadius: BorderRadius.circular(AppSizes.s24),
         ),
         child: Row(
           children: [
@@ -39,11 +39,11 @@ class HomeAIBannerWidget extends StatelessWidget {
               icon: Icons.auto_awesome,
               backgroundColor: iconBoxColor,
               foregroundColor: iconColor,
-              borderRadius: 16.scaled,
-              padding: EdgeInsets.all(12.scaled),
+              borderRadius: AppSizes.s16,
+              padding: EdgeInsets.all(AppSizes.s12),
               fontSize: 0,
             ),
-            SizedBox(width: 16.scaled),
+            SizedBox(width: AppSizes.s16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,16 +53,16 @@ class HomeAIBannerWidget extends StatelessWidget {
                     style: TextStyle(
                       color: bannerTextColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.scaled,
+                      fontSize: AppSizes.s16,
                       height: 1.2,
                     ),
                   ),
-                  SizedBox(height: 4.scaled),
+                  SizedBox(height: AppSizes.s4),
                   Text(
                     'ai_smart_suggestions_subtitle'.tr,
                     style: TextStyle(
                       color: bannerSubTextColor,
-                      fontSize: 12.scaled,
+                      fontSize: AppSizes.s12,
                     ),
                   ),
                 ],

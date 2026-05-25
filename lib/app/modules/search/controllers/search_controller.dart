@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/core/models/home_product.dart';
-import 'package:fresh_leaf/core/models/product_info.dart';
-import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:get/get.dart';
 
 class SearchController extends GetxController {
@@ -16,6 +14,8 @@ class SearchController extends GetxController {
 
   String get activeTag => _activeTag.value;
   set activeTag(String value) => _activeTag.value = value;
+
+  bool get isLoading => _homeController.isLoadingProducts.value;
 
   final quickTags = const <String>[
     'All',
@@ -33,31 +33,26 @@ class SearchController extends GetxController {
     _homeController = Get.find<HomeController>();
   }
 
-  List<HomeProduct> get results {
+  List<VendorInventory> get results {
     final source = _homeController.pickedThisMorning.toList();
     final q = _query.value.trim().toLowerCase();
     final tag = _activeTag.value.toLowerCase();
 
     return source.where((item) {
-      final title = item.title.tr.toLowerCase();
-      final subtitle = item.subtitle.tr.toLowerCase();
-      final badge = item.badge.tr.toLowerCase();
-      final origin = item.origin.tr.toLowerCase();
-      final tags = item.tags.map((e) => e.tr.toLowerCase()).join(' ');
+      final title = item.displayTitle.tr.toLowerCase();
+      final subtitle = item.displaySubtitle.tr.toLowerCase();
+      final badge = item.certificationType?.tr.toLowerCase() ?? '';
+      final origin = item.provinceOfOrigin?.tr.toLowerCase() ?? '';
 
       final matchesQuery =
           q.isEmpty ||
           title.contains(q) ||
           subtitle.contains(q) ||
           badge.contains(q) ||
-          origin.contains(q) ||
-          tags.contains(q);
+          origin.contains(q);
 
       final matchesTag =
-          tag == 'all' ||
-          badge.contains(tag) ||
-          origin.contains(tag) ||
-          tags.contains(tag);
+          tag == 'all' || badge.contains(tag) || origin.contains(tag);
 
       return matchesQuery && matchesTag;
     }).toList();
@@ -83,33 +78,8 @@ class SearchController extends GetxController {
     _query.value = '';
   }
 
-  Future<void> openProduct(HomeProduct item) async {
-    final product = ProductInfo(
-      id: item.id,
-      title: item.title.tr,
-      subtitle: item.subtitle.tr,
-      description:
-          (item.description.isEmpty
-                  ? 'seasonal_pick_description'
-                  : item.description)
-              .tr,
-      imageUrl: item.image,
-      tags: (item.tags.isEmpty ? ['organic', 'fresh'] : item.tags)
-          .map((e) => e.tr)
-          .toList(),
-      price: item.priceValue,
-      origin: (item.origin.isEmpty ? 'local_farm' : item.origin).tr,
-      harvest: (item.harvest.isEmpty ? 'harvested_this_week' : item.harvest).tr,
-      storage:
-          (item.storage.isEmpty ? 'refrigerate_extend_freshness' : item.storage)
-              .tr,
-      shareSlug: ProductShareHelper.resolveSlug(
-        title: item.title.tr,
-        shareSlug: item.shareSlug,
-      ),
-      shareDeepLink: item.shareDeepLink.isEmpty ? null : item.shareDeepLink,
-    );
-    await Get.toNamed<void>(AppRoutes.productDetail, arguments: product);
+  Future<void> openProduct(VendorInventory item) async {
+    await Get.toNamed<void>(AppRoutes.productDetail, arguments: item);
   }
 
   @override

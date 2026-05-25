@@ -1,20 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class AppQuantitySelector extends StatelessWidget {
   const AppQuantitySelector({
     required this.quantity,
     required this.onIncrement,
     required this.onDecrement,
+    this.onChanged,
+    this.allowDecimal = false,
     this.borderRadius = 16,
     this.backgroundColor,
     super.key,
   });
 
-  final int quantity;
+  final num quantity;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
+  final ValueChanged<num>? onChanged;
+  final bool allowDecimal;
   final double borderRadius;
   final Color? backgroundColor;
+
+  void _showInputDialog(BuildContext context) {
+    final textController = TextEditingController(
+      text: quantity.toString().replaceAll(RegExp(r'\.0$'), ''),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('enter_quantity'.tr),
+          content: TextField(
+            controller: textController,
+            keyboardType: TextInputType.numberWithOptions(
+              decimal: allowDecimal,
+            ),
+            decoration: InputDecoration(
+              hintText: 'quantity'.tr,
+            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                allowDecimal ? RegExp(r'^\d*\.?\d*') : RegExp(r'^\d+'),
+              ),
+            ],
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('cancel'.tr),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final val = double.tryParse(textController.text);
+                if (val != null && val > 0) {
+                  onChanged?.call(allowDecimal ? val : val.toInt());
+                }
+                Navigator.pop(context);
+              },
+              child: Text('ok'.tr),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +84,17 @@ class AppQuantitySelector extends StatelessWidget {
             icon: Icons.remove_rounded,
             onTap: onDecrement,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              '$quantity',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: scheme.onSurface,
+          GestureDetector(
+            onTap: onChanged == null ? null : () => _showInputDialog(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                quantity.toString().replaceAll(RegExp(r'\.0$'), ''),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: scheme.onSurface,
+                ),
               ),
             ),
           ),

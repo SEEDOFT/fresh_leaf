@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
+import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor,
     this.onBack,
     this.centerTitle = false,
+    this.showCartButton = false,
     super.key,
   });
 
@@ -19,6 +23,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? backgroundColor;
   final VoidCallback? onBack;
   final bool centerTitle;
+  final bool showCartButton;
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight.scaled);
@@ -49,7 +54,53 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontSize: 18.scaled,
         ),
       ),
-      actions: actions,
+      actions: [
+        ...?actions,
+        if (showCartButton)
+          Builder(
+            builder: (context) {
+              if (!Get.isRegistered<CartController>()) {
+                CartBinding().dependencies();
+              }
+              final cartController = Get.find<CartController>();
+              return Obx(() {
+                final count = cartController.items.length;
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: scheme.onSurface,
+                      ),
+                      onPressed: showCartPanel,
+                    ),
+                    if (count > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: scheme.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            count > 99 ? '99+' : count.toString(),
+                            style: TextStyle(
+                              color: scheme.onPrimary,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              });
+            },
+          ),
+      ],
     );
   }
 }

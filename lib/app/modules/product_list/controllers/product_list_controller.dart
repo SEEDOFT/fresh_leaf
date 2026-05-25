@@ -1,138 +1,31 @@
-import 'package:fresh_leaf/core/models/product_info.dart';
+import 'dart:async';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
+import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:get/get.dart';
 
 class ProductListController extends GetxController {
+  final ProductService _productService = Get.find<ProductService>();
+
   final RxBool isLoading = false.obs;
-  final RxList<ProductInfo> products = <ProductInfo>[].obs;
+  final RxList<VendorInventory> products = <VendorInventory>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    loadProducts();
+    unawaited(loadProducts());
   }
 
-  void loadProducts() {
+  Future<void> loadProducts() async {
     isLoading.value = true;
-    // Simulate network delay
-    Future.delayed(
-      const Duration(seconds: 1),
-      () => {
-        isLoading.value = false,
-        products.value = const [
-          ProductInfo(
-            id: 101,
-            title: 'product_heritage_carrots_title',
-            subtitle: 'product_heritage_carrots_subtitle',
-            description: 'product_heritage_carrots_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1593642532403-3050295488a5?q=80&w=1000',
-            tags: ['organic', 'tag_root_vegetable'],
-            price: 4.50,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'refrigerate',
-            shareSlug: 'heritage-carrots',
-          ),
-          ProductInfo(
-            id: 102,
-            title: 'product_golden_oysters_title',
-            subtitle: 'product_golden_oysters_subtitle',
-            description: 'product_golden_oysters_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1556911892-bbe3ff16d8ee?q=80&w=1000',
-            tags: ['organic', 'tag_mushrooms'],
-            price: 8,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'paper_bag',
-            shareSlug: 'golden-oysters',
-          ),
-          ProductInfo(
-            id: 103,
-            title: 'product_leafy_greens_title',
-            subtitle: 'product_leafy_greens_subtitle',
-            description: 'product_leafy_greens_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000',
-            tags: ['organic', 'tag_greens'],
-            price: 3.25,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'refrigerate',
-            shareSlug: 'leafy-greens',
-          ),
-          ProductInfo(
-            id: 104,
-            title: 'product_citrus_bundle_title',
-            subtitle: 'product_citrus_bundle_subtitle',
-            description: 'product_citrus_bundle_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1582719478250-5cd631d3338c?q=80&w=1000',
-            tags: ['organic', 'tag_fruit'],
-            price: 12,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'cool_dry_place',
-            shareSlug: 'citrus-bundle',
-          ),
-          ProductInfo(
-            id: 105,
-            title: 'product_rainbow_chard_title',
-            subtitle: 'product_rainbow_chard_subtitle',
-            description: 'product_rainbow_chard_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=1000',
-            tags: ['organic', 'tag_vegetable'],
-            price: 5.90,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'refrigerate',
-            shareSlug: 'rainbow-chard',
-          ),
-          ProductInfo(
-            id: 106,
-            title: 'product_wild_mushrooms_title',
-            subtitle: 'product_wild_mushrooms_subtitle',
-            description: 'product_wild_mushrooms_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1470747801570-32410980427?q=80&w=1000',
-            tags: ['organic', 'tag_mushrooms'],
-            price: 15,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'paper_bag',
-            shareSlug: 'wild-mushrooms',
-          ),
-          ProductInfo(
-            id: 107,
-            title: 'product_artisan_bread_title',
-            subtitle: 'product_artisan_bread_subtitle',
-            description: 'product_artisan_bread_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1509440159596-02490887734?q=80&w=1000',
-            tags: ['organic', 'tag_bakery'],
-            price: 8,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'bread_box',
-            shareSlug: 'artisan-bread',
-          ),
-          ProductInfo(
-            id: 108,
-            title: 'product_pasture_eggs_title',
-            subtitle: 'product_pasture_eggs_subtitle',
-            description: 'product_pasture_eggs_description',
-            imageUrl:
-                'https://images.unsplash.com/photo-1582722872472-55e44e8a061d?q=80&w=1000',
-            tags: ['organic', 'tag_protein'],
-            price: 6.50,
-            origin: 'local_farm',
-            harvest: 'harvest_spring_2026',
-            storage: 'refrigerate',
-            shareSlug: 'pasture-raised-eggs',
-          ),
-        ],
-      },
-    );
+    try {
+      final fetchedProducts = await _productService.getProducts();
+      products.value = fetchedProducts;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> refreshProducts() async {
+    await loadProducts();
   }
 }

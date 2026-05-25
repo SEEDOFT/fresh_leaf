@@ -129,7 +129,7 @@ class WalletTopUpPaymentController extends GetxController {
 
   String get formattedAmount {
     if (currency.value.toUpperCase() == 'USD') {
-      return '\$${amount.value.toStringAsFixed(2)}';
+      return '\$${formatPrice(amount.value)}';
     }
     return '${amount.value.toInt()} ៛';
   }
