@@ -148,6 +148,21 @@ class CheckoutController extends GetxController {
     }
   }
 
+  Future<void> changeDeliveryAddress() async {
+    final routeResult = await Get.toNamed<dynamic>(
+      AppRoutes.addresses,
+      arguments: <String, dynamic>{
+        'mode': 'pick',
+        'return_on_select': true,
+      },
+    );
+    if (routeResult is UserAddress) {
+      deliveryAddress.value = routeResult;
+    } else if (routeResult is Map<String, dynamic>) {
+      deliveryAddress.value = UserAddress.fromMap(routeResult);
+    }
+  }
+
   Future<void> fetchUserCards() async {
     try {
       final apiClient = Get.find<ApiClient>();

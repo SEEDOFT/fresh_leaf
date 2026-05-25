@@ -16,6 +16,19 @@ class ProfileAddressesController extends GetxController {
   final RxBool isRefreshing = false.obs;
   final RxString deletingAddressId = ''.obs;
 
+  bool returnOnSelect = false;
+  String mode = 'view';
+
+  @override
+  void onInit() {
+    super.onInit();
+    final map = Get.arguments;
+    if (map is Map<String, dynamic>) {
+      mode = map['mode']?.toString() ?? 'view';
+      returnOnSelect = map['return_on_select'] == true;
+    }
+  }
+
   @override
   Future<void> onReady() async {
     super.onReady();
@@ -29,6 +42,12 @@ class ProfileAddressesController extends GetxController {
       await fetchSavedAddresses();
     } finally {
       isRefreshing.value = false;
+    }
+  }
+
+  void selectAddress(UserAddress address) {
+    if (returnOnSelect) {
+      Get.back<dynamic>(result: address);
     }
   }
 

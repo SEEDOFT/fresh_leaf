@@ -170,11 +170,18 @@ class AddressesView extends GetView<ProfileAddressesController> {
     return Column(
       children: [
         for (final item in addresses) ...[
-          ProfileAddressesListItem(
-            address: item,
-            isDeleting: deletingId == item.id,
-            onEdit: () => controller.openEditAddress(item),
-            onDelete: () => controller.requestDeleteAddress(item),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: controller.returnOnSelect ? () => controller.selectAddress(item) : null,
+              borderRadius: BorderRadius.circular(18),
+              child: ProfileAddressesListItem(
+                address: item,
+                isDeleting: deletingId == item.id,
+                onEdit: () => controller.openEditAddress(item),
+                onDelete: () => controller.requestDeleteAddress(item),
+              ),
+            ),
           ),
           const SizedBox(height: 10),
         ],

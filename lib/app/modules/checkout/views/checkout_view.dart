@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/checkout/controllers/checkout_controller.dart';
 import 'package:fresh_leaf/app/modules/checkout/widgets/checkout_widget.dart';
-import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -26,7 +25,7 @@ class CheckoutView extends GetView<CheckoutController> {
             Obx(
               () => CheckoutDeliveryCardWidget(
                 address: controller.deliveryAddress.value,
-                onChangeAddress: () => Get.toNamed<void>(AppRoutes.addresses),
+                onChangeAddress: controller.changeDeliveryAddress,
               ),
             ),
             const SizedBox(height: 14),
