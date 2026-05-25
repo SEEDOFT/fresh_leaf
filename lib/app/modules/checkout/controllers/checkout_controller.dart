@@ -80,10 +80,10 @@ class CheckoutController extends GetxController {
 
     for (final type in types) {
       final code = (type.code ?? '').toLowerCase();
-      if (code != PaymentMethodTypeCodes.aba &&
-          code != PaymentMethodTypeCodes.acleda) {
+      if (code == PaymentMethodTypeCodes.creditDebit) {
         continue;
       }
+      
       final exists = items.any((option) => option.typeCode == code);
       if (exists) continue;
       items.add(
@@ -94,6 +94,18 @@ class CheckoutController extends GetxController {
         ),
       );
     }
+
+    final ccType = types.firstWhereOrNull((t) => t.code == PaymentMethodTypeCodes.creditDebit);
+    if (ccType != null) {
+      items.add(
+        CheckoutPaymentOption(
+          id: 'add_new_card',
+          label: userCards.isEmpty ? (ccType.name ?? 'credit_debit_card'.tr) : 'add_new_card'.tr,
+          typeCode: PaymentMethodTypeCodes.creditDebit,
+        ),
+      );
+    }
+
     return items;
   }
 
@@ -163,6 +175,10 @@ class CheckoutController extends GetxController {
   }
 
   Future<void> selectPaymentOption(String id) async {
+    if (id == 'add_new_card') {
+      await _pickCreditDebitMethod();
+      return;
+    }
     selectedOptionId.value = id;
   }
 
@@ -171,6 +187,11 @@ class CheckoutController extends GetxController {
     final option = selectedOption;
     if (option == null) {
       Get.snackbar('payment_method'.tr, 'choose_payment_each_time'.tr);
+      return;
+    }
+    if (option.typeCode == PaymentMethodTypeCodes.creditDebit &&
+        option.method == null) {
+      Get.snackbar('payment_method'.tr, 'select_payment_method_to_continue'.tr);
       return;
     }
 
@@ -250,13 +271,7 @@ class CheckoutController extends GetxController {
       );
       final apiResponse = ApiResponse.parseList(response.data);
       final parsed = apiResponse.data.map(PaymentMethodType.fromMap).toList();
-      types.assignAll(
-        parsed.where((item) {
-          final code = (item.code ?? '').toLowerCase();
-          return code == PaymentMethodTypeCodes.aba ||
-              code == PaymentMethodTypeCodes.acleda;
-        }),
-      );
+      types.assignAll(parsed);
     } on DioException catch (error) {
       if (showError) {
         Get.snackbar(
@@ -286,6 +301,40 @@ class CheckoutController extends GetxController {
   }
 
 
+
+  Future<void> _pickCreditDebitMethod() async {
+    final routeResult = await Get.toNamed<dynamic>(
+      AppRoutes.paymentMethods,
+      arguments: <String, dynamic>{
+        'mode': 'pick',
+        'allowed_payment_method_type_codes': <String>[
+          PaymentMethodTypeCodes.creditDebit,
+        ],
+        'return_on_select': true,
+      },
+    );
+    final method = _toPaymentMethod(routeResult);
+    if (method == null) return;
+    
+    await fetchUserCards();
+    selectedOptionId.value = method.id?.toString() ?? '';
+  }
+
+  PaymentMethod? _toPaymentMethod(dynamic value) {
+    if (value is PaymentMethod) {
+      return value;
+    }
+    if (value is Map<String, dynamic>) {
+      return PaymentMethod.fromMap(value);
+    }
+    if (value is Map) {
+      final mapped = value.map<String, dynamic>(
+        (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
+      );
+      return PaymentMethod.fromMap(mapped);
+    }
+    return null;
+  }
 
   Future<void> _finalizeOrder() async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
