@@ -591,4 +591,6 @@ const Map<String, String> translationsEn = {
   'certified_organic': 'Certified Organic',
   'pesticide_free': 'Pesticide Free',
   'naturally_grown': 'Naturally Grown',
+  'add_new_card': 'Add New Card',
+  'add_delivery_address': 'Add Delivery Address',
 };

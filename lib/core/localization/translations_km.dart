@@ -589,7 +589,9 @@ const Map<String, String> translationsKm = {
   'top_up_mock': 'បញ្ចូលលុយតាម Mock Payment',
   'payment_order': 'ការទូទាត់សម្រាប់ការបញ្ជាទិញ #@id',
   'top_up_success': 'ការបញ្ចូលលុយចំនួន @amount បានជោគជ័យ',
-  'certified_organic': 'សរីរាង្គមានវិញ្ញាបនបត្រ',
+  'certified_organic': 'សរីរាង្គបញ្ជាក់',
   'pesticide_free': 'គ្មានជាតិគីមី',
-  'naturally_grown': 'ដាំតាមបែបធម្មជាតិ',
+  'naturally_grown': 'ដាំដុះបែបធម្មជាតិ',
+  'add_new_card': 'បន្ថែមកាតថ្មី',
+  'add_delivery_address': 'បន្ថែមអាសយដ្ឋានដឹកជញ្ជូន',
 };
