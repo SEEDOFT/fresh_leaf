@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/models/user_address.dart';
 import 'package:get/get.dart';
 
 class CheckoutDeliveryCardWidget extends StatelessWidget {
   const CheckoutDeliveryCardWidget({
     required this.onChangeAddress,
+    this.address,
     super.key,
   });
 
   final VoidCallback onChangeAddress;
+  final UserAddress? address;
 
   @override
   Widget build(BuildContext context) {
@@ -50,21 +53,41 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'default_delivery_address'.tr,
+                  address != null ? address!.recipientName : 'add_delivery_address'.tr,
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  'delivery_window'.tr,
-                  style: TextStyle(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 12,
+                if (address != null) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    address!.phone,
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 3),
+                  Text(
+                    address!.line1,
+                    style: TextStyle(
+                      color: scheme.onSurfaceVariant,
+                      fontSize: 12,
+                    ),
+                  ),
+                  if (address!.line2.isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      address!.line2,
+                      style: TextStyle(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ],
               ],
             ),
           ),

@@ -11,6 +11,7 @@ import 'package:fresh_leaf/core/models/payment_method_type.dart';
 import 'package:fresh_leaf/core/models/payment_session.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
+import 'package:fresh_leaf/core/models/user_address.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,7 +35,10 @@ class CheckoutController extends GetxController {
   final TextEditingController noteController = TextEditingController();
 
   final RxList<PaymentMethodType> types = <PaymentMethodType>[].obs;
-  final Rxn<PaymentMethod> selectedCard = Rxn<PaymentMethod>();
+  final RxList<PaymentMethod> userCards = <PaymentMethod>[].obs;
+  final Rxn<UserAddress> deliveryAddress = Rxn<UserAddress>();
+  
+  final RxBool isLoadingAddress = false.obs;
   final RxBool isLoadingPayments = false.obs;
   final RxString selectedOptionId = ''.obs;
   final RxBool isPlacingOrder = false.obs;
@@ -42,22 +46,37 @@ class CheckoutController extends GetxController {
   static const String creditDebitOptionId =
       'channel-${PaymentMethodTypeCodes.creditDebit}';
 
-  double get subtotal => cart.subtotal;
-  double get discount => 0;
-  double get grandTotal => subtotal - discount;
+  double get originalSubtotal {
+    return cart.items.fold(0, (sum, item) => sum + ((item.vendorInventory?.price ?? 0) * item.quantity));
+  }
+  
+  double get subtotal => originalSubtotal;
+  double get discount => originalSubtotal - cart.subtotal;
+  double get grandTotal => cart.subtotal;
 
   int get totalItems =>
       cart.items.fold<int>(0, (sum, item) => sum + item.quantity.toInt());
 
   List<CheckoutPaymentOption> get paymentOptions {
-    final items = <CheckoutPaymentOption>[
-      CheckoutPaymentOption(
-        id: creditDebitOptionId,
-        label: _creditOptionLabel(),
-        typeCode: PaymentMethodTypeCodes.creditDebit,
-        method: selectedCard.value,
-      ),
-    ];
+    final items = <CheckoutPaymentOption>[];
+
+    for (final card in userCards) {
+      final digits = card.cardNumber.replaceAll(RegExp('[^0-9]'), '');
+      final last4 = digits.length >= 4
+          ? digits.substring(digits.length - 4)
+          : digits.padLeft(4, '*');
+      final baseLabel = (card.label?.trim().isNotEmpty ?? false)
+          ? card.label!.trim()
+          : 'credit_debit_card'.tr;
+      items.add(
+        CheckoutPaymentOption(
+          id: card.id?.toString() ?? 'card_${items.length}',
+          label: '$baseLabel •••• $last4',
+          typeCode: PaymentMethodTypeCodes.creditDebit,
+          method: card,
+        ),
+      );
+    }
 
     for (final type in types) {
       final code = (type.code ?? '').toLowerCase();
@@ -90,7 +109,46 @@ class CheckoutController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    await fetchPaymentOptions(showError: false);
+    await Future.wait([
+      fetchPaymentOptions(showError: false),
+      fetchAddress(),
+      fetchUserCards(),
+    ]);
+    _ensureSelection();
+  }
+
+  Future<void> fetchAddress() async {
+    isLoadingAddress.value = true;
+    try {
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(ApiEndpoints.userAddresses);
+      final apiResponse = ApiResponse.parseList(response.data);
+      final parsed = apiResponse.data
+          .map((e) => UserAddress.fromMap(e))
+          .toList();
+      if (parsed.isNotEmpty) {
+        deliveryAddress.value = parsed.first;
+      }
+    } catch (_) {
+      // Ignored
+    } finally {
+      isLoadingAddress.value = false;
+    }
+  }
+
+  Future<void> fetchUserCards() async {
+    try {
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(ApiEndpoints.userPaymentMethods);
+      final apiResponse = ApiResponse.parseList(response.data);
+      final parsed = apiResponse.data
+          .map((e) => PaymentMethod.fromMap(e))
+          .toList();
+      userCards.assignAll(parsed.where((card) =>
+          card.paymentMethodType?.code == PaymentMethodTypeCodes.creditDebit));
+    } catch (_) {
+      // Ignored
+    }
   }
 
   Future<void> fetchPaymentOptions({bool showError = true}) async {
@@ -105,10 +163,6 @@ class CheckoutController extends GetxController {
   }
 
   Future<void> selectPaymentOption(String id) async {
-    if (id == creditDebitOptionId) {
-      await _pickCreditDebitMethod();
-      return;
-    }
     selectedOptionId.value = id;
   }
 
@@ -119,11 +173,6 @@ class CheckoutController extends GetxController {
       Get.snackbar('payment_method'.tr, 'choose_payment_each_time'.tr);
       return;
     }
-    if (option.typeCode == PaymentMethodTypeCodes.creditDebit &&
-        selectedCard.value == null) {
-      Get.snackbar('payment_method'.tr, 'select_payment_method_to_continue'.tr);
-      return;
-    }
 
     isPlacingOrder.value = true;
     try {
@@ -132,8 +181,8 @@ class CheckoutController extends GetxController {
         amount: grandTotal,
         paymentMethodTypeCode: option.typeCode,
         paymentMethodId: option.typeCode == PaymentMethodTypeCodes.creditDebit
-            ? selectedCard.value?.id
-            : option.method?.id,
+            ? option.method?.id
+            : null,
         items: cart.items
             .map(
               (item) => <String, dynamic>{
@@ -234,74 +283,9 @@ class CheckoutController extends GetxController {
     final current = selectedOptionId.value;
     final exists = options.any((option) => option.id == current);
     if (current.isNotEmpty && exists) return;
-
-    if (selectedCard.value != null) {
-      selectedOptionId.value = creditDebitOptionId;
-      return;
-    }
-
-    CheckoutPaymentOption? firstBank;
-    for (final option in options) {
-      if (option.id != creditDebitOptionId) {
-        firstBank = option;
-        break;
-      }
-    }
-
-    if (firstBank != null) {
-      selectedOptionId.value = firstBank.id;
-      return;
-    }
-
-    selectedOptionId.value = creditDebitOptionId;
   }
 
-  String _creditOptionLabel() {
-    final method = selectedCard.value;
-    if (method == null) return 'credit_debit_card'.tr;
 
-    final baseLabel = (method.label?.trim().isNotEmpty ?? false)
-        ? method.label!.trim()
-        : 'credit_debit_card'.tr;
-    final digits = method.cardNumber.replaceAll(RegExp('[^0-9]'), '');
-    final last4 = digits.length >= 4
-        ? digits.substring(digits.length - 4)
-        : digits.padLeft(4, '*');
-    return '$baseLabel •••• $last4';
-  }
-
-  Future<void> _pickCreditDebitMethod() async {
-    final routeResult = await Get.toNamed<dynamic>(
-      AppRoutes.paymentMethods,
-      arguments: <String, dynamic>{
-        'mode': 'pick',
-        'allowed_payment_method_type_codes': <String>[
-          PaymentMethodTypeCodes.creditDebit,
-        ],
-        'return_on_select': true,
-      },
-    );
-    final method = _toPaymentMethod(routeResult);
-    if (method == null) return;
-    selectedCard.value = method;
-    selectedOptionId.value = creditDebitOptionId;
-  }
-
-  PaymentMethod? _toPaymentMethod(dynamic value) {
-    if (value is PaymentMethod) {
-      return value;
-    }
-    if (value is Map<String, dynamic>) {
-      return PaymentMethod.fromMap(value);
-    }
-    if (value is Map) {
-      final mapped = value.map<String, dynamic>(
-        (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
-      );
-      return PaymentMethod.fromMap(mapped);
-    }
-    return null;
-  }
 
   Future<void> _finalizeOrder() async {
     await Future<void>.delayed(const Duration(milliseconds: 900));

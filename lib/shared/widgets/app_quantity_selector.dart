@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -27,10 +29,11 @@ class AppQuantitySelector extends StatelessWidget {
       text: quantity.toString().replaceAll(RegExp(r'\.0$'), ''),
     );
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
           title: Text('enter_quantity'.tr),
           content: TextField(
             controller: textController,
@@ -65,7 +68,7 @@ class AppQuantitySelector extends StatelessWidget {
           ],
         );
       },
-    );
+    ));
   }
 
   @override

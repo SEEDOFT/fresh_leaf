@@ -23,8 +23,11 @@ class CheckoutView extends GetView<CheckoutController> {
 
         return Column(
           children: [
-            CheckoutDeliveryCardWidget(
-              onChangeAddress: () => Get.toNamed<void>(AppRoutes.addresses),
+            Obx(
+              () => CheckoutDeliveryCardWidget(
+                address: controller.deliveryAddress.value,
+                onChangeAddress: () => Get.toNamed<void>(AppRoutes.addresses),
+              ),
             ),
             const SizedBox(height: 14),
             Obx(
