@@ -355,6 +355,7 @@ class CheckoutController extends GetxController {
     await Future<void>.delayed(const Duration(milliseconds: 900));
     final itemCount = totalItems;
     cart.clearCart();
+    noteController.clear();
 
     if (Get.isRegistered<DashboardController>()) {
       Get.back<void>();
