@@ -35,8 +35,11 @@ class OrderService extends GetxService {
       );
       final apiResponse = ApiResponse.parseMap(response.data);
 
-      if (apiResponse.isSuccess && apiResponse.data['data'] != null) {
-        return Order.fromMap(apiResponse.data['data'] as Map<String, dynamic>);
+      if (apiResponse.isSuccess) {
+        final data = apiResponse.data['data'] ?? apiResponse.data;
+        if (data is Map<String, dynamic> && data.isNotEmpty) {
+          return Order.fromMap(data);
+        }
       }
       return null;
     } on Exception {
