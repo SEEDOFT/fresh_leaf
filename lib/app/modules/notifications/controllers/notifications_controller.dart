@@ -18,11 +18,14 @@ class NotificationsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    notifications.assignAll(_notificationService.notifications);
     unawaited(loadNotifications());
   }
 
   Future<void> loadNotifications() async {
-    isLoading.value = true;
+    if (notifications.isEmpty) {
+      isLoading.value = true;
+    }
     try {
       final data = await _notificationService.getNotifications();
       notifications.assignAll(data);
@@ -59,25 +62,7 @@ class NotificationsController extends GetxController {
   Future<void> markAllRead() async {
     final success = await _notificationService.markAllAsRead();
     if (success) {
-      // Optimistically update UI
-      final updatedList = notifications.map((n) {
-        if (!n.isRead) {
-          return AppNotification(
-            id: n.id,
-            title: n.title,
-            message: n.message,
-            isRead: true,
-            readAt: DateTime.now(),
-            createdAt: n.createdAt,
-            typeCode: n.typeCode,
-            typeNameEn: n.typeNameEn,
-            typeNameKm: n.typeNameKm,
-            data: n.data,
-          );
-        }
-        return n;
-      }).toList();
-      notifications.assignAll(updatedList);
+      notifications.assignAll(_notificationService.notifications);
     }
   }
 }

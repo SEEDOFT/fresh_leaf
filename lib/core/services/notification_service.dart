@@ -414,6 +414,7 @@ class NotificationService extends GetxService {
     super.onClose();
   }
 
+  final RxList<AppNotification> notifications = <AppNotification>[].obs;
   final RxInt unreadCount = 0.obs;
 
   /// Get database notifications for the user
@@ -424,6 +425,7 @@ class NotificationService extends GetxService {
 
       if (apiResponse.isSuccess) {
         final list = apiResponse.data.map(AppNotification.fromMap).toList();
+        notifications.assignAll(list);
         unreadCount.value = list.where((n) => !n.isRead).length;
         return list;
       }
@@ -447,6 +449,22 @@ class NotificationService extends GetxService {
         if (unreadCount.value > 0) {
           unreadCount.value--;
         }
+        final idx = notifications.indexWhere((n) => n.id == notificationId);
+        if (idx != -1) {
+          final old = notifications[idx];
+          notifications[idx] = AppNotification(
+            id: old.id,
+            title: old.title,
+            message: old.message,
+            isRead: true,
+            readAt: DateTime.now(),
+            createdAt: old.createdAt,
+            typeCode: old.typeCode,
+            typeNameEn: old.typeNameEn,
+            typeNameKm: old.typeNameKm,
+            data: old.data,
+          );
+        }
         return true;
       }
       return false;
@@ -464,6 +482,23 @@ class NotificationService extends GetxService {
       final apiResponse = ApiResponse.parseMap(response.data);
       if (apiResponse.isSuccess) {
         unreadCount.value = 0;
+        notifications.assignAll(notifications.map((n) {
+          if (!n.isRead) {
+            return AppNotification(
+              id: n.id,
+              title: n.title,
+              message: n.message,
+              isRead: true,
+              readAt: DateTime.now(),
+              createdAt: n.createdAt,
+              typeCode: n.typeCode,
+              typeNameEn: n.typeNameEn,
+              typeNameKm: n.typeNameKm,
+              data: n.data,
+            );
+          }
+          return n;
+        }).toList());
         return true;
       }
       return false;

@@ -64,30 +64,49 @@ class NotificationsView extends GetView<NotificationsController> {
           ),
           Expanded(
             child: Obx(
-              () => RefreshIndicator(
-                onRefresh: controller.refreshList,
-                child: controller.filtered.isEmpty
-                    ? NotificationsEmptyState(scheme: scheme)
-                    : ListView.separated(
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
-                        itemCount: controller.filtered.length,
-                        separatorBuilder: (_, _) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final item = controller.filtered[index];
-                          return NotificationCard(
-                            item: item,
-                            scheme: scheme,
-                            onTap: () async => await Get.toNamed<void>(
-                              '/notification_detail',
-                              arguments: item,
+              () {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: controller.refreshList,
+                  child: controller.filtered.isEmpty
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              child: NotificationsEmptyState(scheme: scheme),
                             ),
-                          );
-                        },
-                      ),
-              ),
+                          ],
+                        )
+                      : ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
+                          itemCount: controller.filtered.length,
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: 12),
+                          itemBuilder: (context, index) {
+                            final item = controller.filtered[index];
+                            return NotificationCard(
+                              item: item,
+                              scheme: scheme,
+                              onTap: () async => await Get.toNamed<void>(
+                                '/notification_detail',
+                                arguments: item,
+                              ),
+                            );
+                          },
+                        ),
+                );
+              },
             ),
           ),
         ],
