@@ -25,12 +25,14 @@ class ProfileView extends GetView<ProfileController> {
           ProfileSectionCard(
             title: 'account'.tr.toUpperCase(),
             children: [
-              AppTile(
-                icon: Icons.person_outline,
-                title: 'personal_details'.tr,
-                subtitle: controller.email.value,
-                onTap: () async =>
-                    await Get.toNamed<void>(AppRoutes.personalDetails),
+              Obx(
+                () => AppTile(
+                  icon: Icons.person_outline,
+                  title: 'personal_details'.tr,
+                  subtitle: controller.email.value,
+                  onTap: () async =>
+                      await Get.toNamed<void>(AppRoutes.personalDetails),
+                ),
               ),
               AppDivider(height: 16.scaled),
               AppTile(

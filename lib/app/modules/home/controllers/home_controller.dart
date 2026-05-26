@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/repositories/home_repository.dart';
@@ -51,6 +52,9 @@ class HomeController extends GetxController {
     unawaited(fetchCurrentLocation());
     if (Get.isRegistered<NotificationService>()) {
       unawaited(Get.find<NotificationService>().getNotifications());
+    }
+    if (Get.isRegistered<ProfileController>()) {
+      Get.find<ProfileController>();
     }
   }
 

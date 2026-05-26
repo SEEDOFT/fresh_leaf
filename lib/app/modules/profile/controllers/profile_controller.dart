@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
@@ -26,6 +28,7 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     _loadUser();
+    unawaited(refreshProfile());
   }
 
   void _loadUser() {
