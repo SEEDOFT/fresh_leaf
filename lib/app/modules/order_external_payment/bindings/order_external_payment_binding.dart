@@ -5,7 +5,7 @@ class OrderExternalPaymentBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<OrderExternalPaymentController>(
-      () => OrderExternalPaymentController(),
+      OrderExternalPaymentController.new,
     );
   }
 }

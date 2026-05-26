@@ -102,7 +102,8 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                             opacity: hasEnough ? 1.0 : 0.5,
                             child: ListTile(
                               onTap: hasEnough
-                                  ? () => controller.selectWallet(wallet)
+                                  ? () => controller
+                                      .updateSelectedWallet(wallet)
                                   : null,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
@@ -132,7 +133,9 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                                 children: [
                                   const SizedBox(height: 4),
                                   Text(
-                                    'balance: ${wallet.balance} ${wallet.currency.symbol}',
+                                    'balance: '
+                                    '${wallet.balance}'
+                                    ' ${wallet.currency.symbol}',
                                   ),
                                   if (!hasEnough)
                                     Text(

@@ -52,10 +52,10 @@ class OrderExternalPaymentController extends GetxController {
       );
 
       if (Get.isRegistered<DashboardController>()) {
-        Get.offAllNamed<void>(AppRoutes.dashboard);
+        unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
         Get.find<DashboardController>().currentIndex = 3; // Orders tab
       } else {
-        Get.offAllNamed<void>(AppRoutes.orders);
+        unawaited(Get.offAllNamed<void>(AppRoutes.orders));
       }
     } on DioException catch (error) {
       Get.snackbar(
@@ -81,9 +81,9 @@ class OrderExternalPaymentController extends GetxController {
       snackPosition: SnackPosition.TOP,
     );
     if (Get.isRegistered<DashboardController>()) {
-      Get.offAllNamed<void>(AppRoutes.dashboard);
+      unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
     } else {
-      Get.offAllNamed<void>(AppRoutes.home);
+      unawaited(Get.offAllNamed<void>(AppRoutes.home));
     }
   }
 
@@ -95,7 +95,9 @@ class OrderExternalPaymentController extends GetxController {
   String get formattedTime {
     final minutes = (remainingSeconds.value / 60).floor();
     final seconds = remainingSeconds.value % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    final minsStr = minutes.toString().padLeft(2, '0');
+    final secsStr = seconds.toString().padLeft(2, '0');
+    return '$minsStr:$secsStr';
   }
 
   @override

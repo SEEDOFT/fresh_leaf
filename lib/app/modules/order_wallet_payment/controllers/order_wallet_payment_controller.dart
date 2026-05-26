@@ -37,7 +37,7 @@ class OrderWalletPaymentController extends GetxController {
       unawaited(_loadData());
     } else {
       Get.snackbar('Error', 'Invalid order ID');
-      Get.offNamed<void>(AppRoutes.orders);
+      unawaited(Get.offNamed<void>(AppRoutes.orders));
     }
   }
 
@@ -97,7 +97,8 @@ class OrderWalletPaymentController extends GetxController {
     }
   }
 
-  void selectWallet(Wallet wallet) {
+  void updateSelectedWallet(Wallet wallet) {
+    if (selectedWallet.value == wallet) return;
     selectedWallet.value = wallet;
   }
 
@@ -148,6 +149,6 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   void cancelPayment() {
-    Get.offNamed<void>(AppRoutes.orders);
+    unawaited(Get.offNamed<void>(AppRoutes.orders));
   }
 }
