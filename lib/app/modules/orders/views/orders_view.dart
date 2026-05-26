@@ -43,30 +43,53 @@ class OrdersView extends GetView<OrdersController> {
           const SizedBox(height: 12),
           Expanded(
             child: Obx(
-              () => controller.isLoading.value
-                  ? const OrdersLoadingWidget()
-                  : controller.orders.isEmpty
-                  ? const OrdersEmptyStateWidget()
-                  : controller.filteredOrders.isEmpty
-                  ? const OrdersEmptyStateWidget(filtered: true)
-                  : AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 280),
-                      switchInCurve: Curves.easeOutCubic,
-                      switchOutCurve: Curves.easeInCubic,
-                      child: OrdersListWidget(
-                        key: ValueKey<String>(
-                          '${controller.selectedStatus}'
-                          '-${controller.selectedSort.name}'
-                          '-${controller.filteredOrders.length}',
+              () => RefreshIndicator(
+                onRefresh: controller.loadOrders,
+                child: controller.isLoading.value
+                    ? const OrdersLoadingWidget()
+                    : controller.orders.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
                         ),
-                        groupedOrders: controller.groupedFilteredOrders,
-                        scheme: scheme,
-                        onOrderTap: (order) async => await Get.toNamed<void>(
-                          AppRoutes.orderDetail,
-                          arguments: order,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: const OrdersEmptyStateWidget(),
+                          ),
+                        ],
+                      )
+                    : controller.filteredOrders.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            child: const OrdersEmptyStateWidget(filtered: true),
+                          ),
+                        ],
+                      )
+                    : AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 280),
+                        switchInCurve: Curves.easeOutCubic,
+                        switchOutCurve: Curves.easeInCubic,
+                        child: OrdersListWidget(
+                          key: ValueKey<String>(
+                            '${controller.selectedStatus}'
+                            '-${controller.selectedSort.name}'
+                            '-${controller.filteredOrders.length}',
+                          ),
+                          groupedOrders: controller.groupedFilteredOrders,
+                          scheme: scheme,
+                          onOrderTap: (order) async => await Get.toNamed<void>(
+                            AppRoutes.orderDetail,
+                            arguments: order,
+                          ),
                         ),
                       ),
-                    ),
+              ),
             ),
           ),
         ],

@@ -56,32 +56,34 @@ class OrderItemWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _buildBadge(
-                      text: _translatedStatus,
-                      bg: badgeBg,
-                      textColor: badgeText,
-                    ),
-                    if (order.paymentStatusName != null &&
-                        order.paymentStatusName!.isNotEmpty)
+                Expanded(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
                       _buildBadge(
-                        text: order.paymentStatusName!,
-                        bg: scheme.surfaceContainerHighest,
-                        textColor: scheme.onSurfaceVariant,
+                        text: _translatedStatus,
+                        bg: badgeBg,
+                        textColor: badgeText,
                       ),
-                    if (order.orderTypeName != null &&
-                        order.orderTypeName!.isNotEmpty)
-                      _buildBadge(
-                        text: order.orderTypeName!,
-                        bg: scheme.surfaceContainerHighest,
-                        textColor: scheme.onSurfaceVariant,
-                      ),
-                  ],
+                      if (order.paymentStatusName != null &&
+                          order.paymentStatusName!.isNotEmpty)
+                        _buildBadge(
+                          text: order.paymentStatusName!,
+                          bg: scheme.surfaceContainerHighest,
+                          textColor: scheme.onSurfaceVariant,
+                        ),
+                      if (order.orderTypeName != null &&
+                          order.orderTypeName!.isNotEmpty)
+                        _buildBadge(
+                          text: order.orderTypeName!,
+                          bg: scheme.surfaceContainerHighest,
+                          textColor: scheme.onSurfaceVariant,
+                        ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 Icon(
                   Icons.receipt_long_rounded,
                   size: 16,

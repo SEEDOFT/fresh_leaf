@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
@@ -21,6 +23,7 @@ class OrderDetailController extends GetxController {
     } else if (args is Map) {
       order.value = Order.fromMap(args.cast<String, dynamic>());
     }
+    unawaited(reloadOrder());
   }
 
   @override
