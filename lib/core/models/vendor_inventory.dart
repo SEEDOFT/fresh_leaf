@@ -1,3 +1,4 @@
+import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/product.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 
@@ -7,6 +8,7 @@ class VendorInventory {
     required this.price,
     required this.stockQuantity,
     this.harvestDate,
+    this.harvestDateHuman,
     this.farmLocation,
     this.provinceOfOrigin,
     this.certificationType,
@@ -30,6 +32,8 @@ class VendorInventory {
     this.currencySymbol,
     this.product,
     this.discountPercentage = 0.0,
+    this.priceDisplay = MoneyDisplay.empty,
+    this.discountedPriceDisplay = MoneyDisplay.empty,
   });
 
   factory VendorInventory.fromMap(Map<String, dynamic> map) {
@@ -40,6 +44,7 @@ class VendorInventory {
       harvestDate: map['harvest_date'] != null
           ? DateTime.tryParse(map['harvest_date'].toString())
           : null,
+      harvestDateHuman: map['harvest_date_human']?.toString(),
       farmLocation: formatToString(map['farm_location']),
       provinceOfOrigin: formatToString(map['province_of_origin']),
       certificationType: formatToString(map['certification_type']),
@@ -75,6 +80,10 @@ class VendorInventory {
           ? Product.fromMap(map['product'] as Map<String, dynamic>)
           : null,
       discountPercentage: toDouble(map['discount_percentage']),
+      priceDisplay: MoneyDisplay.fromMap(map['price_display']),
+      discountedPriceDisplay: MoneyDisplay.fromMap(
+        map['discounted_price_display'],
+      ),
     );
   }
 
@@ -82,6 +91,7 @@ class VendorInventory {
   final double price;
   final double stockQuantity;
   final DateTime? harvestDate;
+  final String? harvestDateHuman;
   final String? farmLocation;
   final String? provinceOfOrigin;
   final String? certificationType;
@@ -105,10 +115,33 @@ class VendorInventory {
   final String? currencySymbol;
   final Product? product;
   final double discountPercentage;
+  final MoneyDisplay priceDisplay;
+  final MoneyDisplay discountedPriceDisplay;
 
   double get finalPrice {
     final discount = discountPercentage.clamp(0.0, 100.0) / 100.0;
     return price * (1 - discount);
+  }
+
+  MoneyDisplay get resolvedPriceDisplay {
+    if (!priceDisplay.isEmpty) return priceDisplay;
+    return MoneyDisplay.fromCurrencyAmount(
+      amount: price,
+      currencyId: currencyId,
+    );
+  }
+
+  MoneyDisplay get resolvedFinalPriceDisplay {
+    if (!discountedPriceDisplay.isEmpty) return discountedPriceDisplay;
+    if (!priceDisplay.isEmpty && discountPercentage > 0) {
+      final discount = discountPercentage.clamp(0.0, 100.0) / 100.0;
+      return priceDisplay.multiply(1 - discount);
+    }
+    if (!priceDisplay.isEmpty) return priceDisplay;
+    return MoneyDisplay.fromCurrencyAmount(
+      amount: finalPrice,
+      currencyId: currencyId,
+    );
   }
 
   // Helpers to map old ProductInfo properties to new VendorInventory structure

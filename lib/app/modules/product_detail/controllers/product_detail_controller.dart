@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
+import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,15 +34,31 @@ class ProductDetailController extends GetxController {
 
   List<String> get tags =>
       product.certificationType != null ? [product.certificationType!] : [];
-  double get price => product.finalPrice;
-  double get originalPrice => product.price;
+  double get price {
+    final usd = product.resolvedFinalPriceDisplay.usd;
+    return usd > 0 ? usd : product.finalPrice;
+  }
+
+  double get originalPrice {
+    final usd = product.resolvedPriceDisplay.usd;
+    return usd > 0 ? usd : product.price;
+  }
+
   double get discountPercentage => product.discountPercentage;
   bool get hasDiscount => discountPercentage > 0;
   String get origin => product.provinceOfOrigin ?? '';
-  String get harvest => product.harvestDate?.toIso8601String() ?? '';
+  String get harvest =>
+      product.harvestDateHuman ?? product.harvestDate?.toIso8601String() ?? '';
   String get storage => '';
 
   double get total => price * quantity.value;
+  MoneyDisplay get totalDisplay {
+    return product.resolvedFinalPriceDisplay.multiply(quantity.value);
+  }
+
+  MoneyDisplay get originalTotalDisplay {
+    return product.resolvedPriceDisplay.multiply(quantity.value);
+  }
 
   @override
   void onInit() {
@@ -107,7 +123,7 @@ class ProductDetailController extends GetxController {
       );
       final message = 'share_product_message_template'.trParams({
         'title': resolvedTitle,
-        'price': '${product.currencySymbol ?? r'$'}${formatPrice(price)}',
+        'price': product.resolvedFinalPriceDisplay.combinedText,
         'description': resolvedDescription,
         'link': deepLink,
       });

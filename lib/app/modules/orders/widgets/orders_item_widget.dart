@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -56,23 +56,30 @@ class OrderItemWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: badgeBg,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    _translatedStatus,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: badgeText,
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildBadge(
+                      text: _translatedStatus,
+                      bg: badgeBg,
+                      textColor: badgeText,
                     ),
-                  ),
+                    if (order.paymentStatusName != null &&
+                        order.paymentStatusName!.isNotEmpty)
+                      _buildBadge(
+                        text: order.paymentStatusName!,
+                        bg: scheme.surfaceContainerHighest,
+                        textColor: scheme.onSurfaceVariant,
+                      ),
+                    if (order.orderTypeName != null &&
+                        order.orderTypeName!.isNotEmpty)
+                      _buildBadge(
+                        text: order.orderTypeName!,
+                        bg: scheme.surfaceContainerHighest,
+                        textColor: scheme.onSurfaceVariant,
+                      ),
+                  ],
                 ),
                 const Spacer(),
                 Icon(
@@ -110,9 +117,11 @@ class OrderItemWidget extends StatelessWidget {
             const SizedBox(height: 14),
             Row(
               children: [
-                Text(
-                  '\$${formatPrice(order.totalAmount)}',
-                  style: TextStyle(
+                MoneyAmountText(
+                  amount: order.totalAmount,
+                  display: order.resolvedTotalAmountDisplay,
+                  textAlign: TextAlign.start,
+                  primaryStyle: TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w800,
                     color: scheme.primary,
@@ -191,9 +200,10 @@ class OrderItemWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
-                  '\$${formatPrice(item.subtotal)}',
-                  style: TextStyle(
+                MoneyAmountText(
+                  amount: item.subtotal,
+                  display: item.resolvedSubtotalDisplay,
+                  primaryStyle: TextStyle(
                     fontSize: 13,
                     color: mutedColor,
                     fontWeight: FontWeight.w600,
@@ -237,5 +247,27 @@ class OrderItemWidget extends StatelessWidget {
       default:
         return order.statusName ?? 'unknown'.tr;
     }
+  }
+
+  Widget _buildBadge({
+    required String text,
+    required Color bg,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: textColor,
+        ),
+      ),
+    );
   }
 }

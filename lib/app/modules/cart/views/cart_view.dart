@@ -93,6 +93,8 @@ class CartView extends GetView<CartController> {
                   : CartSummaryWidget(
                       subtotal: controller.subtotal,
                       total: controller.total,
+                      subtotalDisplay: controller.subtotalDisplay,
+                      totalDisplay: controller.grandTotalDisplay,
                       itemCount: controller.items.length,
                       width: screenWidth - 20,
                       onCheckout: handleCheckout,

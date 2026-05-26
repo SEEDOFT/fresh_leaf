@@ -5,23 +5,23 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileSettingsController extends GetxController {
-  final AppSettingsController appSettings = Get.find<AppSettingsController>();
+  final AppSettingsController _appSettings = Get.find<AppSettingsController>();
   final AiChatStorageService _chatStorage = Get.find<AiChatStorageService>();
 
-  RxBool get notificationsEnabled => appSettings.notificationsEnabled;
-  Rx<ThemeMode> get themeMode => appSettings.themeMode;
-  Rx<Locale> get locale => appSettings.locale;
+  RxBool get notificationsEnabled => _appSettings.notificationsEnabled;
+  Rx<ThemeMode> get themeMode => _appSettings.themeMode;
+  Rx<Locale> get locale => _appSettings.locale;
 
   Future<void> changeTheme(ThemeMode mode) async {
-    await appSettings.setThemeMode(mode);
+    await _appSettings.setThemeMode(mode);
   }
 
   Future<void> changeLanguage(Locale value) async {
-    await appSettings.setLocale(value);
+    await _appSettings.setLocale(value);
   }
 
   Future<void> toggleNotification({required bool enabled}) async {
-    await appSettings.setNotificationsEnabled(enabled: enabled);
+    await _appSettings.setNotificationsEnabled(enabled: enabled);
   }
 
   Future<void> clearAiHistory() async {

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:fresh_leaf/core/models/cart_item.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:fresh_leaf/shared/widgets/app_quantity_selector.dart';
-import 'package:get/get.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 
 class CartItemCardWidget extends StatelessWidget {
   const CartItemCardWidget({
@@ -24,10 +23,7 @@ class CartItemCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemTotal = item.subtotal;
-    final price = item.vendorInventory?.finalPrice ?? 0.0;
-    final originalPrice = item.vendorInventory?.price ?? 0.0;
-    final hasDiscount = (item.vendorInventory?.discountPercentage ?? 0) > 0;
-    final currencySymbol = item.vendorInventory?.currencySymbol ?? r'$';
+    final itemTotalDisplay = item.resolvedSubtotalDisplay;
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -109,26 +105,13 @@ class CartItemCardWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '$currencySymbol${formatPrice(itemTotal)}',
-                              style: TextStyle(
-                                fontSize: 18.scaled,
-                                fontWeight: FontWeight.w900,
-                                color: scheme.primary,
-                              ),
-                            ),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerRight,
-                            child: _buildUnitPrice(
-                              price,
-                              originalPrice,
-                              currencySymbol,
-                              hasDiscount,
+                          MoneyAmountText(
+                            amount: itemTotal,
+                            display: itemTotalDisplay,
+                            primaryStyle: TextStyle(
+                              fontSize: 18.scaled,
+                              fontWeight: FontWeight.w900,
+                              color: scheme.primary,
                             ),
                           ),
                         ],
@@ -141,57 +124,6 @@ class CartItemCardWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildUnitPrice(
-    double price,
-    double originalPrice,
-    String currencySymbol,
-    bool hasDiscount,
-  ) {
-    final priceStr = formatPrice(price);
-    final origPriceStr = formatPrice(originalPrice);
-
-    return Builder(
-      builder: (context) {
-        final scheme = Theme.of(context).colorScheme;
-
-        if (hasDiscount) {
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$currencySymbol$origPriceStr',
-                style: TextStyle(
-                  fontSize: 10.scaled,
-                  color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.lineThrough,
-                ),
-              ),
-              SizedBox(width: 4.scaled),
-              Text(
-                '$currencySymbol$priceStr ${'each'.tr}',
-                style: TextStyle(
-                  fontSize: 10.scaled,
-                  color: scheme.error,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          );
-        }
-
-        return Text(
-          '$currencySymbol$priceStr ${'each'.tr}',
-          style: TextStyle(
-            fontSize: 10.scaled,
-            color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
-            fontWeight: FontWeight.w600,
-          ),
-        );
-      },
     );
   }
 }

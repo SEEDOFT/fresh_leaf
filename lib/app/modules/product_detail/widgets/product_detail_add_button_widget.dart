@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/controllers/product_detail_controller.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 import 'package:get/get.dart';
 
 class AddButtonWidget extends StatelessWidget {
@@ -34,22 +34,25 @@ class AddButtonWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${'add_to_cart'.tr} '
-                    '${controller.quantity.value.toString().replaceAll(RegExp(r'\.0$'), '')}'
-                    ' ${controller.product.unitSymbol ?? ''}'
-                .trim(),
+            'add_to_cart'.tr,
             style: TextStyle(
               color: scheme.onPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
           ),
-          Text(
-            '${controller.product.currencySymbol ?? r'$'}${formatPrice(total)}',
-            style: TextStyle(
+          MoneyAmountText(
+            amount: total,
+            display: controller.totalDisplay,
+            primaryStyle: TextStyle(
               color: scheme.onPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
+            ),
+            secondaryStyle: TextStyle(
+              color: scheme.onPrimary.withValues(alpha: 0.82),
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

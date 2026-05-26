@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_card.dart';
+import 'package:fresh_leaf/shared/widgets/exchange_rate_text.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -30,29 +31,36 @@ class OrderSummaryCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(999),
-                  color: statusBg,
-                ),
-                child: Text(
-                  order.statusName == 'DELIVERED'
-                      ? 'delivered'.tr
-                      : order.statusName == 'PENDING'
-                      ? 'pending'.tr
-                      : order.statusName == 'PREPARING'
-                      ? 'processing'.tr
-                      : order.statusName ?? 'unknown'.tr,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _buildBadge(
+                    text: order.statusName == 'DELIVERED'
+                        ? 'delivered'.tr
+                        : order.statusName == 'PENDING'
+                        ? 'pending'.tr
+                        : order.statusName == 'PREPARING'
+                        ? 'processing'.tr
+                        : order.statusName ?? 'unknown'.tr,
+                    bg: statusBg,
+                    textColor: statusColor,
                   ),
-                ),
+                  if (order.paymentStatusName != null &&
+                      order.paymentStatusName!.isNotEmpty)
+                    _buildBadge(
+                      text: order.paymentStatusName!,
+                      bg: scheme.surfaceContainerHighest,
+                      textColor: scheme.onSurfaceVariant,
+                    ),
+                  if (order.orderTypeName != null &&
+                      order.orderTypeName!.isNotEmpty)
+                    _buildBadge(
+                      text: order.orderTypeName!,
+                      bg: scheme.surfaceContainerHighest,
+                      textColor: scheme.onSurfaceVariant,
+                    ),
+                ],
               ),
               const Spacer(),
               Text(
@@ -68,13 +76,20 @@ class OrderSummaryCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            '\$${formatPrice(order.totalAmount)}',
-            style: TextStyle(
+          MoneyAmountText(
+            amount: order.totalAmount,
+            display: order.resolvedTotalAmountDisplay,
+            textAlign: TextAlign.start,
+            primaryStyle: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w800,
               color: scheme.primary,
             ),
+          ),
+          const SizedBox(height: 4),
+          ExchangeRateText(
+            display: order.resolvedTotalAmountDisplay,
+            textAlign: TextAlign.start,
           ),
           const SizedBox(height: 4),
           Text(
@@ -89,6 +104,28 @@ class OrderSummaryCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBadge({
+    required String text,
+    required Color bg,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: textColor,
+        ),
       ),
     );
   }

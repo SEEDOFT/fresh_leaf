@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 import 'package:get/get.dart';
 
 class OrderDetailItemCard extends StatelessWidget {
@@ -19,8 +19,6 @@ class OrderDetailItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final quantity = item.quantity.toInt();
     final total = item.subtotal;
-    final unitPrice = quantity > 0 ? total / quantity : 0.0;
-    final currencySymbol = item.vendorInventory?.currencySymbol ?? r'$';
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -46,9 +44,10 @@ class OrderDetailItemCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                '$currencySymbol${formatPrice(total)}',
-                style: TextStyle(
+              MoneyAmountText(
+                amount: total,
+                display: item.resolvedSubtotalDisplay,
+                primaryStyle: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: scheme.primary,
@@ -58,7 +57,7 @@ class OrderDetailItemCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '$quantity x $currencySymbol${formatPrice(unitPrice)}',
+            '$quantity x ${item.resolvedUnitPriceDisplay.primaryText}',
             style: TextStyle(
               color: scheme.onSurfaceVariant,
               fontSize: 12,

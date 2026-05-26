@@ -25,6 +25,9 @@ class InfoTilesWidget extends StatelessWidget {
             icon: Icons.eco_outlined,
           ),
         ),
+        const SizedBox(
+          width: 10,
+        ),
         Expanded(
           child: InfoTileWidget(
             title: 'origin'.tr,
@@ -32,13 +35,13 @@ class InfoTilesWidget extends StatelessWidget {
             icon: Icons.place_outlined,
           ),
         ),
-        Expanded(
-          child: InfoTileWidget(
-            title: 'storage'.tr,
-            value: storage,
-            icon: Icons.kitchen_outlined,
-          ),
-        ),
+        // Expanded(
+        //   child: InfoTileWidget(
+        //     title: 'storage'.tr,
+        //     value: storage,
+        //     icon: Icons.kitchen_outlined,
+        //   ),
+        // ),
       ],
     );
   }

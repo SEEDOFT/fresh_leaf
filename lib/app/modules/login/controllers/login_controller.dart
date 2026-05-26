@@ -19,6 +19,8 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
   final RxBool isLoading = false.obs;
   RxBool isPasswordVisible = false.obs;
+  final ApiClient _apiClient = Get.find<ApiClient>();
+  final StorageService _storageService = Get.find<StorageService>();
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -32,9 +34,6 @@ class LoginController extends GetxController {
 
     isLoading.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
-      final storageService = Get.find<StorageService>();
-
       final normalizedPhone = normalizeCambodiaPhoneForApi(
         phoneController.text,
       );
@@ -43,7 +42,7 @@ class LoginController extends GetxController {
         return;
       }
 
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.login,
         data: {
           'phone_number': normalizedPhone,
@@ -63,9 +62,8 @@ class LoginController extends GetxController {
           return;
         }
 
-        await storageService.saveToken(token);
+        await _storageService.saveToken(token);
 
-        // Upload FCM token for notifications
         if (Get.isRegistered<NotificationService>()) {
           await Get.find<NotificationService>().uploadToken();
         }
@@ -100,28 +98,26 @@ class LoginController extends GetxController {
   Future<void> _hydrateUserProfile({
     Map<String, dynamic>? loginData,
   }) async {
-    final storage = Get.find<StorageService>();
     final fallbackProfile = _extractProfileFromLoginPayload(loginData);
 
     try {
-      final api = Get.find<ApiClient>();
-      final response = await api.getRequest(
-        ApiEndpoints.userProfile,
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.profile,
       );
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
         if (fallbackProfile != null) {
-          _applyProfile(fallbackProfile, storage);
+          _applyProfile(fallbackProfile, _storageService);
         }
         return;
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      _applyProfile(profile, storage);
+      _applyProfile(profile, _storageService);
     } on DioException {
       if (fallbackProfile != null) {
-        _applyProfile(fallbackProfile, storage);
+        _applyProfile(fallbackProfile, _storageService);
       }
     }
   }
@@ -162,7 +158,6 @@ class LoginController extends GetxController {
 
       // Update locale
       if (profile.locale.isNotEmpty) {
-        // Fire and forget - intentionally not awaiting
         unawaited(
           settings.setLocale(Locale(profile.locale), syncToBackend: false),
         );

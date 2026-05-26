@@ -8,6 +8,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/app_notification.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
@@ -410,5 +412,49 @@ class NotificationService extends GetxService {
       debugPrint('[NotificationService] Service closed');
     }
     super.onClose();
+  }
+
+  /// Get database notifications for the user
+  Future<List<AppNotification>> getNotifications() async {
+    try {
+      final response = await apiClient.getRequest(ApiEndpoints.notifications);
+      final apiResponse = ApiResponse.parseList(response.data);
+
+      if (apiResponse.isSuccess) {
+        return apiResponse.data.map(AppNotification.fromMap).toList();
+      }
+      return [];
+    } on Exception {
+      return [];
+    }
+  }
+
+  /// Mark a notification as read
+  Future<bool> markAsRead(int notificationId) async {
+    try {
+      final response = await apiClient.postRequest(
+        ApiEndpoints.notificationsMarkRead.replaceAll(
+          '{id}',
+          notificationId.toString(),
+        ),
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      return apiResponse.isSuccess;
+    } on Exception {
+      return false;
+    }
+  }
+
+  /// Mark all notifications as read
+  Future<bool> markAllAsRead() async {
+    try {
+      final response = await apiClient.postRequest(
+        ApiEndpoints.notificationsMarkAllRead,
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      return apiResponse.isSuccess;
+    } on Exception {
+      return false;
+    }
   }
 }

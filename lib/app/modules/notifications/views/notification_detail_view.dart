@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/notifications/controllers/notification_detail_controller.dart';
-import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
+import 'package:fresh_leaf/core/models/app_notification.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -27,7 +27,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
                 _buildTypeBadge(item, scheme),
                 const Spacer(),
                 Text(
-                  item.timeAgo,
+                  _formatTimeAgo(item.createdAt),
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 12,
@@ -47,7 +47,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
             ),
             const SizedBox(height: 12),
             Text(
-              item.body,
+              item.message,
               style: TextStyle(
                 fontSize: 14.5,
                 height: 1.6,
@@ -77,15 +77,15 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
     );
   }
 
-  Widget _buildTypeBadge(NotificationItem item, ColorScheme scheme) {
+  Widget _buildTypeBadge(AppNotification item, ColorScheme scheme) {
     final Color color;
     final IconData icon;
 
-    switch (item.type) {
-      case 'order':
+    switch (item.typeCode) {
+      case 'ORDER_UPDATE':
         color = scheme.primary;
         icon = Icons.local_shipping_rounded;
-      case 'promo':
+      case 'PROMOTION':
         color = scheme.secondary;
         icon = Icons.loyalty_rounded;
       default:
@@ -94,10 +94,19 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
     }
 
     return AppBadge(
-      label: item.type.capitalizeFirst ?? item.type,
+      label: item.typeNameEn ?? item.typeCode ?? 'Notification',
       icon: icon,
       backgroundColor: color.withValues(alpha: 0.16),
       foregroundColor: color,
     );
+  }
+
+  String _formatTimeAgo(DateTime? date) {
+    if (date == null) return '';
+    final diff = DateTime.now().difference(date);
+    if (diff.inDays > 0) return '${diff.inDays}d ago';
+    if (diff.inHours > 0) return '${diff.inHours}h ago';
+    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
+    return 'Just now';
   }
 }

@@ -1,30 +1,22 @@
-import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
+import 'package:fresh_leaf/core/models/app_notification.dart';
 import 'package:get/get.dart';
 
 class NotificationDetailController extends GetxController {
-  late final NotificationItem item;
+  late final AppNotification item;
 
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments;
-    if (args is NotificationItem) {
+    if (args is AppNotification) {
       item = args;
-    } else if (args is Map) {
-      item = NotificationItem(
-        title: args['title']?.toString() ?? 'Notification',
-        body: args['body']?.toString() ?? '',
-        timeAgo: args['timeAgo']?.toString() ?? '',
-        type: args['type']?.toString() ?? 'system',
-        unread: args['unread'] as bool,
-      );
     } else {
-      item = const NotificationItem(
+      item = AppNotification(
+        id: 0,
         title: 'Notification',
-        body: '',
-        timeAgo: '',
-        type: 'system',
-        unread: false,
+        message: '',
+        isRead: false,
+        typeCode: 'SYSTEM',
       );
     }
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
+import 'package:fresh_leaf/core/models/app_notification.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard({
@@ -8,7 +8,7 @@ class NotificationCard extends StatelessWidget {
     required this.onTap,
     super.key,
   });
-  final NotificationItem item;
+  final AppNotification item;
   final ColorScheme scheme;
   final VoidCallback onTap;
 
@@ -16,6 +16,7 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final chipColor = _chipColor(scheme);
     final icon = _iconForType();
+    final isUnread = !item.isRead;
 
     return InkWell(
       onTap: onTap,
@@ -26,7 +27,7 @@ class NotificationCard extends StatelessWidget {
           color: scheme.surface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: item.unread
+            color: isUnread
                 ? scheme.primary.withValues(alpha: 0.35)
                 : scheme.outline.withValues(alpha: 0.2),
           ),
@@ -69,7 +70,7 @@ class NotificationCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        item.timeAgo,
+                        _formatTimeAgo(item.createdAt),
                         style: TextStyle(
                           color: scheme.onSurfaceVariant,
                           fontSize: 12,
@@ -79,7 +80,7 @@ class NotificationCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    item.body,
+                    item.message,
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
                       fontSize: 13,
@@ -89,7 +90,7 @@ class NotificationCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (item.unread) ...[
+            if (isUnread) ...[
               const SizedBox(width: 10),
               Container(
                 width: 8,
@@ -106,25 +107,34 @@ class NotificationCard extends StatelessWidget {
     );
   }
 
+  String _formatTimeAgo(DateTime? date) {
+    if (date == null) return '';
+    final diff = DateTime.now().difference(date);
+    if (diff.inDays > 0) return '${diff.inDays}d ago';
+    if (diff.inHours > 0) return '${diff.inHours}h ago';
+    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
+    return 'Just now';
+  }
+
   Color _chipColor(ColorScheme scheme) {
-    switch (item.type) {
-      case 'order':
+    switch (item.typeCode) {
+      case 'ORDER_UPDATE':
         return scheme.primaryContainer.withValues(alpha: 0.72);
-      case 'promo':
+      case 'PROMOTION':
         return scheme.secondaryContainer.withValues(alpha: 0.72);
-      case 'system':
+      case 'SYSTEM':
       default:
         return scheme.surfaceContainerHighest;
     }
   }
 
   IconData _iconForType() {
-    switch (item.type) {
-      case 'order':
+    switch (item.typeCode) {
+      case 'ORDER_UPDATE':
         return Icons.local_shipping_rounded;
-      case 'promo':
+      case 'PROMOTION':
         return Icons.loyalty_rounded;
-      case 'system':
+      case 'SYSTEM':
       default:
         return Icons.notifications_active_outlined;
     }

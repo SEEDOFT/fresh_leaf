@@ -24,6 +24,7 @@ class ProfilePersonalDetailsController extends GetxController {
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
+  final ApiClient _apiClient = Get.find<ApiClient>();
   UserProfile? _initialProfile;
 
   @override
@@ -83,9 +84,7 @@ class ProfilePersonalDetailsController extends GetxController {
 
     isSaving.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
       final response = await _updateProfile(
-        apiClient,
         partialPayload: payload,
         fullPayload: _buildFullUpdatePayload(),
       );
@@ -164,9 +163,8 @@ class ProfilePersonalDetailsController extends GetxController {
 
   Future<void> refreshProfile() async {
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
-        ApiEndpoints.userProfile,
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.profile,
       );
       final apiResponse = ApiResponse.parseMap(response.data);
 
@@ -247,8 +245,7 @@ class ProfilePersonalDetailsController extends GetxController {
     return payload;
   }
 
-  Future<Response<dynamic>> _updateProfile(
-    ApiClient apiClient, {
+  Future<Response<dynamic>> _updateProfile({
     required Map<String, dynamic> partialPayload,
     required Map<String, dynamic> fullPayload,
   }) async {
@@ -264,7 +261,7 @@ class ProfilePersonalDetailsController extends GetxController {
         ...requestPayload,
         '_method': methodOverride,
       };
-      return apiClient.postRequest(
+      return _apiClient.postRequest(
         ApiEndpoints.userUpdateProfile,
         data: FormData.fromMap(multipartPayload),
         options: Options(contentType: 'multipart/form-data'),
@@ -275,19 +272,19 @@ class ProfilePersonalDetailsController extends GetxController {
 
     try {
       if (usePatch) {
-        return await apiClient.patchRequest(
+        return await _apiClient.patchRequest(
           ApiEndpoints.userUpdateProfile,
           data: payloadData,
         );
       }
-      return await apiClient.putRequest(
+      return await _apiClient.putRequest(
         ApiEndpoints.userUpdateProfile,
         data: payloadData,
       );
     } on DioException catch (e) {
       final code = e.response?.statusCode ?? 0;
       if (code == 404 || code == 405) {
-        return apiClient.postRequest(
+        return _apiClient.postRequest(
           ApiEndpoints.userUpdateProfile,
           data: payloadData,
         );

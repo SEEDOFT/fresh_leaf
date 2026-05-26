@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 
 class SummaryRow extends StatelessWidget {
   const SummaryRow({
@@ -11,6 +12,7 @@ class SummaryRow extends StatelessWidget {
     this.textColor,
     this.mutedColor,
     this.primaryColor,
+    this.amountDisplay,
     super.key,
   });
 
@@ -21,6 +23,7 @@ class SummaryRow extends StatelessWidget {
   final Color? textColor;
   final Color? mutedColor;
   final Color? primaryColor;
+  final MoneyDisplay? amountDisplay;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +49,18 @@ class SummaryRow extends StatelessWidget {
             color: emphasize ? baseTextColor : baseMutedColor,
           ),
         ),
-        Text(
-          '${amount < 0 ? '-' : ''}\$${formatPrice(amount.abs())}',
-          style: TextStyle(
+        MoneyAmountText(
+          amount: amount,
+          display: amountDisplay,
+          primaryStyle: TextStyle(
             fontSize: emphasize ? 19 : 15,
             fontWeight: FontWeight.w800,
             color: amountColor,
+          ),
+          secondaryStyle: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: baseMutedColor,
           ),
         ),
       ],

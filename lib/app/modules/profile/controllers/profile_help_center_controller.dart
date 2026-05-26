@@ -68,7 +68,7 @@ class ProfileHelpCenterController extends GetxController {
         unreadSupportCount.value = data['count'] as int;
       }
     } on Exception {
-      // Ignore errors for unread count
+      //
     }
   }
 

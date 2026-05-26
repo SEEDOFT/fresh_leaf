@@ -12,6 +12,7 @@ class ProfileSecurityController extends GetxController {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   final RxBool isLoading = false.obs;
   final RxBool isVerifyPasswordVisible = false.obs;
@@ -31,8 +32,7 @@ class ProfileSecurityController extends GetxController {
 
     isLoading.value = true;
     try {
-      final api = Get.find<ApiClient>();
-      final response = await api.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.verifyPassword,
         data: {'password': password},
       );
@@ -129,8 +129,6 @@ class ProfileSecurityController extends GetxController {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    final api = Get.find<ApiClient>();
-
     final payloads = <Map<String, dynamic>>[
       {
         'current_password': currentPassword,
@@ -151,7 +149,7 @@ class ProfileSecurityController extends GetxController {
 
     for (final payload in payloads) {
       try {
-        final response = await api.postRequest(
+        final response = await _apiClient.postRequest(
           ApiEndpoints.updatePassword,
           data: payload,
         );
@@ -162,7 +160,6 @@ class ProfileSecurityController extends GetxController {
       } on DioException catch (e) {
         final statusCode = e.response?.statusCode;
         if (statusCode == 422 || statusCode == 400) {
-          // Try next payload shape.
           continue;
         }
         Get.snackbar(

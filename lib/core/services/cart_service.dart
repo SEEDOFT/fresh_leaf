@@ -1,6 +1,8 @@
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/cart_item.dart';
+import 'package:fresh_leaf/core/models/cart_snapshot.dart';
+import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
@@ -9,21 +11,30 @@ class CartService extends GetxService {
 
   final ApiClient apiClient;
 
-  Future<List<CartItem>> getCart() async {
+  Future<CartSnapshot> getCartSnapshot() async {
     try {
       final response = await apiClient.getRequest(ApiEndpoints.cart);
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess && apiResponse.data['carts'] != null) {
         final dataList = apiResponse.data['carts'] as List<dynamic>;
-        return dataList
+        final items = dataList
             .map((item) => CartItem.fromMap(item as Map<String, dynamic>))
             .toList();
+        return CartSnapshot(
+          items: items,
+          totalDisplay: MoneyDisplay.fromMap(apiResponse.data['total']),
+        );
       }
-      return [];
+      return CartSnapshot.empty;
     } on Exception {
-      return [];
+      return CartSnapshot.empty;
     }
+  }
+
+  Future<List<CartItem>> getCart() async {
+    final snapshot = await getCartSnapshot();
+    return snapshot.items;
   }
 
   Future<bool> addToCart(int vendorInventoryId, double quantity) async {
@@ -69,9 +80,10 @@ class CartService extends GetxService {
     }
   }
 
-  Future<bool> checkout(
+  Future<int?> checkout(
     int addressId,
-    int paymentMethodId,
+    int? paymentMethodId,
+    int? paymentMethodTypeId,
     int orderTypeId, {
     String? notes,
   }) async {
@@ -81,14 +93,21 @@ class CartService extends GetxService {
         data: {
           'address_id': addressId,
           'payment_method_id': paymentMethodId,
+          'payment_method_type_id': paymentMethodTypeId,
           'order_type_id': orderTypeId,
-          'notes': ?notes,
+          'notes': notes != null && notes.isNotEmpty ? notes : null,
         },
       );
       final apiResponse = ApiResponse.parseMap(response.data);
-      return apiResponse.isSuccess;
+      if (apiResponse.isSuccess && apiResponse.data.isNotEmpty) {
+        final data = apiResponse.data['data'] ?? apiResponse.data;
+        if (data is Map<String, dynamic> && data.containsKey('id')) {
+          return data['id'] as int;
+        }
+      }
+      return null;
     } on Exception {
-      return false;
+      return null;
     }
   }
 }

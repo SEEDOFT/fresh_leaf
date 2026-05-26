@@ -1,33 +1,16 @@
+import 'dart:async';
+import 'package:fresh_leaf/core/models/app_notification.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:get/get.dart';
 
-class NotificationItem {
-  const NotificationItem({
-    required this.title,
-    required this.body,
-    required this.timeAgo,
-    required this.type,
-    this.unread = true,
-  });
-
-  final String title;
-  final String body;
-  final String timeAgo;
-  final String type; // e.g., order, promo, system
-  final bool unread;
-
-  NotificationItem copyWith({bool? unread}) => NotificationItem(
-    title: title,
-    body: body,
-    timeAgo: timeAgo,
-    type: type,
-    unread: unread ?? this.unread,
-  );
-}
-
 class NotificationsController extends GetxController {
-  final RxList<NotificationItem> notifications = <NotificationItem>[].obs;
+  final NotificationService _notificationService =
+      Get.find<NotificationService>();
+
+  final RxList<AppNotification> notifications = <AppNotification>[].obs;
   final RxString _activeFilter = 'all'.obs;
   final RxBool isRefreshing = false.obs;
+  final RxBool isLoading = false.obs;
 
   String get activeFilter => _activeFilter.value;
   set activeFilter(String value) => _activeFilter.value = value;
@@ -35,55 +18,66 @@ class NotificationsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _seed();
+    unawaited(loadNotifications());
   }
 
-  void _seed() {
-    notifications.assignAll(const [
-      NotificationItem(
-        title: 'Order delivered',
-        body: 'Your order #FL-1043 has arrived. Rate your experience.',
-        timeAgo: '12m ago',
-        type: 'order',
-      ),
-      NotificationItem(
-        title: 'New seasonal box',
-        body: 'Try our Citrus Sunrise box with 15% off this week only.',
-        timeAgo: '1h ago',
-        type: 'promo',
-      ),
-      NotificationItem(
-        title: 'System reminder',
-        body: 'Enable notifications to get delivery updates in real time.',
-        timeAgo: '2h ago',
-        type: 'system',
-        unread: false,
-      ),
-      NotificationItem(
-        title: 'Order update',
-        body: 'Your order #FL-1045 is out for delivery. ETA 25-30 min.',
-        timeAgo: '5h ago',
-        type: 'order',
-      ),
-    ]);
+  Future<void> loadNotifications() async {
+    isLoading.value = true;
+    try {
+      final data = await _notificationService.getNotifications();
+      notifications.assignAll(data);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  List<NotificationItem> get filtered {
+  List<AppNotification> get filtered {
     if (_activeFilter.value == 'all') return notifications;
+
+    // Map UI filter to backend codes
+    String? typeCode;
+    if (_activeFilter.value == 'order') typeCode = 'ORDER_UPDATE';
+    if (_activeFilter.value == 'promo') typeCode = 'PROMOTION';
+    if (_activeFilter.value == 'system') typeCode = 'SYSTEM';
+
     return notifications
-        .where((n) => n.type == _activeFilter.value)
+        .where((n) => n.typeCode == typeCode)
         .toList(growable: false);
   }
 
   Future<void> refreshList() async {
     if (isRefreshing.value) return;
     isRefreshing.value = true;
-    isRefreshing.value = false;
+    try {
+      final data = await _notificationService.getNotifications();
+      notifications.assignAll(data);
+    } finally {
+      isRefreshing.value = false;
+    }
   }
 
-  void markAllRead() {
-    notifications.assignAll(
-      notifications.map((n) => n.copyWith(unread: false)).toList(),
-    );
+  Future<void> markAllRead() async {
+    final success = await _notificationService.markAllAsRead();
+    if (success) {
+      // Optimistically update UI
+      final updatedList = notifications.map((n) {
+        if (!n.isRead) {
+          return AppNotification(
+            id: n.id,
+            title: n.title,
+            message: n.message,
+            isRead: true,
+            readAt: DateTime.now(),
+            createdAt: n.createdAt,
+            typeCode: n.typeCode,
+            typeNameEn: n.typeNameEn,
+            typeNameKm: n.typeNameKm,
+            data: n.data,
+          );
+        }
+        return n;
+      }).toList();
+      notifications.assignAll(updatedList);
+    }
   }
 }

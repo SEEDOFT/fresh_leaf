@@ -26,7 +26,8 @@ class QuantityRowWidget extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '${'quantity'.tr}${unitSymbol != null && unitSymbol!.isNotEmpty ? ' ($unitSymbol)' : ''}',
+          '${'quantity'.tr}'
+          '${unitSymbol != null && unitSymbol!.isNotEmpty ? ' ($unitSymbol)' : ''}',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:fresh_leaf/core/models/cart_item.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 
 class CheckoutItemRowWidget extends StatelessWidget {
   const CheckoutItemRowWidget({
@@ -15,8 +15,8 @@ class CheckoutItemRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final total = item.subtotal;
-    final price = item.vendorInventory?.price ?? 0.0;
-    final currencySymbol = item.vendorInventory?.currencySymbol ?? r'$';
+    final unitPriceDisplay = item.resolvedUnitPriceDisplay;
+    final totalDisplay = item.resolvedSubtotalDisplay;
     final scheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -51,7 +51,7 @@ class CheckoutItemRowWidget extends StatelessWidget {
                 Text(
                   '${item.quantity.toInt()}'
                   ' x'
-                  ' $currencySymbol${formatPrice(price)}',
+                  ' ${unitPriceDisplay.primaryText}',
                   style: TextStyle(
                     fontSize: 12,
                     color: scheme.onSurfaceVariant,
@@ -60,9 +60,10 @@ class CheckoutItemRowWidget extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            '$currencySymbol${formatPrice(total)}',
-            style: TextStyle(
+          MoneyAmountText(
+            amount: total,
+            display: totalDisplay,
+            primaryStyle: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,
               color: scheme.primary,

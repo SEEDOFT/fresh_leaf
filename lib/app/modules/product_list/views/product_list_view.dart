@@ -72,8 +72,17 @@ class ProductListView extends GetView<ProductListController> {
                               title: product.displayTitle.tr,
                               subtitle: product.displaySubtitle.tr,
                               imageUrl: product.displayImageUrl,
-                              price: product.price,
-                              currencySymbol: product.currencySymbol,
+                              price: product.resolvedFinalPriceDisplay.usd > 0
+                                  ? product.resolvedFinalPriceDisplay.usd
+                                  : product.finalPrice,
+                              originalPrice:
+                                  product.resolvedPriceDisplay.usd > 0
+                                  ? product.resolvedPriceDisplay.usd
+                                  : product.price,
+                              priceKhr: product.resolvedFinalPriceDisplay.hasKhr
+                                  ? product.resolvedFinalPriceDisplay.khr
+                                  : null,
+                              currencySymbol: r'$',
                               isFavorite: wishlistController.isFavorite(
                                 product.id,
                               ),

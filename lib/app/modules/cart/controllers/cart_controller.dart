@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:fresh_leaf/core/models/cart_item.dart' as core_models;
+import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:get/get.dart';
 
@@ -7,6 +9,7 @@ class CartController extends GetxController {
   final CartService _cartService = Get.find<CartService>();
 
   final RxList<core_models.CartItem> items = <core_models.CartItem>[].obs;
+  final Rx<MoneyDisplay> totalDisplay = MoneyDisplay.empty.obs;
   final RxBool isLoading = true.obs;
 
   @override
@@ -18,8 +21,9 @@ class CartController extends GetxController {
   Future<void> fetchCart() async {
     isLoading.value = true;
     try {
-      final fetchedItems = await _cartService.getCart();
-      items.assignAll(fetchedItems);
+      final snapshot = await _cartService.getCartSnapshot();
+      items.assignAll(snapshot.items);
+      totalDisplay.value = snapshot.totalDisplay;
     } finally {
       isLoading.value = false;
     }
@@ -33,6 +37,19 @@ class CartController extends GetxController {
   }
 
   double get total => subtotal;
+
+  MoneyDisplay get subtotalDisplay {
+    if (!totalDisplay.value.isEmpty) return totalDisplay.value;
+    return items.fold<MoneyDisplay>(
+      MoneyDisplay.empty,
+      (sum, item) => MoneyDisplay(
+        usd: sum.usd + item.resolvedSubtotalDisplay.usd,
+        khr: sum.khr + item.resolvedSubtotalDisplay.khr,
+      ),
+    );
+  }
+
+  MoneyDisplay get grandTotalDisplay => subtotalDisplay;
 
   Future<void> increaseQuantity(int index) async {
     final current = items[index];
@@ -65,6 +82,7 @@ class CartController extends GetxController {
 
   void clearCart() {
     items.clear();
+    totalDisplay.value = MoneyDisplay.empty;
   }
 
   Future<void> addToCart(int vendorInventoryId, double quantity) async {

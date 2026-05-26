@@ -15,6 +15,7 @@ class ProfileAddressesController extends GetxController {
   final RxBool isLoadingAddresses = false.obs;
   final RxBool isRefreshing = false.obs;
   final RxString deletingAddressId = ''.obs;
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   bool returnOnSelect = false;
   String mode = 'view';
@@ -56,10 +57,7 @@ class ProfileAddressesController extends GetxController {
     isLoadingAddresses.value = true;
 
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
-        ApiEndpoints.userAddresses,
-      );
+      final response = await _apiClient.getRequest(ApiEndpoints.addresses);
       final apiResponse = ApiResponse.parseDynamic(response.data);
 
       if (!apiResponse.isSuccess && response.statusCode != 200) {
@@ -177,9 +175,8 @@ class ProfileAddressesController extends GetxController {
 
     deletingAddressId.value = address.id;
     try {
-      final api = Get.find<ApiClient>();
-      final path = ApiEndpoints.userAddress.replaceFirst('{id}', address.id);
-      final response = await api.deleteRequest(path);
+      final path = ApiEndpoints.address.replaceFirst('{id}', address.id);
+      final response = await _apiClient.deleteRequest(path);
 
       if (response.statusCode != 200 && response.statusCode != 204) {
         Get.snackbar('delete_failed'.tr, 'unable_delete_address'.tr);

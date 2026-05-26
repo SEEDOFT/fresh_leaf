@@ -227,6 +227,9 @@ const Map<String, String> translationsKm = {
   'delivery_fee': 'ថ្លៃដឹកជញ្ជូន',
   'discount': 'បញ្ចុះតម្លៃ',
   'total': 'សរុប',
+  'exchange_rate': 'អត្រាប្ដូរប្រាក់',
+  'usd_to_khr_rate': 'ដុល្លារទៅរៀល',
+  'khr_to_usd_rate': 'រៀលទៅដុល្លារ',
   'place_order': 'បញ្ជាទិញ',
   'proceed_to_checkout': 'បន្តទៅទូទាត់',
   'internet_connected': 'អ៊ីនធឺណិតបានភ្ជាប់',
@@ -434,6 +437,17 @@ const Map<String, String> translationsKm = {
   'cash_on_delivery': 'បង់ប្រាក់ពេលដឹកជញ្ជូន',
   'credit_debit_card': 'កាតឥណទាន / ឥណពន្ធ',
   'order_confirmed': 'ការបញ្ជាទិញបានបញ្ជាក់',
+  'order_cancelled': 'ការបញ្ជាទិញត្រូវបានលុបចោល',
+  'complete_payment': 'បញ្ចប់ការទូទាត់ប្រាក់',
+  'waiting_for_payment': 'រង់ចាំការទូទាត់ប្រាក់',
+  'please_complete_payment_within':
+      'សូមបញ្ជាក់ការទូទាត់ប្រាក់ក្នុងរយៈពេល 5 នាទី។',
+  'simulate_payment_success': 'ក្លែងធ្វើភាពជោគជ័យនៃការទូទាត់',
+  'payment_failed': 'ការទូទាត់ប្រាក់បានបរាជ័យ',
+  'unable_to_process_payment': 'មិនអាចដំណើរការការទូទាត់ប្រាក់។',
+  'payment_timeout': 'អស់ម៉ោងទូទាត់ប្រាក់',
+  'order_cancelled_due_to_timeout':
+      'ការបញ្ជាទិញត្រូវបានលុបចោលដោយសារអស់ម៉ោងទូទាត់ប្រាក់។',
   'order_on_the_way_one':
       'ការបញ្ជាទិញរបស់អ្នកមាន @count មុខទំនិញកំពុងដឹកមកហើយ។',
   'order_on_the_way_other':

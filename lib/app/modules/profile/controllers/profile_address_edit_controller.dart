@@ -27,6 +27,7 @@ class ProfileAddressEditController extends GetxController {
   final TextEditingController provinceController = TextEditingController();
   final TextEditingController postalCodeController = TextEditingController();
 
+  final ApiClient _apiClient = Get.find<ApiClient>();
   final Rx<LatLng> selectedPoint = _defaultCenter.obs;
   final RxString selectedLabel = 'default_selected_location'.tr.obs;
   final RxString searchQuery = ''.obs;
@@ -279,12 +280,11 @@ class ProfileAddressEditController extends GetxController {
     isSaving.value = true;
     try {
       final payload = _buildPayload();
-      final apiClient = Get.find<ApiClient>();
 
       final response = isEditMode && addressId.isNotEmpty
-          ? await _updateAddress(apiClient, payload)
-          : await apiClient.postRequest(
-              ApiEndpoints.userAddresses,
+          ? await _updateAddress(payload)
+          : await _apiClient.postRequest(
+              ApiEndpoints.addresses,
               data: payload,
             );
 
@@ -331,17 +331,14 @@ class ProfileAddressEditController extends GetxController {
     }
   }
 
-  Future<Response<dynamic>> _updateAddress(
-    ApiClient api,
-    Map<String, dynamic> payload,
-  ) async {
-    final path = ApiEndpoints.userAddress.replaceFirst('{id}', addressId);
+  Future<Response<dynamic>> _updateAddress(Map<String, dynamic> payload) async {
+    final path = ApiEndpoints.address.replaceFirst('{id}', addressId);
     try {
-      return await api.putRequest(path, data: payload);
+      return await _apiClient.putRequest(path, data: payload);
     } on DioException catch (e) {
       final code = e.response?.statusCode ?? 0;
       if (code == 404 || code == 405) {
-        return api.patchRequest(path, data: payload);
+        return _apiClient.patchRequest(path, data: payload);
       }
       rethrow;
     }
@@ -376,9 +373,8 @@ class ProfileAddressEditController extends GetxController {
 
     isDeleting.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
-      final path = ApiEndpoints.userAddress.replaceFirst('{id}', addressId);
-      final response = await apiClient.deleteRequest(path);
+      final path = ApiEndpoints.address.replaceFirst('{id}', addressId);
+      final response = await _apiClient.deleteRequest(path);
       final statusCode = response.statusCode ?? 0;
 
       if (statusCode != 200 && statusCode != 204) {

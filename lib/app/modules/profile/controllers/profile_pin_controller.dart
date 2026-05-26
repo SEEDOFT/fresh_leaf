@@ -14,6 +14,8 @@ class ProfilePinController extends GetxController {
   final currentPinController = TextEditingController();
   final newPinController = TextEditingController();
   final confirmPinController = TextEditingController();
+  final StorageService _storageService = Get.find<StorageService>();
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   final RxBool isSaving = false.obs;
   final RxBool hasPin = false.obs;
@@ -21,11 +23,10 @@ class ProfilePinController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    final storage = Get.find<StorageService>();
-    hasPin.value = storage.userProfile?.setPin ?? false;
+    hasPin.value = _storageService.userProfile?.setPin ?? false;
 
-    if (storage.pinOrderVerification) {
-      await storage.savePinOrderVerification(enabled: false);
+    if (_storageService.pinOrderVerification) {
+      await _storageService.savePinOrderVerification(enabled: false);
     }
 
     await _syncPinStateFromProfile();
@@ -73,7 +74,6 @@ class ProfilePinController extends GetxController {
 
     isSaving.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
       final payloads = <Map<String, dynamic>>[
         {
           'current_pin': currentPin,
@@ -91,7 +91,7 @@ class ProfilePinController extends GetxController {
       var updated = false;
       for (final payload in payloads) {
         try {
-          final response = await apiClient.postRequest(
+          final response = await _apiClient.postRequest(
             ApiEndpoints.updatePin,
             data: payload,
           );
@@ -151,21 +151,19 @@ class ProfilePinController extends GetxController {
   }
 
   Future<void> _setPinState(bool value) async {
-    final storage = Get.find<StorageService>();
     hasPin.value = value;
 
-    final profile = storage.userProfile;
+    final profile = _storageService.userProfile;
     if (profile != null) {
-      storage.userProfile = profile.copyWith(setPin: value);
+      _storageService.userProfile = profile.copyWith(setPin: value);
     }
 
-    await storage.savePinOrderVerification(enabled: false);
+    await _storageService.savePinOrderVerification(enabled: false);
   }
 
   Future<void> _syncPinStateFromProfile() async {
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.userProfile,
       );
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -175,7 +173,7 @@ class ProfilePinController extends GetxController {
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      Get.find<StorageService>().userProfile = profile;
+      _storageService.userProfile = profile;
       hasPin.value = profile.setPin;
     } on DioException {
       // Keep current state from in-memory profile if request fails.

@@ -16,6 +16,7 @@ class ProfilePaymentController extends GetxController {
   final RxBool isRefreshing = false.obs;
   final RxString processingId = ''.obs;
   final RxString selectedMethodId = ''.obs;
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   bool isPickerMode = false;
   bool returnOnSelect = true;
@@ -47,9 +48,8 @@ class ProfilePaymentController extends GetxController {
     if (isLoading.value) return;
     isLoading.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
-        ApiEndpoints.userPaymentMethods,
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.paymentMethods,
       );
       final apiResponse = ApiResponse.parseDynamic(response.data);
 

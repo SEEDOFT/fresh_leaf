@@ -13,23 +13,23 @@ final class ApiEndpoints {
   static const String resetPin = '/pin/reset';
 
   // User
-  static const String userProfile = '/profile';
-  static const String userUpdateProfile = '/profile';
-  static const String userAddresses = '/addresses';
-  static const String userAddress = '/addresses/{id}';
-  static const String userWallets = '/wallets';
+  static const String profile = '/profile';
+  static const String updateProfile = '/profile';
+  static const String addresses = '/addresses';
+  static const String address = '/addresses/{id}';
+  static const String wallets = '/wallets';
   // Categories
   static const String categories = '/categories';
   static const String categoryBySlug = '/categories/{slug}';
 
   // Payment Methods
-  static const String userPaymentMethods = '/payment-methods';
-  static const String userPaymentMethod = '/payment-methods/{id}';
-  static const String userPaymentMethodTypes = '/payment-method-types';
-  static const String userWalletTopUpSessions = '/wallets/top-up/sessions';
-  static const String userCheckoutSessions = '/checkout/sessions';
-  static const String userPaymentSession = '/payments/sessions/{id}';
-  static const String userDevices = '/devices';
+  static const String paymentMethods = '/payment-methods';
+  static const String paymentMethod = '/payment-methods/{id}';
+  static const String paymentMethodTypes = '/payment-method-types';
+  static const String walletTopUpSessions = '/wallets/top-up/sessions';
+  static const String checkoutSessions = '/checkout/sessions';
+  static const String paymentSession = '/payments/sessions/{id}';
+  static const String devices = '/devices';
 
   // Products
   static const String products = '/products';
@@ -71,6 +71,11 @@ final class ApiEndpoints {
   static const String wishlist = '/wishlist';
   static const String wishlistToggle = '/wishlist/toggle';
 
+  // Notifications
+  static const String notifications = '/notifications';
+  static const String notificationsMarkRead = '/notifications/{id}/mark-read';
+  static const String notificationsMarkAllRead = '/notifications/mark-all-read';
+
   // Organic Products
   static const String organicProducts = '/organic-products';
   static const String organicProductDetail = '/organic-products/{id}';
@@ -78,4 +83,15 @@ final class ApiEndpoints {
   // Search
   static const String search = '/products/search';
   static const String searchSuggestions = '/products/search/suggestions';
+
+  // Aliases for backward compatibility
+  static const String userProfile = profile;
+  static const String userUpdateProfile = updateProfile;
+  static const String userWallets = wallets;
+  static const String userPaymentMethods = paymentMethods;
+  static const String userPaymentMethodTypes = paymentMethodTypes;
+  static const String userDevices = devices;
+  static const String userWalletTopUpSessions = walletTopUpSessions;
+  static const String userCheckoutSessions = checkoutSessions;
+  static const String userPaymentSession = paymentSession;
 }

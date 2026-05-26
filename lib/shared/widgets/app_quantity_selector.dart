@@ -34,41 +34,42 @@ class AppQuantitySelector extends StatelessWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-          title: Text('enter_quantity'.tr),
-          content: TextField(
-            controller: textController,
-            keyboardType: TextInputType.numberWithOptions(
-              decimal: allowDecimal,
+            title: Text('enter_quantity'.tr),
+            content: TextField(
+              controller: textController,
+              keyboardType: TextInputType.numberWithOptions(
+                decimal: allowDecimal,
+              ),
+              decoration: InputDecoration(
+                hintText: 'quantity'.tr,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  allowDecimal ? RegExp(r'^\d*\.?\d*') : RegExp(r'^\d+'),
+                ),
+              ],
+              autofocus: true,
             ),
-            decoration: InputDecoration(
-              hintText: 'quantity'.tr,
-            ),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                allowDecimal ? RegExp(r'^\d*\.?\d*') : RegExp(r'^\d+'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('cancel'.tr),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final val = double.tryParse(textController.text);
+                  if (val != null && val > 0) {
+                    onChanged?.call(allowDecimal ? val : val.toInt());
+                  }
+                  Navigator.pop(context);
+                },
+                child: Text('ok'.tr),
               ),
             ],
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('cancel'.tr),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final val = double.tryParse(textController.text);
-                if (val != null && val > 0) {
-                  onChanged?.call(allowDecimal ? val : val.toInt());
-                }
-                Navigator.pop(context);
-              },
-              child: Text('ok'.tr),
-            ),
-          ],
-        );
-      },
-    ));
+          );
+        },
+      ),
+    );
   }
 
   @override

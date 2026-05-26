@@ -21,6 +21,7 @@ class ProfilePaymentAddController extends GetxController {
   final billingCityController = TextEditingController();
   final billingStateController = TextEditingController();
   final billingZipCodeController = TextEditingController();
+  final ApiClient _apiClient = Get.find<ApiClient>();
   final RxBool isSaving = false.obs;
   final RxString cardType = 'Unknown'.obs;
   final RxString cardValidationMessage = ''.obs;
@@ -135,7 +136,6 @@ class ProfilePaymentAddController extends GetxController {
 
     isSaving.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
       final expiryMonth = rule.requiresDetails
           ? int.parse(expiryDigits.substring(0, 2))
           : 0;
@@ -188,8 +188,8 @@ class ProfilePaymentAddController extends GetxController {
         'is_default': false,
       };
 
-      final response = await apiClient.postRequest(
-        ApiEndpoints.userPaymentMethods,
+      final response = await _apiClient.postRequest(
+        ApiEndpoints.paymentMethods,
         data: payload,
       );
 
@@ -210,13 +210,10 @@ class ProfilePaymentAddController extends GetxController {
           ? created
           : PaymentMethod.fromMap(apiResponse.data);
       Get.back<PaymentMethod>(result: savedMethod);
-    } on DioException catch (error) {
+    } on DioException catch (e) {
       Get.snackbar(
         'save_failed'.tr,
-        parseApiErrorMessage(
-          error,
-          fallback: 'unable_save_payment_method'.tr,
-        ),
+        parseApiErrorMessage(e, fallback: 'unable_save_payment_method'.tr),
       );
     } on FormatException {
       Get.snackbar(
@@ -308,9 +305,8 @@ class ProfilePaymentAddController extends GetxController {
 
     isLoadingPaymentMethodTypes.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
-        ApiEndpoints.userPaymentMethodTypes,
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.paymentMethodTypes,
       );
       final apiResponse = ApiResponse.parseList(response.data);
       final statusCode = response.statusCode ?? 0;

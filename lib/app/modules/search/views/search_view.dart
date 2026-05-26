@@ -106,8 +106,16 @@ class SearchView extends GetView<SearchController> {
                       title: item.displayTitle.tr,
                       subtitle: item.displaySubtitle.tr,
                       imageUrl: item.displayImageUrl,
-                      price: item.price,
-                      currencySymbol: item.currencySymbol,
+                      price: item.resolvedFinalPriceDisplay.usd > 0
+                          ? item.resolvedFinalPriceDisplay.usd
+                          : item.finalPrice,
+                      originalPrice: item.resolvedPriceDisplay.usd > 0
+                          ? item.resolvedPriceDisplay.usd
+                          : item.price,
+                      priceKhr: item.resolvedFinalPriceDisplay.hasKhr
+                          ? item.resolvedFinalPriceDisplay.khr
+                          : null,
+                      currencySymbol: r'$',
                       layout: AppProductCardLayout.list,
                       isFavorite: wishlistController.isFavorite(item.id),
                       onFavoriteTap: () =>

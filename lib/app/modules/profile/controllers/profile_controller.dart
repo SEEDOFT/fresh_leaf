@@ -19,6 +19,8 @@ class ProfileController extends GetxController {
   final RxString image = ''.obs;
   final RxString phone = ''.obs;
   final RxString memberSince = ''.obs;
+  final ApiClient _apiClient = Get.find<ApiClient>();
+  final StorageService _storageService = Get.find<StorageService>();
 
   @override
   void onInit() {
@@ -27,12 +29,11 @@ class ProfileController extends GetxController {
   }
 
   void _loadUser() {
-    final storage = Get.find<StorageService>();
-    final profile = storage.userProfile;
+    final profile = _storageService.userProfile;
     if (profile != null) {
       setProfile(profile);
     } else {
-      final tokenPresent = storage.token?.isNotEmpty ?? false;
+      final tokenPresent = _storageService.token?.isNotEmpty ?? false;
       if (tokenPresent) {
         userName.value = 'member_placeholder'.tr;
         email.value = '—';
@@ -56,9 +57,8 @@ class ProfileController extends GetxController {
 
   Future<void> refreshProfile() async {
     try {
-      final api = Get.find<ApiClient>();
-      final response = await api.getRequest(
-        ApiEndpoints.userProfile,
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.profile,
       );
       final apiResponse = ApiResponse.parseMap(response.data);
 
@@ -68,7 +68,7 @@ class ProfileController extends GetxController {
       }
 
       final profile = UserProfile.fromMap(apiResponse.data);
-      Get.find<StorageService>().userProfile = profile;
+      _storageService.userProfile = profile;
       setProfile(profile);
 
       // Sync preferences from backend to local app settings
@@ -112,22 +112,18 @@ class ProfileController extends GetxController {
     if (isLoading.value) return;
     isLoading.value = true;
     try {
-      final api = Get.find<ApiClient>();
-
-      // Deactivate FCM token on backend before logging out
       if (Get.isRegistered<NotificationService>()) {
         await Get.find<NotificationService>().deleteToken();
       }
 
-      await api.postRequest(ApiEndpoints.logout);
+      await _apiClient.postRequest(ApiEndpoints.logout);
     } on DioException catch (e) {
       Get.snackbar('logout_failed'.tr, e.message ?? 'unable_logout'.tr);
     } on Exception {
       Get.snackbar('logout_failed'.tr, 'unable_logout'.tr);
     }
 
-    final storage = Get.find<StorageService>();
-    await storage.clear();
+    await _storageService.clear();
     await Get.offAllNamed<void>(AppRoutes.login);
     isLoading.value = false;
   }

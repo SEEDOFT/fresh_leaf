@@ -14,13 +14,10 @@ class OrderService extends GetxService {
       final response = await apiClient.getRequest(
         ApiEndpoints.orders,
       );
-      final apiResponse = ApiResponse.parseMap(response.data);
+      final apiResponse = ApiResponse.parseList(response.data);
 
-      if (apiResponse.isSuccess && apiResponse.data['data'] != null) {
-        final dataList = apiResponse.data['data'] as List<dynamic>;
-        return dataList
-            .map((item) => Order.fromMap(item as Map<String, dynamic>))
-            .toList();
+      if (apiResponse.isSuccess) {
+        return apiResponse.data.map(Order.fromMap).toList();
       }
       return [];
     } on Exception {
@@ -63,6 +60,19 @@ class OrderService extends GetxService {
     try {
       final response = await apiClient.postRequest(
         ApiEndpoints.orderConfirmReceipt.replaceAll('{id}', id.toString()),
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      return apiResponse.isSuccess;
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<bool> payWithWallet(int orderId, int walletId) async {
+    try {
+      final response = await apiClient.postRequest(
+        '${ApiEndpoints.orders}/$orderId/pay',
+        data: {'wallet_id': walletId},
       );
       final apiResponse = ApiResponse.parseMap(response.data);
       return apiResponse.isSuccess;

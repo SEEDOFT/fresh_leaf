@@ -173,7 +173,9 @@ class AddressesView extends GetView<ProfileAddressesController> {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: controller.returnOnSelect ? () => controller.selectAddress(item) : null,
+              onTap: controller.returnOnSelect
+                  ? () => controller.selectAddress(item)
+                  : null,
               borderRadius: BorderRadius.circular(18),
               child: ProfileAddressesListItem(
                 address: item,

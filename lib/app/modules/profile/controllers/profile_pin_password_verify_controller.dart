@@ -12,6 +12,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
   final currentPinController = TextEditingController();
   final pinController = TextEditingController();
   final confirmPinController = TextEditingController();
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   final RxBool isLoading = false.obs;
   final RxBool isPasswordVisible = false.obs;
@@ -138,9 +139,8 @@ class ProfilePinPasswordVerifyController extends GetxController {
   }
 
   Future<bool> _verifyPassword(String password) async {
-    final apiClient = Get.find<ApiClient>();
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.verifyPassword,
         data: {'password': password},
       );
@@ -176,9 +176,8 @@ class ProfilePinPasswordVerifyController extends GetxController {
   }
 
   Future<bool> _setPin(String pin, String confirmPin) async {
-    final api = Get.find<ApiClient>();
     try {
-      final response = await api.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.setPin,
         data: {
           'pin': pin,
@@ -218,9 +217,8 @@ class ProfilePinPasswordVerifyController extends GetxController {
     String pin,
     String confirmPin,
   ) async {
-    final api = Get.find<ApiClient>();
     try {
-      final response = await api.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.updatePin,
         data: {
           'current_pin': currentPin,
@@ -260,9 +258,8 @@ class ProfilePinPasswordVerifyController extends GetxController {
     String pin,
     String confirmPin,
   ) async {
-    final apiClient = Get.find<ApiClient>();
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.resetPin,
         data: {
           'pin': pin,

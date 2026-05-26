@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/controllers/product_detail_controller.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 import 'package:get/get.dart';
 
 class TitleRowWidget extends StatelessWidget {
@@ -20,7 +20,6 @@ class TitleRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final currencySymbol = controller.product.currencySymbol ?? r'$';
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -64,19 +63,20 @@ class TitleRowWidget extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              '$currencySymbol${formatPrice(total)}',
-              style: TextStyle(
+            MoneyAmountText(
+              amount: total,
+              display: controller.totalDisplay,
+              primaryStyle: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
                 color: scheme.primary,
               ),
             ),
             if (controller.hasDiscount)
-              Text(
-                '$currencySymbol'
-                '${formatPrice(controller.originalPrice * controller.quantity.value)}',
-                style: TextStyle(
+              MoneyAmountText(
+                amount: controller.originalPrice * controller.quantity.value,
+                display: controller.originalTotalDisplay,
+                primaryStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: scheme.onSurfaceVariant.withValues(alpha: 0.6),

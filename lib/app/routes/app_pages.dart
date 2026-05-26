@@ -23,6 +23,10 @@ import 'package:fresh_leaf/app/modules/onboarding/bindings/onboarding_binding.da
 import 'package:fresh_leaf/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:fresh_leaf/app/modules/order_detail/bindings/order_detail_binding.dart';
 import 'package:fresh_leaf/app/modules/order_detail/views/order_detail_view.dart';
+import 'package:fresh_leaf/app/modules/order_external_payment/bindings/order_external_payment_binding.dart';
+import 'package:fresh_leaf/app/modules/order_external_payment/views/order_external_payment_view.dart';
+import 'package:fresh_leaf/app/modules/order_wallet_payment/bindings/order_wallet_payment_binding.dart';
+import 'package:fresh_leaf/app/modules/order_wallet_payment/views/order_wallet_payment_view.dart';
 import 'package:fresh_leaf/app/modules/orders/bindings/orders_binding.dart';
 import 'package:fresh_leaf/app/modules/orders/views/orders_view.dart';
 import 'package:fresh_leaf/app/modules/payment_qr/bindings/payment_qr_binding.dart';
@@ -172,6 +176,18 @@ final class AppPages {
       name: AppRoutes.orderDetail,
       page: () => const OrderDetailView(),
       binding: OrderDetailBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.orderWalletPayment,
+      page: () => const OrderWalletPaymentView(),
+      binding: OrderWalletPaymentBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.orderExternalPayment,
+      page: () => const OrderExternalPaymentView(),
+      binding: OrderExternalPaymentBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

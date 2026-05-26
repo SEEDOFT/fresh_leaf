@@ -53,7 +53,9 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  address != null ? address!.recipientName : 'add_delivery_address'.tr,
+                  address != null
+                      ? address!.recipientName
+                      : 'add_delivery_address'.tr,
                   style: TextStyle(
                     color: scheme.onSurface,
                     fontSize: 14,
