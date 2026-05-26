@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/repositories/home_repository.dart';
 import 'package:fresh_leaf/core/repositories/location_repository.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/permission_service.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:geolocator/geolocator.dart';
@@ -48,6 +49,9 @@ class HomeController extends GetxController {
     super.onInit();
     unawaited(loadHomeData());
     unawaited(fetchCurrentLocation());
+    if (Get.isRegistered<NotificationService>()) {
+      unawaited(Get.find<NotificationService>().getNotifications());
+    }
   }
 
   Future<void> loadHomeData() async {

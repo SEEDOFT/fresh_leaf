@@ -414,6 +414,8 @@ class NotificationService extends GetxService {
     super.onClose();
   }
 
+  final RxInt unreadCount = 0.obs;
+
   /// Get database notifications for the user
   Future<List<AppNotification>> getNotifications() async {
     try {
@@ -421,7 +423,9 @@ class NotificationService extends GetxService {
       final apiResponse = ApiResponse.parseList(response.data);
 
       if (apiResponse.isSuccess) {
-        return apiResponse.data.map(AppNotification.fromMap).toList();
+        final list = apiResponse.data.map(AppNotification.fromMap).toList();
+        unreadCount.value = list.where((n) => !n.isRead).length;
+        return list;
       }
       return [];
     } on Exception {
@@ -439,7 +443,13 @@ class NotificationService extends GetxService {
         ),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
-      return apiResponse.isSuccess;
+      if (apiResponse.isSuccess) {
+        if (unreadCount.value > 0) {
+          unreadCount.value--;
+        }
+        return true;
+      }
+      return false;
     } on Exception {
       return false;
     }
@@ -452,7 +462,11 @@ class NotificationService extends GetxService {
         ApiEndpoints.notificationsMarkAllRead,
       );
       final apiResponse = ApiResponse.parseMap(response.data);
-      return apiResponse.isSuccess;
+      if (apiResponse.isSuccess) {
+        unreadCount.value = 0;
+        return true;
+      }
+      return false;
     } on Exception {
       return false;
     }

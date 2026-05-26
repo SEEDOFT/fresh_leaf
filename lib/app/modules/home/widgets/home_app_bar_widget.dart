@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/app_sizes.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:get/get.dart';
 
 class HomeAppBarWidget extends GetView<HomeController> {
@@ -115,20 +116,33 @@ class HomeAppBarWidget extends GetView<HomeController> {
                 ),
                 onPressed: () async => await Get.toNamed(AppRoutes.wishlist),
               ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(
-                  minWidth: AppSizes.s40,
-                  minHeight: AppSizes.s40,
-                ),
-                icon: Icon(
-                  Icons.notifications_outlined,
-                  size: AppSizes.s22,
-                  color: scheme.onSurface,
-                ),
-                onPressed: () async =>
-                    await Get.toNamed(AppRoutes.notifications),
-              ),
+              Obx(() {
+                final notificationService = Get.find<NotificationService>();
+                final count = notificationService.unreadCount.value;
+                return IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: AppSizes.s40,
+                    minHeight: AppSizes.s40,
+                  ),
+                  icon: count > 0
+                      ? Badge(
+                          label: Text(count > 99 ? '99+' : count.toString()),
+                          child: Icon(
+                            Icons.notifications_outlined,
+                            size: AppSizes.s22,
+                            color: scheme.onSurface,
+                          ),
+                        )
+                      : Icon(
+                          Icons.notifications_outlined,
+                          size: AppSizes.s22,
+                          color: scheme.onSurface,
+                        ),
+                  onPressed: () async =>
+                      await Get.toNamed(AppRoutes.notifications),
+                );
+              }),
             ],
           ),
         ],
