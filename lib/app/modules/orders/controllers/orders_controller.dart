@@ -14,38 +14,32 @@ class OrdersController extends GetxController {
 
   final RxBool isLoading = false.obs;
   final RxList<Order> orders = <Order>[].obs;
-  final RxString _selectedStatus = 'All'.obs;
+  final RxInt _selectedStatusId = 0.obs;
   final Rx<OrderSortType> _selectedSort = OrderSortType.newest.obs;
 
-  String get selectedStatus => _selectedStatus.value;
-  set selectedStatus(String status) => _selectedStatus.value = status;
+  int get selectedStatusId => _selectedStatusId.value;
+  set selectedStatusId(int id) => _selectedStatusId.value = id;
 
   OrderSortType get selectedSort => _selectedSort.value;
   set selectedSort(OrderSortType sortType) => _selectedSort.value = sortType;
 
-  List<String> get statusFilters => const [
-    'All',
-    'Pending',
-    'Processing',
-    'Delivered',
-    'Cancelled',
+  List<Map<String, dynamic>> get statusFilters => const [
+    {'id': 0, 'name': 'All'},
+    {'id': 1, 'name': 'Pending'},
+    {'id': 2, 'name': 'Preparing'},
+    {'id': 3, 'name': 'Delivering'},
+    {'id': 4, 'name': 'Delivered'},
+    {'id': 5, 'name': 'Cancelled'},
+    {'id': 6, 'name': 'Awaiting Payment'},
   ];
+
   int get visibleOrderCount => filteredOrders.length;
 
   List<Order> get filteredOrders {
-    final current = _selectedStatus.value;
-    final list = current == 'All'
+    final currentId = _selectedStatusId.value;
+    final list = currentId == 0
         ? List<Order>.from(orders)
-        : orders.where((order) {
-            final filterId = switch (current) {
-              'Pending' => 1,
-              'Processing' => 3,
-              'Delivered' => 4,
-              'Cancelled' => 5,
-              _ => -1,
-            };
-            return order.statusId == filterId;
-          }).toList();
+        : orders.where((order) => order.statusId == currentId).toList();
 
     switch (_selectedSort.value) {
       case OrderSortType.newest:

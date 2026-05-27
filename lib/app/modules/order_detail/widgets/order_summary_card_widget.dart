@@ -30,34 +30,39 @@ class OrderSummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _buildBadge(
-                    text: order.status,
-                    bg: statusBg,
-                    textColor: statusColor,
-                  ),
-                  if (order.paymentStatusId != null)
+              Expanded(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
                     _buildBadge(
-                      text: order.paymentStatus,
-                      bg: scheme.surfaceContainerHighest,
-                      textColor: scheme.onSurfaceVariant,
+                      text: order.status,
+                      bg: statusBg,
+                      textColor: statusColor,
                     ),
-                  if (order.orderTypeId != null)
-                    _buildBadge(
-                      text: order.orderType,
-                      bg: scheme.surfaceContainerHighest,
-                      textColor: scheme.onSurfaceVariant,
-                    ),
-                ],
+                    if (order.paymentStatusId != null)
+                      _buildBadge(
+                        text: order.paymentStatus,
+                        bg: scheme.surfaceContainerHighest,
+                        textColor: scheme.onSurfaceVariant,
+                      ),
+                    if (order.orderTypeId != null)
+                      _buildBadge(
+                        text: order.orderType,
+                        bg: scheme.surfaceContainerHighest,
+                        textColor: scheme.onSurfaceVariant,
+                      ),
+                  ],
+                ),
               ),
-              const Spacer(),
+              const SizedBox(width: 8),
               Text(
                 order.createdAt != null
-                    ? DateFormat('MMM d, yyyy').format(order.createdAt!)
+                    ? DateFormat(
+                        'hh:mm a, dd MMM yyyy',
+                      ).format(order.createdAt!)
                     : '',
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,

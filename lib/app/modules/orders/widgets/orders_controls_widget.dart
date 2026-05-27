@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class OrdersControlsWidget extends StatelessWidget {
   const OrdersControlsWidget({
-    required this.selectedStatus,
+    required this.selectedStatusId,
     required this.selectedSort,
     required this.onStatusChanged,
     required this.onSortChanged,
@@ -13,27 +13,42 @@ class OrdersControlsWidget extends StatelessWidget {
     super.key,
   });
 
-  final String selectedStatus;
+  final int selectedStatusId;
   final OrderSortType selectedSort;
-  final ValueChanged<String> onStatusChanged;
+  final ValueChanged<int> onStatusChanged;
   final ValueChanged<OrderSortType> onSortChanged;
   final ColorScheme scheme;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<OrdersController>();
     return Row(
       children: [
         Expanded(
-          child: AppFilterBar(
-            filters: const <String>['All', 'Processing', 'Delivered'],
-            selectedFilter: selectedStatus,
+          child: AppFilterBar<int>(
+            filters: controller.statusFilters
+                .map((e) => e['id'] as int)
+                .toList(),
+            selectedFilter: selectedStatusId,
             onChanged: onStatusChanged,
-            labelBuilder: (filter) {
-              switch (filter) {
-                case 'Processing':
-                  return 'processing'.tr;
+            labelBuilder: (filterId) {
+              final filter = controller.statusFilters.firstWhere(
+                (e) => e['id'] == filterId,
+              );
+              final name = filter['name'] as String;
+              switch (name) {
+                case 'Pending':
+                  return 'pending'.tr;
+                case 'Preparing':
+                  return 'preparing'.tr;
+                case 'Delivering':
+                  return 'delivering'.tr;
                 case 'Delivered':
                   return 'delivered'.tr;
+                case 'Cancelled':
+                  return 'cancelled'.tr;
+                case 'Awaiting Payment':
+                  return 'awaiting_payment'.tr;
                 default:
                   return 'tag_all'.tr;
               }

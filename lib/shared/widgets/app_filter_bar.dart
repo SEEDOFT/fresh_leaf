@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppFilterBar extends StatelessWidget {
+class AppFilterBar<T> extends StatelessWidget {
   const AppFilterBar({
     required this.filters,
     required this.selectedFilter,
@@ -12,11 +12,11 @@ class AppFilterBar extends StatelessWidget {
     super.key,
   });
 
-  final List<String> filters;
-  final String selectedFilter;
-  final ValueChanged<String> onChanged;
-  final String Function(String)? labelBuilder;
-  final IconData? Function(String)? iconBuilder;
+  final List<T> filters;
+  final T selectedFilter;
+  final ValueChanged<T> onChanged;
+  final String Function(T)? labelBuilder;
+  final IconData? Function(T)? iconBuilder;
   final double horizontalPadding;
   final double height;
 
@@ -34,7 +34,7 @@ class AppFilterBar extends StatelessWidget {
         itemBuilder: (context, index) {
           final filter = filters[index];
           final isSelected = selectedFilter == filter;
-          final label = labelBuilder?.call(filter) ?? filter;
+          final label = labelBuilder?.call(filter) ?? filter.toString();
           final icon = iconBuilder?.call(filter);
 
           return GestureDetector(

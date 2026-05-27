@@ -26,9 +26,10 @@ class OrdersView extends GetView<OrdersController> {
           if (!showAppBar) const SizedBox(height: 10),
           Obx(
             () => OrdersControlsWidget(
-              selectedStatus: controller.selectedStatus,
+              selectedStatusId: controller.selectedStatusId,
               selectedSort: controller.selectedSort,
-              onStatusChanged: (status) => controller.selectedStatus = status,
+              onStatusChanged: (statusId) =>
+                  controller.selectedStatusId = statusId,
               onSortChanged: (sort) => controller.selectedSort = sort,
               scheme: scheme,
             ),
@@ -77,7 +78,7 @@ class OrdersView extends GetView<OrdersController> {
                         switchOutCurve: Curves.easeInCubic,
                         child: OrdersListWidget(
                           key: ValueKey<String>(
-                            '${controller.selectedStatus}'
+                            '${controller.selectedStatusId}'
                             '-${controller.selectedSort.name}'
                             '-${controller.filteredOrders.length}',
                           ),

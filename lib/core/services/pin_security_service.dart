@@ -17,6 +17,10 @@ class PinSecurityService {
 
     if (!requirePin) return true;
 
+    return verifyPin();
+  }
+
+  static Future<bool> verifyPin() async {
     final pinController = TextEditingController();
     final result = await Get.dialog<bool>(
       AlertDialog(
@@ -75,6 +79,7 @@ class PinSecurityService {
       );
 
       if (statusCode == 422 && message.toLowerCase().contains('not set')) {
+        final storage = Get.find<StorageService>();
         await storage.savePinOrderVerification(enabled: false);
         Get.snackbar(
           'pin_not_set'.tr,

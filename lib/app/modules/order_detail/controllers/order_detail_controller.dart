@@ -3,18 +3,22 @@ import 'dart:async';
 import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 
 class OrderDetailController extends GetxController {
   final OrderService _orderService = Get.find<OrderService>();
 
   final Rxn<Order> order = Rxn<Order>();
-  final RxBool isCheckingAccess = true.obs;
+  late final RxBool isCheckingAccess;
   final RxBool isUpdating = false.obs;
 
   @override
   void onInit() {
     super.onInit();
+    final storage = Get.find<StorageService>();
+    isCheckingAccess = storage.pinOrderVerification.obs;
+    
     final args = Get.arguments;
     if (args is Order) {
       order.value = args;
@@ -33,6 +37,12 @@ class OrderDetailController extends GetxController {
   }
 
   Future<void> _verifyAccess() async {
+    final storage = Get.find<StorageService>();
+    if (!storage.pinOrderVerification) {
+      isCheckingAccess.value = false;
+      return;
+    }
+
     isCheckingAccess.value = true;
     final canOpen = await PinSecurityService.verifyOrderAccess();
     isCheckingAccess.value = false;

@@ -646,16 +646,19 @@ const Map<String, String> translationsEn = {
   'customer_support': 'Customer Support',
   'welcome_to_support': 'Welcome to Support',
   'support_chat_empty_subtitle':
-      'How can we help you today? Send us a message and our team will get back to you as soon as possible.',
+      'How can we help you today? Send us a message and our team will'
+      ' get back to you as soon as possible.',
 
   // Support Tickets
   'failed_load_tickets': 'Failed to load tickets',
   'failed_create_ticket': 'Failed to create ticket',
   'how_can_we_help': 'How can we help you?',
   'support_tickets_empty_subtitle':
-      'Our dedicated support team is ready to assist you with any questions about orders, products, or your account.',
+      'Our dedicated support team is ready to assist you with any questions'
+      ' about orders, products, or your account.',
   'support_tickets_empty_hint':
-      'Tap the button below to start a new chat session. We typically reply within a few minutes.',
+      'Tap the button below to start a new chat session. We typically reply'
+      ' within a few minutes.',
   'start_new_conversation': 'Start New Conversation',
   'unknown_date': 'Unknown Date',
   'ticket_status_open': 'Open',

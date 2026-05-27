@@ -1,7 +1,7 @@
 import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
-import 'package:get/get.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:get/get.dart';
 
 class Order {
   Order({

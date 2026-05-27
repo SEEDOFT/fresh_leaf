@@ -101,7 +101,7 @@ class OrderItemWidget extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               order.createdAt != null
-                  ? DateFormat('MMM d, yyyy').format(order.createdAt!)
+                  ? DateFormat('hh:mm a, dd MMM yyyy').format(order.createdAt!)
                   : '',
               style: TextStyle(
                 fontSize: 13,

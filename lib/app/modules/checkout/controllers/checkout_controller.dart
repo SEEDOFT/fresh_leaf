@@ -12,6 +12,8 @@ import 'package:fresh_leaf/core/models/payment_method_type.dart';
 import 'package:fresh_leaf/core/models/user_address.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/cart_service.dart';
+import 'package:fresh_leaf/core/services/pin_security_service.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
@@ -249,6 +251,29 @@ class CheckoutController extends GetxController {
         option.method == null) {
       Get.snackbar('payment_method'.tr, 'select_payment_method_to_continue'.tr);
       return;
+    }
+
+    final storage = Get.find<StorageService>();
+    final hasPin = storage.userProfile?.setPin ?? false;
+
+    if (!hasPin) {
+      final success = await Get.toNamed<bool>(
+        AppRoutes.pinPasswordVerification,
+        arguments: <String, dynamic>{'mode': 'set'},
+      );
+      if (success != true) {
+        return; // User aborted PIN setup
+      }
+      
+      // Update local profile state
+      if (storage.userProfile != null) {
+        storage.userProfile = storage.userProfile!.copyWith(setPin: true);
+      }
+    } else {
+      final verified = await PinSecurityService.verifyPin();
+      if (!verified) {
+        return; // User failed or aborted PIN verification
+      }
     }
 
     isPlacingOrder.value = true;
