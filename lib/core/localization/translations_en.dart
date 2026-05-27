@@ -607,4 +607,90 @@ const Map<String, String> translationsEn = {
   'naturally_grown': 'Naturally Grown',
   'add_new_card': 'Add New Card',
   'add_delivery_address': 'Add Delivery Address',
+
+  'location': 'Location',
+
+  // Home
+  'enable_location_service': 'Please turn on location service.',
+  'location_permission_required': 'Location permission is required.',
+  'unable_load_current_location': 'Unable to load current location.',
+  'unable_detect_current_location': 'Unable to detect your current location.',
+
+  // Orders
+  'order_cancel_success': 'Order cancelled successfully',
+  'failed_cancel_order': 'Failed to cancel order',
+  'order_receipt_confirmed': 'Order receipt confirmed',
+  'failed_confirm_receipt': 'Failed to confirm receipt',
+
+  // Login
+  'fill_all_fields': 'Please fill in all fields',
+  'token_missing': 'Login succeeded but token was missing',
+  'login_failed_message': 'Login failed: @message',
+  'unexpected_error': 'Unexpected error',
+  'unknown_error': 'Unknown error',
+
+  // Support Chat
+  'no_ticket_provided': 'No ticket provided',
+  'failed_init_chat': 'Failed to initialize support chat',
+  'failed_load_messages': 'Failed to load messages',
+  'failed_send_message': 'Failed to send message',
+  'select_attachment_source': 'Select Attachment Source',
+  'camera': 'Camera',
+  'take_a_photo': 'Take a photo',
+  'gallery': 'Gallery',
+  'choose_from_photos': 'Choose from photos',
+  'failed_capture_image': 'Failed to capture image',
+  'failed_select_image': 'Failed to select image',
+  'image_exceeds_limit': 'Image size exceeds 5MB limit',
+  'failed_send_image': 'Failed to send image',
+  'customer_support': 'Customer Support',
+  'welcome_to_support': 'Welcome to Support',
+  'support_chat_empty_subtitle':
+      'How can we help you today? Send us a message and our team will get back to you as soon as possible.',
+
+  // Support Tickets
+  'failed_load_tickets': 'Failed to load tickets',
+  'failed_create_ticket': 'Failed to create ticket',
+  'how_can_we_help': 'How can we help you?',
+  'support_tickets_empty_subtitle':
+      'Our dedicated support team is ready to assist you with any questions about orders, products, or your account.',
+  'support_tickets_empty_hint':
+      'Tap the button below to start a new chat session. We typically reply within a few minutes.',
+  'start_new_conversation': 'Start New Conversation',
+  'unknown_date': 'Unknown Date',
+  'ticket_status_open': 'Open',
+  'ticket_status_resolved': 'Resolved',
+
+  // Notifications
+  'notification_title': 'Notifications',
+  'mark_all_read': 'Mark all read',
+  'filter_all': 'All',
+  'filter_promos': 'Promos',
+  'filter_system': 'System',
+  'all_caught_up': "You're all caught up",
+  'updates_placeholder': "We'll drop your updates here.",
+  'got_it': 'Got it',
+  'days_ago': '@countd ago',
+  'hours_ago': '@counth ago',
+  'minutes_ago': '@countm ago',
+  'just_now': 'Just now',
+
+  // PIN Security
+  'enter_pin': 'Enter PIN',
+  'verify': 'Verify',
+  'enter_your_pin': 'Please enter your PIN.',
+  'incorrect_pin': 'The PIN you entered is incorrect.',
+  'unable_verify_pin': 'Unable to verify PIN right now',
+  'setup_pin_instruction': 'Please set up your PIN in Profile > PIN Security.',
+
+  // Profile Help
+  'contact_title': 'Contact @name',
+  'copied_label': '@label copied to clipboard',
+  'need_more_help': 'Need more help? Contact support.',
+
+  // Form hints
+  'first_name_hint': 'Jane',
+  'last_name_hint': 'Doe',
+  'phone_hint': '012 345 678',
+  'expiry_hint': 'MM/YY',
 };

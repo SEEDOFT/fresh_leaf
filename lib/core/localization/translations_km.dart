@@ -608,4 +608,90 @@ const Map<String, String> translationsKm = {
   'naturally_grown': 'ដាំដុះបែបធម្មជាតិ',
   'add_new_card': 'បន្ថែមកាតថ្មី',
   'add_delivery_address': 'បន្ថែមអាសយដ្ឋានដឹកជញ្ជូន',
+
+  'location': 'ទីតាំង',
+
+  // Home
+  'enable_location_service': 'សូមបើកសេវាកម្មទីតាំង។',
+  'location_permission_required': 'ត្រូវការការអនុញ្ញាតទីតាំង។',
+  'unable_load_current_location': 'មិនអាចផ្ទុកទីតាំងបច្ចុប្បន្នបានទេ។',
+  'unable_detect_current_location': 'មិនអាចកំណត់ទីតាំងបច្ចុប្បន្នរបស់អ្នកបានទេ។',
+
+  // Orders
+  'order_cancel_success': 'បានបោះបង់ការបញ្ជាទិញដោយជោគជ័យ',
+  'failed_cancel_order': 'បរាជ័យក្នុងការបោះបង់ការបញ្ជាទិញ',
+  'order_receipt_confirmed': 'បានបញ្ជាក់ការទទួលការបញ្ជាទិញ',
+  'failed_confirm_receipt': 'បរាជ័យក្នុងការបញ្ជាក់ការទទួល',
+
+  // Login
+  'fill_all_fields': 'សូមបំពេញគ្រប់វាលទាំងអស់',
+  'token_missing': 'ការចូលបានជោគជ័យ ប៉ុន្តែមិនមាន token',
+  'login_failed_message': 'ការចូលបានបរាជ័យ: @message',
+  'unexpected_error': 'កំហុសដែលមិនបានរំពឹងទុក',
+  'unknown_error': 'កំហុសមិនស្គាល់',
+
+  // Support Chat
+  'no_ticket_provided': 'មិនមានសំបុត្រត្រូវបានផ្តល់',
+  'failed_init_chat': 'បរាជ័យក្នុងការចាប់ផ្តើមការជជែកជំនួយ',
+  'failed_load_messages': 'បរាជ័យក្នុងការផ្ទុកសារ',
+  'failed_send_message': 'បរាជ័យក្នុងការផ្ញើសារ',
+  'select_attachment_source': 'ជ្រើសរើសប្រភពឯកសារភ្ជាប់',
+  'camera': 'កាមេរ៉ា',
+  'take_a_photo': 'ថតរូប',
+  'gallery': 'វិចិត្រសាល',
+  'choose_from_photos': 'ជ្រើសរើសពីរូបថត',
+  'failed_capture_image': 'បរាជ័យក្នុងការថតរូប',
+  'failed_select_image': 'បរាជ័យក្នុងការជ្រើសរើសរូបភាព',
+  'image_exceeds_limit': 'ទំហំរូបភាពលើសពី 5MB',
+  'failed_send_image': 'បរាជ័យក្នុងការផ្ញើរូបភាព',
+  'customer_support': 'ជំនួយអតិថិជន',
+  'welcome_to_support': 'សូមស្វាគមន៍មកកាន់ជំនួយ',
+  'support_chat_empty_subtitle':
+      'តើយើងអាចជួយអ្នកថ្ងៃនេះដោយរបៀបណា? សូមផ្ញើសារមកយើង ហើយក្រុមការងាររបស់យើងនឹងឆ្លើយតបវិញឱ្យបានឆាប់តាមដែលអាចធ្វើទៅបាន។',
+
+  // Support Tickets
+  'failed_load_tickets': 'បរាជ័យក្នុងការផ្ទុកសំបុត្រ',
+  'failed_create_ticket': 'បរាជ័យក្នុងការបង្កើតសំបុត្រ',
+  'how_can_we_help': 'តើយើងអាចជួយអ្នកដោយរបៀបណា?',
+  'support_tickets_empty_subtitle':
+      'ក្រុមជំនួយរបស់យើងត្រៀមជួយអ្នកជាមួយនឹងសំណួរណាមួយអំពីការបញ្ជាទិញ ផលិតផល ឬគណនីរបស់អ្នក។',
+  'support_tickets_empty_hint':
+      'ចុចប៊ូតុងខាងក្រោមដើម្បីចាប់ផ្តើមការជជែកថ្មី។ ជាធម្មតាយើងឆ្លើយតបក្នុងរយៈពេលប៉ុន្មាននាទី។',
+  'start_new_conversation': 'ចាប់ផ្តើមការសន្ទនាថ្មី',
+  'unknown_date': 'កាលបរិច្ឆេទមិនស្គាល់',
+  'ticket_status_open': 'បើក',
+  'ticket_status_resolved': 'ដោះស្រាយរួច',
+
+  // Notifications
+  'notification_title': 'ការជូនដំណឹង',
+  'mark_all_read': 'សម្គាល់ថាបានអានទាំងអស់',
+  'filter_all': 'ទាំងអស់',
+  'filter_promos': 'ការផ្សព្វផ្សាយ',
+  'filter_system': 'ប្រព័ន្ធ',
+  'all_caught_up': 'អ្នកបានឃើញទាំងអស់ហើយ',
+  'updates_placeholder': 'ព័ត៌មានថ្មីៗនឹងបង្ហាញនៅទីនេះ។',
+  'got_it': 'យល់ហើយ',
+  'days_ago': '@countd ថ្ងៃមុន',
+  'hours_ago': '@counth ម៉ោងមុន',
+  'minutes_ago': '@countm នាទីមុន',
+  'just_now': 'ទើបតែប៉ុន្មានពេលនេះ',
+
+  // PIN Security
+  'enter_pin': 'បញ្ចូល PIN',
+  'verify': 'ផ្ទៀងផ្ទាត់',
+  'enter_your_pin': 'សូមបញ្ចូល PIN របស់អ្នក។',
+  'incorrect_pin': 'PIN ដែលអ្នកបានបញ្ចូលមិនត្រឹមត្រូវទេ។',
+  'unable_verify_pin': 'មិនអាចផ្ទៀងផ្ទាត់ PIN ឥឡូវនេះទេ',
+  'setup_pin_instruction': 'សូមរៀបចំ PIN របស់អ្នកនៅក្នុង ប្រវត្តិរូប > សុវត្ថិភាព PIN ។',
+
+  // Profile Help
+  'contact_title': 'ទំនាក់ទំនង @name',
+  'copied_label': '@label បានចម្លងទៅក្ដារតម្បៀតខ្ទាស់',
+  'need_more_help': 'ត្រូវការជំនួយបន្ថែមទៀត? ទាក់ទងជំនួយ។',
+
+  // Form hints
+  'first_name_hint': 'ជេន',
+  'last_name_hint': 'ដូ',
+  'phone_hint': '០១២ ៣៤៥ ៦៧៨',
+  'expiry_hint': 'MM/YY',
 };

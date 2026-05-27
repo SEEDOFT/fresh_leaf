@@ -71,6 +71,8 @@ import 'package:fresh_leaf/app/modules/support_chat/bindings/support_chat_bindin
 import 'package:fresh_leaf/app/modules/support_chat/views/support_chat_view.dart';
 import 'package:fresh_leaf/app/modules/support_tickets/bindings/support_tickets_binding.dart';
 import 'package:fresh_leaf/app/modules/support_tickets/views/support_tickets_view.dart';
+import 'package:fresh_leaf/app/modules/vendor_profile/bindings/vendor_profile_binding.dart';
+import 'package:fresh_leaf/app/modules/vendor_profile/views/vendor_profile_view.dart';
 import 'package:fresh_leaf/app/modules/wallet/bindings/wallet_binding.dart';
 import 'package:fresh_leaf/app/modules/wallet/views/wallet_view.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up/bindings/wallet_top_up_binding.dart';
@@ -278,6 +280,12 @@ final class AppPages {
       name: AppRoutes.productList,
       page: () => const ProductListView(),
       binding: ProductListBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.vendorProfile,
+      page: () => const VendorProfileView(),
+      binding: VendorProfileBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

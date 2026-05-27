@@ -31,7 +31,7 @@ class SupportTicketsController extends GetxController {
         );
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to load tickets');
+      Get.snackbar('error'.tr, 'failed_load_tickets'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -54,7 +54,7 @@ class SupportTicketsController extends GetxController {
         await loadTickets();
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to create ticket');
+      Get.snackbar('error'.tr, 'failed_create_ticket'.tr);
     } finally {
       isLoading.value = false;
     }

@@ -482,23 +482,25 @@ class NotificationService extends GetxService {
       final apiResponse = ApiResponse.parseMap(response.data);
       if (apiResponse.isSuccess) {
         unreadCount.value = 0;
-        notifications.assignAll(notifications.map((n) {
-          if (!n.isRead) {
-            return AppNotification(
-              id: n.id,
-              title: n.title,
-              message: n.message,
-              isRead: true,
-              readAt: DateTime.now(),
-              createdAt: n.createdAt,
-              typeCode: n.typeCode,
-              typeNameEn: n.typeNameEn,
-              typeNameKm: n.typeNameKm,
-              data: n.data,
-            );
-          }
-          return n;
-        }).toList());
+        notifications.assignAll(
+          notifications.map((n) {
+            if (!n.isRead) {
+              return AppNotification(
+                id: n.id,
+                title: n.title,
+                message: n.message,
+                isRead: true,
+                readAt: DateTime.now(),
+                createdAt: n.createdAt,
+                typeCode: n.typeCode,
+                typeNameEn: n.typeNameEn,
+                typeNameKm: n.typeNameKm,
+                data: n.data,
+              );
+            }
+            return n;
+          }).toList(),
+        );
         return true;
       }
       return false;

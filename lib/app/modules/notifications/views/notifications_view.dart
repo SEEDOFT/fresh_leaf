@@ -14,15 +14,19 @@ class NotificationsView extends GetView<NotificationsController> {
     final scheme = Theme.of(context).colorScheme;
 
     final filterOptions = [
-      {'label': 'All', 'value': 'all', 'icon': Icons.inbox_outlined},
+      {'label': 'filter_all', 'value': 'all', 'icon': Icons.inbox_outlined},
       {
-        'label': 'Orders',
+        'label': 'orders',
         'value': 'order',
         'icon': Icons.local_shipping_outlined,
       },
-      {'label': 'Promos', 'value': 'promo', 'icon': Icons.local_offer_outlined},
       {
-        'label': 'System',
+        'label': 'filter_promos',
+        'value': 'promo',
+        'icon': Icons.local_offer_outlined,
+      },
+      {
+        'label': 'filter_system',
         'value': 'system',
         'icon': Icons.settings_suggest_outlined,
       },
@@ -31,12 +35,12 @@ class NotificationsView extends GetView<NotificationsController> {
     return AppScaffold(
       scrollable: false,
       appBar: CustomAppBar(
-        title: 'Notifications',
+        title: 'notification_title'.tr,
         actions: [
           TextButton(
             onPressed: controller.markAllRead,
             child: Text(
-              'Mark all read',
+              'mark_all_read'.tr,
               style: TextStyle(
                 color: scheme.primary,
                 fontWeight: FontWeight.w700,
@@ -55,8 +59,11 @@ class NotificationsView extends GetView<NotificationsController> {
               selectedFilter: controller.activeFilter,
               onChanged: (value) => controller.activeFilter = value,
               labelBuilder: (value) =>
-                  filterOptions.firstWhere((e) => e['value'] == value)['label']!
-                      as String,
+                  (filterOptions.firstWhere(
+                            (e) => e['value'] == value,
+                          )['label']!
+                          as String)
+                      .tr,
               iconBuilder: (value) =>
                   filterOptions.firstWhere((e) => e['value'] == value)['icon']!
                       as IconData,

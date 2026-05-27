@@ -150,9 +150,9 @@ class ProfileController extends GetxController {
       final response = await _apiClient.getRequest(ApiEndpoints.addresses);
       final apiResponse = ApiResponse.parseDynamic(response.data);
       if (apiResponse.isSuccess || response.statusCode == 200) {
-        final items = _extractAddressMaps(apiResponse.data)
-            .map(UserAddress.fromMap)
-            .toList();
+        final items = _extractAddressMaps(
+          apiResponse.data,
+        ).map(UserAddress.fromMap).toList();
         addresses.assignAll(items);
       }
     } on Exception {
@@ -182,9 +182,9 @@ class ProfileController extends GetxController {
       );
       final apiResponse = ApiResponse.parseDynamic(response.data);
       if (apiResponse.isSuccess || response.statusCode == 200) {
-        final parsed = _extractPaymentMaps(apiResponse.data)
-            .map(PaymentMethod.fromMap)
-            .toList();
+        final parsed = _extractPaymentMaps(
+          apiResponse.data,
+        ).map(PaymentMethod.fromMap).toList();
         paymentMethods.assignAll(parsed);
       }
     } on Exception {

@@ -17,7 +17,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
     return AppScaffold(
       scrollable: false,
       padding: EdgeInsets.zero,
-      appBar: const CustomAppBar(title: 'Customer Support'),
+      appBar: CustomAppBar(title: 'customer_support'.tr),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.createNewTicket,
         backgroundColor: AppColors.primary,
@@ -79,7 +79,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'How can we help you?',
+                    'how_can_we_help'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
@@ -89,9 +89,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Our dedicated support team is ready to assist you '
-                    'with any questions about orders, products, or '
-                    'your account.',
+                    'support_tickets_empty_subtitle'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
@@ -101,8 +99,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Tap the button below to start a new chat session. '
-                    'We typically reply within a few minutes.',
+                    'support_tickets_empty_hint'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
@@ -127,8 +124,8 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                       elevation: 0,
                     ),
                     icon: const Icon(Icons.chat_outlined),
-                    label: const Text(
-                      'Start New Conversation',
+                    label: Text(
+                      'start_new_conversation'.tr,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -189,7 +186,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                         ? DateFormat(
                             'MMM dd, yyyy - HH:mm',
                           ).format(ticket.createdAt!.toLocal())
-                        : 'Unknown Date',
+                        : 'unknown_date'.tr,
                   ),
                   trailing: Container(
                     padding: const EdgeInsets.symmetric(
@@ -203,7 +200,9 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      isOpen ? 'Open' : 'Resolved',
+                      isOpen
+                          ? 'ticket_status_open'.tr
+                          : 'ticket_status_resolved'.tr,
                       style: TextStyle(
                         color: isOpen ? Colors.orange[700] : Colors.green,
                         fontSize: 12,

@@ -7,10 +7,11 @@ class NotificationsEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppEmptyState(
+    return AppEmptyState(
       icon: Icons.notifications_none_rounded,
-      title: 'You’re all caught up',
-      subtitle: 'We’ll drop your updates here.',
+      title: 'all_caught_up'.tr,
+      subtitle: 'updates_placeholder'.tr,
     );
   }
+}
 }

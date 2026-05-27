@@ -75,11 +75,11 @@ class SupportChatController extends GetxController {
         });
       } else {
         Get
-          ..snackbar('Error', 'No ticket provided')
+          ..snackbar('error'.tr, 'no_ticket_provided'.tr)
           ..back<void>();
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to initialize support chat');
+      Get.snackbar('error'.tr, 'failed_init_chat'.tr);
     } finally {
       isLoading.value = false;
       _scrollToBottom();
@@ -102,7 +102,7 @@ class SupportChatController extends GetxController {
         );
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to load messages');
+      Get.snackbar('error'.tr, 'failed_load_messages'.tr);
     }
   }
 
@@ -165,7 +165,7 @@ class SupportChatController extends GetxController {
         _scrollToBottom();
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to send message');
+      Get.snackbar('error'.tr, 'failed_send_message'.tr);
     } finally {
       isSending.value = false;
     }
@@ -196,8 +196,8 @@ class SupportChatController extends GetxController {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Select Attachment Source',
+              Text(
+                'select_attachment_source'.tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -213,8 +213,8 @@ class SupportChatController extends GetxController {
                   ),
                   child: const Icon(Icons.camera_alt, color: Colors.blue),
                 ),
-                title: const Text('Camera'),
-                subtitle: const Text('Take a photo'),
+                title: Text('camera'.tr),
+                subtitle: Text('take_a_photo'.tr),
                 onTap: () => Get.back(result: 'camera'),
               ),
               ListTile(
@@ -226,8 +226,8 @@ class SupportChatController extends GetxController {
                   ),
                   child: const Icon(Icons.photo_library, color: Colors.green),
                 ),
-                title: const Text('Gallery'),
-                subtitle: const Text('Choose from photos'),
+                title: Text('gallery'.tr),
+                subtitle: Text('choose_from_photos'.tr),
                 onTap: () => Get.back(result: 'gallery'),
               ),
               const SizedBox(height: 10),
@@ -260,7 +260,7 @@ class SupportChatController extends GetxController {
         await _processAndSendImage(image);
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to capture image');
+      Get.snackbar('error'.tr, 'failed_capture_image'.tr);
     }
   }
 
@@ -277,14 +277,14 @@ class SupportChatController extends GetxController {
         await _processAndSendImage(image);
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to select image');
+      Get.snackbar('error'.tr, 'failed_select_image'.tr);
     }
   }
 
   Future<void> _processAndSendImage(XFile image) async {
     final fileSize = await image.length();
     if (fileSize > maxFileSizeBytes) {
-      Get.snackbar('Error', 'Image size exceeds 5MB limit');
+      Get.snackbar('error'.tr, 'image_exceeds_limit'.tr);
       return;
     }
 
@@ -325,7 +325,7 @@ class SupportChatController extends GetxController {
         _scrollToBottom();
       }
     } on Exception {
-      Get.snackbar('Error', 'Failed to send image');
+      Get.snackbar('error'.tr, 'failed_send_image'.tr);
     } finally {
       isUploading.value = false;
       isSending.value = false;

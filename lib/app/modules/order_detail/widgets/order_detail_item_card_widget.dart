@@ -34,6 +34,24 @@ class OrderDetailItemCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              if (item.vendorInventory?.displayImageUrl.isNotEmpty == true)
+                Container(
+                  width: 48,
+                  height: 48,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        item.vendorInventory!.displayImageUrl,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               Expanded(
                 child: Text(
                   item.productNameSnapshot,

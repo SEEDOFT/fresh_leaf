@@ -67,6 +67,108 @@ class SearchView extends GetView<SearchController> {
                 );
               }),
             ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 36,
+              child: Obx(() {
+                final categories = controller.categories;
+                final selectedCatId = controller.selectedCategoryId.value;
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length + 1,
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return SearchFilterChipWidget(
+                        label: 'tag_all'.tr,
+                        isSelected: selectedCatId == null,
+                        onTap: () => controller.selectedCategoryId.value = null,
+                      );
+                    }
+                    final cat = categories[index - 1];
+                    return SearchFilterChipWidget(
+                      label: cat.name,
+                      isSelected: selectedCatId == cat.id,
+                      onTap: () => controller.selectedCategoryId.value = cat.id,
+                    );
+                  },
+                );
+              }),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  size: 18,
+                  color: scheme.primary,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'filter_by_province'.tr,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                ),
+                Obx(
+                  () => DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: controller.selectedProvince.value,
+                      icon: const Icon(Icons.arrow_drop_down, size: 20),
+                      dropdownColor: scheme.surfaceContainer,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: scheme.primary,
+                      ),
+                      onChanged: (value) {
+                        if (value != null) {
+                          controller.selectedProvince.value = value;
+                        }
+                      },
+                      items: [
+                        DropdownMenuItem(
+                          value: 'All',
+                          child: Text('all_provinces'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Phnom Penh',
+                          child: Text('phnom_penh'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Kandal',
+                          child: Text('kandal'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Siem Reap',
+                          child: Text('siem_reap'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Battambang',
+                          child: Text('battambang'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Kampot',
+                          child: Text('kampot'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Takeo',
+                          child: Text('takeo'.tr),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Kampong Cham',
+                          child: Text('kampong_cham'.tr),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 14),
             Obx(
               () => Text(

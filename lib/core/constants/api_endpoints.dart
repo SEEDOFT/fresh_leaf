@@ -18,6 +18,7 @@ final class ApiEndpoints {
   static const String addresses = '/addresses';
   static const String address = '/addresses/{id}';
   static const String wallets = '/wallets';
+  static const String walletTransactions = '/wallet-transactions';
   // Categories
   static const String categories = '/categories';
   static const String categoryBySlug = '/categories/{slug}';

@@ -20,7 +20,7 @@ class PinSecurityService {
     final pinController = TextEditingController();
     final result = await Get.dialog<bool>(
       AlertDialog(
-        title: const Text('PIN Verification'),
+        title: Text('pin_verification'.tr),
         content: TextField(
           controller: pinController,
           keyboardType: TextInputType.number,
@@ -29,16 +29,16 @@ class PinSecurityService {
             LengthLimitingTextInputFormatter(6),
           ],
           obscureText: true,
-          decoration: const InputDecoration(hintText: 'Enter PIN'),
+          decoration: InputDecoration(hintText: 'enter_pin'.tr),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr),
           ),
           ElevatedButton(
             onPressed: () => Get.back(result: true),
-            child: const Text('Verify'),
+            child: Text('verify'.tr),
           ),
         ],
       ),
@@ -49,7 +49,7 @@ class PinSecurityService {
 
     if (result != true) return false;
     if (inputPin.isEmpty) {
-      Get.snackbar('Invalid PIN', 'Please enter your PIN.');
+      Get.snackbar('invalid_pin'.tr, 'enter_your_pin'.tr);
       return false;
     }
 
@@ -65,28 +65,28 @@ class PinSecurityService {
         return true;
       }
 
-      Get.snackbar('Invalid PIN', 'The PIN you entered is incorrect.');
+      Get.snackbar('invalid_pin'.tr, 'incorrect_pin'.tr);
       return false;
     } on DioException catch (e) {
       final statusCode = e.response?.statusCode;
       final message = parseApiErrorMessage(
         e,
-        fallback: 'Unable to verify PIN right now',
+        fallback: 'unable_verify_pin'.tr,
       );
 
       if (statusCode == 422 && message.toLowerCase().contains('not set')) {
         await storage.savePinOrderVerification(enabled: false);
         Get.snackbar(
-          'PIN not set',
-          'Please set up your PIN in Profile > PIN Security.',
+          'pin_not_set'.tr,
+          'setup_pin_instruction'.tr,
         );
         return true;
       }
 
-      Get.snackbar('Invalid PIN', message);
+      Get.snackbar('invalid_pin'.tr, message);
       return false;
     } on Exception {
-      Get.snackbar('Invalid PIN', 'Unable to verify PIN right now');
+      Get.snackbar('invalid_pin'.tr, 'unable_verify_pin'.tr);
       return false;
     }
   }

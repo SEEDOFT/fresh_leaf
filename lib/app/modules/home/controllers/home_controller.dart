@@ -85,13 +85,13 @@ class HomeController extends GetxController {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        Get.snackbar('Location', 'Please turn on location service.');
+        Get.snackbar('location'.tr, 'enable_location_service'.tr);
         return;
       }
 
       final hasPermission = await PermissionService.requestLocation();
       if (!hasPermission) {
-        Get.snackbar('Location', 'Location permission is required.');
+        Get.snackbar('location'.tr, 'location_permission_required'.tr);
         return;
       }
 
@@ -113,9 +113,9 @@ class HomeController extends GetxController {
         locationRegion.value = result.region ?? '';
       }
     } on dio.DioException {
-      Get.snackbar('Location', 'Unable to load current location.');
+      Get.snackbar('location'.tr, 'unable_load_current_location'.tr);
     } on Exception {
-      Get.snackbar('Location', 'Unable to detect your current location.');
+      Get.snackbar('location'.tr, 'unable_detect_current_location'.tr);
     } finally {
       isResolvingLocation.value = false;
     }

@@ -111,7 +111,7 @@ class ProfileHelpArticleCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Need more help? Contact support.',
+                  'need_more_help'.tr,
                   style: TextStyle(
                     color: scheme.onSurfaceVariant,
                     fontSize: 12.5,

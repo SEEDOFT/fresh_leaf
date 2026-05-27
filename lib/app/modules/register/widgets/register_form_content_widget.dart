@@ -148,7 +148,7 @@ class RegisterFormContent extends StatelessWidget {
                   Expanded(
                     child: AppTextField(
                       label: 'first_name'.tr,
-                      hintText: 'Jane',
+                      hintText: 'first_name_hint'.tr,
                       controller: controller.firstNameController,
                     ),
                   ),
@@ -156,7 +156,7 @@ class RegisterFormContent extends StatelessWidget {
                   Expanded(
                     child: AppTextField(
                       label: 'last_name'.tr,
-                      hintText: 'Doe',
+                      hintText: 'last_name_hint'.tr,
                       controller: controller.lastNameController,
                     ),
                   ),
@@ -165,7 +165,7 @@ class RegisterFormContent extends StatelessWidget {
               SizedBox(height: fieldGap),
               AppTextField(
                 label: 'phone_number'.tr,
-                hintText: '012 345 678',
+                hintText: 'phone_hint'.tr,
                 controller: controller.phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [

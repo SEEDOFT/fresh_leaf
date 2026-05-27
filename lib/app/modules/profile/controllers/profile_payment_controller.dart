@@ -28,8 +28,7 @@ class ProfilePaymentController extends GetxController {
     super.onInit();
     _bindArgs();
     if (Get.isRegistered<ProfileController>()) {
-      final cached = Get.find<ProfileController>()
-          .paymentMethods
+      final cached = Get.find<ProfileController>().paymentMethods
           .where(_isAllowedType)
           .toList();
       methods.assignAll(cached);

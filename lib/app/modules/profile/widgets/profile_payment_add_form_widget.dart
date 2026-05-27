@@ -123,7 +123,7 @@ class ProfilePaymentAddForm extends StatelessWidget {
                           Expanded(
                             child: AppTextField(
                               label: 'expiry'.tr,
-                              hintText: 'MM/YY',
+                              hintText: 'expiry_hint'.tr,
                               controller: controller.expiryController,
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.next,

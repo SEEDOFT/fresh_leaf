@@ -16,7 +16,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
 
     return Scaffold(
       backgroundColor: scaffoldBg,
-      appBar: const CustomAppBar(title: 'Notification'),
+      appBar: CustomAppBar(title: 'notification_title'.tr),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         child: Column(
@@ -66,8 +66,8 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
                 ),
               ),
               icon: const Icon(Icons.check_rounded),
-              label: const Text(
-                'Got it',
+              label: Text(
+                'got_it'.tr,
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
@@ -94,7 +94,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
     }
 
     return AppBadge(
-      label: item.typeNameEn ?? item.typeCode ?? 'Notification',
+      label: item.typeNameEn ?? item.typeCode ?? 'notification_title'.tr,
       icon: icon,
       backgroundColor: color.withValues(alpha: 0.16),
       foregroundColor: color,
@@ -104,9 +104,12 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
   String _formatTimeAgo(DateTime? date) {
     if (date == null) return '';
     final diff = DateTime.now().difference(date);
-    if (diff.inDays > 0) return '${diff.inDays}d ago';
-    if (diff.inHours > 0) return '${diff.inHours}h ago';
-    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
-    return 'Just now';
+    if (diff.inDays > 0)
+      return 'days_ago'.trParams({'count': '${diff.inDays}'});
+    if (diff.inHours > 0)
+      return 'hours_ago'.trParams({'count': '${diff.inHours}'});
+    if (diff.inMinutes > 0)
+      return 'minutes_ago'.trParams({'count': '${diff.inMinutes}'});
+    return 'just_now'.tr;
   }
 }

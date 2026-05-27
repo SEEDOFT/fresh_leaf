@@ -21,7 +21,7 @@ class SupportChatView extends GetView<SupportChatController> {
       child: AppScaffold(
         scrollable: false,
         padding: EdgeInsets.zero,
-        appBar: const CustomAppBar(title: 'Customer Support'),
+        appBar: CustomAppBar(title: 'customer_support'.tr),
         body: ColoredBox(
           color: isDark ? scheme.surface : const Color(0xFFE5DDD5),
           child: Column(
@@ -61,7 +61,7 @@ class SupportChatView extends GetView<SupportChatController> {
                               ),
                               const SizedBox(height: 24),
                               Text(
-                                'Welcome to Support',
+                                'welcome_to_support'.tr,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -70,9 +70,7 @@ class SupportChatView extends GetView<SupportChatController> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                'How can we help you today? Send us a '
-                                'message and our team will get back to '
-                                'you as soon as possible.',
+                                'support_chat_empty_subtitle'.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 15,

@@ -58,10 +58,10 @@ class OrderDetailController extends GetxController {
     isUpdating.value = true;
     final success = await _orderService.cancelOrder(order.value!.id);
     if (success) {
-      Get.snackbar('Success', 'Order cancelled successfully');
+      Get.snackbar('success'.tr, 'order_cancel_success'.tr);
       await reloadOrder();
     } else {
-      Get.snackbar('Error', 'Failed to cancel order');
+      Get.snackbar('error'.tr, 'failed_cancel_order'.tr);
     }
     isUpdating.value = false;
   }
@@ -72,10 +72,10 @@ class OrderDetailController extends GetxController {
     isUpdating.value = true;
     final success = await _orderService.confirmReceipt(order.value!.id);
     if (success) {
-      Get.snackbar('Success', 'Order receipt confirmed');
+      Get.snackbar('success'.tr, 'order_receipt_confirmed'.tr);
       await reloadOrder();
     } else {
-      Get.snackbar('Error', 'Failed to confirm receipt');
+      Get.snackbar('error'.tr, 'failed_confirm_receipt'.tr);
     }
     isUpdating.value = false;
   }

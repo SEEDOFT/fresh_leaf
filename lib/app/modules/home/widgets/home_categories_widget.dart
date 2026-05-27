@@ -1,4 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter/material.dart' hide SearchController;
+import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/app_sizes.dart';
 import 'package:fresh_leaf/core/models/product_category.dart';
@@ -56,37 +59,46 @@ class HomeCategoriesWidget extends StatelessWidget {
             separatorBuilder: (_, _) => SizedBox(width: AppSizes.p12),
             itemBuilder: (context, index) {
               final cat = categories[index];
-              return Container(
-                width: AppSizes.categoryCardWidth,
-                decoration: BoxDecoration(
-                  color: scheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(AppSizes.radius24),
-                ),
-                padding: EdgeInsets.symmetric(
-                  vertical: AppSizes.p12,
-                  horizontal: AppSizes.p8,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      _iconFor(cat.icon),
-                      color: scheme.onSurface,
-                    ),
-                    SizedBox(height: AppSizes.p8),
-                    Text(
-                      cat.name,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: AppSizes.s11,
-                        fontWeight: FontWeight.w600,
+              return GestureDetector(
+                onTap: () {
+                  final searchController = Get.find<SearchController>();
+                  searchController.selectedCategoryId.value = cat.id;
+                  if (Get.isRegistered<DashboardController>()) {
+                    Get.find<DashboardController>().currentIndex = 1;
+                  }
+                },
+                child: Container(
+                  width: AppSizes.categoryCardWidth,
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(AppSizes.radius24),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: AppSizes.p12,
+                    horizontal: AppSizes.p8,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _iconFor(cat.icon),
                         color: scheme.onSurface,
-                        height: 1.1,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: AppSizes.p8),
+                      Text(
+                        cat.name,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: AppSizes.s11,
+                          fontWeight: FontWeight.w600,
+                          color: scheme.onSurface,
+                          height: 1.1,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

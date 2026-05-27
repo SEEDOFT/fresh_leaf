@@ -95,7 +95,7 @@ class LoginFormContent extends StatelessWidget {
                         FilteringTextInputFormatter.digitsOnly,
                         PhoneInputFormatter(),
                       ],
-                      hintText: '012 345 678',
+                      hintText: 'phone_hint'.tr,
                       prefixIcon: const AppPhonePrefix(),
                     ),
                     SizedBox(height: 28.scaled),

@@ -28,7 +28,7 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     if (phoneController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar('Error', 'Please fill in all fields');
+      Get.snackbar('error'.tr, 'fill_all_fields'.tr);
       return;
     }
 
@@ -38,7 +38,7 @@ class LoginController extends GetxController {
         phoneController.text,
       );
       if (normalizedPhone.isEmpty) {
-        Get.snackbar('Error', 'Please enter a valid phone number');
+        Get.snackbar('error'.tr, 'enter_valid_phone'.tr);
         return;
       }
 
@@ -58,7 +58,7 @@ class LoginController extends GetxController {
         final dataMap = apiResponse.data;
         final token = _extractAccessToken(dataMap);
         if (token.isEmpty) {
-          Get.snackbar('Error', 'Login succeeded but token was missing');
+          Get.snackbar('error'.tr, 'token_missing'.tr);
           return;
         }
 
@@ -73,23 +73,26 @@ class LoginController extends GetxController {
       } else {
         final errorMessage = apiResponse.status.message.isNotEmpty
             ? apiResponse.status.message
-            : 'Unknown error';
+            : 'unknown_error'.tr;
         Get.snackbar(
-          'Error',
-          'Login failed: $errorMessage',
+          'error'.tr,
+          'login_failed_message'.trParams({'message': errorMessage}),
         );
       }
     } on DioException catch (e) {
       final message = parseApiErrorMessage(e);
       Get.snackbar(
-        'Error',
-        'Login failed: $message',
+        'error'.tr,
+        'login_failed_message'.trParams({'message': message}),
       );
     } on FormatException catch (e) {
       final message = parseApiErrorMessage(e);
-      Get.snackbar('Error', 'Login failed: $message');
+      Get.snackbar(
+        'error'.tr,
+        'login_failed_message'.trParams({'message': message}),
+      );
     } on Exception {
-      Get.snackbar('Error', 'Login failed: Unexpected error');
+      Get.snackbar('error'.tr, 'unexpected_error'.tr);
     } finally {
       isLoading.value = false;
     }

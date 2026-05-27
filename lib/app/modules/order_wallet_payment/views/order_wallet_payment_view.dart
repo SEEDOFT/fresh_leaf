@@ -102,8 +102,8 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                             opacity: hasEnough ? 1.0 : 0.5,
                             child: ListTile(
                               onTap: hasEnough
-                                  ? () => controller
-                                      .updateSelectedWallet(wallet)
+                                  ? () =>
+                                        controller.updateSelectedWallet(wallet)
                                   : null,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,

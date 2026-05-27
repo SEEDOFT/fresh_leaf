@@ -24,6 +24,15 @@ class VendorInventory {
     this.vendorPhone,
     this.vendorEmail,
     this.vendorAddress,
+    this.vendorBusinessName,
+    this.vendorShopDescription,
+    this.vendorStoreFrontImage,
+    this.vendorProvince,
+    this.vendorOpeningTime,
+    this.vendorClosingTime,
+    this.vendorIsOpen = false,
+    this.vendorIsVerified = false,
+    this.vendorProductCount = 0,
     this.statusId,
     this.statusName,
     this.currencyId,
@@ -67,6 +76,29 @@ class VendorInventory {
           (map['vendor'] as Map<String, dynamic>?)?['email'] as String?,
       vendorAddress:
           (map['vendor'] as Map<String, dynamic>?)?['address'] as String?,
+      vendorBusinessName:
+          (map['vendor'] as Map<String, dynamic>?)?['business_name'] as String?,
+      vendorShopDescription:
+          (map['vendor'] as Map<String, dynamic>?)?['shop_description']
+              as String?,
+      vendorStoreFrontImage:
+          (map['vendor'] as Map<String, dynamic>?)?['store_front_image']
+              as String?,
+      vendorProvince:
+          (map['vendor'] as Map<String, dynamic>?)?['province'] as String?,
+      vendorOpeningTime:
+          (map['vendor'] as Map<String, dynamic>?)?['opening_time'] as String?,
+      vendorClosingTime:
+          (map['vendor'] as Map<String, dynamic>?)?['closing_time'] as String?,
+      vendorIsOpen:
+          (map['vendor'] as Map<String, dynamic>?)?['is_open'] as bool? ??
+          false,
+      vendorIsVerified:
+          (map['vendor'] as Map<String, dynamic>?)?['is_verified'] as bool? ??
+          false,
+      vendorProductCount:
+          (map['vendor'] as Map<String, dynamic>?)?['product_count'] as int? ??
+          0,
       statusId: (map['status'] as Map<String, dynamic>?)?['id'] as int?,
       statusName: (map['status'] as Map<String, dynamic>?)?['name'] as String?,
       currencyId: (map['currency'] as Map<String, dynamic>?)?['id'] as int?,
@@ -107,6 +139,15 @@ class VendorInventory {
   final String? vendorPhone;
   final String? vendorEmail;
   final String? vendorAddress;
+  final String? vendorBusinessName;
+  final String? vendorShopDescription;
+  final String? vendorStoreFrontImage;
+  final String? vendorProvince;
+  final String? vendorOpeningTime;
+  final String? vendorClosingTime;
+  final bool vendorIsOpen;
+  final bool vendorIsVerified;
+  final int vendorProductCount;
   final int? statusId;
   final String? statusName;
   final int? currencyId;

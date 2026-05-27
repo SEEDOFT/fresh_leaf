@@ -5,10 +5,11 @@ import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
+import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ProductDetailController extends GetxController {
-  late final VendorInventory product;
+  late VendorInventory product;
   final WishlistController wishlistController = Get.find<WishlistController>();
 
   final RxDouble quantity = 1.0.obs;
@@ -67,6 +68,18 @@ class ProductDetailController extends GetxController {
     product = args is VendorInventory
         ? args
         : VendorInventory.fromMap(args as Map<String, dynamic>? ?? {});
+    unawaited(_preloadProduct());
+  }
+
+  Future<void> _preloadProduct() async {
+    if (product.id == 0) return;
+    try {
+      final updated = await Get.find<ProductService>().getProduct(product.id);
+      if (updated != null) {
+        product = updated;
+        update();
+      }
+    } on Exception catch (_) {}
   }
 
   void increment() => quantity.value++;

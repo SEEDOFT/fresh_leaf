@@ -11,96 +11,104 @@ class ProductDetailView extends GetView<ProductDetailController> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return AppScaffold(
-      appBar: CustomAppBar(
-        title: controller.title,
-        showCartButton: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.share_outlined, color: scheme.onSurface),
-            onPressed: controller.shareProduct,
-            tooltip: 'share_product'.tr,
-          ),
-          Obx(
-            () => IconButton(
-              icon: Icon(
-                controller.isFavorite
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_border_rounded,
-                color: controller.isFavorite ? scheme.error : scheme.onSurface,
-              ),
-              onPressed: controller.toggleWishlist,
-            ),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          HeroImageWidget(imageUrls: controller.allImages),
-          const SizedBox(height: 20),
-          TitleRowWidget(
+    return GetBuilder<ProductDetailController>(
+      builder: (controller) {
+        return AppScaffold(
+          appBar: CustomAppBar(
             title: controller.title,
-            origin: controller.origin,
-            total: controller.total,
-            controller: controller,
+            showCartButton: true,
+            actions: [
+              IconButton(
+                icon: Icon(Icons.share_outlined, color: scheme.onSurface),
+                onPressed: controller.shareProduct,
+                tooltip: 'share_product'.tr,
+              ),
+              Obx(
+                () => IconButton(
+                  icon: Icon(
+                    controller.isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    color: controller.isFavorite
+                        ? scheme.error
+                        : scheme.onSurface,
+                  ),
+                  onPressed: controller.toggleWishlist,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            controller.subtitle.tr,
-            style: TextStyle(
-              color: scheme.onSurfaceVariant,
-              fontSize: 14,
-            ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HeroImageWidget(imageUrls: controller.allImages),
+              const SizedBox(height: 20),
+              TitleRowWidget(
+                title: controller.title,
+                origin: controller.origin,
+                total: controller.total,
+                controller: controller,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                controller.subtitle.tr,
+                style: TextStyle(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TagsWidget(tags: controller.tags),
+              const SizedBox(height: 16),
+              InfoTilesWidget(
+                harvest: controller.harvest,
+                origin: controller.origin,
+                storage: controller.storage,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'about_this_item'.tr,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: scheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                controller.description.tr,
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.6,
+                  color: scheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ProductDetailVendorCard(product: controller.product),
+              const SizedBox(height: 24),
+              Obx(
+                () => QuantityRowWidget(
+                  quantity: controller.quantity.value,
+                  unitSymbol: controller.product.unitSymbol,
+                  onIncrement: controller.increment,
+                  onDecrement: controller.decrement,
+                  onChanged: (val) => controller.updateQuantity(val.toDouble()),
+                  allowDecimal: controller.allowDecimal,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Obx(
+                () => AddButtonWidget(
+                  total: controller.total,
+                  onPressed: controller.addToCart,
+                  controller: controller,
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
           ),
-          const SizedBox(height: 12),
-          TagsWidget(tags: controller.tags),
-          const SizedBox(height: 16),
-          InfoTilesWidget(
-            harvest: controller.harvest,
-            origin: controller.origin,
-            storage: controller.storage,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'about_this_item'.tr,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: scheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            controller.description.tr,
-            style: TextStyle(
-              fontSize: 14,
-              height: 1.6,
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Obx(
-            () => QuantityRowWidget(
-              quantity: controller.quantity.value,
-              unitSymbol: controller.product.unitSymbol,
-              onIncrement: controller.increment,
-              onDecrement: controller.decrement,
-              onChanged: (val) => controller.updateQuantity(val.toDouble()),
-              allowDecimal: controller.allowDecimal,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Obx(
-            () => AddButtonWidget(
-              total: controller.total,
-              onPressed: controller.addToCart,
-              controller: controller,
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
+        );
+      },
     );
   }
 }

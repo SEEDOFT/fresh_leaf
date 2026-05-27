@@ -33,7 +33,7 @@ class ProfileHelpContactCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Contact $companyName',
+            'contact_title'.trParams({'name': companyName}),
             style: TextStyle(
               color: scheme.onSurface,
               fontSize: 15,
@@ -43,7 +43,7 @@ class ProfileHelpContactCard extends StatelessWidget {
           const SizedBox(height: 10),
           _ContactRow(
             icon: Icons.email_outlined,
-            title: 'Email',
+            title: 'email'.tr,
             value: supportEmail,
             onTap: () => _copyValue(
               label: 'email',
@@ -53,7 +53,7 @@ class ProfileHelpContactCard extends StatelessWidget {
           const SizedBox(height: 8),
           _ContactRow(
             icon: Icons.phone_outlined,
-            title: 'Phone',
+            title: 'phone'.tr,
             value: supportPhone,
             onTap: () => _copyValue(
               label: 'phone',
@@ -63,7 +63,7 @@ class ProfileHelpContactCard extends StatelessWidget {
           const SizedBox(height: 8),
           _ContactRow(
             icon: Icons.location_on_outlined,
-            title: 'Address',
+            title: 'address'.tr,
             value: officeAddress,
           ),
         ],
@@ -77,8 +77,8 @@ class ProfileHelpContactCard extends StatelessWidget {
   }) async {
     await Clipboard.setData(ClipboardData(text: value));
     Get.snackbar(
-      'Copied',
-      '$label copied to clipboard',
+      'copied'.tr,
+      'copied_label'.trParams({'label': label}),
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 1),
     );

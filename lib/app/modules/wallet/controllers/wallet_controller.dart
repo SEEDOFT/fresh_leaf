@@ -25,6 +25,27 @@ class WalletTransaction {
   final String status;
 }
 
+  factory WalletTransaction.fromJson(Map<String, dynamic> json) {
+    final typeMap = json['type'] as Map<String, dynamic>?;
+    final typeId = typeMap?['id'] as int?;
+    final typeName = typeMap?['name']?.toString() ?? 'Transaction';
+
+    final isCredit = typeId == 1 || typeId == 4; // 1=Deposit, 4=Refund
+
+    final statusMap = json['status'] as Map<String, dynamic>?;
+    final statusName = statusMap?['name']?.toString() ?? 'success'.tr;
+
+    return WalletTransaction(
+      id: json['id'].toString(),
+      title: json['description']?.toString() ?? typeName,
+      amount: double.tryParse(json['amount'].toString()) ?? 0.0,
+      date: DateTime.tryParse(json['created_at'].toString())?.toLocal() ?? DateTime.now(),
+      isCredit: isCredit,
+      status: statusName,
+    );
+  }
+}
+
 class WalletController extends GetxController {
   static const List<String> supportedCurrencies = ['KHR', 'USD'];
 
@@ -37,7 +58,6 @@ class WalletController extends GetxController {
   final RxDouble usdBalance = 0.0.obs;
 
   final RxList<WalletTransaction> khrTransactions = <WalletTransaction>[].obs;
-
   final RxList<WalletTransaction> usdTransactions = <WalletTransaction>[].obs;
 
   @override
@@ -130,6 +150,31 @@ class WalletController extends GetxController {
     }
   }
 
+  Future<void> fetchTransactions(int walletId, String currencyCode) async {
+    try {
+      final apiClient = Get.find<ApiClient>();
+      final response = await apiClient.getRequest(
+        ApiEndpoints.walletTransactions,
+        queryParameters: {'wallet_id': walletId},
+      );
+
+      final data = response.data['data'];
+      if (data != null && data is List) {
+        final transactions = data
+            .map((e) => WalletTransaction.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        if (currencyCode == 'USD') {
+          usdTransactions.value = transactions;
+        } else if (currencyCode == 'KHR') {
+          khrTransactions.value = transactions;
+        }
+      }
+    } catch (_) {
+      // Silently ignore transaction fetch errors
+    }
+  }
+
   void applyWallets(List<Wallet> wallets) {
     var nextUsdBalance = 0.0;
     var nextKhrBalance = 0.0;
@@ -141,17 +186,15 @@ class WalletController extends GetxController {
       if (currencyCode == 'USD') {
         nextUsdBalance = wallet.balance;
         hasUsd = true;
+        fetchTransactions(wallet.id, 'USD');
       } else if (currencyCode == 'KHR') {
         nextKhrBalance = wallet.balance;
         hasKhr = true;
+        fetchTransactions(wallet.id, 'KHR');
       }
     }
 
     usdBalance.value = hasUsd ? nextUsdBalance : 0.0;
     khrBalance.value = hasKhr ? nextKhrBalance : 0.0;
-
-    // Transactions stay empty until we add a dedicated history API.
-    usdTransactions.clear();
-    khrTransactions.clear();
   }
 }
