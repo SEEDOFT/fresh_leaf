@@ -13,40 +13,55 @@ class WalletTransaction {
     required this.title,
     required this.amount,
     required this.date,
-    required this.isCredit,
-    String? status,
-  }) : status = status ?? 'success'.tr;
-
-  final String id;
-  final String title;
-  final double amount;
-  final DateTime date;
-  final bool isCredit;
-  final String status;
+    required this.typeId,
+    required this.statusId,
+  });
 
   factory WalletTransaction.fromJson(Map<String, dynamic> json) {
     final typeMap = json['type'] as Map<String, dynamic>?;
-    final typeId = typeMap?['id'] as int?;
+    final typeId = typeMap?['id'] as int? ?? 0;
     final typeName = typeMap?['name']?.toString() ?? 'Transaction';
 
-    final isCredit = typeId == 1 || typeId == 4; // 1=Deposit, 4=Refund
-
     final statusMap = json['status'] as Map<String, dynamic>?;
-    final statusName = statusMap?['name']?.toString() ?? 'success'.tr;
+    final statusId = statusMap?['id'] as int? ?? 2; // 2 = Completed
 
     return WalletTransaction(
       id: json['id'].toString(),
       title: json['description']?.toString() ?? typeName,
       amount: double.tryParse(json['amount'].toString()) ?? 0.0,
-      date: DateTime.tryParse(json['created_at'].toString())?.toLocal() ?? DateTime.now(),
-      isCredit: isCredit,
-      status: statusName,
+      date:
+          DateTime.tryParse(json['created_at'].toString())?.toLocal() ??
+          DateTime.now(),
+      typeId: typeId,
+      statusId: statusId,
     );
+  }
+
+  final String id;
+  final String title;
+  final double amount;
+  final DateTime date;
+  final int typeId;
+  final int statusId;
+
+  // 1=Deposit, 2=Withdrawal, 3=Payment, 4=Refund
+  bool get isCredit => typeId == 1 || typeId == 4;
+
+  // 1=Pending, 2=Completed, 3=Failed, 4=Cancelled
+  String get status {
+    return switch (statusId) {
+      1 => 'pending'.tr,
+      2 => 'success'.tr,
+      3 => 'failed'.tr,
+      4 => 'cancelled'.tr,
+      _ => 'success'.tr,
+    };
   }
 }
 
 class WalletController extends GetxController {
   static const List<String> supportedCurrencies = ['KHR', 'USD'];
+  final ApiClient _apiClient = Get.find<ApiClient>();
 
   final RxString selectedCurrency = 'KHR'.obs;
   final RxBool isLoading = false.obs;
@@ -60,10 +75,10 @@ class WalletController extends GetxController {
   final RxList<WalletTransaction> usdTransactions = <WalletTransaction>[].obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     if (Get.isRegistered<ProfileController>()) {
-      applyWallets(Get.find<ProfileController>().wallets);
+      await applyWallets(Get.find<ProfileController>().wallets);
     }
   }
 
@@ -110,8 +125,7 @@ class WalletController extends GetxController {
       isLoading.value = true;
     }
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.userWallets);
+      final response = await _apiClient.getRequest(ApiEndpoints.userWallets);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         Wallet.listFromDynamic,
@@ -129,7 +143,7 @@ class WalletController extends GetxController {
         return;
       }
 
-      applyWallets(apiResponse.data);
+      await applyWallets(apiResponse.data);
     } on DioException catch (error) {
       if (showError) {
         Get.snackbar(
@@ -151,13 +165,12 @@ class WalletController extends GetxController {
 
   Future<void> fetchTransactions(int walletId, String currencyCode) async {
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.walletTransactions,
         queryParameters: {'wallet_id': walletId},
       );
 
-      final responseData = response.data as Map<String, dynamic>?;
+      final responseData = response.data;
       final data = responseData?['data'];
       if (data != null && data is List) {
         final transactions = data
@@ -170,12 +183,12 @@ class WalletController extends GetxController {
           khrTransactions.value = transactions;
         }
       }
-    } catch (_) {
+    } on Exception {
       // Silently ignore transaction fetch errors
     }
   }
 
-  void applyWallets(List<Wallet> wallets) {
+  Future<void> applyWallets(List<Wallet> wallets) async {
     var nextUsdBalance = 0.0;
     var nextKhrBalance = 0.0;
     var hasUsd = false;
@@ -186,11 +199,11 @@ class WalletController extends GetxController {
       if (currencyCode == 'USD') {
         nextUsdBalance = wallet.balance;
         hasUsd = true;
-        fetchTransactions(wallet.id, 'USD');
+        await fetchTransactions(wallet.id, 'USD');
       } else if (currencyCode == 'KHR') {
         nextKhrBalance = wallet.balance;
         hasKhr = true;
-        fetchTransactions(wallet.id, 'KHR');
+        await fetchTransactions(wallet.id, 'KHR');
       }
     }
 
