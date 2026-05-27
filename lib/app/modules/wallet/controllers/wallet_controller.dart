@@ -23,7 +23,6 @@ class WalletTransaction {
   final DateTime date;
   final bool isCredit;
   final String status;
-}
 
   factory WalletTransaction.fromJson(Map<String, dynamic> json) {
     final typeMap = json['type'] as Map<String, dynamic>?;
@@ -158,7 +157,8 @@ class WalletController extends GetxController {
         queryParameters: {'wallet_id': walletId},
       );
 
-      final data = response.data['data'];
+      final responseData = response.data as Map<String, dynamic>?;
+      final data = responseData?['data'];
       if (data != null && data is List) {
         final transactions = data
             .map((e) => WalletTransaction.fromJson(e as Map<String, dynamic>))

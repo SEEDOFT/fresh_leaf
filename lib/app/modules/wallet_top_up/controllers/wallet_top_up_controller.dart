@@ -192,7 +192,7 @@ class WalletTopUpController extends GetxController {
     if (value is Map<String, dynamic>) return PaymentMethod.fromMap(value);
     if (value is Map) {
       final mapped = value.map<String, dynamic>(
-        (key, dynamic item) => MapEntry<String, dynamic>(key.toString(), item),
+        (key, item) => MapEntry<String, dynamic>(key.toString(), item),
       );
       return PaymentMethod.fromMap(mapped);
     }

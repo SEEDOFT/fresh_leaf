@@ -615,7 +615,8 @@ const Map<String, String> translationsKm = {
   'enable_location_service': 'សូមបើកសេវាកម្មទីតាំង។',
   'location_permission_required': 'ត្រូវការការអនុញ្ញាតទីតាំង។',
   'unable_load_current_location': 'មិនអាចផ្ទុកទីតាំងបច្ចុប្បន្នបានទេ។',
-  'unable_detect_current_location': 'មិនអាចកំណត់ទីតាំងបច្ចុប្បន្នរបស់អ្នកបានទេ។',
+  'unable_detect_current_location':
+      'មិនអាចកំណត់ទីតាំងបច្ចុប្បន្នរបស់អ្នកបានទេ។',
 
   // Orders
   'order_cancel_success': 'បានបោះបង់ការបញ្ជាទិញដោយជោគជ័យ',
@@ -682,7 +683,8 @@ const Map<String, String> translationsKm = {
   'enter_your_pin': 'សូមបញ្ចូល PIN របស់អ្នក។',
   'incorrect_pin': 'PIN ដែលអ្នកបានបញ្ចូលមិនត្រឹមត្រូវទេ។',
   'unable_verify_pin': 'មិនអាចផ្ទៀងផ្ទាត់ PIN ឥឡូវនេះទេ',
-  'setup_pin_instruction': 'សូមរៀបចំ PIN របស់អ្នកនៅក្នុង ប្រវត្តិរូប > សុវត្ថិភាព PIN ។',
+  'setup_pin_instruction':
+      'សូមរៀបចំ PIN របស់អ្នកនៅក្នុង ប្រវត្តិរូប > សុវត្ថិភាព PIN ។',
 
   // Profile Help
   'contact_title': 'ទំនាក់ទំនង @name',

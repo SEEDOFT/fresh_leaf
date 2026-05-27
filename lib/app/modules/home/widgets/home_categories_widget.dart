@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';

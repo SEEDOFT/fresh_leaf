@@ -68,7 +68,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
               icon: const Icon(Icons.check_rounded),
               label: Text(
                 'got_it'.tr,
-                style: TextStyle(fontWeight: FontWeight.w700),
+                style: const TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
           ],
@@ -104,12 +104,15 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
   String _formatTimeAgo(DateTime? date) {
     if (date == null) return '';
     final diff = DateTime.now().difference(date);
-    if (diff.inDays > 0)
+    if (diff.inDays > 0) {
       return 'days_ago'.trParams({'count': '${diff.inDays}'});
-    if (diff.inHours > 0)
+    }
+    if (diff.inHours > 0) {
       return 'hours_ago'.trParams({'count': '${diff.inHours}'});
-    if (diff.inMinutes > 0)
+    }
+    if (diff.inMinutes > 0) {
       return 'minutes_ago'.trParams({'count': '${diff.inMinutes}'});
+    }
     return 'just_now'.tr;
   }
 }

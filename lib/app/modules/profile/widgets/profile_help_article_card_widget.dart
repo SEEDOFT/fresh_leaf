@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
+import 'package:get/get.dart';
 
 class ProfileHelpArticleCard extends StatelessWidget {
   const ProfileHelpArticleCard({required this.article, super.key});

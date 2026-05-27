@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/shared/widgets/app_empty_state.dart';
+import 'package:get/get.dart';
 
 class NotificationsEmptyState extends StatelessWidget {
   const NotificationsEmptyState({required this.scheme, super.key});
@@ -13,5 +14,4 @@ class NotificationsEmptyState extends StatelessWidget {
       subtitle: 'updates_placeholder'.tr,
     );
   }
-}
 }

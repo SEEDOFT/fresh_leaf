@@ -1,11 +1,12 @@
 import 'dart:async';
+
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
+import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
-import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ProductDetailController extends GetxController {

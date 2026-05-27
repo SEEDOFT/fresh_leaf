@@ -126,7 +126,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                     icon: const Icon(Icons.chat_outlined),
                     label: Text(
                       'start_new_conversation'.tr,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

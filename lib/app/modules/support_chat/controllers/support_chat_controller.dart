@@ -198,7 +198,7 @@ class SupportChatController extends GetxController {
               const SizedBox(height: 20),
               Text(
                 'select_attachment_source'.tr,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
