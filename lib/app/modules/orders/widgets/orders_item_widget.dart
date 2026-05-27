@@ -16,7 +16,7 @@ class OrderItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final ColorScheme scheme;
 
-  bool get _delivered => order.statusName == 'Delivered';
+  bool get _delivered => order.statusId == 4;
 
   @override
   Widget build(BuildContext context) {
@@ -66,17 +66,15 @@ class OrderItemWidget extends StatelessWidget {
                         bg: badgeBg,
                         textColor: badgeText,
                       ),
-                      if (order.paymentStatusName != null &&
-                          order.paymentStatusName!.isNotEmpty)
+                      if (order.paymentStatus.isNotEmpty)
                         _buildBadge(
-                          text: order.paymentStatusName!,
+                          text: order.paymentStatus,
                           bg: scheme.surfaceContainerHighest,
                           textColor: scheme.onSurfaceVariant,
                         ),
-                      if (order.orderTypeName != null &&
-                          order.orderTypeName!.isNotEmpty)
+                      if (order.orderType.isNotEmpty)
                         _buildBadge(
-                          text: order.orderTypeName!,
+                          text: order.orderType,
                           bg: scheme.surfaceContainerHighest,
                           textColor: scheme.onSurfaceVariant,
                         ),
@@ -241,14 +239,7 @@ class OrderItemWidget extends StatelessWidget {
   }
 
   String get _translatedStatus {
-    switch (order.statusName) {
-      case 'Delivered':
-        return 'delivered'.tr;
-      case 'Processing':
-        return 'processing'.tr;
-      default:
-        return order.statusName ?? 'unknown'.tr;
-    }
+    return order.status;
   }
 
   Widget _buildBadge({

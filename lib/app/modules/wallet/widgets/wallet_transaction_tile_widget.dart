@@ -101,7 +101,10 @@ class WalletTransactionTileWidget extends StatelessWidget {
                     1 => Colors.orange.shade700, // Pending
                     3 => scheme.error, // Failed
                     4 => scheme.secondary, // Cancelled
-                    _ => isCredit ? Colors.green.shade700 : scheme.secondary, // Completed
+                    _ =>
+                      isCredit
+                          ? Colors.green.shade700
+                          : scheme.secondary, // Completed
                   },
                   fontWeight: FontWeight.w600,
                 ),

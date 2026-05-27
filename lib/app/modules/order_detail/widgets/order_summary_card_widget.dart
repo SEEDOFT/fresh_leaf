@@ -18,7 +18,7 @@ class OrderSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final delivered = order.statusName == 'DELIVERED';
+    final delivered = order.statusId == 4; // 4 is DELIVERED
     final scheme = Theme.of(context).colorScheme;
     final statusBg = delivered
         ? scheme.primaryContainer.withValues(alpha: 0.6)
@@ -36,27 +36,19 @@ class OrderSummaryCard extends StatelessWidget {
                 runSpacing: 8,
                 children: [
                   _buildBadge(
-                    text: order.statusName == 'DELIVERED'
-                        ? 'delivered'.tr
-                        : order.statusName == 'PENDING'
-                        ? 'pending'.tr
-                        : order.statusName == 'PREPARING'
-                        ? 'processing'.tr
-                        : order.statusName ?? 'unknown'.tr,
+                    text: order.status,
                     bg: statusBg,
                     textColor: statusColor,
                   ),
-                  if (order.paymentStatusName != null &&
-                      order.paymentStatusName!.isNotEmpty)
+                  if (order.paymentStatusId != null)
                     _buildBadge(
-                      text: order.paymentStatusName!,
+                      text: order.paymentStatus,
                       bg: scheme.surfaceContainerHighest,
                       textColor: scheme.onSurfaceVariant,
                     ),
-                  if (order.orderTypeName != null &&
-                      order.orderTypeName!.isNotEmpty)
+                  if (order.orderTypeId != null)
                     _buildBadge(
-                      text: order.orderTypeName!,
+                      text: order.orderType,
                       bg: scheme.surfaceContainerHighest,
                       textColor: scheme.onSurfaceVariant,
                     ),

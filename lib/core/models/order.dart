@@ -1,5 +1,6 @@
 import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
+import 'package:get/get.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 
 class Order {
@@ -11,9 +12,9 @@ class Order {
     this.discountAmount,
     this.deliveryFee,
     this.taxAmount,
-    this.statusName,
-    this.paymentStatusName,
-    this.orderTypeName,
+    this.statusId,
+    this.paymentStatusId,
+    this.orderTypeId,
     this.deliveryDate,
     this.deliverySlot,
     this.notes,
@@ -42,14 +43,10 @@ class Order {
       ),
       deliveryFeeDisplay: MoneyDisplay.fromMap(map['delivery_fee_display']),
       taxAmountDisplay: MoneyDisplay.fromMap(map['tax_amount_display']),
-      statusName:
-          (map['status'] as Map<String, dynamic>?)?['translated_name']
-              as String?,
-      paymentStatusName:
-          (map['payment_status'] as Map<String, dynamic>?)?['translated_name']
-              as String?,
-      orderTypeName:
-          (map['type'] as Map<String, dynamic>?)?['translated_name'] as String?,
+      statusId: (map['status'] as Map<String, dynamic>?)?['id'] as int?,
+      paymentStatusId:
+          (map['payment_status'] as Map<String, dynamic>?)?['id'] as int?,
+      orderTypeId: (map['type'] as Map<String, dynamic>?)?['id'] as int?,
       deliveryDate: map['delivery_date'] != null
           ? DateTime.tryParse(map['delivery_date'].toString())
           : null,
@@ -73,9 +70,9 @@ class Order {
   final double? discountAmount;
   final double? deliveryFee;
   final double? taxAmount;
-  final String? statusName;
-  final String? paymentStatusName;
-  final String? orderTypeName;
+  final int? statusId;
+  final int? paymentStatusId;
+  final int? orderTypeId;
   final DateTime? deliveryDate;
   final String? deliverySlot;
   final String? notes;
@@ -86,6 +83,35 @@ class Order {
   final MoneyDisplay discountAmountDisplay;
   final MoneyDisplay deliveryFeeDisplay;
   final MoneyDisplay taxAmountDisplay;
+
+  String get status {
+    return switch (statusId) {
+      1 => 'order_pending'.tr,
+      2 => 'order_confirmed'.tr,
+      3 => 'order_preparing'.tr,
+      4 => 'order_delivered'.tr,
+      5 => 'order_cancelled'.tr,
+      6 => 'order_awaiting_payment'.tr,
+      _ => 'order_pending'.tr,
+    };
+  }
+
+  String get paymentStatus {
+    return switch (paymentStatusId) {
+      1 => 'payment_pending'.tr,
+      2 => 'payment_completed'.tr,
+      3 => 'payment_failed'.tr,
+      4 => 'payment_refunded'.tr,
+      _ => 'payment_pending'.tr,
+    };
+  }
+
+  String get orderType {
+    return switch (orderTypeId) {
+      1 => 'order_standard'.tr,
+      _ => 'order_standard'.tr,
+    };
+  }
 
   MoneyDisplay get resolvedTotalAmountDisplay {
     if (!totalAmountDisplay.isEmpty) return totalAmountDisplay;

@@ -146,7 +146,8 @@ class WalletTopUpController extends GetxController {
             title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
             amount: amount,
             date: DateTime.now(),
-            isCredit: true,
+            typeId: 1,
+            statusId: 2,
           ),
         );
       } else {
@@ -158,7 +159,8 @@ class WalletTopUpController extends GetxController {
             title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
             amount: amount,
             date: DateTime.now(),
-            isCredit: true,
+            typeId: 1,
+            statusId: 2,
           ),
         );
       }

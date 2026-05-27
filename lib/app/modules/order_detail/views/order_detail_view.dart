@@ -80,7 +80,8 @@ class OrderDetailView extends GetView<OrderDetailController> {
               borderRadius: 14,
               height: 50,
             ),
-            if (order.statusName == 'PENDING') ...[
+            if (order.statusId == 1) ...[
+              // 1 is PENDING
               const SizedBox(height: 12),
               PrimaryButton(
                 onPressed: controller.isUpdating.value
@@ -93,8 +94,9 @@ class OrderDetailView extends GetView<OrderDetailController> {
                 foregroundColor: scheme.onErrorContainer,
               ),
             ],
-            if (order.statusName == 'DELIVERED' ||
-                order.statusName == 'PREPARING') ...[
+            if (order.statusId == 4 || // 4 is DELIVERED
+                order.statusId == 3) ...[
+              // 3 is PREPARING
               const SizedBox(height: 12),
               PrimaryButton(
                 onPressed: controller.isUpdating.value

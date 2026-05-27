@@ -1,9 +1,10 @@
 import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:get/get.dart';
 
 class PaymentSession {
   const PaymentSession({
     required this.sessionId,
-    required this.status,
+    required this.statusId,
     this.redirectUrl,
     this.qrPayload,
     this.qrImageUrl,
@@ -15,7 +16,7 @@ class PaymentSession {
       sessionId: formatToString(map['session_id']).isNotEmpty
           ? formatToString(map['session_id'])
           : formatToString(map['id']),
-      status: formatToString(map['status']),
+      statusId: (map['status'] as Map<String, dynamic>?)?['id'] as int? ?? 1,
       redirectUrl: _toNullableString(map['redirect_url']),
       qrPayload: _toNullableString(map['qr_payload']),
       qrImageUrl: _toNullableString(map['qr_image_url']),
@@ -24,17 +25,27 @@ class PaymentSession {
   }
 
   final String sessionId;
-  final String status;
+  final int statusId;
   final String? redirectUrl;
   final String? qrPayload;
   final String? qrImageUrl;
   final DateTime? expiresAt;
 
-  bool get isPaid => status.toLowerCase() == 'paid';
+  bool get isPaid => statusId == 2;
+
+  String get status {
+    return switch (statusId) {
+      1 => 'payment_pending'.tr,
+      2 => 'payment_completed'.tr,
+      3 => 'payment_failed'.tr,
+      4 => 'payment_refunded'.tr,
+      _ => 'payment_pending'.tr,
+    };
+  }
 
   Map<String, dynamic> toMap() => {
     'session_id': sessionId,
-    'status': status,
+    'status_id': statusId,
     'redirect_url': redirectUrl,
     'qr_payload': qrPayload,
     'qr_image_url': qrImageUrl,

@@ -36,7 +36,16 @@ class OrdersController extends GetxController {
     final current = _selectedStatus.value;
     final list = current == 'All'
         ? List<Order>.from(orders)
-        : orders.where((order) => order.statusName == current).toList();
+        : orders.where((order) {
+            final filterId = switch (current) {
+              'Pending' => 1,
+              'Processing' => 3,
+              'Delivered' => 4,
+              'Cancelled' => 5,
+              _ => -1,
+            };
+            return order.statusId == filterId;
+          }).toList();
 
     switch (_selectedSort.value) {
       case OrderSortType.newest:
