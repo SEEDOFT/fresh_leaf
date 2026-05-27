@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -28,6 +29,9 @@ class ProfileAddressesController extends GetxController {
       mode = map['mode']?.toString() ?? 'view';
       returnOnSelect = map['return_on_select'] == true;
     }
+    if (Get.isRegistered<ProfileController>()) {
+      savedAddresses.assignAll(Get.find<ProfileController>().addresses);
+    }
   }
 
   @override
@@ -54,7 +58,9 @@ class ProfileAddressesController extends GetxController {
 
   Future<void> fetchSavedAddresses({bool showError = true}) async {
     if (isLoadingAddresses.value) return;
-    isLoadingAddresses.value = true;
+    if (savedAddresses.isEmpty) {
+      isLoadingAddresses.value = true;
+    }
 
     try {
       final response = await _apiClient.getRequest(ApiEndpoints.addresses);

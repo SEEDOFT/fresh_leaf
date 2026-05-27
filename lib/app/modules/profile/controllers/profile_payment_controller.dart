@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
@@ -26,6 +27,14 @@ class ProfilePaymentController extends GetxController {
   void onInit() {
     super.onInit();
     _bindArgs();
+    if (Get.isRegistered<ProfileController>()) {
+      final cached = Get.find<ProfileController>()
+          .paymentMethods
+          .where(_isAllowedType)
+          .toList();
+      methods.assignAll(cached);
+      _ensureSelection();
+    }
   }
 
   @override
@@ -46,7 +55,9 @@ class ProfilePaymentController extends GetxController {
 
   Future<void> fetchPaymentMethods({bool showError = true}) async {
     if (isLoading.value) return;
-    isLoading.value = true;
+    if (methods.isEmpty) {
+      isLoading.value = true;
+    }
     try {
       final response = await _apiClient.getRequest(
         ApiEndpoints.paymentMethods,

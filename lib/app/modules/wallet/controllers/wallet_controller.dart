@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
@@ -40,6 +41,14 @@ class WalletController extends GetxController {
   final RxList<WalletTransaction> usdTransactions = <WalletTransaction>[].obs;
 
   @override
+  void onInit() {
+    super.onInit();
+    if (Get.isRegistered<ProfileController>()) {
+      applyWallets(Get.find<ProfileController>().wallets);
+    }
+  }
+
+  @override
   Future<void> onReady() async {
     super.onReady();
     if (!Get.isRegistered<ApiClient>()) return;
@@ -78,7 +87,9 @@ class WalletController extends GetxController {
     if (isLoading.value) return;
     if (!Get.isRegistered<ApiClient>()) return;
 
-    isLoading.value = true;
+    if (khrBalance.value == 0.0 && usdBalance.value == 0.0) {
+      isLoading.value = true;
+    }
     try {
       final apiClient = Get.find<ApiClient>();
       final response = await apiClient.getRequest(ApiEndpoints.userWallets);

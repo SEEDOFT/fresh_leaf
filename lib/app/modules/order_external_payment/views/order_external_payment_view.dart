@@ -47,7 +47,7 @@ class OrderExternalPaymentView extends GetView<OrderExternalPaymentController> {
                     fontWeight: FontWeight.bold,
                     color: controller.remainingSeconds.value < 60
                         ? Colors.red
-                        : Colors.black,
+                        : Colors.white,
                   ),
                 ),
               ),
