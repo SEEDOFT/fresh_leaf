@@ -6,6 +6,7 @@ import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/modules/orders/controllers/orders_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';
+import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:get/get.dart';
 
 class DashboardBinding extends Bindings {
@@ -18,6 +19,9 @@ class DashboardBinding extends Bindings {
     _lazy(OrdersController.new);
     _lazy(ProfileController.new);
     _lazy(SearchController.new);
+    if (!Get.isRegistered<WalletController>()) {
+      Get.put(WalletController(), permanent: true);
+    }
     Get.put(CheckoutController());
   }
 

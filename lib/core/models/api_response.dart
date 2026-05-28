@@ -1,3 +1,4 @@
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 
 class ApiStatus {
@@ -70,6 +71,20 @@ class ApiResponse<T> {
     return ApiResponse<List<Map<String, dynamic>>>(
       status: _parseStatus(envelope),
       data: _toMapList(envelope['data']),
+    );
+  }
+
+  static ApiResponse<PaginatedResponse<T>> parsePaginated<T>(
+    dynamic responseData,
+    T Function(Map<String, dynamic>) itemParser,
+  ) {
+    final envelope = _toEnvelopeMap(responseData);
+    return ApiResponse<PaginatedResponse<T>>(
+      status: _parseStatus(envelope),
+      data: PaginatedResponse<T>.fromMap(
+        envelope['data'],
+        itemParser,
+      ),
     );
   }
 

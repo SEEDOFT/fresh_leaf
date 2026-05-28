@@ -123,7 +123,9 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                                 ),
                               ),
                               title: Text(
-                                '${wallet.currency.code} Wallet',
+                                'wallet_label'.trParams({
+                                  'currencyCode': wallet.currency.code,
+                                }),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -133,9 +135,10 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                                 children: [
                                   const SizedBox(height: 4),
                                   Text(
-                                    'balance: '
-                                    '${wallet.balance}'
-                                    ' ${wallet.currency.symbol}',
+                                    'wallet_balance'.trParams({
+                                      'balance': wallet.balance.toString(),
+                                      'symbol': wallet.currency.symbol,
+                                    }),
                                   ),
                                   if (!hasEnough)
                                     Text(

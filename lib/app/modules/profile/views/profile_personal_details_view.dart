@@ -159,7 +159,7 @@ class _AvatarBlock extends StatelessWidget {
                 color: scheme.onSurfaceVariant,
               ),
               title: Text(
-                'Pick from gallery',
+                'profile_pick_from_gallery'.tr,
                 style: TextStyle(color: scheme.onSurface),
               ),
               onTap: () async {
@@ -173,7 +173,7 @@ class _AvatarBlock extends StatelessWidget {
                 color: scheme.onSurfaceVariant,
               ),
               title: Text(
-                'Take a photo',
+                'profile_take_photo'.tr,
                 style: TextStyle(color: scheme.onSurface),
               ),
               onTap: () async {

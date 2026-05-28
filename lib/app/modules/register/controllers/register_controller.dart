@@ -39,7 +39,7 @@ class RegisterController extends GetxController {
         phoneController.text.isEmpty ||
         passwordController.text.isEmpty ||
         passwordConfirmController.text.isEmpty) {
-      Get.snackbar('Error', 'Please fill in all fields');
+      Get.snackbar('register_error_title'.tr, 'register_error_fill_fields'.tr);
       return;
     }
 
@@ -47,12 +47,18 @@ class RegisterController extends GetxController {
       phoneController.text,
     );
     if (normalizedPhone.isEmpty) {
-      Get.snackbar('Error', 'Please enter a valid phone number');
+      Get.snackbar(
+        'register_error_title'.tr,
+        'register_error_invalid_phone'.tr,
+      );
       return;
     }
 
     if (passwordController.text != passwordConfirmController.text) {
-      Get.snackbar('Error', 'Passwords do not match');
+      Get.snackbar(
+        'register_error_title'.tr,
+        'register_error_password_mismatch'.tr,
+      );
       return;
     }
 
@@ -81,7 +87,10 @@ class RegisterController extends GetxController {
         final dataMap = apiResponse.data;
         final token = formatToString(dataMap['access_token']);
         if (token.isEmpty) {
-          Get.snackbar('Error', 'Registration succeeded but token missing');
+          Get.snackbar(
+            'register_error_title'.tr,
+            'register_error_token_missing'.tr,
+          );
           return;
         }
         await storageService.saveToken(token);
@@ -94,15 +103,17 @@ class RegisterController extends GetxController {
         await Get.offAllNamed<void>(AppRoutes.login);
       } else {
         Get.snackbar(
-          'Error',
-          'Registration failed: ${apiResponse.status.message}',
+          'register_error_title'.tr,
+          'register_error_failed'.trParams({
+            'message': apiResponse.status.message,
+          }),
         );
       }
     } on DioException catch (e) {
       final message = parseApiErrorMessage(e);
       Get.snackbar(
-        'Error',
-        'Registration failed: $message',
+        'register_error_title'.tr,
+        'register_error_failed'.trParams({'message': message}),
       );
     } finally {
       isLoading.value = false;

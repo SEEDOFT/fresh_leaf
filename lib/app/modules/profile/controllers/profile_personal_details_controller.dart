@@ -42,8 +42,8 @@ class ProfilePersonalDetailsController extends GetxController {
     } else {
       final tokenPresent = storage.token?.isNotEmpty ?? false;
       if (tokenPresent) {
-        firstName.value = 'FreshLeaf';
-        lastName.value = ' Member';
+        firstName.value = 'profile_default_first_name'.tr;
+        lastName.value = 'profile_default_last_name'.tr;
         email.value = '—';
         phone.value = '—';
         _syncTextControllers();
@@ -262,7 +262,7 @@ class ProfilePersonalDetailsController extends GetxController {
         '_method': methodOverride,
       };
       return _apiClient.postRequest(
-        ApiEndpoints.userUpdateProfile,
+        ApiEndpoints.updateProfile,
         data: FormData.fromMap(multipartPayload),
         options: Options(contentType: 'multipart/form-data'),
       );
@@ -273,19 +273,19 @@ class ProfilePersonalDetailsController extends GetxController {
     try {
       if (usePatch) {
         return await _apiClient.patchRequest(
-          ApiEndpoints.userUpdateProfile,
+          ApiEndpoints.updateProfile,
           data: payloadData,
         );
       }
       return await _apiClient.putRequest(
-        ApiEndpoints.userUpdateProfile,
+        ApiEndpoints.updateProfile,
         data: payloadData,
       );
     } on DioException catch (e) {
       final code = e.response?.statusCode ?? 0;
       if (code == 404 || code == 405) {
         return _apiClient.postRequest(
-          ApiEndpoints.userUpdateProfile,
+          ApiEndpoints.updateProfile,
           data: payloadData,
         );
       }

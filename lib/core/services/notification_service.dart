@@ -10,6 +10,7 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/app_notification.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
@@ -366,7 +367,7 @@ class NotificationService extends GetxService {
 
     try {
       final response = await apiClient.postRequest(
-        ApiEndpoints.userDevices,
+        ApiEndpoints.devices,
         data: {
           'device_token': token,
           'device_type': Platform.isAndroid ? 'android' : 'ios',
@@ -391,7 +392,7 @@ class NotificationService extends GetxService {
     if (token != null) {
       try {
         await apiClient.deleteRequest(
-          ApiEndpoints.userDevices,
+          ApiEndpoints.devices,
           data: {'device_token': token},
         );
         if (kDebugMode) {
@@ -418,20 +419,33 @@ class NotificationService extends GetxService {
   final RxInt unreadCount = 0.obs;
 
   /// Get database notifications for the user
-  Future<List<AppNotification>> getNotifications() async {
+  Future<PaginatedResponse<AppNotification>> getNotifications({
+    int page = 1,
+  }) async {
     try {
-      final response = await apiClient.getRequest(ApiEndpoints.notifications);
-      final apiResponse = ApiResponse.parseList(response.data);
+      final response = await apiClient.getRequest(
+        ApiEndpoints.notifications,
+        queryParameters: {'page': page},
+      );
+      final apiResponse = ApiResponse.parsePaginated(
+        response.data,
+        AppNotification.fromMap,
+      );
 
       if (apiResponse.isSuccess) {
-        final list = apiResponse.data.map(AppNotification.fromMap).toList();
-        notifications.assignAll(list);
-        unreadCount.value = list.where((n) => !n.isRead).length;
-        return list;
+        if (page == 1) {
+          notifications.assignAll(apiResponse.data.items);
+          unreadCount.value = apiResponse.data.items
+              .where((n) => !n.isRead)
+              .length;
+        } else {
+          notifications.addAll(apiResponse.data.items);
+        }
+        return apiResponse.data;
       }
-      return [];
+      return PaginatedResponse.empty();
     } on Exception {
-      return [];
+      return PaginatedResponse.empty();
     }
   }
 

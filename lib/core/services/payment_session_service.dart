@@ -17,7 +17,7 @@ class PaymentSessionService extends GetxService {
     int? paymentMethodId,
   }) async {
     final response = await _apiClient.postRequest(
-      ApiEndpoints.userWalletTopUpSessions,
+      ApiEndpoints.walletTopUpSessions,
       data: <String, dynamic>{
         'amount': amount,
         'currency': currency,
@@ -37,7 +37,7 @@ class PaymentSessionService extends GetxService {
     List<Map<String, dynamic>>? items,
   }) async {
     final response = await _apiClient.postRequest(
-      ApiEndpoints.userCheckoutSessions,
+      ApiEndpoints.checkoutSessions,
       data: <String, dynamic>{
         'amount': amount,
         'payment_method_type_code': paymentMethodTypeCode,
@@ -51,7 +51,7 @@ class PaymentSessionService extends GetxService {
   }
 
   Future<PaymentSession> getSessionStatus(String sessionId) async {
-    final path = ApiEndpoints.userPaymentSession.replaceAll(
+    final path = ApiEndpoints.paymentSession.replaceAll(
       '{id}',
       sessionId,
     );

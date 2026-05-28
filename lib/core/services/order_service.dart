@@ -1,6 +1,7 @@
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
@@ -9,19 +10,23 @@ class OrderService extends GetxService {
 
   final ApiClient apiClient;
 
-  Future<List<Order>> getOrders() async {
+  Future<PaginatedResponse<Order>> getOrders({int page = 1}) async {
     try {
       final response = await apiClient.getRequest(
         ApiEndpoints.orders,
+        queryParameters: {'page': page},
       );
-      final apiResponse = ApiResponse.parseList(response.data);
+      final apiResponse = ApiResponse.parsePaginated(
+        response.data,
+        Order.fromMap,
+      );
 
       if (apiResponse.isSuccess) {
-        return apiResponse.data.map(Order.fromMap).toList();
+        return apiResponse.data;
       }
-      return [];
+      return PaginatedResponse.empty();
     } on Exception {
-      return [];
+      return PaginatedResponse.empty();
     }
   }
 

@@ -24,7 +24,7 @@ class ProfileWishlistController extends GetxController {
   final Rx<WishlistSortType> selectedSort = WishlistSortType.newest.obs;
 
   List<VendorInventory> get items => wishlistController.items;
-  bool get isLoading => wishlistController.isLoading;
+  bool get isLoading => wishlistController.isLoading.value;
 
   List<String> get categories {
     const defaults = <String>['All'];

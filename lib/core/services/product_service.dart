@@ -1,5 +1,6 @@
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/models/vendor_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -10,14 +11,18 @@ class ProductService extends GetxService {
 
   final ApiClient apiClient;
 
-  Future<List<VendorInventory>> getProducts({
+  Future<PaginatedResponse<VendorInventory>> getProducts({
     int? categoryId,
     String? query,
     String? province,
+    int page = 1,
     int perPage = 15,
   }) async {
     try {
-      final params = <String, dynamic>{'per_page': perPage};
+      final params = <String, dynamic>{
+        'page': page,
+        'per_page': perPage,
+      };
       if (categoryId != null) params['category_id'] = categoryId;
       if (query != null) params['search'] = query;
       if (province != null) params['province'] = province;
@@ -27,28 +32,17 @@ class ProductService extends GetxService {
         queryParameters: params,
       );
 
-      // Handle simplePaginate structure
-      final apiResponse = ApiResponse.parseMap(response.data);
+      final apiResponse = ApiResponse.parsePaginated(
+        response.data,
+        VendorInventory.fromMap,
+      );
 
       if (apiResponse.isSuccess) {
-        final rawData = apiResponse.data;
-        final dataList =
-            (rawData['vendor_inventories'] ??
-                    rawData['products'] ??
-                    rawData['data'])
-                as List<dynamic>?;
-
-        if (dataList != null) {
-          return dataList
-              .map(
-                (item) => VendorInventory.fromMap(item as Map<String, dynamic>),
-              )
-              .toList();
-        }
+        return apiResponse.data;
       }
-      return [];
+      return PaginatedResponse.empty();
     } on Exception {
-      return [];
+      return PaginatedResponse.empty();
     }
   }
 

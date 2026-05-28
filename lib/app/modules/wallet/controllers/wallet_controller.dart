@@ -18,6 +18,7 @@ class WalletTransaction {
   });
 
   factory WalletTransaction.fromJson(Map<String, dynamic> json) {
+    final createdAt = toNullableDateTime(json['created_at']);
     final typeMap = json['type'] as Map<String, dynamic>?;
     final typeId = typeMap?['id'] as int? ?? 0;
     final typeName = typeMap?['name']?.toString() ?? 'Transaction';
@@ -29,9 +30,7 @@ class WalletTransaction {
       id: json['id'].toString(),
       title: json['description']?.toString() ?? typeName,
       amount: double.tryParse(json['amount'].toString()) ?? 0.0,
-      date:
-          DateTime.tryParse(json['created_at'].toString())?.toLocal() ??
-          DateTime.now(),
+      date: createdAt ?? DateTime.now(),
       typeId: typeId,
       statusId: statusId,
     );
@@ -74,6 +73,14 @@ class WalletController extends GetxController {
   final RxList<WalletTransaction> khrTransactions = <WalletTransaction>[].obs;
   final RxList<WalletTransaction> usdTransactions = <WalletTransaction>[].obs;
 
+  final RxBool khrHasMore = true.obs;
+  final RxBool usdHasMore = true.obs;
+  final RxBool isLoadingMoreTransactions = false.obs;
+  final RxBool hasLoadedWallets = false.obs;
+
+  int _khrPage = 1;
+  int _usdPage = 1;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -94,6 +101,9 @@ class WalletController extends GetxController {
 
   RxList<WalletTransaction> get activeTransactions =>
       selectedCurrency.value == 'USD' ? usdTransactions : khrTransactions;
+
+  RxBool get activeHasMore =>
+      selectedCurrency.value == 'USD' ? usdHasMore : khrHasMore;
 
   String get activeSymbol => selectedCurrency.value == 'USD' ? r'$' : '៛';
 
@@ -121,11 +131,11 @@ class WalletController extends GetxController {
     if (isLoading.value) return;
     if (!Get.isRegistered<ApiClient>()) return;
 
-    if (khrBalance.value == 0.0 && usdBalance.value == 0.0) {
+    if (!hasLoadedWallets.value) {
       isLoading.value = true;
     }
     try {
-      final response = await _apiClient.getRequest(ApiEndpoints.userWallets);
+      final response = await _apiClient.getRequest(ApiEndpoints.wallets);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         Wallet.listFromDynamic,
@@ -163,28 +173,78 @@ class WalletController extends GetxController {
     }
   }
 
-  Future<void> fetchTransactions(int walletId, String currencyCode) async {
+  Future<void> fetchTransactions({
+    required int walletId,
+    required String currencyCode,
+    int page = 1,
+  }) async {
     try {
       final response = await _apiClient.getRequest(
         ApiEndpoints.walletTransactions,
-        queryParameters: {'wallet_id': walletId},
+        queryParameters: {
+          'wallet_id': walletId,
+          'page': page,
+        },
       );
 
-      final responseData = response.data;
-      final data = responseData?['data'];
-      if (data != null && data is List) {
-        final transactions = data
-            .map((e) => WalletTransaction.fromJson(e as Map<String, dynamic>))
-            .toList();
+      final apiResponse = ApiResponse.parsePaginated(
+        response.data,
+        WalletTransaction.fromJson,
+      );
+
+      if (apiResponse.isSuccess) {
+        final transactions = apiResponse.data.items;
 
         if (currencyCode == 'USD') {
-          usdTransactions.value = transactions;
+          if (page == 1) {
+            usdTransactions.assignAll(transactions);
+            _usdPage = 1;
+          } else {
+            usdTransactions.addAll(transactions);
+            _usdPage = page;
+          }
+          usdHasMore.value = apiResponse.data.hasMore;
         } else if (currencyCode == 'KHR') {
-          khrTransactions.value = transactions;
+          if (page == 1) {
+            khrTransactions.assignAll(transactions);
+            _khrPage = 1;
+          } else {
+            khrTransactions.addAll(transactions);
+            _khrPage = page;
+          }
+          khrHasMore.value = apiResponse.data.hasMore;
         }
       }
     } on Exception {
       // Silently ignore transaction fetch errors
+    }
+  }
+
+  Future<void> loadMoreTransactions() async {
+    if (isLoadingMoreTransactions.value) return;
+
+    final isUsd = selectedCurrency.value == 'USD';
+    final hasMore = isUsd ? usdHasMore.value : khrHasMore.value;
+    if (!hasMore) return;
+
+    final profileController = Get.find<ProfileController>();
+    final wallets = profileController.wallets;
+    final wallet = wallets.firstWhereOrNull(
+      (w) => w.currency.code.toUpperCase() == selectedCurrency.value,
+    );
+
+    if (wallet == null) return;
+
+    isLoadingMoreTransactions.value = true;
+    try {
+      final nextPage = isUsd ? _usdPage + 1 : _khrPage + 1;
+      await fetchTransactions(
+        walletId: wallet.id,
+        currencyCode: selectedCurrency.value,
+        page: nextPage,
+      );
+    } finally {
+      isLoadingMoreTransactions.value = false;
     }
   }
 
@@ -199,15 +259,16 @@ class WalletController extends GetxController {
       if (currencyCode == 'USD') {
         nextUsdBalance = wallet.balance;
         hasUsd = true;
-        await fetchTransactions(wallet.id, 'USD');
+        await fetchTransactions(walletId: wallet.id, currencyCode: 'USD');
       } else if (currencyCode == 'KHR') {
         nextKhrBalance = wallet.balance;
         hasKhr = true;
-        await fetchTransactions(wallet.id, 'KHR');
+        await fetchTransactions(walletId: wallet.id, currencyCode: 'KHR');
       }
     }
 
     usdBalance.value = hasUsd ? nextUsdBalance : 0.0;
     khrBalance.value = hasKhr ? nextKhrBalance : 0.0;
+    hasLoadedWallets.value = true;
   }
 }

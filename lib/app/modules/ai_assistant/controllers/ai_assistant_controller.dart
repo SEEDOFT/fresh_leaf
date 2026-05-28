@@ -493,7 +493,7 @@ class AiAssistantController extends GetxController {
       }
 
       messages[lastIndex] = messages[lastIndex].copyWith(
-        text: 'Unable to receive realtime response. Please try again.',
+        text: 'ai_assistant_error_realtime'.tr,
         isStreaming: false,
         status: 'failed',
       );

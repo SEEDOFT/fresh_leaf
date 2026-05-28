@@ -11,6 +11,11 @@ String formatPriceNoDecimals(double price) {
   return formatter.format(price);
 }
 
+String formatDateTime(DateTime? value, {String defaultValue = ''}) {
+  if (value == null) return defaultValue;
+  return DateFormat('hh:mm a, dd MMM yyyy').format(value.toLocal());
+}
+
 String formatToString(dynamic value, {String defaultValue = ''}) {
   if (value == null) return defaultValue;
   try {
@@ -24,23 +29,31 @@ DateTime toDateTime(dynamic value, {DateTime? defaultValue}) {
   defaultValue ??= DateTime(0);
   if (value == null) return defaultValue;
   try {
-    if (value is DateTime) return value;
+    if (value is DateTime) return value.toLocal();
     if (value is String) {
       final trimmed = value.trim();
       if (trimmed.isEmpty) return defaultValue;
       final parsed = DateTime.tryParse(trimmed);
-      return parsed ?? defaultValue;
+      return parsed?.toLocal() ?? defaultValue;
     }
     if (value is int) {
-      return DateTime.fromMillisecondsSinceEpoch(value);
+      return DateTime.fromMillisecondsSinceEpoch(value).toLocal();
     }
     if (value is double) {
-      return DateTime.fromMillisecondsSinceEpoch(value.toInt());
+      return DateTime.fromMillisecondsSinceEpoch(value.toInt()).toLocal();
     }
     return defaultValue;
   } on Exception {
     return defaultValue;
   }
+}
+
+DateTime? toNullableDateTime(dynamic value) {
+  if (value == null) return null;
+  if (value is DateTime) return value.toLocal();
+  final raw = formatToString(value);
+  if (raw.isEmpty) return null;
+  return DateTime.tryParse(raw)?.toLocal();
 }
 
 bool toBool(dynamic value, {bool defaultValue = false}) {

@@ -45,10 +45,10 @@ class OrdersView extends GetView<OrdersController> {
           Expanded(
             child: Obx(
               () => RefreshIndicator(
-                onRefresh: controller.loadOrders,
+                onRefresh: controller.refreshList,
                 child: controller.isLoading.value
                     ? const OrdersLoadingWidget()
-                    : controller.orders.isEmpty
+                    : controller.items.isEmpty
                     ? ListView(
                         physics: const AlwaysScrollableScrollPhysics(
                           parent: BouncingScrollPhysics(),
@@ -84,10 +84,24 @@ class OrdersView extends GetView<OrdersController> {
                           ),
                           groupedOrders: controller.groupedFilteredOrders,
                           scheme: scheme,
-                          onOrderTap: (order) async => await Get.toNamed<void>(
-                            AppRoutes.orderDetail,
-                            arguments: order,
-                          ),
+                          onLoadMore: controller.loadMore,
+                          isLoadingMore: controller.isLoadingMore,
+                          hasMore: controller.hasMore,
+                          onOrderTap: (order) async {
+                            final detailedOrder = await controller
+                                .preloadOrderDetail(order);
+                            if (detailedOrder == null) {
+                              Get.snackbar(
+                                'fetch_failed'.tr,
+                                'order_not_found'.tr,
+                              );
+                              return;
+                            }
+                            await Get.toNamed<void>(
+                              AppRoutes.orderDetail,
+                              arguments: detailedOrder,
+                            );
+                          },
                         ),
                       ),
               ),

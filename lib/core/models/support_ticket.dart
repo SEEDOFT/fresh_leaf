@@ -18,10 +18,27 @@ class SupportTicket {
     return SupportTicket(
       id: toInt(source['id']),
       userId: toInt(source['user_id']),
-      statusId: (source['status'] as Map<String, dynamic>?)?['id'] as int? ?? 1,
-      createdAt: toDateTime(source['created_at']),
-      updatedAt: toDateTime(source['updated_at']),
+      statusId: _parseStatusId(source['status']),
+      createdAt: toNullableDateTime(source['created_at']),
+      updatedAt: toNullableDateTime(source['updated_at']),
     );
+  }
+
+  static int _parseStatusId(dynamic status) {
+    if (status is Map<String, dynamic>) {
+      return status['id'] as int? ?? 1;
+    }
+    if (status is int) return status;
+    if (status is String) {
+      return switch (status.toLowerCase()) {
+        'open' => 1,
+        'in_progress' => 2,
+        'resolved' => 3,
+        'closed' => 4,
+        _ => 1,
+      };
+    }
+    return 1;
   }
 
   final int id;

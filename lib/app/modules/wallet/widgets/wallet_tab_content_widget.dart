@@ -3,6 +3,7 @@ import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart
 import 'package:fresh_leaf/app/modules/wallet/widgets/wallet_balance_card_widget.dart';
 import 'package:fresh_leaf/app/modules/wallet/widgets/wallet_transaction_tile_widget.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:fresh_leaf/shared/widgets/paginated_list_view.dart';
 import 'package:get/get.dart';
 
 class WalletTabContentWidget extends StatelessWidget {
@@ -105,17 +106,19 @@ class WalletTabContentWidget extends StatelessWidget {
                         ),
                       ),
                     )
-                  : ListView.separated(
+                  : PaginatedListView(
+                      items: transactions,
+                      onLoadMore: controller.loadMoreTransactions,
+                      isLoadingMore: controller.isLoadingMoreTransactions,
+                      hasMore: controller.activeHasMore,
                       padding: EdgeInsets.symmetric(
                         horizontal: 20.scaled,
                         vertical: 8.scaled,
                       ),
-                      itemCount: transactions.length,
                       separatorBuilder: (context, index) {
                         return SizedBox(height: 8.scaled);
                       },
-                      itemBuilder: (context, index) {
-                        final tx = transactions[index];
+                      itemBuilder: (context, index, tx) {
                         return WalletTransactionTileWidget(
                           tx: tx,
                           currency: currency,

@@ -20,7 +20,9 @@ class OrderDetailView extends GetView<OrderDetailController> {
       appBar: CustomAppBar(
         title: controller.order.value == null
             ? 'order_details'.tr
-            : 'Order ${controller.order.value!.orderNumber}',
+            : 'order_title'.trParams({
+                'number': controller.order.value!.orderNumber,
+              }),
       ),
       body: Obx(() {
         if (controller.isCheckingAccess.value) {
@@ -55,24 +57,34 @@ class OrderDetailView extends GetView<OrderDetailController> {
               ),
             ),
             const SizedBox(height: 10),
-            ...order.items.map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: OrderDetailItemCard(
-                  item: item,
-                  width: screenWidth - 32,
-                  onOpenProduct: () async {
-                    final vendorInventory = item.vendorInventory;
-                    if (vendorInventory != null) {
-                      await Get.toNamed<void>(
-                        AppRoutes.productDetail,
-                        arguments: vendorInventory,
-                      );
-                    }
-                  },
+            if (order.items.isEmpty && controller.isLoadingDetails.value)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: scheme.primary,
+                  ),
                 ),
               ),
-            ),
+            if (!(order.items.isEmpty && controller.isLoadingDetails.value))
+              ...order.items.map(
+                (item) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: OrderDetailItemCard(
+                    item: item,
+                    width: screenWidth - 32,
+                    onOpenProduct: () async {
+                      final vendorInventory = item.vendorInventory;
+                      if (vendorInventory != null) {
+                        await Get.toNamed<void>(
+                          AppRoutes.productDetail,
+                          arguments: vendorInventory,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
             const SizedBox(height: 8),
             PrimaryButton(
               onPressed: () {},

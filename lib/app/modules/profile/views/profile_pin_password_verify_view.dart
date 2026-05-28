@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_pin_password_verify_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_pin_widget.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/dialpad_widget.dart';
+import 'package:fresh_leaf/shared/widgets/pin_display_widget.dart';
 import 'package:fresh_leaf/shared/widgets/primary_button.dart';
 import 'package:get/get.dart';
 
@@ -33,7 +35,8 @@ class ProfilePinPasswordVerifyView
                       ),
                       const SizedBox(height: 14),
                       Text(
-                        controller.isPasswordVerified.value
+                        controller.requiresPasswordVerification &&
+                                controller.isPasswordVerified.value
                             ? 'password_verified_continue_pin'.tr
                             : controller.subtitle,
                         style: TextStyle(
@@ -42,7 +45,8 @@ class ProfilePinPasswordVerifyView
                         ),
                       ),
                       const SizedBox(height: 16),
-                      if (!controller.isPasswordVerified.value) ...[
+                      if (controller.requiresPasswordVerification &&
+                          !controller.isPasswordVerified.value) ...[
                         TextField(
                           controller: controller.passwordController,
                           obscureText: !controller.isPasswordVisible.value,
@@ -68,48 +72,43 @@ class ProfilePinPasswordVerifyView
                           ),
                         ),
                       ] else ...[
-                        if (controller.isUpdateMode) ...[
-                          PinTextField(
-                            label: 'current_pin'.tr,
-                            controller: controller.currentPinController,
-                            inputFormatters: controller.pinInputFormatter,
-                          ),
-                          const SizedBox(height: 14),
-                        ],
-                        PinTextField(
-                          label: 'new_pin'.tr,
-                          controller: controller.pinController,
-                          inputFormatters: controller.pinInputFormatter,
-                        ),
-                        const SizedBox(height: 14),
-                        PinTextField(
-                          label: 'confirm_pin'.tr,
-                          controller: controller.confirmPinController,
-                          inputFormatters: controller.pinInputFormatter,
-                        ),
+                        const SizedBox(height: 24),
+                        Obx(() {
+                          return Column(
+                            children: [
+                              PinDisplayWidget(
+                                pinLength: controller.pinLength.value,
+                              ),
+                              const SizedBox(height: 48),
+                              DialpadWidget(
+                                onKeyPressed: controller.onDialpadKeyPressed,
+                                onDeletePressed:
+                                    controller.onDialpadDeletePressed,
+                              ),
+                            ],
+                          );
+                        }),
                       ],
                     ],
                   ),
                 ),
               ),
-              SafeArea(
-                top: false,
-                minimum: const EdgeInsets.only(bottom: 10),
-                child: Obx(
-                  () => PrimaryButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : controller.isPasswordVerified.value
-                        ? controller.submit
-                        : controller.verifyPasswordFirst,
-                    isLoading: controller.isLoading.value,
-                    label: controller.isPasswordVerified.value
-                        ? controller.actionTitle
-                        : 'verify_password'.tr,
-                    borderRadius: 14,
+              if (controller.requiresPasswordVerification &&
+                  !controller.isPasswordVerified.value)
+                SafeArea(
+                  top: false,
+                  minimum: const EdgeInsets.only(bottom: 10),
+                  child: Obx(
+                    () => PrimaryButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : controller.verifyPasswordFirst,
+                      isLoading: controller.isLoading.value,
+                      label: 'verify_password'.tr,
+                      borderRadius: 14,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

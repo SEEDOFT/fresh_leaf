@@ -30,29 +30,29 @@ class ProfileHelpCenterController extends GetxController {
 
   void _seedArticles() {
     articles.assignAll(<HelpArticle>[
-      const HelpArticle(
-        title: 'Ordering & delivery',
-        subtitle: 'How delivery windows work, contactless drop-off, delays.',
+      HelpArticle(
+        title: 'help_article_ordering_title'.tr,
+        subtitle: 'help_article_ordering_subtitle'.tr,
         category: 'orders',
       ),
-      const HelpArticle(
-        title: 'Payments & refunds',
-        subtitle: 'Payment methods, charges, refunds, and failed payments.',
+      HelpArticle(
+        title: 'help_article_payments_title'.tr,
+        subtitle: 'help_article_payments_subtitle'.tr,
         category: 'payments',
       ),
-      const HelpArticle(
-        title: 'Account & security',
-        subtitle: 'Reset password, PIN security, updating phone/email.',
+      HelpArticle(
+        title: 'help_article_account_title'.tr,
+        subtitle: 'help_article_account_subtitle'.tr,
         category: 'account',
       ),
-      const HelpArticle(
-        title: 'Addresses & map',
-        subtitle: 'How to pin your location and manage saved addresses.',
+      HelpArticle(
+        title: 'help_article_addresses_title'.tr,
+        subtitle: 'help_article_addresses_subtitle'.tr,
         category: 'addresses',
       ),
-      const HelpArticle(
-        title: 'AI assistant',
-        subtitle: 'What data is used and how responses are generated.',
+      HelpArticle(
+        title: 'help_article_ai_title'.tr,
+        subtitle: 'help_article_ai_subtitle'.tr,
         category: 'ai',
       ),
     ]);

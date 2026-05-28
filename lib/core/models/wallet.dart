@@ -22,9 +22,16 @@ class Wallet {
   }
 
   static List<Wallet> listFromDynamic(dynamic value) {
-    if (value is! List) return <Wallet>[];
+    dynamic listData = value;
+    if (listData is Map &&
+        listData.containsKey('data') &&
+        listData['data'] is List) {
+      listData = listData['data'];
+    }
 
-    return value
+    if (listData is! List) return <Wallet>[];
+
+    return listData
         .whereType<Map<dynamic, dynamic>>()
         .map<Map<String, dynamic>>(
           (item) => item.map<String, dynamic>(

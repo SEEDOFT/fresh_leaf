@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/repositories/home_repository.dart';
@@ -68,9 +69,10 @@ class HomeController extends GetxController {
       ]);
 
       categories.value = results[0] as List<ProductCategory>;
-      pickedThisMorning.value = results[1] as List<VendorInventory>;
+      pickedThisMorning.value =
+          (results[1] as PaginatedResponse<VendorInventory>).items;
     } on Exception {
-      categories.value = _homeRepository.getMockCategories();
+      categories.value = [];
       pickedThisMorning.value = [];
     } finally {
       isLoadingProducts.value = false;

@@ -52,9 +52,7 @@ class Order {
           : null,
       deliverySlot: map['delivery_slot'] as String?,
       notes: map['notes'] as String?,
-      createdAt: map['created_at'] != null
-          ? DateTime.tryParse(map['created_at'].toString())
-          : null,
+      createdAt: toNullableDateTime(map['created_at']),
       items:
           (map['items'] as List<dynamic>?)
               ?.map((e) => OrderItem.fromMap(e as Map<String, dynamic>))

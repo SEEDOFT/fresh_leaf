@@ -88,7 +88,7 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
     await showDialog<void>(
       context: context,
       builder: (_) => Dialog(
-        backgroundColor: Colors.black,
+        backgroundColor: isDark ? Colors.black : Colors.white,
         insetPadding: EdgeInsets.zero,
         child: Stack(
           children: [
@@ -107,7 +107,10 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
               right: 8,
               child: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.close, color: Colors.white),
+                icon: Icon(
+                  Icons.close,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
               ),
             ),
           ],
@@ -120,7 +123,10 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
     try {
       await SharePlus.instance.share(ShareParams(uri: Uri.parse(filePath)));
     } on Exception {
-      Get.snackbar('Error', 'Could not open file');
+      Get.snackbar(
+        'register_error_title'.tr,
+        'support_chat_error_open_file'.tr,
+      );
     }
   }
 }

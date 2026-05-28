@@ -125,7 +125,7 @@ class ProfilePaymentController extends GetxController {
     if (data is List) {
       return data.whereType<Map<String, dynamic>>().toList();
     }
-    if (data is Map<String, dynamic>) {
+    if (data is Map) {
       final nested = data['items'] ?? data['methods'] ?? data['data'];
       if (nested is List) {
         return nested.whereType<Map<String, dynamic>>().toList();

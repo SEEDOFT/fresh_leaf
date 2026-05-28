@@ -34,9 +34,7 @@ class PaymentMethodType {
   };
 
   static DateTime? _parseNullableDateTime(dynamic value) {
-    final raw = formatToString(value);
-    if (raw.isEmpty) return null;
-    return DateTime.tryParse(raw);
+    return toNullableDateTime(value);
   }
 
   static int? _parseNullableInt(dynamic value) {

@@ -149,7 +149,7 @@ class WalletTopUpPaymentController extends GetxController {
     try {
       final apiClient = Get.find<ApiClient>();
       final response = await apiClient.getRequest(
-        ApiEndpoints.userPaymentMethodTypes,
+        ApiEndpoints.paymentMethodTypes,
       );
       final apiResponse = ApiResponse.parseList(response.data);
       final parsed = apiResponse.data.map(PaymentMethodType.fromMap).toList();

@@ -35,7 +35,7 @@ class ProfileHelpCenterView extends GetView<ProfileHelpCenterController> {
               ),
               const SizedBox(height: 16),
               Text(
-                'FAQs',
+                'help_center_faqs'.tr,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 16,
@@ -75,7 +75,7 @@ class _SupportShortcuts extends GetView<ProfileHelpCenterController> {
               offset: const Offset(-4, 4),
               child: _SupportButton(
                 icon: Icons.headset_mic_outlined,
-                label: 'Chat with support',
+                label: 'help_center_chat_with_support'.tr,
                 color: scheme.primary,
                 onTap: () async {
                   controller.unreadSupportCount.value = 0; // Optimistic clear

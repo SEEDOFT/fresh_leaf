@@ -80,7 +80,7 @@ class AppSettingsController extends GetxController {
 
     try {
       await Get.find<ApiClient>().patchRequest(
-        ApiEndpoints.userUpdateProfile,
+        ApiEndpoints.updateProfile,
         data: {
           'theme': theme,
           'locale': localeCode,

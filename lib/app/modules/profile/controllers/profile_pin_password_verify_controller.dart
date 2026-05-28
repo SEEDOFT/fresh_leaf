@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,9 +20,12 @@ class ProfilePinPasswordVerifyController extends GetxController {
   final RxBool isPasswordVisible = false.obs;
   final RxBool isPasswordVerified = false.obs;
   final RxString mode = 'set'.obs;
+  final RxString activePinField = 'new'.obs; // 'current', 'new', 'confirm'
+  final RxInt pinLength = 0.obs;
 
   bool get isResetMode => mode.value == 'reset';
   bool get isUpdateMode => mode.value == 'update';
+  bool get requiresPasswordVerification => !isUpdateMode;
 
   String get screenTitle {
     if (isResetMode) return 'reset_pin'.tr;
@@ -35,13 +40,15 @@ class ProfilePinPasswordVerifyController extends GetxController {
   }
 
   String get subtitle {
-    if (isResetMode) {
-      return 'verify_then_choose_new_pin'.tr;
+    if (requiresPasswordVerification && !isPasswordVerified.value) {
+      if (isResetMode) return 'verify_then_choose_new_pin'.tr;
+      return 'verify_before_setting_pin'.tr;
     }
-    if (isUpdateMode) {
-      return 'verify_then_provide_current_pin'.tr;
-    }
-    return 'verify_before_setting_pin'.tr;
+
+    if (activePinField.value == 'current') return 'enter_current_pin'.tr;
+    if (activePinField.value == 'new') return 'enter_new_pin'.tr;
+    if (activePinField.value == 'confirm') return 'confirm_new_pin'.tr;
+    return '';
   }
 
   @override
@@ -50,6 +57,11 @@ class ProfilePinPasswordVerifyController extends GetxController {
     final args = Get.arguments;
     if (args is Map && args['mode'] != null) {
       mode.value = args['mode'].toString();
+    }
+    if (isUpdateMode) {
+      isPasswordVerified.value = true;
+      activePinField.value = 'current';
+      pinLength.value = 0;
     }
   }
 
@@ -65,7 +77,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
     final pin = pinController.text.trim();
     final confirmPin = confirmPinController.text.trim();
 
-    if (!isPasswordVerified.value) {
+    if (requiresPasswordVerification && !isPasswordVerified.value) {
       Get.snackbar(
         'verification_required'.tr,
         'verify_password_first_message'.tr,
@@ -108,6 +120,97 @@ class ProfilePinPasswordVerifyController extends GetxController {
     }
   }
 
+  void onDialpadKeyPressed(String key) {
+    if (isLoading.value) return;
+
+    final controller = _activeController;
+
+    if (controller.text.length < 6) {
+      controller.text += key;
+      pinLength.value = controller.text.length;
+      if (controller.text.length == 6) {
+        _advanceStep();
+      }
+    }
+  }
+
+  void onDialpadDeletePressed() {
+    if (isLoading.value) return;
+
+    final controller = _activeController;
+
+    if (controller.text.isNotEmpty) {
+      controller.text = controller.text.substring(
+        0,
+        controller.text.length - 1,
+      );
+      pinLength.value = controller.text.length;
+    }
+  }
+
+  void _advanceStep() {
+    if (activePinField.value == 'current') {
+      unawaited(_verifyCurrentPinThenAdvance());
+    } else if (activePinField.value == 'new') {
+      activePinField.value = 'confirm';
+      pinLength.value = confirmPinController.text.length;
+    } else if (activePinField.value == 'confirm') {
+      unawaited(submit());
+    }
+  }
+
+  TextEditingController get _activeController {
+    if (activePinField.value == 'current') {
+      return currentPinController;
+    }
+    if (activePinField.value == 'new') {
+      return pinController;
+    }
+    return confirmPinController;
+  }
+
+  Future<void> _verifyCurrentPinThenAdvance() async {
+    if (!isUpdateMode) {
+      activePinField.value = 'new';
+      pinLength.value = pinController.text.length;
+      return;
+    }
+
+    isLoading.value = true;
+    try {
+      final response = await _apiClient.postRequest(
+        ApiEndpoints.verifyPin,
+        data: {'pin': currentPinController.text.trim()},
+      );
+      final apiResponse = ApiResponse.parseDynamic(response.data);
+
+      if (apiResponse.isSuccess || response.statusCode == 200) {
+        activePinField.value = 'new';
+        pinLength.value = pinController.text.length;
+        return;
+      }
+
+      _resetCurrentPinWithError('incorrect_pin'.tr);
+    } on DioException catch (e) {
+      _resetCurrentPinWithError(
+        parseApiErrorMessage(
+          e,
+          fallback: 'unable_verify_pin'.tr,
+        ),
+      );
+    } on Exception {
+      _resetCurrentPinWithError('unable_verify_pin'.tr);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _resetCurrentPinWithError(String message) {
+    currentPinController.clear();
+    pinLength.value = 0;
+    Get.snackbar('invalid_pin'.tr, message);
+  }
+
   Future<void> verifyPasswordFirst() async {
     if (isLoading.value) return;
     final password = passwordController.text.trim();
@@ -122,6 +225,13 @@ class ProfilePinPasswordVerifyController extends GetxController {
       if (!passwordOk) return;
 
       isPasswordVerified.value = true;
+      if (isUpdateMode) {
+        activePinField.value = 'current';
+        pinLength.value = currentPinController.text.length;
+      } else {
+        activePinField.value = 'new';
+        pinLength.value = pinController.text.length;
+      }
       Get.snackbar('verified'.tr, 'password_verified_success'.tr);
     } finally {
       isLoading.value = false;
@@ -133,6 +243,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
     currentPinController.clear();
     pinController.clear();
     confirmPinController.clear();
+    pinLength.value = 0;
     if (clearPasswordField) {
       passwordController.clear();
     }

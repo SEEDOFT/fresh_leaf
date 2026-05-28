@@ -223,7 +223,7 @@ class ProfileAddressesController extends GetxController {
       return data.whereType<Map<String, dynamic>>().toList();
     }
 
-    if (data is Map<String, dynamic>) {
+    if (data is Map) {
       final nested = data['items'] ?? data['addresses'] ?? data['data'];
       if (nested is List) {
         return nested.whereType<Map<String, dynamic>>().toList();

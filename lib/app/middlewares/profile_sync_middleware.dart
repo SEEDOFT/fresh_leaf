@@ -37,7 +37,7 @@ class ProfileSyncMiddleware extends GetMiddleware {
 
     try {
       final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.userProfile);
+      final response = await apiClient.getRequest(ApiEndpoints.profile);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},
@@ -49,7 +49,7 @@ class ProfileSyncMiddleware extends GetMiddleware {
       _syncedOnce = true;
     } on Exception {
       // If fetching fails, allow navigation;
-      //downstream screens can handle refresh errors.
+      // downstream screens can handle refresh errors.
     }
   }
 }

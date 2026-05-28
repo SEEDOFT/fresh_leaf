@@ -257,14 +257,14 @@ class CheckoutController extends GetxController {
     final hasPin = storage.userProfile?.setPin ?? false;
 
     if (!hasPin) {
-      final success = await Get.toNamed<bool>(
+      final success = await Get.toNamed<dynamic>(
         AppRoutes.pinPasswordVerification,
         arguments: <String, dynamic>{'mode': 'set'},
       );
       if (success != true) {
         return; // User aborted PIN setup
       }
-      
+
       // Update local profile state
       if (storage.userProfile != null) {
         storage.userProfile = storage.userProfile!.copyWith(setPin: true);

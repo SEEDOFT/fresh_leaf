@@ -84,15 +84,4 @@ final class ApiEndpoints {
   // Search
   static const String search = '/products/search';
   static const String searchSuggestions = '/products/search/suggestions';
-
-  // Aliases for backward compatibility
-  static const String userProfile = profile;
-  static const String userUpdateProfile = updateProfile;
-  static const String userWallets = wallets;
-  static const String userPaymentMethods = paymentMethods;
-  static const String userPaymentMethodTypes = paymentMethodTypes;
-  static const String userDevices = devices;
-  static const String userWalletTopUpSessions = walletTopUpSessions;
-  static const String userCheckoutSessions = checkoutSessions;
-  static const String userPaymentSession = paymentSession;
 }

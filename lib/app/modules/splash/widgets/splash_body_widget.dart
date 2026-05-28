@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/splash/controllers/splash_controller.dart';
 import 'package:fresh_leaf/app/modules/splash/widgets/splash_blob_widget.dart';
 import 'package:fresh_leaf/app/modules/splash/widgets/splash_pulsing_dot_widget.dart';
+import 'package:get/get.dart';
 
 class SplashBodyWidget extends StatelessWidget {
   const SplashBodyWidget({
@@ -191,7 +192,7 @@ class SplashBodyWidget extends StatelessWidget {
     return FadeTransition(
       opacity: c.taglineFade,
       child: Text(
-        'Fresh. Organic. Delivered.',
+        'splash_tagline'.tr,
         style: TextStyle(
           fontSize: 13.5,
           fontWeight: FontWeight.w500,

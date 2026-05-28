@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 
 class SupportChatComposerWidget extends StatelessWidget {
   const SupportChatComposerWidget({
@@ -60,7 +60,7 @@ class SupportChatComposerWidget extends StatelessWidget {
                           fontSize: 16,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Type a message...',
+                          hintText: 'support_chat_hint_message'.tr,
                           hintStyle: TextStyle(
                             color: isDark ? Colors.white38 : Colors.grey[500],
                             fontSize: 15,

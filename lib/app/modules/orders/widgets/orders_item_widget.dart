@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/money_amount_text.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class OrderItemWidget extends StatelessWidget {
   const OrderItemWidget({
@@ -100,9 +100,7 @@ class OrderItemWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              order.createdAt != null
-                  ? DateFormat('hh:mm a, dd MMM yyyy').format(order.createdAt!)
-                  : '',
+              formatDateTime(order.createdAt),
               style: TextStyle(
                 fontSize: 13,
                 color: scheme.onSurfaceVariant,

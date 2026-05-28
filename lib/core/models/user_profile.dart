@@ -33,9 +33,19 @@ class UserProfile {
       theme: formatToString(
         source['theme'] ?? source['theme'] ?? 'system',
       ),
-      setPin: toBool(source['set_pin'] ?? source['setPin']),
-      createdAt: toDateTime(source['created_at'] ?? source['createdAt']),
-      updatedAt: toDateTime(source['updated_at'] ?? source['updatedAt']),
+      setPin: toBool(
+        source['set_pin'] ??
+            source['setPin'] ??
+            (source['profile'] is Map
+                ? (source['profile'] as Map)['has_pin']
+                : false),
+      ),
+      createdAt: toNullableDateTime(
+        source['created_at'] ?? source['createdAt'],
+      ),
+      updatedAt: toNullableDateTime(
+        source['updated_at'] ?? source['updatedAt'],
+      ),
     );
   }
 

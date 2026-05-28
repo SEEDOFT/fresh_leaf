@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_tickets/controllers/support_tickets_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/paginated_list_view.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class SupportTicketsView extends GetView<SupportTicketsController> {
   const SupportTicketsView({super.key});
@@ -28,7 +29,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (controller.tickets.isEmpty) {
+        if (controller.items.isEmpty) {
           return Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -139,12 +140,14 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
         }
 
         return RefreshIndicator(
-          onRefresh: controller.loadTickets,
-          child: ListView.builder(
+          onRefresh: controller.refreshList,
+          child: PaginatedListView(
+            items: controller.items,
+            onLoadMore: controller.loadMore,
+            isLoadingMore: controller.isLoadingMore,
+            hasMore: controller.hasMore,
             padding: const EdgeInsets.all(16),
-            itemCount: controller.tickets.length,
-            itemBuilder: (context, index) {
-              final ticket = controller.tickets[index];
+            itemBuilder: (context, index, ticket) {
               final isOpen = ticket.status == 'open';
 
               return Card(
@@ -164,7 +167,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                       AppRoutes.supportChat,
                       arguments: {'ticket': ticket},
                     );
-                    await controller.loadTickets();
+                    await controller.refreshList();
                   },
                   leading: CircleAvatar(
                     backgroundColor: isOpen
@@ -178,14 +181,12 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                     ),
                   ),
                   title: Text(
-                    'Ticket #${ticket.id}',
+                    'ticket_prefix'.trParams({'id': ticket.id.toString()}),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
                     ticket.createdAt != null
-                        ? DateFormat(
-                            'MMM dd, yyyy - HH:mm',
-                          ).format(ticket.createdAt!.toLocal())
+                        ? formatDateTime(ticket.createdAt)
                         : 'unknown_date'.tr,
                   ),
                   trailing: Container(

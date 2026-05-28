@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:fresh_leaf/core/mixins/paginated_list_mixin.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:get/get.dart';
 
@@ -9,11 +11,9 @@ enum OrderSortType {
   highestTotal,
 }
 
-class OrdersController extends GetxController {
+class OrdersController extends GetxController with PaginatedListMixin<Order> {
   final OrderService _orderService = Get.find<OrderService>();
 
-  final RxBool isLoading = false.obs;
-  final RxList<Order> orders = <Order>[].obs;
   final RxInt _selectedStatusId = 0.obs;
   final Rx<OrderSortType> _selectedSort = OrderSortType.newest.obs;
 
@@ -38,8 +38,8 @@ class OrdersController extends GetxController {
   List<Order> get filteredOrders {
     final currentId = _selectedStatusId.value;
     final list = currentId == 0
-        ? List<Order>.from(orders)
-        : orders.where((order) => order.statusId == currentId).toList();
+        ? List<Order>.from(items)
+        : items.where((order) => order.statusId == currentId).toList();
 
     switch (_selectedSort.value) {
       case OrderSortType.newest:
@@ -82,17 +82,18 @@ class OrdersController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    unawaited(loadOrders());
+    unawaited(loadInitial());
   }
 
-  Future<void> loadOrders() async {
-    isLoading.value = true;
-    try {
-      final fetchedOrders = await _orderService.getOrders();
-      orders.assignAll(fetchedOrders);
-    } finally {
-      isLoading.value = false;
-    }
+  @override
+  Future<PaginatedResponse<Order>> fetchPage(int page) async {
+    return _orderService.getOrders(page: page);
+  }
+
+  Future<Order?> preloadOrderDetail(Order order) async {
+    if (order.items.isNotEmpty) return order;
+
+    return _orderService.getOrder(order.id);
   }
 
   String _groupLabel(DateTime orderDate) {

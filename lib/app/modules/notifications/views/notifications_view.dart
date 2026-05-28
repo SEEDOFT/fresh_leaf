@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/notifications/controllers/notifications_controller.dart';
 import 'package:fresh_leaf/app/modules/notifications/widgets/notifications_widget.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/widgets/app_filter_bar.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/paginated_list_view.dart';
 import 'package:get/get.dart';
 
 class NotificationsView extends GetView<NotificationsController> {
@@ -92,21 +94,20 @@ class NotificationsView extends GetView<NotificationsController> {
                             ),
                           ],
                         )
-                      : ListView.separated(
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
+                      : PaginatedListView(
+                          items: controller.filtered,
+                          onLoadMore: controller.loadMore,
+                          isLoadingMore: controller.isLoadingMore,
+                          hasMore: controller.hasMore,
                           padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
-                          itemCount: controller.filtered.length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final item = controller.filtered[index];
+                          itemBuilder: (context, index, item) {
                             return NotificationCard(
                               item: item,
                               scheme: scheme,
                               onTap: () async => await Get.toNamed<void>(
-                                '/notification_detail',
+                                AppRoutes.notificationDetail,
                                 arguments: item,
                               ),
                             );

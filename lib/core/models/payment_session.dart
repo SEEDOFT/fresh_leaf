@@ -59,8 +59,6 @@ class PaymentSession {
   }
 
   static DateTime? _toNullableDateTime(dynamic value) {
-    final raw = formatToString(value);
-    if (raw.isEmpty) return null;
-    return DateTime.tryParse(raw);
+    return toNullableDateTime(value);
   }
 }

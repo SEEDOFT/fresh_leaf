@@ -35,6 +35,7 @@ import 'package:fresh_leaf/app/modules/product_detail/bindings/product_detail_bi
 import 'package:fresh_leaf/app/modules/product_detail/views/product_detail_view.dart';
 import 'package:fresh_leaf/app/modules/product_list/bindings/product_list_binding.dart';
 import 'package:fresh_leaf/app/modules/product_list/views/product_list_view.dart';
+import 'package:fresh_leaf/app/modules/profile/bindings/pin_verification_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_address_edit_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_addresses_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_binding.dart';
@@ -48,6 +49,7 @@ import 'package:fresh_leaf/app/modules/profile/bindings/profile_privacy_binding.
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_security_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_settings_binding.dart';
 import 'package:fresh_leaf/app/modules/profile/bindings/profile_wishlist_binding.dart';
+import 'package:fresh_leaf/app/modules/profile/views/pin_verification_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_address_edit_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_addresses_view.dart';
 import 'package:fresh_leaf/app/modules/profile/views/profile_help_center_view.dart';
@@ -238,6 +240,12 @@ final class AppPages {
       name: AppRoutes.pinPasswordVerification,
       page: () => const ProfilePinPasswordVerifyView(),
       binding: ProfilePinPasswordVerifyBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.pinVerification,
+      page: () => const PinVerificationView(),
+      binding: PinVerificationBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

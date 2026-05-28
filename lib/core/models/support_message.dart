@@ -23,7 +23,7 @@ class SupportMessage {
       senderId: toInt(source['sender_id']),
       message: formatToString(source['message']),
       filePath: source['file_path'] as String?,
-      createdAt: toDateTime(source['created_at']),
+      createdAt: toNullableDateTime(source['created_at']),
     );
   }
 

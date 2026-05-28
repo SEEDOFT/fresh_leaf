@@ -12,13 +12,14 @@ class OrderDetailController extends GetxController {
   final Rxn<Order> order = Rxn<Order>();
   late final RxBool isCheckingAccess;
   final RxBool isUpdating = false.obs;
+  final RxBool isLoadingDetails = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     final storage = Get.find<StorageService>();
     isCheckingAccess = storage.pinOrderVerification.obs;
-    
+
     final args = Get.arguments;
     if (args is Order) {
       order.value = args;
@@ -54,11 +55,18 @@ class OrderDetailController extends GetxController {
   Future<void> reloadOrder() async {
     if (order.value?.id == null) return;
 
-    isUpdating.value = true;
+    final hasItems = order.value?.items.isNotEmpty ?? false;
+    if (!hasItems) {
+      isLoadingDetails.value = true;
+    } else {
+      isUpdating.value = true;
+    }
+
     final updatedOrder = await _orderService.getOrder(order.value!.id);
     if (updatedOrder != null) {
       order.value = updatedOrder;
     }
+    isLoadingDetails.value = false;
     isUpdating.value = false;
   }
 

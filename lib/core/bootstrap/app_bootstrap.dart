@@ -103,7 +103,7 @@ final class AppBootstrap {
     }
 
     try {
-      final response = await apiClient.getRequest(ApiEndpoints.userProfile);
+      final response = await apiClient.getRequest(ApiEndpoints.profile);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         (json) => (json is Map<String, dynamic>) ? json : <String, dynamic>{},

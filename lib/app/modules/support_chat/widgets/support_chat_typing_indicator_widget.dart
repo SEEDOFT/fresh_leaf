@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SupportChatTypingIndicatorWidget extends StatelessWidget {
   const SupportChatTypingIndicatorWidget({
@@ -18,7 +19,7 @@ class SupportChatTypingIndicatorWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Admin is typing',
+            'support_chat_admin_typing'.tr,
             style: TextStyle(
               fontSize: 12,
               color: isDark ? Colors.white54 : Colors.black54,

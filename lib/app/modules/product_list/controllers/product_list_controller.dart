@@ -1,31 +1,28 @@
 import 'dart:async';
+import 'package:fresh_leaf/core/mixins/paginated_list_mixin.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
 import 'package:get/get.dart';
 
-class ProductListController extends GetxController {
+class ProductListController extends GetxController
+    with PaginatedListMixin<VendorInventory> {
   final ProductService _productService = Get.find<ProductService>();
 
-  final RxBool isLoading = false.obs;
-  final RxList<VendorInventory> products = <VendorInventory>[].obs;
+  List<VendorInventory> get products => items;
 
   @override
   void onInit() {
     super.onInit();
-    unawaited(loadProducts());
+    unawaited(loadInitial());
   }
 
-  Future<void> loadProducts() async {
-    isLoading.value = true;
-    try {
-      final fetchedProducts = await _productService.getProducts();
-      products.value = fetchedProducts;
-    } finally {
-      isLoading.value = false;
-    }
+  @override
+  Future<PaginatedResponse<VendorInventory>> fetchPage(int page) async {
+    return _productService.getProducts(page: page);
   }
 
   Future<void> refreshProducts() async {
-    await loadProducts();
+    await refreshList();
   }
 }

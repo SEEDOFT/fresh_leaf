@@ -176,12 +176,16 @@ class SupportChatController extends GetxController {
   }
 
   Future<void> _showFileSourcePicker() async {
+    final context = Get.context!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
+
     final result = await Get.bottomSheet<String>(
       Container(
         padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: scheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: SafeArea(
           child: Column(
@@ -191,16 +195,17 @@ class SupportChatController extends GetxController {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: isDark ? Colors.grey[600] : Colors.grey[300],
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 20),
               Text(
                 'select_attachment_source'.tr,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
               ),
               const SizedBox(height: 20),
@@ -211,10 +216,23 @@ class SupportChatController extends GetxController {
                     color: Colors.blue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.camera_alt, color: Colors.blue),
+                  child: Icon(
+                    Icons.camera_alt,
+                    color: isDark ? Colors.blue[200] : Colors.blue,
+                  ),
                 ),
-                title: Text('camera'.tr),
-                subtitle: Text('take_a_photo'.tr),
+                title: Text(
+                  'camera'.tr,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+                subtitle: Text(
+                  'take_a_photo'.tr,
+                  style: TextStyle(
+                    color: isDark ? Colors.white54 : Colors.black54,
+                  ),
+                ),
                 onTap: () => Get.back(result: 'camera'),
               ),
               ListTile(
@@ -224,10 +242,23 @@ class SupportChatController extends GetxController {
                     color: Colors.green.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.photo_library, color: Colors.green),
+                  child: Icon(
+                    Icons.photo_library,
+                    color: isDark ? Colors.green[200] : Colors.green,
+                  ),
                 ),
-                title: Text('gallery'.tr),
-                subtitle: Text('choose_from_photos'.tr),
+                title: Text(
+                  'gallery'.tr,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+                subtitle: Text(
+                  'choose_from_photos'.tr,
+                  style: TextStyle(
+                    color: isDark ? Colors.white54 : Colors.black54,
+                  ),
+                ),
                 onTap: () => Get.back(result: 'gallery'),
               ),
               const SizedBox(height: 10),
@@ -294,7 +325,7 @@ class SupportChatController extends GetxController {
     try {
       final formData = dio.FormData.fromMap({
         'ticket_id': activeTicket.value!.id,
-        'message': '',
+        'message': 'file attachment',
         'file': await dio.MultipartFile.fromFile(
           image.path,
           filename: image.name,

@@ -96,9 +96,10 @@ The project uses **modular GetX structure** (`bindings`, `controllers`, `views`,
 
 ### PIN Security (new)
 - Source of truth for PIN state is `set_pin` in `UserProfile` (`/users/profile`)
+- Uses a standalone, dedicated step-by-step dialpad screen (`PinVerificationView`, routed via `/pin_verification`) instead of inline text fields or bottom sheets.
 - PIN flow:
   - If `set_pin == false`: user must verify password before setting first PIN
-  - If `set_pin == true`: user updates PIN using current PIN (no password step)
+  - If `set_pin == true`: user taps 'Update PIN' and is routed to the dialpad flow to sequentially verify the current PIN, enter a new PIN, and confirm it.
   - Forgot PIN reset still uses password verification
 - API errors are shown with `Get.snackbar` (no rethrow to UI layer)
 - `PinSecurityService.verifyOrderAccess()` enforces PIN before protected order access
@@ -133,6 +134,8 @@ Notable routes:
 - `/personal_details`
 - `/security_settings`
 - `/pin_security`
+- `/pin_verification`
+- `/pin_password_verification`
 - `/addresses`
 - `/ai_assistant`
 - `/payment_methods`

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
+import 'package:get/get.dart';
 
 class BackgroundHeroWidget extends StatelessWidget {
   const BackgroundHeroWidget({super.key});
@@ -64,7 +65,7 @@ class BackgroundHeroWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'FreshLeaf Organics',
+                'login_brand_name'.tr,
                 style: TextStyle(
                   fontSize: 34.scaled,
                   fontWeight: FontWeight.w900,
@@ -82,7 +83,7 @@ class BackgroundHeroWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                'THE DIGITAL LARDER',
+                'login_brand_tagline'.tr,
                 style: TextStyle(
                   fontSize: 14.scaled,
                   fontWeight: FontWeight.w700,

@@ -20,12 +20,8 @@ class AppNotification {
       title: formatToString(map['title']),
       message: formatToString(map['message']),
       isRead: toBool(map['is_read']),
-      readAt: map['read_at'] != null
-          ? DateTime.tryParse(map['read_at'].toString())
-          : null,
-      createdAt: map['created_at'] != null
-          ? DateTime.tryParse(map['created_at'].toString())
-          : null,
+      readAt: toNullableDateTime(map['read_at']),
+      createdAt: toNullableDateTime(map['created_at']),
       typeCode: (map['type'] as Map<String, dynamic>?)?['code'] as String?,
       typeNameEn: (map['type'] as Map<String, dynamic>?)?['name_en'] as String?,
       typeNameKm: (map['type'] as Map<String, dynamic>?)?['name_km'] as String?,

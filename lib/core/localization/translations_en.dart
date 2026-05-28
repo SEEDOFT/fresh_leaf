@@ -1,5 +1,6 @@
 const Map<String, String> translationsEn = {
   'skip': 'Skip',
+  'splash_tagline': 'Fresh. Organic. Delivered.',
   'next': 'Next',
   'get_started': 'Get Started',
   'onboarding_badge_1': 'ORGANIC FARM-TO-TABLE',
@@ -303,7 +304,7 @@ const Map<String, String> translationsEn = {
   'set_pin': 'Set PIN',
   'verify_then_choose_new_pin': 'Verify password first, then choose a new PIN.',
   'verify_then_provide_current_pin':
-      'Verify password first, then provide current PIN to update.',
+      'Enter your current PIN first, then choose a new PIN.',
   'verify_before_setting_pin': 'Verify password before setting your PIN.',
   'order_details': 'Order Details',
   'order_not_found': 'Order not found',
@@ -563,6 +564,9 @@ const Map<String, String> translationsEn = {
   'unable_send_chat_message': 'Unable to send message right now.',
   'my_wallet': 'My Wallet',
   'wallet_subtitle': 'Balance & top-up',
+  'wallet_label': '@currencyCode Wallet',
+  'wallet_balance': 'Balance: @balance @symbol',
+  'insufficient_balance': 'Insufficient balance',
   'wallet_payment': 'Wallet & Payment',
   'current_balance': 'Current Balance',
   'wallet_currency': 'Wallet Currency',
@@ -651,6 +655,7 @@ const Map<String, String> translationsEn = {
 
   // Support Tickets
   'failed_load_tickets': 'Failed to load tickets',
+  'ticket_prefix': 'Ticket #@id',
   'failed_create_ticket': 'Failed to create ticket',
   'how_can_we_help': 'How can we help you?',
   'support_tickets_empty_subtitle':
@@ -696,4 +701,95 @@ const Map<String, String> translationsEn = {
   'last_name_hint': 'Doe',
   'phone_hint': '012 345 678',
   'expiry_hint': 'MM/YY',
+
+  // Register
+  'register_error_title': 'Error',
+  'register_error_fill_fields': 'Please fill in all fields',
+  'register_error_invalid_phone': 'Please enter a valid phone number',
+  'register_error_password_mismatch': 'Passwords do not match',
+  'register_error_token_missing': 'Registration succeeded but token missing',
+  'register_error_failed': 'Registration failed: @message',
+
+  // Support Chat
+  'support_chat_hint_message': 'Type a message...',
+  'support_chat_error_open_file': 'Could not open file',
+  'support_chat_admin_typing': 'Admin is typing',
+
+  // Order
+  'order_error_invalid_id': 'Invalid order ID',
+  'order_title': 'Order @number',
+
+  // AI Assistant
+  'ai_assistant_error_realtime':
+      'Unable to receive realtime response. Please try again.',
+
+  // Common
+  'common_no_items_found': 'No items found.',
+  'common_loading': 'Loading...',
+
+  // Profile
+  'profile_pick_from_gallery': 'Pick from gallery',
+  'profile_take_photo': 'Take a photo',
+  'profile_version_label': 'FreshLeaf v1.0.0',
+  'profile_default_first_name': 'FreshLeaf',
+  'profile_default_last_name': 'Member',
+
+  // Help Center
+  'help_center_faqs': 'FAQs',
+  'help_center_chat_with_support': 'Chat with support',
+  'help_article_ordering_title': 'Ordering & delivery',
+  'help_article_ordering_subtitle':
+      'How delivery windows work, contactless drop-off, delays.',
+  'help_article_payments_title': 'Payments & refunds',
+  'help_article_payments_subtitle':
+      'Payment methods, charges, refunds, and failed payments.',
+  'help_article_account_title': 'Account & security',
+  'help_article_account_subtitle':
+      'Reset password, PIN security, updating phone/email.',
+  'help_article_addresses_title': 'Addresses & map',
+  'help_article_addresses_subtitle':
+      'How to pin your location and manage saved addresses.',
+  'help_article_ai_title': 'AI assistant',
+  'help_article_ai_subtitle':
+      'What data is used and how responses are generated.',
+
+  // Privacy
+  'privacy_data_collect_heading': 'Data we collect',
+  'privacy_data_collect_body':
+      'We store your name, email, phone, saved addresses, and order history to deliver your purchases and improve recommendations.',
+  'privacy_how_we_use_heading': 'How we use it',
+  'privacy_how_we_use_body':
+      'Data is used for account access, payments, delivery routing, AI assistant personalization, and fraud prevention.',
+  'privacy_sharing_heading': 'Sharing',
+  'privacy_sharing_body':
+      'We share only what is needed with payment processors, delivery partners, and analytics providers. We do not sell personal data.',
+  'privacy_security_heading': 'Security',
+  'privacy_security_body':
+      'Tokens are stored securely; PIN protects order access; all network calls go over HTTPS.',
+  'privacy_controls_heading': 'Your controls',
+  'privacy_controls_body':
+      'Update profile details, addresses, and PIN in the Profile tab. Contact support to delete your account or export data.',
+  'privacy_tos_heading': 'Terms of service (summary)',
+  'privacy_tos_body':
+      'Use of FreshLeaf requires a valid account, accurate delivery info, and '
+      'compliance with local regulations. Orders may be canceled if payment fails or address is unreachable.',
+
+  // Home
+  'home_featured_farmer': 'FEATURED FARMER',
+  'home_farmer_name': "Meet Miller's Organic",
+  'home_farmer_description':
+      'Supplying our community with pesticide-free heirloom produce since 1994.'
+      ' Every bunch of kale helps support local biodiversity.',
+  'home_badge_carbon_neutral': 'Carbon Neutral',
+  'home_badge_miles_away': '12 Miles Away',
+
+  // Login
+  'login_brand_name': 'FreshLeaf Organics',
+  'login_brand_tagline': 'THE DIGITAL LARDER',
+
+  // Vendor Profile
+  'vendor_profile_placeholder': 'VendorProfile Widget',
+
+  // Notifications
+  'notification_default_title': 'Notification',
 };

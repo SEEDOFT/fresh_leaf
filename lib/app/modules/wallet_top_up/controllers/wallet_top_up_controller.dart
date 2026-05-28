@@ -110,13 +110,13 @@ class WalletTopUpController extends GetxController {
       Get.snackbar('success'.tr, 'redirecting_to_bank_app'.tr);
     }
 
-    final paid = await Get.toNamed<bool>(
+    final paid = await Get.toNamed<dynamic>(
       AppRoutes.paymentQr,
       arguments: <String, dynamic>{
         'session': session.toMap(),
       },
     );
-    return paid ?? false;
+    return paid == true;
   }
 
   Future<bool> _tryOpenRedirect(String? url) async {

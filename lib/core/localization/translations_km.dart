@@ -1,5 +1,6 @@
 const Map<String, String> translationsKm = {
   'skip': 'រំលង',
+  'splash_tagline': 'ស្រស់។ សរីរាង្គ។ ដឹកជញ្ជូន។',
   'next': 'បន្ទាប់',
   'get_started': 'ចាប់ផ្តើម',
   'onboarding_badge_1': 'ឃ្លាំងអាហារសរីរាង្គពីចម្ការ',
@@ -303,7 +304,7 @@ const Map<String, String> translationsKm = {
   'verify_then_choose_new_pin':
       'ផ្ទៀងផ្ទាត់ពាក្យសម្ងាត់ជាមុន រួចជ្រើស PIN ថ្មី។',
   'verify_then_provide_current_pin':
-      'ផ្ទៀងផ្ទាត់ពាក្យសម្ងាត់ជាមុន រួចបញ្ចូល PIN បច្ចុប្បន្នដើម្បីកែប្រែ។',
+      'បញ្ចូល PIN បច្ចុប្បន្នជាមុន រួចជ្រើស PIN ថ្មី។',
   'verify_before_setting_pin': 'ផ្ទៀងផ្ទាត់ពាក្យសម្ងាត់មុនកំណត់ PIN របស់អ្នក។',
   'order_details': 'ព័ត៌មានលម្អិតការបញ្ជាទិញ',
   'order_not_found': 'រកមិនឃើញការបញ្ជាទិញ',
@@ -565,6 +566,9 @@ const Map<String, String> translationsKm = {
   'unable_send_chat_message': 'មិនអាចផ្ញើសារបានទេនៅពេលនេះ។',
   'my_wallet': 'កាបូបរបស់ខ្ញុំ',
   'wallet_subtitle': 'សមតុល្យ និងការបញ្ចូលលុយ',
+  'wallet_label': 'កាបូប @currencyCode',
+  'wallet_balance': 'សមតុល្យ: @balance @symbol',
+  'insufficient_balance': 'សមតុល្យមិនគ្រប់គ្រាន់',
   'wallet_payment': 'កាបូប និងការទូទាត់',
   'current_balance': 'សមតុល្យបច្ចុប្បន្ន',
   'wallet_currency': 'រូបិយប័ណ្ណកាបូប',
@@ -653,6 +657,7 @@ const Map<String, String> translationsKm = {
 
   // Support Tickets
   'failed_load_tickets': 'បរាជ័យក្នុងការផ្ទុកសំបុត្រ',
+  'ticket_prefix': 'សំបុត្រ #@id',
   'failed_create_ticket': 'បរាជ័យក្នុងការបង្កើតសំបុត្រ',
   'how_can_we_help': 'តើយើងអាចជួយអ្នកដោយរបៀបណា?',
   'support_tickets_empty_subtitle':
@@ -699,4 +704,105 @@ const Map<String, String> translationsKm = {
   'last_name_hint': 'ដូ',
   'phone_hint': '០១២ ៣៤៥ ៦៧៨',
   'expiry_hint': 'MM/YY',
+
+  // Register
+  'register_error_title': 'កំហុស',
+  'register_error_fill_fields': 'សូមបំពេញគ្រប់វាលទាំងអស់',
+  'register_error_invalid_phone': 'សូមបញ្ចូលលេខទូរស័ព្ទឱ្យបានត្រឹមត្រូវ',
+  'register_error_password_mismatch': 'ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ',
+  'register_error_token_missing': 'ការចុះឈ្មោះបានជោគជ័យ ប៉ុន្តែខ្វះ token',
+  'register_error_failed': 'ការចុះឈ្មោះបរាជ័យ: @message',
+
+  // Support Chat
+  'support_chat_hint_message': 'វាយសារ...',
+  'support_chat_error_open_file': 'មិនអាចបើកឯកសារបានទេ',
+  'support_chat_admin_typing': 'អ្នកគ្រប់គ្រងកំពុងវាយ',
+
+  // Order
+  'order_error_invalid_id': 'លេខសម្គាល់ការបញ្ជាទិញមិនត្រឹមត្រូវ',
+  'order_title': 'ការបញ្ជាទិញ #@number',
+
+  // AI Assistant
+  'ai_assistant_error_realtime':
+      'មិនអាចទទួលការឆ្លើយតបតាមពេលជាក់ស្តែងបានទេ។ សូមព្យាយាមម្តងទៀត។',
+
+  // Common
+  'common_no_items_found': 'រកមិនឃើញធាតុទេ។',
+  'common_loading': 'កំពុងផ្ទុក...',
+
+  // Profile
+  'profile_pick_from_gallery': 'ជ្រើសពីវិចិត្រសាល',
+  'profile_take_photo': 'ថតរូប',
+  'profile_version_label': 'FreshLeaf v1.0.0',
+  'profile_default_first_name': 'FreshLeaf',
+  'profile_default_last_name': 'សមាជិក',
+
+  // Help Center
+  'help_center_faqs': 'សំណួរគេសួរញឹកញាប់',
+  'help_center_chat_with_support': 'ជជែកជាមួយជំនួយ',
+  'help_article_ordering_title': 'ការបញ្ជាទិញ និងដឹកជញ្ជូន',
+  'help_article_ordering_subtitle':
+      'របៀបដែលបង្អួចដឹកជញ្ជូនដំណើរការ ការដឹកជញ្ជូនដោយមិនប៉ះពាល់ ការពន្យារពេល។',
+  'help_article_payments_title': 'ការទូទាត់ និងសងប្រាក់វិញ',
+  'help_article_payments_subtitle':
+      'វិធីសាស្រ្តទូទាត់ ការគិតថ្លៃ ការសងប្រាក់វិញ និងការទូទាត់ដែលបរាជ័យ។',
+  'help_article_account_title': 'គណនី និងសុវត្ថិភាព',
+  'help_article_account_subtitle':
+      'កំណត់ពាក្យសម្ងាត់ឡើងវិញ សុវត្ថិភាព PIN ការធ្វើបច្ចុប្បន្នភាពលេខទូរស័ព្ទ/អ៊ីមែល។',
+  'help_article_addresses_title': 'អាសយដ្ឋាន និងផែនទី',
+  'help_article_addresses_subtitle':
+      'របៀបខ្ទាស់ទីតាំងរបស់អ្នក និងគ្រប់គ្រងអាសយដ្ឋានដែលបានរក្សាទុក។',
+  'help_article_ai_title': 'ជំនួយការ AI',
+  'help_article_ai_subtitle':
+      'ទិន្នន័យអ្វីខ្លះដែលត្រូវបានប្រើ និងរបៀបដែលការឆ្លើយតបត្រូវបានបង្កើត។',
+
+  // Privacy
+  'privacy_data_collect_heading': 'ទិន្នន័យដែលយើងប្រមូល',
+  'privacy_data_collect_body':
+      'យើងរក្សាទុកឈ្មោះ អ៊ីមែល លេខទូរស័ព្ទ អាសយដ្ឋានដែលបានរក្សាទុក '
+      'និងប្រវត្តិនៃការបញ្ជាទិញរបស់អ្នក ដើម្បីដឹកជញ្ជូនការទិញរបស់អ្នក'
+      ' និងកែលម្អការណែនាំ។',
+  'privacy_how_we_use_heading': 'របៀបដែលយើងប្រើប្រាស់',
+  'privacy_how_we_use_body':
+      'ទិន្នន័យត្រូវបានប្រើសម្រាប់ការចូលប្រើគណនី ការទូទាត់'
+      ' ការកំណត់ផ្លូវដឹកជញ្ជូន ការកំណត់ផ្ទាល់ខ្លួនរបស់ជំនួយការ AI '
+      'និងការការពារការក្លែងបន្លំ។',
+  'privacy_sharing_heading': 'ការចែករំលែក',
+  'privacy_sharing_body':
+      'យើងចែករំលែកតែអ្វីដែលចាំបាច់ជាមួយអ្នកដំណើរការទូទាត់ ដៃគូដឹកជញ្ជូន'
+      ' និងអ្នកផ្តល់សេវាវិភាគ។ យើងមិនលក់ទិន្នន័យផ្ទាល់ខ្លួនទេ។',
+  'privacy_security_heading': 'សុវត្ថិភាព',
+  'privacy_security_body':
+      'Tokens ត្រូវបានរក្សាទុកដោយសុវត្ថិភាព; PIN ការពារការចូលប្រើការបញ្ជាទិញ;'
+      ' ការហៅបណ្តាញទាំងអស់ឆ្លងកាត់ HTTPS។',
+  'privacy_controls_heading': 'ការគ្រប់គ្រងរបស់អ្នក',
+  'privacy_controls_body':
+      'ធ្វើបច្ចុប្បន្នភាពព័ត៌មានលម្អិតប្រវត្តិរូប អាសយដ្ឋាន និង PIN'
+      ' នៅក្នុងផ្ទាំងប្រវត្តិរូប។ ទាក់ទងជំនួយដើម្បីលុបគណនីរបស់អ្នក'
+      ' ឬនាំចេញទិន្នន័យ។',
+  'privacy_tos_heading': 'លក្ខខណ្ឌនៃសេវាកម្ម (សង្ខេប)',
+  'privacy_tos_body':
+      'ការប្រើប្រាស់ FreshLeaf តម្រូវឱ្យមានគណនីត្រឹមត្រូវ'
+      ' ព័ត៌មានដឹកជញ្ជូនត្រឹមត្រូវ និងការអនុលោមតាមបទប្បញ្ញត្តិក្នុងតំបន់។ '
+      'ការបញ្ជាទិញអាចត្រូវបានលុបចោល ប្រសិនបើការទូទាត់បរាជ័យ'
+      ' ឬអាសយដ្ឋានមិនអាចទៅដល់បាន។',
+
+  // Home
+  'home_featured_farmer': 'កសិករពិសេស',
+  'home_farmer_name': "ជួប Miller's Organic",
+  'home_farmer_description':
+      'ផ្គត់ផ្គង់សហគមន៍របស់យើងជាមួយផលិតផលដែលគ្មាន'
+      'ថ្នាំសម្លាប់សត្វល្អិតតាំងពីឆ្នាំ ១៩៩៤។',
+  'home_badge_carbon_neutral': 'អព្យាក្រឹតកាបូន',
+  'home_badge_miles_away': 'ចម្ងាយ ១២ ម៉ាយល៍',
+
+  // Login
+  'login_brand_name': 'FreshLeaf Organics',
+  'login_brand_tagline': 'THE DIGITAL LARDER',
+
+  // Vendor Profile
+  'vendor_profile_placeholder': 'VendorProfile Widget',
+
+  // Notifications
+  'notification_default_title': 'ការជូនដំណឹង',
 };

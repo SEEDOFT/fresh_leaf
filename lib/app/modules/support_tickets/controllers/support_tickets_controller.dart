@@ -1,40 +1,41 @@
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
+import 'package:fresh_leaf/core/mixins/paginated_list_mixin.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/models/support_ticket.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
-class SupportTicketsController extends GetxController {
+class SupportTicketsController extends GetxController
+    with PaginatedListMixin<SupportTicket> {
   final ApiClient _apiClient = Get.find<ApiClient>();
-
-  final RxList<SupportTicket> tickets = <SupportTicket>[].obs;
-  final RxBool isLoading = false.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    await loadTickets();
+    await refreshList();
   }
 
-  Future<void> loadTickets() async {
-    isLoading.value = true;
+  @override
+  Future<PaginatedResponse<SupportTicket>> fetchPage(int page) async {
     try {
       final response = await _apiClient.getRequest(
         ApiEndpoints.supportTickets,
+        queryParameters: {'page': page},
       );
-      final apiResponse = ApiResponse.parseList(response.data);
+      final apiResponse = ApiResponse.parsePaginated(
+        response.data,
+        SupportTicket.fromMap,
+      );
 
       if (apiResponse.isSuccess) {
-        tickets.assignAll(
-          apiResponse.data.map(SupportTicket.fromMap),
-        );
+        return apiResponse.data;
       }
     } on Exception {
       Get.snackbar('error'.tr, 'failed_load_tickets'.tr);
-    } finally {
-      isLoading.value = false;
     }
+    return PaginatedResponse.empty();
   }
 
   Future<void> createNewTicket() async {
@@ -51,7 +52,7 @@ class SupportTicketsController extends GetxController {
           AppRoutes.supportChat,
           arguments: {'ticket': newTicket},
         );
-        await loadTickets();
+        await refreshList();
       }
     } on Exception {
       Get.snackbar('error'.tr, 'failed_create_ticket'.tr);

@@ -56,7 +56,7 @@ class NotificationDetailView extends GetView<NotificationDetailController> {
             ),
             const Spacer(),
             FilledButton.icon(
-              onPressed: Get.back<void>,
+              onPressed: () => controller.markAsRead(item.id),
               style: FilledButton.styleFrom(
                 backgroundColor: scheme.primary,
                 foregroundColor: scheme.onPrimary,

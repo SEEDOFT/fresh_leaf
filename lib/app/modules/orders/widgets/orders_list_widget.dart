@@ -8,51 +8,82 @@ class OrdersListWidget extends StatelessWidget {
   const OrdersListWidget({
     required this.groupedOrders,
     required this.scheme,
+    required this.onLoadMore,
+    required this.isLoadingMore,
+    required this.hasMore,
     super.key,
     this.onOrderTap,
   });
 
   final Map<String, List<Order>> groupedOrders;
   final ColorScheme scheme;
+  final VoidCallback onLoadMore;
+  final RxBool isLoadingMore;
+  final RxBool hasMore;
   final ValueChanged<Order>? onOrderTap;
 
   @override
   Widget build(BuildContext context) {
     final sectionKeys = groupedOrders.keys.toList();
 
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      itemCount: sectionKeys.length,
-      itemBuilder: (context, sectionIndex) {
-        final section = sectionKeys[sectionIndex];
-        final sectionOrders = groupedOrders[section] ?? const <Order>[];
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollInfo) {
+        if (!isLoadingMore.value &&
+            hasMore.value &&
+            scrollInfo.metrics.pixels >=
+                scrollInfo.metrics.maxScrollExtent - 200) {
+          onLoadMore();
+        }
+        return false;
+      },
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        itemCount: sectionKeys.length + 1,
+        itemBuilder: (context, sectionIndex) {
+          if (sectionIndex == sectionKeys.length) {
+            return Obx(() {
+              if (isLoadingMore.value) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              return const SizedBox.shrink();
+            });
+          }
 
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: sectionIndex == sectionKeys.length - 1 ? 0 : 14,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              OrdersTimelineSectionHeaderWidget(
-                title: _translateSection(section),
-                scheme: scheme,
-              ),
-              const SizedBox(height: 10),
-              ...sectionOrders.map(
-                (order) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: OrderItemWidget(
-                    order: order,
-                    scheme: scheme,
-                    onTap: onOrderTap == null ? null : () => onOrderTap!(order),
+          final section = sectionKeys[sectionIndex];
+          final sectionOrders = groupedOrders[section] ?? const <Order>[];
+
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: sectionIndex == sectionKeys.length - 1 ? 0 : 14,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                OrdersTimelineSectionHeaderWidget(
+                  title: _translateSection(section),
+                  scheme: scheme,
+                ),
+                const SizedBox(height: 10),
+                ...sectionOrders.map(
+                  (order) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: OrderItemWidget(
+                      order: order,
+                      scheme: scheme,
+                      onTap: onOrderTap == null
+                          ? null
+                          : () => onOrderTap!(order),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 

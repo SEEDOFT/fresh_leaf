@@ -7,6 +7,7 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
+import 'package:fresh_leaf/shared/widgets/paginated_list_view.dart';
 import 'package:fresh_leaf/shared/widgets/skeleton_loading_widget.dart';
 import 'package:get/get.dart';
 
@@ -55,8 +56,11 @@ class ProductListView extends GetView<ProductListController> {
                               (crossAxisCount - 1) * spacing) /
                           crossAxisCount;
 
-                      return GridView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
+                      return PaginatedGridView(
+                        items: controller.products,
+                        onLoadMore: controller.loadMore,
+                        isLoadingMore: controller.isLoadingMore,
+                        hasMore: controller.hasMore,
                         padding: const EdgeInsets.all(16),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: crossAxisCount,
@@ -64,9 +68,7 @@ class ProductListView extends GetView<ProductListController> {
                           crossAxisSpacing: spacing,
                           mainAxisSpacing: spacing,
                         ),
-                        itemCount: controller.products.length,
-                        itemBuilder: (context, index) {
-                          final product = controller.products[index];
+                        itemBuilder: (context, index, product) {
                           return Obx(
                             () => AppProductCard(
                               title: product.displayTitle.tr,

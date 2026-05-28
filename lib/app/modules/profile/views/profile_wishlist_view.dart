@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_wishlist_widget.dart';
@@ -35,63 +37,99 @@ class ProfileWishlistView extends GetView<ProfileWishlistController> {
           }
         }
 
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          children: [
-            _WishlistControls(controller: controller),
-            const SizedBox(height: 14),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        return NotificationListener<ScrollNotification>(
+          onNotification: (scrollInfo) {
+            if (!controller.wishlistController.isLoadingMore.value &&
+                controller.wishlistController.hasMore.value &&
+                scrollInfo.metrics.pixels >=
+                    scrollInfo.metrics.maxScrollExtent - 200) {
+              unawaited(controller.wishlistController.loadMore());
+            }
+            return false;
+          },
+          child: RefreshIndicator(
+            onRefresh: controller.wishlistController.refreshList,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               children: [
-                Expanded(
-                  child: Column(
-                    children: leftColumn
-                        .map(
-                          (item) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: WishlistItemCard(
-                              item: item,
-                              imageHeight: _imageHeightFor(item, isLeft: true),
-                              onOpen: () => controller.openProductDetail(item),
-                              onRemove: () => controller.removeItem(item),
-                              onAddToCart: () => controller.addToCart(item),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                _WishlistControls(controller: controller),
+                const SizedBox(height: 14),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: leftColumn
+                            .map(
+                              (item) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: WishlistItemCard(
+                                  item: item,
+                                  imageHeight: _imageHeightFor(
+                                    item,
+                                    isLeft: true,
+                                  ),
+                                  onOpen: () =>
+                                      controller.openProductDetail(item),
+                                  onRemove: () => controller.removeItem(item),
+                                  onAddToCart: () => controller.addToCart(item),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        children: rightColumn
+                            .map(
+                              (item) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: WishlistItemCard(
+                                  item: item,
+                                  imageHeight: _imageHeightFor(
+                                    item,
+                                    isLeft: false,
+                                  ),
+                                  onOpen: () =>
+                                      controller.openProductDetail(item),
+                                  onRemove: () => controller.removeItem(item),
+                                  onAddToCart: () => controller.addToCart(item),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'wishlist_hint_tap_card'.tr,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 12,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    children: rightColumn
-                        .map(
-                          (item) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: WishlistItemCard(
-                              item: item,
-                              imageHeight: _imageHeightFor(item, isLeft: false),
-                              onOpen: () => controller.openProductDetail(item),
-                              onRemove: () => controller.removeItem(item),
-                              onAddToCart: () => controller.addToCart(item),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                if (controller.wishlistController.isLoadingMore.value)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
                   ),
-                ),
               ],
             ),
-            const SizedBox(height: 6),
-            Text(
-              'wishlist_hint_tap_card'.tr,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: scheme.onSurfaceVariant,
-                fontSize: 12,
-              ),
-            ),
-          ],
+          ),
         );
       }),
     );

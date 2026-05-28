@@ -43,29 +43,9 @@ class ProfilePinView extends GetView<ProfilePinController> {
                   height: 50,
                 ),
               ] else ...[
-                PinTextField(
-                  label: 'current_pin'.tr,
-                  controller: controller.currentPinController,
-                  inputFormatters: controller.pinInputFormatter,
-                ),
-                const SizedBox(height: 14),
-                PinTextField(
-                  label: 'new_pin'.tr,
-                  controller: controller.newPinController,
-                  inputFormatters: controller.pinInputFormatter,
-                ),
-                const SizedBox(height: 14),
-                PinTextField(
-                  label: 'confirm_pin'.tr,
-                  controller: controller.confirmPinController,
-                  inputFormatters: controller.pinInputFormatter,
-                ),
-                const SizedBox(height: 14),
                 PrimaryButton(
-                  onPressed: controller.isSaving.value
-                      ? null
-                      : controller.updateExistingPin,
-                  isLoading: controller.isSaving.value,
+                  onPressed: controller.openUpdatePinFlow,
+                  icon: Icons.edit_rounded,
                   label: 'update_pin'.tr,
                   borderRadius: 14,
                   height: 50,

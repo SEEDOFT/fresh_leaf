@@ -33,10 +33,7 @@ class ProductRepository {
       if (response.statusCode == 200 && response.data != null) {
         final rawData = response.data!['data'];
         final dataList = (rawData is Map)
-            ? (rawData['vendor_inventories'] ??
-                      rawData['products'] ??
-                      rawData['data'])
-                  as List<dynamic>?
+            ? rawData['data'] as List<dynamic>?
             : rawData as List<dynamic>?;
 
         if (dataList != null) {

@@ -123,7 +123,7 @@ class ProfileSettingsView extends GetView<ProfileSettingsController> {
               padding: const EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
               child: Text(
-                'FreshLeaf v1.0.0',
+                'profile_version_label'.tr,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
                   fontSize: 12,

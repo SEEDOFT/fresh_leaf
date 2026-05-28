@@ -76,12 +76,12 @@ class AiAssistantApiService extends GetxService {
   }
 
   Future<String> resolveUserId() async {
-    final response = await _apiClient.getRequest(ApiEndpoints.userProfile);
+    final response = await _apiClient.getRequest(ApiEndpoints.profile);
     final apiResponse = ApiResponse.parseMap(response.data);
     final profileData = _extractDataMap(apiResponse.data);
     final userId = formatToString(profileData['id']);
     if (userId.isEmpty) {
-      throw const FormatException('Missing user id in /users/profile response');
+      throw const FormatException('Missing id in profile response');
     }
     return userId;
   }

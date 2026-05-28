@@ -1,16 +1,18 @@
 import 'dart:async';
+import 'package:fresh_leaf/core/mixins/paginated_list_mixin.dart';
 import 'package:fresh_leaf/core/models/app_notification.dart';
+import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:get/get.dart';
 
-class NotificationsController extends GetxController {
+class NotificationsController extends GetxController
+    with PaginatedListMixin<AppNotification> {
   final NotificationService _notificationService =
       Get.find<NotificationService>();
 
-  final RxList<AppNotification> notifications = <AppNotification>[].obs;
   final RxString _activeFilter = 'all'.obs;
-  final RxBool isRefreshing = false.obs;
-  final RxBool isLoading = false.obs;
+
+  List<AppNotification> get notifications => items;
 
   String get activeFilter => _activeFilter.value;
   set activeFilter(String value) => _activeFilter.value = value;
@@ -18,20 +20,13 @@ class NotificationsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    notifications.assignAll(_notificationService.notifications);
-    unawaited(loadNotifications());
+    items.assignAll(_notificationService.notifications);
+    unawaited(loadInitial());
   }
 
-  Future<void> loadNotifications() async {
-    if (notifications.isEmpty) {
-      isLoading.value = true;
-    }
-    try {
-      final data = await _notificationService.getNotifications();
-      notifications.assignAll(data);
-    } finally {
-      isLoading.value = false;
-    }
+  @override
+  Future<PaginatedResponse<AppNotification>> fetchPage(int page) async {
+    return _notificationService.getNotifications(page: page);
   }
 
   List<AppNotification> get filtered {
@@ -43,26 +38,13 @@ class NotificationsController extends GetxController {
     if (_activeFilter.value == 'promo') typeCode = 'PROMOTION';
     if (_activeFilter.value == 'system') typeCode = 'SYSTEM';
 
-    return notifications
-        .where((n) => n.typeCode == typeCode)
-        .toList(growable: false);
-  }
-
-  Future<void> refreshList() async {
-    if (isRefreshing.value) return;
-    isRefreshing.value = true;
-    try {
-      final data = await _notificationService.getNotifications();
-      notifications.assignAll(data);
-    } finally {
-      isRefreshing.value = false;
-    }
+    return items.where((n) => n.typeCode == typeCode).toList(growable: false);
   }
 
   Future<void> markAllRead() async {
     final success = await _notificationService.markAllAsRead();
     if (success) {
-      notifications.assignAll(_notificationService.notifications);
+      items.assignAll(_notificationService.notifications);
     }
   }
 }

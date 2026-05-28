@@ -36,7 +36,7 @@ class OrderWalletPaymentController extends GetxController {
     if (orderId.value > 0) {
       unawaited(_loadData());
     } else {
-      Get.snackbar('Error', 'Invalid order ID');
+      Get.snackbar('register_error_title'.tr, 'order_error_invalid_id'.tr);
       unawaited(Get.offNamed<void>(AppRoutes.orders));
     }
   }
@@ -65,7 +65,7 @@ class OrderWalletPaymentController extends GetxController {
   Future<void> _fetchWallets() async {
     try {
       final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.userWallets);
+      final response = await apiClient.getRequest(ApiEndpoints.wallets);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         Wallet.listFromDynamic,

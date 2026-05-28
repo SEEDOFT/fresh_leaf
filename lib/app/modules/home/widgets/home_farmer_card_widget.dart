@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/constants/app_sizes.dart';
 import 'package:fresh_leaf/shared/widgets/app_badge.dart';
+import 'package:get/get.dart';
 
 class HomeFarmerCardWidget extends StatelessWidget {
   const HomeFarmerCardWidget({super.key});
@@ -26,7 +27,7 @@ class HomeFarmerCardWidget extends StatelessWidget {
             ),
             SizedBox(height: AppSizes.s16),
             Text(
-              'FEATURED FARMER',
+              'home_featured_farmer'.tr,
               style: TextStyle(
                 fontSize: AppSizes.s10,
                 fontWeight: FontWeight.bold,
@@ -36,7 +37,7 @@ class HomeFarmerCardWidget extends StatelessWidget {
             ),
             SizedBox(height: AppSizes.s4),
             Text(
-              "Meet Miller's Organic",
+              'home_farmer_name'.tr,
               style: TextStyle(
                 fontSize: AppSizes.s20,
                 fontWeight: FontWeight.w900,
@@ -45,9 +46,7 @@ class HomeFarmerCardWidget extends StatelessWidget {
             ),
             SizedBox(height: AppSizes.s12),
             Text(
-              'Supplying our community with pesticide-free heirloom '
-              'produce since 1994. Every bunch of kale helps support'
-              ' local biodiversity.',
+              'home_farmer_description'.tr,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: AppSizes.s13,
@@ -60,7 +59,7 @@ class HomeFarmerCardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AppBadge(
-                  label: 'Carbon Neutral',
+                  label: 'home_badge_carbon_neutral'.tr,
                   icon: Icons.check_circle,
                   backgroundColor: scheme.surface,
                   foregroundColor: scheme.onSurface,
@@ -72,7 +71,7 @@ class HomeFarmerCardWidget extends StatelessWidget {
                 ),
                 SizedBox(width: AppSizes.s8),
                 AppBadge(
-                  label: '12 Miles Away',
+                  label: 'home_badge_miles_away'.tr,
                   icon: Icons.local_shipping,
                   backgroundColor: scheme.surface,
                   foregroundColor: scheme.onSurface,

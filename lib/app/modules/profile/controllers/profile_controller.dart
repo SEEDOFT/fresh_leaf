@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/controllers/app_settings_controller.dart';
@@ -119,6 +120,21 @@ class ProfileController extends GetxController {
     );
   }
 
+  Future<void> openWallet() async {
+    if (Get.isRegistered<WalletController>()) {
+      final walletController = Get.find<WalletController>();
+      if (!walletController.hasLoadedWallets.value) {
+        if (wallets.isEmpty) {
+          await _preloadWallets();
+        } else {
+          await walletController.applyWallets(wallets);
+        }
+      }
+    }
+
+    await Get.toNamed<void>(AppRoutes.wallet);
+  }
+
   Future<void> logout() async {
     if (isLoading.value) return;
     isLoading.value = true;
@@ -162,13 +178,16 @@ class ProfileController extends GetxController {
 
   Future<void> _preloadWallets() async {
     try {
-      final response = await _apiClient.getRequest(ApiEndpoints.userWallets);
+      final response = await _apiClient.getRequest(ApiEndpoints.wallets);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         Wallet.listFromDynamic,
       );
       if (apiResponse.isSuccess || response.statusCode == 200) {
         wallets.assignAll(apiResponse.data);
+        if (Get.isRegistered<WalletController>()) {
+          unawaited(Get.find<WalletController>().applyWallets(wallets));
+        }
       }
     } on Exception {
       // Fail silently
@@ -196,7 +215,7 @@ class ProfileController extends GetxController {
     if (data is List) {
       return data.whereType<Map<String, dynamic>>().toList();
     }
-    if (data is Map<String, dynamic>) {
+    if (data is Map) {
       final nested = data['items'] ?? data['addresses'] ?? data['data'];
       if (nested is List) {
         return nested.whereType<Map<String, dynamic>>().toList();
@@ -209,7 +228,7 @@ class ProfileController extends GetxController {
     if (data is List) {
       return data.whereType<Map<String, dynamic>>().toList();
     }
-    if (data is Map<String, dynamic>) {
+    if (data is Map) {
       final nested = data['items'] ?? data['methods'] ?? data['data'];
       if (nested is List) {
         return nested.whereType<Map<String, dynamic>>().toList();

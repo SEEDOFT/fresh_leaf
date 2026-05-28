@@ -272,7 +272,7 @@ class _PaymentMethodTypeDropdown extends StatelessWidget {
                 Expanded(
                   child: Text(
                     isLoading
-                        ? 'Loading...'
+                        ? 'common_loading'.tr
                         : (selectedLabel.isNotEmpty
                               ? selectedLabel
                               : (types.isEmpty
