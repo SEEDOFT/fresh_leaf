@@ -1,12 +1,10 @@
-import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
-
 final class ThemeSizes {
   ThemeSizes._();
 
-  static double get cardRadius => 16.scaled;
-  static double get buttonRadius => 14.scaled;
-  static double get outlinedButtonRadius => 12.scaled;
-  static double get chipRadius => 12.scaled;
-  static double get inputRadius => 12.scaled;
-  static double get bottomSheetRadius => 24.scaled;
+  static const double cardRadius = 16;
+  static const double buttonRadius = 14;
+  static const double outlinedButtonRadius = 12;
+  static const double chipRadius = 12;
+  static const double inputRadius = 12;
+  static const double bottomSheetRadius = 24;
 }
