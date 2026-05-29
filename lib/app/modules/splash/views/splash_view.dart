@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/splash/controllers/splash_controller.dart';
 import 'package:fresh_leaf/app/modules/splash/widgets/splash_widget.dart';
+import 'package:fresh_leaf/shared/widgets/exit_confirmation_sheet.dart';
 import 'package:get/get.dart';
 
 class SplashView extends GetView<SplashController> {
@@ -24,13 +25,23 @@ class SplashView extends GetView<SplashController> {
       ),
     );
 
-    return Scaffold(
-      body: AnimatedBuilder(
-        animation: controller.animationController,
-        builder: (context, _) => SplashBodyWidget(
-          c: controller,
-          isDark: isDark,
-          scheme: Theme.of(context).colorScheme,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldExit = await showExitConfirmationSheet(context);
+        if (shouldExit && context.mounted) {
+          await SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        body: AnimatedBuilder(
+          animation: controller.animationController,
+          builder: (context, _) => SplashBodyWidget(
+            c: controller,
+            isDark: isDark,
+            scheme: Theme.of(context).colorScheme,
+          ),
         ),
       ),
     );

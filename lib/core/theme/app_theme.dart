@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
+import 'package:fresh_leaf/core/theme/app_sizes.dart';
 
 final class AppTheme {
   AppTheme._();
@@ -61,7 +62,7 @@ final class AppTheme {
         color: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(ThemeSizes.cardRadius),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -71,7 +72,7 @@ final class AppTheme {
           disabledBackgroundColor: AppColors.textMuted.withValues(alpha: 0.35),
           disabledForegroundColor: Colors.white.withValues(alpha: 0.8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ThemeSizes.buttonRadius),
           ),
           elevation: 0,
         ),
@@ -86,7 +87,9 @@ final class AppTheme {
           foregroundColor: AppColors.primary,
           side: const BorderSide(color: AppColors.primary),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(
+              ThemeSizes.outlinedButtonRadius,
+            ),
           ),
         ),
       ),
@@ -96,7 +99,7 @@ final class AppTheme {
         disabledColor: AppColors.grayBorder,
         side: BorderSide.none,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.chipRadius),
         ),
         labelStyle: const TextStyle(color: AppColors.textDark),
       ),
@@ -116,15 +119,15 @@ final class AppTheme {
         hintStyle: const TextStyle(color: AppColors.inputHintColor),
         labelStyle: const TextStyle(color: AppColors.textLight),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.inputRadius),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.inputRadius),
           borderSide: const BorderSide(color: AppColors.grayBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.inputRadius),
           borderSide: const BorderSide(
             color: AppColors.primary,
             width: 1.4,
@@ -194,7 +197,7 @@ final class AppTheme {
         color: darkScheme.surfaceContainerHigh,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(ThemeSizes.cardRadius),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -204,7 +207,7 @@ final class AppTheme {
           disabledBackgroundColor: darkScheme.primary.withValues(alpha: 0.35),
           disabledForegroundColor: darkScheme.onPrimary.withValues(alpha: 0.8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(ThemeSizes.buttonRadius),
           ),
           elevation: 0,
         ),
@@ -219,7 +222,9 @@ final class AppTheme {
           foregroundColor: darkScheme.primary,
           side: BorderSide(color: darkScheme.outline),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(
+              ThemeSizes.outlinedButtonRadius,
+            ),
           ),
         ),
       ),
@@ -229,7 +234,7 @@ final class AppTheme {
         disabledColor: AppColors.darkChipDisabled,
         side: BorderSide.none,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.chipRadius),
         ),
         labelStyle: TextStyle(color: darkScheme.onSurface),
       ),
@@ -251,15 +256,15 @@ final class AppTheme {
         hintStyle: TextStyle(color: darkScheme.onSurfaceVariant),
         labelStyle: TextStyle(color: darkScheme.onSurfaceVariant),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.inputRadius),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.inputRadius),
           borderSide: BorderSide(color: darkScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ThemeSizes.inputRadius),
           borderSide: BorderSide(color: darkScheme.primary, width: 1.4),
         ),
       ),

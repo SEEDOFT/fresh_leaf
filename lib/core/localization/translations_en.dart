@@ -158,6 +158,9 @@ const Map<String, String> translationsEn = {
   'clear_chat_history_body':
       'This will remove all stored AI and user messages.',
   'cancel': 'Cancel',
+  'exit': 'Exit',
+  'exit_app_title': 'Exit App',
+  'exit_app_message': 'Are you sure you want to exit?',
   'clear': 'Clear',
   'ai_empty_title': 'Welcome to FreshLeaf AI',
   'ai_empty_subtitle':
@@ -309,6 +312,10 @@ const Map<String, String> translationsEn = {
   'order_details': 'Order Details',
   'order_not_found': 'Order not found',
   'ordered_items': 'Ordered Items',
+  'delivery_information': 'Delivery Information',
+  'delivery_company': 'Delivery Company',
+  'tracking_info': 'Tracking Info',
+  'proof_of_preparation': 'Proof of Preparation',
   'reorder_everything': 'Reorder Everything',
   'open_product': 'Open Product',
   'product': 'Product',
@@ -756,23 +763,33 @@ const Map<String, String> translationsEn = {
   // Privacy
   'privacy_data_collect_heading': 'Data we collect',
   'privacy_data_collect_body':
-      'We store your name, email, phone, saved addresses, and order history to deliver your purchases and improve recommendations.',
+      'We store your name, email, phone, saved addresses,'
+      ' and order history to deliver your purchases and'
+      ' improve recommendations.',
   'privacy_how_we_use_heading': 'How we use it',
   'privacy_how_we_use_body':
-      'Data is used for account access, payments, delivery routing, AI assistant personalization, and fraud prevention.',
+      'Data is used for account access, payments, delivery'
+      ' routing, AI assistant personalization, and fraud'
+      ' prevention.',
   'privacy_sharing_heading': 'Sharing',
   'privacy_sharing_body':
-      'We share only what is needed with payment processors, delivery partners, and analytics providers. We do not sell personal data.',
+      'We share only what is needed with payment processors,'
+      ' delivery partners, and analytics providers.'
+      ' We do not sell personal data.',
   'privacy_security_heading': 'Security',
   'privacy_security_body':
-      'Tokens are stored securely; PIN protects order access; all network calls go over HTTPS.',
+      'Tokens are stored securely; PIN protects order access;'
+      ' all network calls go over HTTPS.',
   'privacy_controls_heading': 'Your controls',
   'privacy_controls_body':
-      'Update profile details, addresses, and PIN in the Profile tab. Contact support to delete your account or export data.',
+      'Update profile details, addresses, and PIN in the'
+      ' Profile tab. Contact support to delete your'
+      ' account or export data.',
   'privacy_tos_heading': 'Terms of service (summary)',
   'privacy_tos_body':
       'Use of FreshLeaf requires a valid account, accurate delivery info, and '
-      'compliance with local regulations. Orders may be canceled if payment fails or address is unreachable.',
+      'compliance with local regulations. Orders'
+      ' may be canceled if payment fails or address is unreachable.',
 
   // Home
   'home_featured_farmer': 'FEATURED FARMER',
