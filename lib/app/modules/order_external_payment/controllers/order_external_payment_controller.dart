@@ -8,7 +8,7 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class OrderExternalPaymentController extends GetxController {
-  final RxInt orderId = 0.obs;
+  final RxList<int> orderIds = <int>[].obs;
   final RxInt remainingSeconds = 300.obs; // 5 minutes
   final RxBool isProcessing = false.obs;
   Timer? _timer;
@@ -18,7 +18,11 @@ class OrderExternalPaymentController extends GetxController {
     super.onInit();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
-      orderId.value = args['order_id'] as int? ?? 0;
+      if (args['order_ids'] != null) {
+        orderIds.assignAll(args['order_ids'] as List<int>);
+      } else if (args['order_id'] != null) {
+        orderIds.add(args['order_id'] as int);
+      }
     }
     _startTimer();
   }
@@ -34,21 +38,27 @@ class OrderExternalPaymentController extends GetxController {
     });
   }
 
-  Future<void> simulatePaymentSuccess() async {
-    if (orderId.value == 0 || isProcessing.value) return;
+  Future<void> simulatePayment() async {
+    if (orderIds.isEmpty || isProcessing.value) return;
 
     isProcessing.value = true;
     _timer?.cancel();
 
     try {
       final apiClient = Get.find<ApiClient>();
-      await apiClient.postRequest(
-        '/orders/${orderId.value}/simulate-external-payment',
-      );
+      for (final id in orderIds) {
+        await apiClient.postRequest(
+          '/orders/$id/simulate-external-payment',
+        );
+      }
 
       Get.snackbar(
         'success'.tr,
-        'order_on_the_way_one'.trParams({'count': '1'}),
+        orderIds.length == 1
+            ? 'order_on_the_way_one'.trParams({'count': '1'})
+            : 'order_on_the_way_other'.trParams({
+                'count': orderIds.length.toString(),
+              }),
       );
 
       if (Get.isRegistered<DashboardController>()) {

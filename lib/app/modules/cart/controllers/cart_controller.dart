@@ -18,6 +18,15 @@ class CartController extends GetxController {
     unawaited(fetchCart());
   }
 
+  Map<int, List<core_models.CartItem>> get groupedItems {
+    final map = <int, List<core_models.CartItem>>{};
+    for (final item in items) {
+      final vendorId = item.vendorInventory?.vendorId ?? 0;
+      map.putIfAbsent(vendorId, () => []).add(item);
+    }
+    return map;
+  }
+
   Future<void> fetchCart() async {
     isLoading.value = true;
     try {

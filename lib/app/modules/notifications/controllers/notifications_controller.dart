@@ -47,4 +47,23 @@ class NotificationsController extends GetxController
       items.assignAll(_notificationService.notifications);
     }
   }
+
+  void markItemAsReadLocally(int id) {
+    final idx = items.indexWhere((n) => n.id == id);
+    if (idx != -1) {
+      final old = items[idx];
+      items[idx] = AppNotification(
+        id: old.id,
+        title: old.title,
+        message: old.message,
+        isRead: true,
+        readAt: DateTime.now(),
+        createdAt: old.createdAt,
+        typeCode: old.typeCode,
+        typeNameEn: old.typeNameEn,
+        typeNameKm: old.typeNameKm,
+        data: old.data,
+      );
+    }
+  }
 }

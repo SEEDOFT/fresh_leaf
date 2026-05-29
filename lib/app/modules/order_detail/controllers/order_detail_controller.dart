@@ -8,25 +8,30 @@ import 'package:get/get.dart';
 
 class OrderDetailController extends GetxController {
   final OrderService _orderService = Get.find<OrderService>();
+  final StorageService _storageService = Get.find<StorageService>();
 
   final Rxn<Order> order = Rxn<Order>();
-  late final RxBool isCheckingAccess;
+  final RxBool isCheckingAccess = false.obs;
   final RxBool isUpdating = false.obs;
-  final RxBool isLoadingDetails = false.obs;
+  final RxBool isLoadingDetails = true.obs;
+  int? _orderIdToLoad;
 
   @override
   void onInit() {
     super.onInit();
-    final storage = Get.find<StorageService>();
-    isCheckingAccess = storage.pinOrderVerification.obs;
+    isCheckingAccess.value = _storageService.pinOrderVerification;
 
     final args = Get.arguments;
     if (args is Order) {
       order.value = args;
-    } else if (args is Map<String, dynamic>) {
-      order.value = Order.fromMap(args);
+      _orderIdToLoad = args.id;
     } else if (args is Map) {
-      order.value = Order.fromMap(args.cast<String, dynamic>());
+      final id = args['id'] ?? args['order_id'];
+      if (id is int) {
+        _orderIdToLoad = id;
+      } else if (id is String) {
+        _orderIdToLoad = int.tryParse(id);
+      }
     }
     unawaited(reloadOrder());
   }
@@ -38,8 +43,7 @@ class OrderDetailController extends GetxController {
   }
 
   Future<void> _verifyAccess() async {
-    final storage = Get.find<StorageService>();
-    if (!storage.pinOrderVerification) {
+    if (!_storageService.pinOrderVerification) {
       isCheckingAccess.value = false;
       return;
     }
@@ -53,7 +57,8 @@ class OrderDetailController extends GetxController {
   }
 
   Future<void> reloadOrder() async {
-    if (order.value?.id == null) return;
+    final idToLoad = _orderIdToLoad ?? order.value?.id;
+    if (idToLoad == null) return;
 
     final hasItems = order.value?.items.isNotEmpty ?? false;
     if (!hasItems) {
@@ -62,7 +67,7 @@ class OrderDetailController extends GetxController {
       isUpdating.value = true;
     }
 
-    final updatedOrder = await _orderService.getOrder(order.value!.id);
+    final updatedOrder = await _orderService.getOrder(idToLoad);
     if (updatedOrder != null) {
       order.value = updatedOrder;
     }

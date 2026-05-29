@@ -28,7 +28,7 @@ class NotificationDetailController extends GetxController {
     final success = await _notificationService.markAsRead(id);
 
     if (success) {
-      Get.back<void>();
+      Get.back<bool>(result: true);
     }
   }
 }

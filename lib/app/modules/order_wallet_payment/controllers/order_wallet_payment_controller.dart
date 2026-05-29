@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
@@ -12,8 +13,8 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class OrderWalletPaymentController extends GetxController {
-  final RxInt orderId = 0.obs;
-  final Rxn<Order> order = Rxn<Order>();
+  final RxList<int> orderIds = <int>[].obs;
+  final RxList<Order> orders = <Order>[].obs;
   final RxList<Wallet> wallets = <Wallet>[].obs;
 
   final RxBool isLoading = false.obs;
@@ -26,14 +27,18 @@ class OrderWalletPaymentController extends GetxController {
     super.onInit();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
-      orderId.value = args['order_id'] as int? ?? 0;
+      if (args['order_ids'] != null) {
+        orderIds.assignAll(args['order_ids'] as List<int>);
+      } else if (args['order_id'] != null) {
+        orderIds.add(args['order_id'] as int);
+      }
     }
   }
 
   @override
   void onReady() {
     super.onReady();
-    if (orderId.value > 0) {
+    if (orderIds.isNotEmpty) {
       unawaited(_loadData());
     } else {
       Get.snackbar('register_error_title'.tr, 'order_error_invalid_id'.tr);
@@ -45,7 +50,7 @@ class OrderWalletPaymentController extends GetxController {
     isLoading.value = true;
     try {
       await Future.wait([
-        _fetchOrder(),
+        _fetchOrders(),
         _fetchWallets(),
       ]);
       _autoSelectWallet();
@@ -54,12 +59,31 @@ class OrderWalletPaymentController extends GetxController {
     }
   }
 
-  Future<void> _fetchOrder() async {
+  Future<void> _fetchOrders() async {
     final orderService = Get.find<OrderService>();
-    final fetchedOrder = await orderService.getOrder(orderId.value);
-    if (fetchedOrder != null) {
-      order.value = fetchedOrder;
+    final fetchedOrders = <Order>[];
+    for (final id in orderIds) {
+      final fetchedOrder = await orderService.getOrder(id);
+      if (fetchedOrder != null) {
+        fetchedOrders.add(fetchedOrder);
+      }
     }
+    orders.assignAll(fetchedOrders);
+  }
+
+  double get totalAmount {
+    return orders.fold(0, (sum, order) => sum + order.totalAmount);
+  }
+
+  MoneyDisplay get totalDisplay {
+    if (orders.isEmpty) return MoneyDisplay.empty;
+    double usd = 0;
+    double khr = 0;
+    for (final order in orders) {
+      usd += order.resolvedTotalAmountDisplay.usd;
+      khr += order.resolvedTotalAmountDisplay.khr;
+    }
+    return MoneyDisplay(usd: usd, khr: khr);
   }
 
   Future<void> _fetchWallets() async {
@@ -80,18 +104,6 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   void _autoSelectWallet() {
-    if (order.value == null || wallets.isEmpty) return;
-
-    // Try to find a wallet with sufficient balance
-    final orderTotal = order.value!.totalAmount;
-    for (final wallet in wallets) {
-      if (wallet.balance >= orderTotal) {
-        selectedWallet.value = wallet;
-        return;
-      }
-    }
-
-    // Default to first if none have sufficient
     if (wallets.isNotEmpty) {
       selectedWallet.value = wallets.first;
     }
@@ -103,19 +115,22 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   bool get canPay {
-    if (order.value == null || selectedWallet.value == null) return false;
-    return selectedWallet.value!.balance >= order.value!.totalAmount;
+    if (orders.isEmpty || selectedWallet.value == null) return false;
+    return selectedWallet.value!.balance >= totalAmount;
   }
 
   Future<void> payOrder() async {
-    if (!canPay) return;
+    if (!canPay) {
+      Get.snackbar('payment_failed'.tr, 'please_select_wallet'.tr);
+      return;
+    }
     if (isPaying.value) return;
 
     isPaying.value = true;
     try {
       final orderService = Get.find<OrderService>();
-      final success = await orderService.payWithWallet(
-        orderId.value,
+      final success = await orderService.batchPayWithWallet(
+        orderIds,
         selectedWallet.value!.id,
       );
 

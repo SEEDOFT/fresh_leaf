@@ -12,12 +12,16 @@ class WalletTransactionTileWidget extends StatelessWidget {
     required this.tx,
     required this.currency,
     required this.symbol,
+    this.isFirst = false,
+    this.isLast = false,
     super.key,
   });
 
   final WalletTransaction tx;
   final String currency;
   final String symbol;
+  final bool isFirst;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
@@ -27,105 +31,152 @@ class WalletTransactionTileWidget extends StatelessWidget {
         ? formatPrice(tx.amount)
         : NumberFormat('#,###').format(tx.amount);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14.scaled),
-        onTap: () => _showTransactionDetails(context, scheme, displayAmount),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 12.scaled,
-            vertical: 11.scaled,
-          ),
-          decoration: BoxDecoration(
-            color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(14.scaled),
-            border: Border.all(
-              color: scheme.outline.withValues(alpha: 0.12),
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Timeline vertical layout
+          SizedBox(
+            width: 32.scaled,
+            child: Column(
+              children: [
+                Expanded(
+                  child: isFirst
+                      ? const SizedBox.shrink()
+                      : Container(
+                          width: 2.scaled,
+                          color: scheme.outlineVariant.withValues(alpha: 0.5),
+                        ),
+                ),
+                Container(
+                  width: 28.scaled,
+                  height: 28.scaled,
+                  margin: EdgeInsets.symmetric(vertical: 4.scaled),
+                  decoration: BoxDecoration(
+                    color: (isCredit ? Colors.green : Colors.orange).withValues(
+                      alpha: 0.13,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isCredit
+                        ? Icons.arrow_downward_rounded
+                        : Icons.arrow_upward_rounded,
+                    color: isCredit
+                        ? Colors.green.shade600
+                        : Colors.orange.shade700,
+                    size: 16.scaled,
+                  ),
+                ),
+                Expanded(
+                  child: isLast
+                      ? const SizedBox.shrink()
+                      : Container(
+                          width: 2.scaled,
+                          color: scheme.outlineVariant.withValues(alpha: 0.5),
+                        ),
+                ),
+              ],
             ),
           ),
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10.scaled),
-                decoration: BoxDecoration(
-                  color: (isCredit ? Colors.green : Colors.orange).withValues(
-                    alpha: 0.13,
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isCredit
-                      ? Icons.arrow_downward_rounded
-                      : Icons.arrow_upward_rounded,
-                  color: isCredit
-                      ? Colors.green.shade600
-                      : Colors.orange.shade700,
-                  size: 18.scaled,
-                ),
+          SizedBox(width: 8.scaled),
+          // Transaction Card
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: isFirst ? 0 : 4.scaled,
+                bottom: isLast ? 0 : 4.scaled,
               ),
-              SizedBox(width: 12.scaled),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      tx.title,
-                      style: TextStyle(
-                        fontSize: 13.scaled,
-                        fontWeight: FontWeight.w700,
-                        color: scheme.onSurface,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14.scaled),
+                  onTap: () =>
+                      _showTransactionDetails(context, scheme, displayAmount),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.scaled,
+                      vertical: 11.scaled,
+                    ),
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerHighest.withValues(
+                        alpha: 0.3,
+                      ),
+                      borderRadius: BorderRadius.circular(14.scaled),
+                      border: Border.all(
+                        color: scheme.outline.withValues(alpha: 0.12),
                       ),
                     ),
-                    SizedBox(height: 3.scaled),
-                    Text(
-                      formatDateTime(tx.date),
-                      style: TextStyle(
-                        fontSize: 11.scaled,
-                        color: scheme.onSurfaceVariant,
-                      ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                tx.title,
+                                style: TextStyle(
+                                  fontSize: 13.scaled,
+                                  fontWeight: FontWeight.w700,
+                                  color: scheme.onSurface,
+                                ),
+                              ),
+                              SizedBox(height: 3.scaled),
+                              Text(
+                                formatDateTime(tx.date),
+                                style: TextStyle(
+                                  fontSize: 11.scaled,
+                                  color: scheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8.scaled),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              currency == 'USD'
+                                  ? '${isCredit ? '+' : '-'}'
+                                      '$symbol$displayAmount'
+                                  : '${isCredit ? '+' : '-'}'
+                                      '$displayAmount $symbol',
+                              style: TextStyle(
+                                fontSize: 14.scaled,
+                                fontWeight: FontWeight.w700,
+                                color: isCredit
+                                    ? Colors.green.shade700
+                                    : scheme.onSurface,
+                              ),
+                            ),
+                            SizedBox(height: 2.scaled),
+                            Text(
+                              tx.status,
+                              style: TextStyle(
+                                fontSize: 10.scaled,
+                                color: switch (tx.statusId) {
+                                  1 => Colors.orange.shade700, // Pending
+                                  3 => scheme.error, // Failed
+                                  4 => scheme.secondary, // Cancelled
+                                  _ =>
+                                    isCredit
+                                        ? Colors.green.shade700
+                                        : scheme.secondary, // Completed
+                                },
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-              SizedBox(width: 8.scaled),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    currency == 'USD'
-                        ? '${isCredit ? '+' : '-'}$symbol$displayAmount'
-                        : '${isCredit ? '+' : '-'}$displayAmount $symbol',
-                    style: TextStyle(
-                      fontSize: 14.scaled,
-                      fontWeight: FontWeight.w700,
-                      color: isCredit
-                          ? Colors.green.shade700
-                          : scheme.onSurface,
-                    ),
-                  ),
-                  SizedBox(height: 2.scaled),
-                  Text(
-                    tx.status,
-                    style: TextStyle(
-                      fontSize: 10.scaled,
-                      color: switch (tx.statusId) {
-                        1 => Colors.orange.shade700, // Pending
-                        3 => scheme.error, // Failed
-                        4 => scheme.secondary, // Cancelled
-                        _ =>
-                          isCredit
-                              ? Colors.green.shade700
-                              : scheme.secondary, // Completed
-                      },
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

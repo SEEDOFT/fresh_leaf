@@ -80,7 +80,7 @@ class CartService extends GetxService {
     }
   }
 
-  Future<int?> checkout(
+  Future<List<int>?> checkout(
     int addressId,
     int? paymentMethodId,
     int? paymentMethodTypeId,
@@ -98,12 +98,15 @@ class CartService extends GetxService {
           'notes': notes != null && notes.isNotEmpty ? notes : null,
         },
       );
-      final apiResponse = ApiResponse.parseMap(response.data);
-      if (apiResponse.isSuccess && apiResponse.data.isNotEmpty) {
-        final data = apiResponse.data['data'] ?? apiResponse.data;
-        if (data is Map<String, dynamic> && data.containsKey('id')) {
-          return data['id'] as int;
+      final apiResponse = ApiResponse.parseList(response.data);
+      if (apiResponse.isSuccess) {
+        final ids = <int>[];
+        for (final item in apiResponse.data) {
+          if (item.containsKey('id')) {
+            ids.add(item['id'] as int);
+          }
         }
+        if (ids.isNotEmpty) return ids;
       }
       return null;
     } on Exception {

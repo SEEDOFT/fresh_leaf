@@ -290,6 +290,7 @@ class NotificationService extends GetxService {
   Future<void> _handleNotificationClick(Map<String, dynamic> data) async {
     final route = data['route'] as String?;
     final type = data['type'] as String?;
+    final argumentsStr = data['arguments'] as String?;
 
     if (kDebugMode) {
       debugPrint(
@@ -310,7 +311,17 @@ class NotificationService extends GetxService {
       if (kDebugMode) {
         debugPrint('[NotificationService] Navigating to: $route');
       }
-      await Get.toNamed<void>(route);
+      dynamic args;
+      if (argumentsStr != null && argumentsStr.isNotEmpty) {
+        try {
+          args = jsonDecode(argumentsStr);
+        } on Exception catch (e) {
+          if (kDebugMode) {
+            debugPrint('Error parsing notification arguments: $e');
+          }
+        }
+      }
+      await Get.toNamed<void>(route, arguments: args);
     } else {
       // Default to notifications list if no route provided
       if (kDebugMode) {

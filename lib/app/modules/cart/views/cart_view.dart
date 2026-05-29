@@ -66,6 +66,9 @@ class CartView extends GetView<CartController> {
                   return const CartEmptyWidget();
                 }
 
+                final grouped = controller.groupedItems;
+                final entries = grouped.entries.toList();
+
                 return ListView.separated(
                   padding: EdgeInsets.fromLTRB(
                     20.scaled,
@@ -73,15 +76,56 @@ class CartView extends GetView<CartController> {
                     20.scaled,
                     16.scaled,
                   ),
-                  itemCount: controller.items.length,
-                  separatorBuilder: (_, _) => SizedBox(height: 14.scaled),
+                  itemCount: entries.length,
+                  separatorBuilder: (_, _) => SizedBox(height: 24.scaled),
                   itemBuilder: (context, index) {
-                    final item = controller.items[index];
-                    return CartItemCardWidget(
-                      item: item,
-                      onMinus: () => controller.decreaseQuantity(index),
-                      onPlus: () => controller.increaseQuantity(index),
-                      onRemove: () => controller.items.removeAt(index),
+                    final entry = entries[index];
+                    final vendorItems = entry.value;
+                    final vendorName =
+                        vendorItems.first.vendorInventory?.vendorName ??
+                        'Vendor';
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 12.scaled),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.storefront_outlined,
+                                size: 20.scaled,
+                                color: Get.theme.colorScheme.primary,
+                              ),
+                              SizedBox(width: 8.scaled),
+                              Text(
+                                vendorName,
+                                style: Get.theme.textTheme.titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ...vendorItems.map((item) {
+                          final originalIndex = controller.items.indexOf(item);
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: item == vendorItems.last ? 0 : 14.scaled,
+                            ),
+                            child: CartItemCardWidget(
+                              item: item,
+                              onMinus: () =>
+                                  controller.decreaseQuantity(originalIndex),
+                              onPlus: () =>
+                                  controller.increaseQuantity(originalIndex),
+                              onRemove: () =>
+                                  controller.items.removeAt(originalIndex),
+                            ),
+                          );
+                        }),
+                      ],
                     );
                   },
                 );

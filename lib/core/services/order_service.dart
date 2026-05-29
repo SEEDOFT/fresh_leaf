@@ -85,4 +85,20 @@ class OrderService extends GetxService {
       return false;
     }
   }
+
+  Future<bool> batchPayWithWallet(List<int> orderIds, int walletId) async {
+    try {
+      final response = await apiClient.postRequest(
+        '${ApiEndpoints.orders}/batch-pay',
+        data: {
+          'order_ids': orderIds,
+          'wallet_id': walletId,
+        },
+      );
+      final apiResponse = ApiResponse.parseList(response.data);
+      return apiResponse.isSuccess;
+    } on Exception {
+      return false;
+    }
+  }
 }

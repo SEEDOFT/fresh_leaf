@@ -59,7 +59,7 @@ class OrderExternalPaymentView extends GetView<OrderExternalPaymentController> {
                   child: ElevatedButton(
                     onPressed: controller.isProcessing.value
                         ? null
-                        : controller.simulatePaymentSuccess,
+                        : controller.simulatePayment,
                     child: controller.isProcessing.value
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text('simulate_payment_success'.tr),

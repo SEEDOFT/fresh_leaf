@@ -139,3 +139,66 @@ class PaginatedGridView<T> extends StatelessWidget {
     );
   }
 }
+
+class PaginatedSliverList<T> extends StatelessWidget {
+  const PaginatedSliverList({
+    required this.items,
+    required this.itemBuilder,
+    required this.isLoadingMore,
+    this.separatorBuilder,
+    super.key,
+  });
+
+  final List<T> items;
+  final Widget Function(BuildContext, int, T) itemBuilder;
+  final RxBool isLoadingMore;
+  final Widget Function(BuildContext, int)? separatorBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (separatorBuilder != null) {
+            final itemIndex = index ~/ 2;
+            if (index.isOdd) {
+              return separatorBuilder!(context, itemIndex);
+            }
+            if (itemIndex == items.length) {
+              return Obx(() {
+                if (isLoadingMore.value) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return const SizedBox.shrink();
+              });
+            }
+            return itemBuilder(context, itemIndex, items[itemIndex]);
+          } else {
+            if (index == items.length) {
+              return Obx(() {
+                if (isLoadingMore.value) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return const SizedBox.shrink();
+              });
+            }
+            return itemBuilder(context, index, items[index]);
+          }
+        },
+        childCount: separatorBuilder != null
+            ? items.length * 2 + 1
+            : items.length + 1,
+      ),
+    );
+  }
+}

@@ -106,10 +106,15 @@ class NotificationsView extends GetView<NotificationsController> {
                             return NotificationCard(
                               item: item,
                               scheme: scheme,
-                              onTap: () async => await Get.toNamed<void>(
-                                AppRoutes.notificationDetail,
-                                arguments: item,
-                              ),
+                              onTap: () async {
+                                final result = await Get.toNamed<dynamic>(
+                                  AppRoutes.notificationDetail,
+                                  arguments: item,
+                                );
+                                if (result == true) {
+                                  controller.markItemAsReadLocally(item.id);
+                                }
+                              },
                             );
                           },
                         ),

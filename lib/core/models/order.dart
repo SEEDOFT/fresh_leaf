@@ -19,6 +19,9 @@ class Order {
     this.deliverySlot,
     this.notes,
     this.createdAt,
+    this.preparationProofPhoto,
+    this.deliveryCompanyName,
+    this.deliveryTrackingInfo,
     this.items = const [],
     this.totalAmountDisplay = MoneyDisplay.empty,
     this.subtotalDisplay = MoneyDisplay.empty,
@@ -53,6 +56,9 @@ class Order {
       deliverySlot: map['delivery_slot'] as String?,
       notes: map['notes'] as String?,
       createdAt: toNullableDateTime(map['created_at']),
+      preparationProofPhoto: map['preparation_proof_photo'] as String?,
+      deliveryCompanyName: map['delivery_company_name'] as String?,
+      deliveryTrackingInfo: map['delivery_tracking_info'] as String?,
       items:
           (map['items'] as List<dynamic>?)
               ?.map((e) => OrderItem.fromMap(e as Map<String, dynamic>))
@@ -75,6 +81,9 @@ class Order {
   final String? deliverySlot;
   final String? notes;
   final DateTime? createdAt;
+  final String? preparationProofPhoto;
+  final String? deliveryCompanyName;
+  final String? deliveryTrackingInfo;
   final List<OrderItem> items;
   final MoneyDisplay totalAmountDisplay;
   final MoneyDisplay subtotalDisplay;

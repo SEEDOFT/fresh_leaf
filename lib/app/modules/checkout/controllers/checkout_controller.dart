@@ -279,7 +279,7 @@ class CheckoutController extends GetxController {
     isPlacingOrder.value = true;
     try {
       final cartService = Get.find<CartService>();
-      final orderId = await cartService.checkout(
+      final orderIds = await cartService.checkout(
         int.tryParse(deliveryAddress.value!.id) ?? 0,
         option.method?.id,
         option.typeId,
@@ -287,11 +287,11 @@ class CheckoutController extends GetxController {
         notes: noteController.text,
       );
 
-      if (orderId == null) {
-        throw Exception('Failed to place order');
+      if (orderIds == null || orderIds.isEmpty) {
+        throw Exception('Checkout returned empty');
       }
 
-      await _finalizeOrder(orderId, option.typeCode);
+      await _finalizeOrder(orderIds, option.typeCode);
     } on DioException catch (error) {
       Get.snackbar(
         'save_failed'.tr,
@@ -377,7 +377,7 @@ class CheckoutController extends GetxController {
     return null;
   }
 
-  Future<void> _finalizeOrder(int orderId, String typeCode) async {
+  Future<void> _finalizeOrder(List<int> orderIds, String typeCode) async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
     final itemCount = totalItems;
     cart.clearCart();
@@ -386,7 +386,7 @@ class CheckoutController extends GetxController {
     if (typeCode.toLowerCase() == 'wallet') {
       await Get.offNamed<void>(
         AppRoutes.orderWalletPayment,
-        arguments: <String, dynamic>{'order_id': orderId},
+        arguments: <String, dynamic>{'order_ids': orderIds},
       );
       return;
     }
@@ -399,7 +399,7 @@ class CheckoutController extends GetxController {
     if (isExternalPayment) {
       await Get.offNamed<void>(
         AppRoutes.orderExternalPayment,
-        arguments: <String, dynamic>{'order_id': orderId},
+        arguments: <String, dynamic>{'order_ids': orderIds},
       );
       return;
     }

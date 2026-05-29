@@ -20,8 +20,8 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final order = controller.order.value;
-        if (order == null) {
+        final orders = controller.orders;
+        if (orders.isEmpty) {
           return Center(child: Text('order_not_found'.tr));
         }
 
@@ -41,16 +41,16 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(24),
                         child: Column(
                           children: [
                             Text(
-                              'order_total'.tr,
+                              'total_amount'.tr,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              order.resolvedTotalAmountDisplay.combinedText,
+                              controller.totalDisplay.combinedText,
                               style: Theme.of(context).textTheme.headlineMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     if (controller.wallets.isEmpty)
                       Padding(
                         padding: const EdgeInsets.all(24),
@@ -84,7 +84,8 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                       ...controller.wallets.map((wallet) {
                         final isSelected =
                             controller.selectedWallet.value?.id == wallet.id;
-                        final hasEnough = wallet.balance >= order.totalAmount;
+                        final hasEnough =
+                            wallet.balance >= controller.totalAmount;
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),

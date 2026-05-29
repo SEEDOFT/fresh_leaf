@@ -12,9 +12,8 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
 
-  final initialRoute = await AppBootstrap.initialize();
   Get.put<LaunchRouteService>(
-    LaunchRouteService(initialRoute),
+    LaunchRouteService(await AppBootstrap.initialize()),
     permanent: true,
   );
 
