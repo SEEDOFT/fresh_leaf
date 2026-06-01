@@ -13,6 +13,13 @@ import 'package:get/get.dart' hide FormData, MultipartFile, Response;
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePersonalDetailsController extends GetxController {
+  ProfilePersonalDetailsController({
+    required ApiClient apiClient,
+    required StorageService storageService,
+    required ProfileController profileController,
+  }) : _apiClient = apiClient,
+       _storageService = storageService,
+       _profileController = profileController;
   final RxString firstName = ''.obs;
   final RxString lastName = ''.obs;
   final RxString email = ''.obs;
@@ -24,7 +31,9 @@ class ProfilePersonalDetailsController extends GetxController {
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
+  final StorageService _storageService;
+  final ProfileController _profileController;
   UserProfile? _initialProfile;
 
   @override
@@ -34,13 +43,12 @@ class ProfilePersonalDetailsController extends GetxController {
   }
 
   void _loadUser() {
-    final storage = Get.find<StorageService>();
-    final profile = storage.userProfile;
+    final profile = _storageService.userProfile;
     if (profile != null) {
       _initialProfile = profile;
       setProfile(profile);
     } else {
-      final tokenPresent = storage.token?.isNotEmpty ?? false;
+      final tokenPresent = _storageService.token?.isNotEmpty ?? false;
       if (tokenPresent) {
         firstName.value = 'profile_default_first_name'.tr;
         lastName.value = 'profile_default_last_name'.tr;
@@ -91,7 +99,7 @@ class ProfilePersonalDetailsController extends GetxController {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       final mapData = apiResponse.data;
-      final currentProfile = Get.find<StorageService>().userProfile;
+      final currentProfile = _storageService.userProfile;
       final mergedProfile = UserProfile(
         id: toInt(mapData['id'], defaultValue: currentProfile?.id ?? 0),
         firstName: formatToString(
@@ -132,13 +140,10 @@ class ProfilePersonalDetailsController extends GetxController {
         updatedAt: _initialProfile?.updatedAt,
       );
 
-      Get.find<StorageService>().userProfile = mergedProfile;
+      _storageService.userProfile = mergedProfile;
       _initialProfile = mergedProfile;
       setProfile(mergedProfile);
-
-      if (Get.isRegistered<ProfileController>()) {
-        Get.find<ProfileController>().setProfile(mergedProfile);
-      }
+      _profileController.setProfile(mergedProfile);
 
       Get.snackbar(
         'success'.tr,
@@ -177,13 +182,10 @@ class ProfilePersonalDetailsController extends GetxController {
       }
 
       final latestProfile = UserProfile.fromMap(apiResponse.data);
-      Get.find<StorageService>().userProfile = latestProfile;
+      _storageService.userProfile = latestProfile;
       _initialProfile = latestProfile;
       setProfile(latestProfile);
-
-      if (Get.isRegistered<ProfileController>()) {
-        Get.find<ProfileController>().setProfile(latestProfile);
-      }
+      _profileController.setProfile(latestProfile);
     } on DioException {
       Get.snackbar('update_failed'.tr, 'unable_refresh_profile'.tr);
     } on Exception {

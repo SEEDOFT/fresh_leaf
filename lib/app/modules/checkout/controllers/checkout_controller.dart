@@ -34,7 +34,23 @@ class CheckoutPaymentOption {
 }
 
 class CheckoutController extends GetxController {
-  final CartController cart = Get.find<CartController>();
+  CheckoutController({
+    required CartController cartController,
+    required CartService cartService,
+    required ApiClient apiClient,
+    required StorageService storageService,
+    required DashboardController dashboardController,
+  }) : cart = cartController,
+       _cartService = cartService,
+       _apiClient = apiClient,
+       _storageService = storageService,
+       _dashboardController = dashboardController;
+
+  final CartController cart;
+  final CartService _cartService;
+  final ApiClient _apiClient;
+  final StorageService _storageService;
+  final DashboardController _dashboardController;
   final TextEditingController noteController = TextEditingController();
 
   final RxList<PaymentMethodType> types = <PaymentMethodType>[].obs;
@@ -45,8 +61,6 @@ class CheckoutController extends GetxController {
   final RxBool isLoadingPayments = false.obs;
   final RxString selectedOptionId = ''.obs;
   final RxBool isPlacingOrder = false.obs;
-
-  final ApiClient _apiClient = Get.find<ApiClient>();
 
   static const String creditDebitOptionId =
       'channel-${PaymentMethodTypeCodes.creditDebit}';
@@ -253,8 +267,7 @@ class CheckoutController extends GetxController {
       return;
     }
 
-    final storage = Get.find<StorageService>();
-    final hasPin = storage.userProfile?.setPin ?? false;
+    final hasPin = _storageService.userProfile?.setPin ?? false;
 
     if (!hasPin) {
       final success = await Get.toNamed<dynamic>(
@@ -265,9 +278,10 @@ class CheckoutController extends GetxController {
         return; // User aborted PIN setup
       }
 
-      // Update local profile state
-      if (storage.userProfile != null) {
-        storage.userProfile = storage.userProfile!.copyWith(setPin: true);
+      if (_storageService.userProfile != null) {
+        _storageService.userProfile = _storageService.userProfile!.copyWith(
+          setPin: true,
+        );
       }
     } else {
       final verified = await PinSecurityService.verifyPin();
@@ -278,8 +292,7 @@ class CheckoutController extends GetxController {
 
     isPlacingOrder.value = true;
     try {
-      final cartService = Get.find<CartService>();
-      final orderIds = await cartService.checkout(
+      final orderIds = await _cartService.checkout(
         int.tryParse(deliveryAddress.value!.id) ?? 0,
         option.method?.id,
         option.typeId,
@@ -404,12 +417,8 @@ class CheckoutController extends GetxController {
       return;
     }
 
-    if (Get.isRegistered<DashboardController>()) {
-      Get.back<void>();
-      Get.find<DashboardController>().currentIndex = 3;
-    } else {
-      await Get.offNamed<void>(AppRoutes.orders);
-    }
+    Get.back<void>();
+    _dashboardController.currentIndex = 3;
 
     Get.snackbar(
       'order_confirmed'.tr,

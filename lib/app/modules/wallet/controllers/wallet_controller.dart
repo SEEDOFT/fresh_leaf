@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
@@ -59,8 +58,10 @@ class WalletTransaction {
 }
 
 class WalletController extends GetxController {
+  WalletController({required ApiClient apiClient}) : _apiClient = apiClient;
+
   static const List<String> supportedCurrencies = ['KHR', 'USD'];
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
 
   final RxString selectedCurrency = 'KHR'.obs;
   final RxBool isLoading = false.obs;
@@ -78,21 +79,14 @@ class WalletController extends GetxController {
   final RxBool isLoadingMoreTransactions = false.obs;
   final RxBool hasLoadedWallets = false.obs;
 
+  final Map<String, Wallet> _walletsByCurrency = {};
+
   int _khrPage = 1;
   int _usdPage = 1;
 
   @override
-  Future<void> onInit() async {
-    super.onInit();
-    if (Get.isRegistered<ProfileController>()) {
-      await applyWallets(Get.find<ProfileController>().wallets);
-    }
-  }
-
-  @override
   Future<void> onReady() async {
     super.onReady();
-    if (!Get.isRegistered<ApiClient>()) return;
     await fetchWallets(showError: false);
   }
 
@@ -129,7 +123,6 @@ class WalletController extends GetxController {
 
   Future<void> fetchWallets({bool showError = true}) async {
     if (isLoading.value) return;
-    if (!Get.isRegistered<ApiClient>()) return;
 
     if (!hasLoadedWallets.value) {
       isLoading.value = true;
@@ -227,11 +220,7 @@ class WalletController extends GetxController {
     final hasMore = isUsd ? usdHasMore.value : khrHasMore.value;
     if (!hasMore) return;
 
-    final profileController = Get.find<ProfileController>();
-    final wallets = profileController.wallets;
-    final wallet = wallets.firstWhereOrNull(
-      (w) => w.currency.code.toUpperCase() == selectedCurrency.value,
-    );
+    final wallet = _walletsByCurrency[selectedCurrency.value];
 
     if (wallet == null) return;
 
@@ -254,8 +243,10 @@ class WalletController extends GetxController {
     var hasUsd = false;
     var hasKhr = false;
 
+    _walletsByCurrency.clear();
     for (final wallet in wallets) {
       final currencyCode = wallet.currency.code.toUpperCase();
+      _walletsByCurrency[currencyCode] = wallet;
       if (currencyCode == 'USD') {
         nextUsdBalance = wallet.balance;
         hasUsd = true;

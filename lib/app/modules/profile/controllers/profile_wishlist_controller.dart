@@ -14,11 +14,15 @@ enum WishlistSortType {
 }
 
 class ProfileWishlistController extends GetxController {
-  ProfileWishlistController({required this.wishlistService}) {
-    wishlistController = Get.find<WishlistController>();
-  }
+  ProfileWishlistController({
+    required this.wishlistService,
+    required this.wishlistController,
+    required CartController cartController,
+  }) : _cartController = cartController;
+
   final WishlistService wishlistService;
-  late final WishlistController wishlistController;
+  final WishlistController wishlistController;
+  final CartController _cartController;
 
   final RxString selectedCategory = 'All'.obs;
   final Rx<WishlistSortType> selectedSort = WishlistSortType.newest.obs;
@@ -92,12 +96,7 @@ class ProfileWishlistController extends GetxController {
   }
 
   void addToCart(VendorInventory item) {
-    if (!Get.isRegistered<CartController>()) {
-      Get.snackbar('unavailable'.tr, 'cart_not_ready'.tr);
-      return;
-    }
-
-    unawaited(Get.find<CartController>().addToCart(item.id, 1));
+    unawaited(_cartController.addToCart(item.id, 1));
     Get.snackbar(
       'added_to_cart'.tr,
       'added_to_cart_message'.trParams({'title': item.displayTitle}),

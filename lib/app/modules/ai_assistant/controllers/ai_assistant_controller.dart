@@ -11,16 +11,22 @@ import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:get/get.dart';
 
 class AiAssistantController extends GetxController {
+  AiAssistantController({
+    required AiChatStorageService aiChatStorageService,
+    required AiAssistantApiService aiAssistantApiService,
+    required AiAssistantRealtimeService aiAssistantRealtimeService,
+  }) : _storage = aiChatStorageService,
+       _apiService = aiAssistantApiService,
+       _realtimeService = aiAssistantRealtimeService;
   static const Duration _aiResponseTimeout = Duration(seconds: 45);
 
   final RxBool isLoading = false.obs;
   final RxBool isAiServiceAvailable = true.obs;
   final RxBool isRealtimeReady = false.obs;
   final RxString lastRealtimeError = ''.obs;
-  final AiChatStorageService _storage = Get.find<AiChatStorageService>();
-  final AiAssistantApiService _apiService = Get.find<AiAssistantApiService>();
-  final AiAssistantRealtimeService _realtimeService =
-      Get.find<AiAssistantRealtimeService>();
+  final AiChatStorageService _storage;
+  final AiAssistantApiService _apiService;
+  final AiAssistantRealtimeService _realtimeService;
   final RxList<AiChatMessage> messages = <AiChatMessage>[].obs;
   final TextEditingController inputController = TextEditingController();
   final ScrollController chatScrollController = ScrollController();

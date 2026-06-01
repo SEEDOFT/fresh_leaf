@@ -2,10 +2,11 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/product_info.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:get/get.dart';
 
 class ProductRepository {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  ProductRepository({required ApiClient apiClient}) : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
 
   Future<List<VendorInventory>> getOrganicProducts({
     int page = 1,

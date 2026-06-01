@@ -6,6 +6,8 @@ import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:get/get.dart';
 
 class SearchController extends GetxController {
+  SearchController({required HomeController homeController})
+    : _homeController = homeController;
   final textController = TextEditingController();
   final RxString _query = ''.obs;
   final RxString _activeTag = 'All'.obs;
@@ -28,14 +30,13 @@ class SearchController extends GetxController {
     'Local',
   ];
 
-  late final HomeController _homeController;
+  final HomeController _homeController;
 
   List<ProductCategory> get categories => _homeController.categories;
 
   @override
   void onInit() {
     super.onInit();
-    _homeController = Get.find<HomeController>();
     final args = Get.arguments;
     if (args is int) {
       selectedCategoryId.value = args;

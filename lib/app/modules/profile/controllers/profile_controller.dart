@@ -19,14 +19,29 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ProfileController extends GetxController {
+  ProfileController({
+    required ApiClient apiClient,
+    required StorageService storageService,
+    required AppSettingsController appSettingsController,
+    required WalletController walletController,
+    required NotificationService notificationService,
+  }) : _apiClient = apiClient,
+       _storageService = storageService,
+       _appSettingsController = appSettingsController,
+       _walletController = walletController,
+       _notificationService = notificationService;
+
   final RxBool isLoading = false.obs;
   final RxString userName = ''.obs;
   final RxString email = ''.obs;
   final RxString image = ''.obs;
   final RxString phone = ''.obs;
   final RxString memberSince = ''.obs;
-  final ApiClient _apiClient = Get.find<ApiClient>();
-  final StorageService _storageService = Get.find<StorageService>();
+  final ApiClient _apiClient;
+  final StorageService _storageService;
+  final AppSettingsController _appSettingsController;
+  final WalletController _walletController;
+  final NotificationService _notificationService;
 
   final RxList<UserAddress> addresses = <UserAddress>[].obs;
   final RxList<Wallet> wallets = <Wallet>[].obs;
@@ -84,21 +99,18 @@ class ProfileController extends GetxController {
       setProfile(profile);
 
       // Sync preferences from backend to local app settings
-      if (Get.isRegistered<AppSettingsController>()) {
-        final settings = Get.find<AppSettingsController>();
-        if (profile.locale.isNotEmpty) {
-          await settings.setLocale(
-            Locale(profile.locale),
-            syncToBackend: false,
-          );
-        }
-        final mode = switch (profile.theme) {
-          'light' => ThemeMode.light,
-          'dark' => ThemeMode.dark,
-          _ => ThemeMode.system,
-        };
-        await settings.setThemeMode(mode, syncToBackend: false);
+      if (profile.locale.isNotEmpty) {
+        await _appSettingsController.setLocale(
+          Locale(profile.locale),
+          syncToBackend: false,
+        );
       }
+      final mode = switch (profile.theme) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      };
+      await _appSettingsController.setThemeMode(mode, syncToBackend: false);
     } on DioException catch (e) {
       Get.snackbar(
         'update_failed'.tr,
@@ -121,14 +133,11 @@ class ProfileController extends GetxController {
   }
 
   Future<void> openWallet() async {
-    if (Get.isRegistered<WalletController>()) {
-      final walletController = Get.find<WalletController>();
-      if (!walletController.hasLoadedWallets.value) {
-        if (wallets.isEmpty) {
-          await _preloadWallets();
-        } else {
-          await walletController.applyWallets(wallets);
-        }
+    if (!_walletController.hasLoadedWallets.value) {
+      if (wallets.isEmpty) {
+        await _preloadWallets();
+      } else {
+        await _walletController.applyWallets(wallets);
       }
     }
 
@@ -139,9 +148,7 @@ class ProfileController extends GetxController {
     if (isLoading.value) return;
     isLoading.value = true;
     try {
-      if (Get.isRegistered<NotificationService>()) {
-        await Get.find<NotificationService>().deleteToken();
-      }
+      await _notificationService.deleteToken();
 
       await _apiClient.postRequest(ApiEndpoints.logout);
     } on DioException catch (e) {
@@ -185,9 +192,7 @@ class ProfileController extends GetxController {
       );
       if (apiResponse.isSuccess || response.statusCode == 200) {
         wallets.assignAll(apiResponse.data);
-        if (Get.isRegistered<WalletController>()) {
-          unawaited(Get.find<WalletController>().applyWallets(wallets));
-        }
+        unawaited(_walletController.applyWallets(wallets));
       }
     } on Exception {
       // Fail silently

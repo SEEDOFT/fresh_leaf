@@ -8,7 +8,10 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class PinVerificationController extends GetxController {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  PinVerificationController({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
 
   final RxString pin = ''.obs;
   final RxBool isLoading = false.obs;

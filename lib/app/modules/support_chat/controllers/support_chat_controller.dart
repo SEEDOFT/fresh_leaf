@@ -14,10 +14,17 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SupportChatController extends GetxController {
-  final ApiClient _apiClient = Get.find<ApiClient>();
-  final ChatRealtimeService _realtimeService = Get.put(
-    ChatRealtimeService(),
-  );
+  SupportChatController({
+    required ApiClient apiClient,
+    required StorageService storageService,
+    required ChatRealtimeService realtimeService,
+  }) : _apiClient = apiClient,
+       _storageService = storageService,
+       _realtimeService = realtimeService;
+
+  final ApiClient _apiClient;
+  final StorageService _storageService;
+  final ChatRealtimeService _realtimeService;
   final ImagePicker _imagePicker = ImagePicker();
 
   final RxList<ChatMessage> messages = <ChatMessage>[].obs;
@@ -29,7 +36,7 @@ class SupportChatController extends GetxController {
   final Rxn<ChatConversation> activeConversation = Rxn<ChatConversation>();
   final messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
-  final UserProfile? userProfile = Get.find<StorageService>().userProfile;
+  UserProfile? get userProfile => _storageService.userProfile;
 
   static const int maxFileSizeBytes = 5 * 1024 * 1024;
 

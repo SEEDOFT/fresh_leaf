@@ -6,13 +6,13 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class OrderService extends GetxService {
-  OrderService({required this.apiClient});
+  OrderService({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
   Future<PaginatedResponse<Order>> getOrders({int page = 1}) async {
     try {
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.orders,
         queryParameters: {'page': page},
       );
@@ -32,7 +32,7 @@ class OrderService extends GetxService {
 
   Future<Order?> getOrder(int id) async {
     try {
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.orderById.replaceAll('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -51,7 +51,7 @@ class OrderService extends GetxService {
 
   Future<bool> cancelOrder(int id) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.orderCancel.replaceAll('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -63,7 +63,7 @@ class OrderService extends GetxService {
 
   Future<bool> confirmReceipt(int id) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.orderConfirmReceipt.replaceAll('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -75,7 +75,7 @@ class OrderService extends GetxService {
 
   Future<bool> payWithWallet(int orderId, int walletId) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         '${ApiEndpoints.orders}/$orderId/pay',
         data: {'wallet_id': walletId},
       );
@@ -88,7 +88,7 @@ class OrderService extends GetxService {
 
   Future<bool> batchPayWithWallet(List<int> orderIds, int walletId) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         '${ApiEndpoints.orders}/batch-pay',
         data: {
           'order_ids': orderIds,
@@ -104,7 +104,7 @@ class OrderService extends GetxService {
 
   Future<String?> getInvoiceUrl(int id) async {
     try {
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.orderInvoiceUrl.replaceAll('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);

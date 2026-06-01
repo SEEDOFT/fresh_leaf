@@ -3,8 +3,11 @@ import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:get/get.dart';
 
 class NotificationDetailController extends GetxController {
-  final NotificationService _notificationService =
-      Get.find<NotificationService>();
+  NotificationDetailController({
+    required NotificationService notificationService,
+  }) : _notificationService = notificationService;
+
+  final NotificationService _notificationService;
   late final AppNotification item;
 
   @override

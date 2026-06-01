@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart' as dio;
 import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:get/get.dart';
 
 class LocationResult {
   LocationResult({this.name, this.region, this.country});
@@ -12,7 +11,9 @@ class LocationResult {
 }
 
 class LocationRepository {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  LocationRepository({required ApiClient apiClient}) : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
 
   Future<LocationResult> reverseGeocode(
     double latitude,

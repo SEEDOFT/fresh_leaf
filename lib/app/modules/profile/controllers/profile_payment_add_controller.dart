@@ -13,6 +13,8 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentAddController extends GetxController {
+  ProfilePaymentAddController({required ApiClient apiClient})
+    : _apiClient = apiClient;
   final holderNameController = TextEditingController();
   final cardNumberController = TextEditingController();
   final expiryController = TextEditingController();
@@ -21,7 +23,7 @@ class ProfilePaymentAddController extends GetxController {
   final billingCityController = TextEditingController();
   final billingStateController = TextEditingController();
   final billingZipCodeController = TextEditingController();
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
   final RxBool isSaving = false.obs;
   final RxString cardType = 'Unknown'.obs;
   final RxString cardValidationMessage = ''.obs;
@@ -32,9 +34,7 @@ class ProfilePaymentAddController extends GetxController {
   final RxBool isLoadingPaymentMethodTypes = false.obs;
   bool _excludeWalletType = false;
   String? _preferredPaymentMethodTypeCode;
-  Set<String>? _allowedPaymentMethodTypeCodes = <String>{
-    PaymentMethodTypeCodes.creditDebit,
-  };
+  Set<String>? _allowedPaymentMethodTypeCodes;
 
   PaymentMethod? _editingMethod;
 
@@ -334,12 +334,23 @@ class ProfilePaymentAddController extends GetxController {
           : types;
       final allowedCodes = _allowedPaymentMethodTypeCodes;
       if (allowedCodes != null && allowedCodes.isNotEmpty) {
-        filteredTypes = filteredTypes
+        final byAllowedCodes = filteredTypes
             .where(
               (type) =>
                   allowedCodes.contains((type.code ?? '').trim().toLowerCase()),
             )
             .toList();
+        if (byAllowedCodes.isNotEmpty) {
+          filteredTypes = byAllowedCodes;
+        } else {
+          filteredTypes = <PaymentMethodType>[
+            PaymentMethodType(
+              id: filteredTypes.isNotEmpty ? filteredTypes.first.id : 0,
+              code: PaymentMethodTypeCodes.creditDebit,
+              name: 'add_credit_debit_card'.tr,
+            ),
+          ];
+        }
       }
       paymentMethodTypes.assignAll(filteredTypes);
       _selectDefaultPaymentMethodType();

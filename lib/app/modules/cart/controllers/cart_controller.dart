@@ -6,7 +6,10 @@ import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
-  final CartService _cartService = Get.find<CartService>();
+  CartController({required CartService cartService})
+    : _cartService = cartService;
+
+  final CartService _cartService;
 
   final RxList<core_models.CartItem> items = <core_models.CartItem>[].obs;
   final Rx<MoneyDisplay> totalDisplay = MoneyDisplay.empty.obs;

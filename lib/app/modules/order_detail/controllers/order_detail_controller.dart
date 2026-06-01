@@ -8,8 +8,14 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 class OrderDetailController extends GetxController {
-  final OrderService _orderService = Get.find<OrderService>();
-  final StorageService _storageService = Get.find<StorageService>();
+  OrderDetailController({
+    required OrderService orderService,
+    required StorageService storageService,
+  }) : _orderService = orderService,
+       _storageService = storageService;
+
+  final OrderService _orderService;
+  final StorageService _storageService;
 
   final Rxn<Order> order = Rxn<Order>();
   final RxBool isCheckingAccess = false.obs;

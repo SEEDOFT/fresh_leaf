@@ -616,6 +616,7 @@ const Map<String, String> translationsEn = {
   'certified_organic': 'Certified Organic',
   'pesticide_free': 'Pesticide Free',
   'naturally_grown': 'Naturally Grown',
+  'add_credit_debit_card': 'Credit / Debit Card',
   'add_new_card': 'Add New Card',
   'add_delivery_address': 'Add Delivery Address',
 
@@ -675,6 +676,10 @@ const Map<String, String> translationsEn = {
   'unknown_date': 'Unknown Date',
   'ticket_status_open': 'Open',
   'ticket_status_resolved': 'Resolved',
+  'messages_filter_all': 'All',
+  'messages_filter_support': 'Support',
+  'messages_filter_vendors': 'Vendors',
+  'messages_vendor_chat': 'Vendor chat',
 
   // Notifications
   'notification_title': 'Notifications',
@@ -806,6 +811,96 @@ const Map<String, String> translationsEn = {
 
   // Vendor Profile
   'vendor_profile_placeholder': 'VendorProfile Widget',
+  'vendor_products': 'Products',
+  'products_offered_by_vendor': 'Products offered by this vendor',
+  'active_products': 'Active Products',
+  'products': 'products',
+  'no_products_found': 'No products found',
+  'chat_with_vendor': 'Chat with vendor',
+  'vendor_not_found': 'Vendor not found',
+  'business_hours': 'Business Hours',
+  'always_open': 'Always Open',
+  'no_address': 'No address',
+  'failed_create_chat': 'Failed to create chat',
+  'share_vendor': 'Share Vendor',
+  'share_vendor_message_template': 'Check out {name} on FreshLeaf!\n{link}',
+  'unable_share_vendor': 'Unable to share vendor profile',
+  'all_categories': 'All',
+
+  // Generic / Common
+  'error': 'Error',
+  'failed': 'Failed',
+  'ok': 'OK',
+  'date': 'Date',
+  'type': 'Type',
+  'status_unknown': 'Unknown',
+  'total_amount': 'Total Amount',
+  'pending': 'Pending',
+  'cancelled': 'Cancelled',
+
+  // Order statuses
+  'awaiting_payment': 'Awaiting Payment',
+  'order_awaiting_payment': 'Awaiting Payment',
+  'order_delivered': 'Delivered',
+  'order_payment_successful': 'Payment Successful',
+  'order_pending': 'Pending',
+  'order_preparing': 'Preparing',
+  'order_standard': 'Standard',
+  'delivering': 'Delivering',
+  'preparing': 'Preparing',
+
+  // Payment statuses
+  'payment_completed': 'Completed',
+  'payment_pending': 'Pending',
+  'payment_refunded': 'Refunded',
+  'payment_successful': 'Successful',
+
+  // Order actions
+  'cancel_order': 'Cancel Order',
+  'confirm_receipt': 'Confirm Receipt',
+  'pay_now': 'Pay Now',
+  'please_select_delivery_address': 'Please select a delivery address',
+  'please_select_wallet': 'Please select a wallet',
+  'select_wallet': 'Select Wallet',
+  'unable_create_order': 'Unable to create order',
+  'unable_process_payment': 'Unable to process payment',
+  'failed_fetch_invoice_url': 'Failed to fetch invoice URL',
+
+  // Transaction / Wallet
+  'transaction_details': 'Transaction Details',
+  'transaction_id': 'Transaction ID',
+  'no_wallets_found': 'No wallets found',
+
+  // Messages / Support
+  'messages': 'Messages',
+  'messages_empty_subtitle': 'No conversations yet',
+  'no_conversation_provided': 'No conversation provided',
+  'no_messages_yet': 'No messages yet',
+
+  // Vendor
+  'unknown_vendor': 'Unknown Vendor',
+
+  // PIN
+  'confirm_new_pin': 'Confirm New PIN',
+  'enter_current_pin': 'Enter Current PIN',
+  'enter_new_pin': 'Enter New PIN',
+  'enter_pin_to_continue': 'Enter PIN to continue',
+
+  // Cart / Wishlist
+  'enter_quantity': 'Enter quantity',
+  'failed_to_add_to_cart': 'Failed to add to cart',
+  'failed_to_update_wishlist': 'Failed to update wishlist',
+
+  // Provinces
+  'all_provinces': 'All Provinces',
+  'filter_by_province': 'Filter by Province',
+  'battambang': 'Battambang',
+  'kampong_cham': 'Kampong Cham',
+  'kampot': 'Kampot',
+  'kandal': 'Kandal',
+  'phnom_penh': 'Phnom Penh',
+  'siem_reap': 'Siem Reap',
+  'takeo': 'Takeo',
 
   // Notifications
   'notification_default_title': 'Notification',

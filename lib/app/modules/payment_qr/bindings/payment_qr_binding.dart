@@ -1,9 +1,14 @@
 import 'package:fresh_leaf/app/modules/payment_qr/controllers/payment_qr_controller.dart';
+import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:get/get.dart';
 
 class PaymentQrBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<PaymentQrController>(PaymentQrController.new);
+    Get.lazyPut<PaymentQrController>(
+      () => PaymentQrController(
+        paymentSessionService: Get.find<PaymentSessionService>(),
+      ),
+    );
   }
 }

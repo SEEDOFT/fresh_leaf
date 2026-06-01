@@ -12,7 +12,10 @@ enum OrderSortType {
 }
 
 class OrdersController extends GetxController with PaginatedListMixin<Order> {
-  final OrderService _orderService = Get.find<OrderService>();
+  OrdersController({required OrderService orderService})
+    : _orderService = orderService;
+
+  final OrderService _orderService;
 
   final RxInt _selectedStatusId = 0.obs;
   final Rx<OrderSortType> _selectedSort = OrderSortType.newest.obs;

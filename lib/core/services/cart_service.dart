@@ -7,13 +7,13 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class CartService extends GetxService {
-  CartService({required this.apiClient});
+  CartService({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
   Future<CartSnapshot> getCartSnapshot() async {
     try {
-      final response = await apiClient.getRequest(ApiEndpoints.cart);
+      final response = await _apiClient.getRequest(ApiEndpoints.cart);
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess && apiResponse.data['carts'] != null) {
@@ -39,7 +39,7 @@ class CartService extends GetxService {
 
   Future<bool> addToCart(int vendorInventoryId, double quantity) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.cart,
         data: {
           'vendor_inventory_id': vendorInventoryId,
@@ -55,7 +55,7 @@ class CartService extends GetxService {
 
   Future<bool> updateCartItem(int cartItemId, double quantity) async {
     try {
-      final response = await apiClient.putRequest(
+      final response = await _apiClient.putRequest(
         ApiEndpoints.cartById.replaceFirst('{id}', cartItemId.toString()),
         data: {
           'quantity': quantity,
@@ -70,7 +70,7 @@ class CartService extends GetxService {
 
   Future<bool> removeCartItem(int cartItemId) async {
     try {
-      final response = await apiClient.deleteRequest(
+      final response = await _apiClient.deleteRequest(
         ApiEndpoints.cartById.replaceFirst('{id}', cartItemId.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -88,7 +88,7 @@ class CartService extends GetxService {
     String? notes,
   }) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.cartCheckout,
         data: {
           'address_id': addressId,

@@ -12,11 +12,21 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfileAddressesController extends GetxController {
+  ProfileAddressesController({
+    required ApiClient apiClient,
+    required ProfileController profileController,
+    required StorageService storageService,
+  }) : _apiClient = apiClient,
+       _profileController = profileController,
+       _storageService = storageService;
+
   final RxList<UserAddress> savedAddresses = <UserAddress>[].obs;
   final RxBool isLoadingAddresses = false.obs;
   final RxBool isRefreshing = false.obs;
   final RxString deletingAddressId = ''.obs;
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
+  final ProfileController _profileController;
+  final StorageService _storageService;
 
   bool returnOnSelect = false;
   String mode = 'view';
@@ -29,9 +39,7 @@ class ProfileAddressesController extends GetxController {
       mode = map['mode']?.toString() ?? 'view';
       returnOnSelect = map['return_on_select'] == true;
     }
-    if (Get.isRegistered<ProfileController>()) {
-      savedAddresses.assignAll(Get.find<ProfileController>().addresses);
-    }
+    savedAddresses.assignAll(_profileController.addresses);
   }
 
   @override
@@ -100,7 +108,7 @@ class ProfileAddressesController extends GetxController {
   }
 
   Future<void> openCreateAddress() async {
-    final storage = Get.find<StorageService>();
+    final storage = _storageService;
     final profile = storage.userProfile;
 
     final result = await Get.toNamed<dynamic>(

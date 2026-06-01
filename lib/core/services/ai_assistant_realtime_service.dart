@@ -9,7 +9,10 @@ import 'package:get/get.dart' hide FormData;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class AiAssistantRealtimeService extends GetxService {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  AiAssistantRealtimeService({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
   final StreamController<AiChatRealtimeEvent> _eventController =
       StreamController<AiChatRealtimeEvent>.broadcast();
 

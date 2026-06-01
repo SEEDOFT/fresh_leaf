@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:get/get.dart';
 
 class HelpArticle {
@@ -17,15 +18,24 @@ class HelpArticle {
 }
 
 class ProfileHelpCenterController extends GetxController {
+  ProfileHelpCenterController({required ApiClient apiClient})
+    : _apiClient = apiClient;
   final RxList<HelpArticle> articles = <HelpArticle>[].obs;
   final RxInt unreadSupportCount = 0.obs;
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
 
   @override
   void onInit() {
     super.onInit();
     _seedArticles();
     unawaited(_fetchUnreadCount());
+    Get.find<NotificationService>().onRefreshUnreadCount = refreshUnreadCount;
+  }
+
+  @override
+  void onClose() {
+    Get.find<NotificationService>().onRefreshUnreadCount = null;
+    super.onClose();
   }
 
   void _seedArticles() {

@@ -8,8 +8,14 @@ import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 
 class ProfilePinController extends GetxController {
-  final StorageService _storageService = Get.find<StorageService>();
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  ProfilePinController({
+    required StorageService storageService,
+    required ApiClient apiClient,
+  }) : _storageService = storageService,
+       _apiClient = apiClient;
+
+  final StorageService _storageService;
+  final ApiClient _apiClient;
 
   final RxBool hasPin = false.obs;
 

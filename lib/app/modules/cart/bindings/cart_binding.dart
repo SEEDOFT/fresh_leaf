@@ -1,9 +1,12 @@
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:get/get.dart';
 
 class CartBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<CartController>(CartController.new);
+    Get.lazyPut<CartController>(
+      () => CartController(cartService: Get.find<CartService>()),
+    );
   }
 }

@@ -7,6 +7,11 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class PaymentQrController extends GetxController {
+  PaymentQrController({
+    required PaymentSessionService paymentSessionService,
+  }) : _paymentSessionService = paymentSessionService;
+
+  final PaymentSessionService _paymentSessionService;
   final Rxn<PaymentSession> session = Rxn<PaymentSession>();
   final RxBool isChecking = false.obs;
   final RxInt remainingSeconds = 0.obs;
@@ -41,8 +46,9 @@ class PaymentQrController extends GetxController {
     }
     isChecking.value = true;
     try {
-      final service = Get.find<PaymentSessionService>();
-      final latest = await service.getSessionStatus(current.sessionId);
+      final latest = await _paymentSessionService.getSessionStatus(
+        current.sessionId,
+      );
       session.value = latest;
       _syncRemaining();
       if (latest.isPaid) {

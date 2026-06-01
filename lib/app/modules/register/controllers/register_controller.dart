@@ -10,6 +10,17 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
+  RegisterController({
+    required ApiClient apiClient,
+    required StorageService storageService,
+    required NotificationService notificationService,
+  }) : _apiClient = apiClient,
+       _storageService = storageService,
+       _notificationService = notificationService;
+
+  final ApiClient _apiClient;
+  final StorageService _storageService;
+  final NotificationService _notificationService;
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneController = TextEditingController();
@@ -65,8 +76,8 @@ class RegisterController extends GetxController {
     FocusManager.instance.primaryFocus?.unfocus();
     isLoading.value = true;
     try {
-      final apiClient = Get.find<ApiClient>();
-      final storageService = Get.find<StorageService>();
+      final apiClient = _apiClient;
+      final storageService = _storageService;
 
       final response = await apiClient.postRequest(
         ApiEndpoints.register,
@@ -95,10 +106,7 @@ class RegisterController extends GetxController {
         }
         await storageService.saveToken(token);
 
-        // Upload FCM token for notifications
-        if (Get.isRegistered<NotificationService>()) {
-          await Get.find<NotificationService>().uploadToken();
-        }
+        await _notificationService.uploadToken();
 
         await Get.offAllNamed<void>(AppRoutes.login);
       } else {

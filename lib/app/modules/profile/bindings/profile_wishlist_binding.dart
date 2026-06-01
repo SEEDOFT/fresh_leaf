@@ -1,4 +1,6 @@
+import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_controller.dart';
+import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/core/services/wishlist_service.dart';
 import 'package:get/get.dart';
 
@@ -8,6 +10,8 @@ class ProfileWishlistBinding extends Bindings {
     Get.lazyPut<ProfileWishlistController>(
       () => ProfileWishlistController(
         wishlistService: Get.find<WishlistService>(),
+        wishlistController: Get.find<WishlistController>(),
+        cartController: Get.find<CartController>(),
       ),
     );
   }

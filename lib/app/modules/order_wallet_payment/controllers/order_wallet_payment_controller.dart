@@ -13,6 +13,14 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class OrderWalletPaymentController extends GetxController {
+  OrderWalletPaymentController({
+    required OrderService orderService,
+    required ApiClient apiClient,
+  }) : _orderService = orderService,
+       _apiClient = apiClient;
+
+  final OrderService _orderService;
+  final ApiClient _apiClient;
   final RxList<int> orderIds = <int>[].obs;
   final RxList<Order> orders = <Order>[].obs;
   final RxList<Wallet> wallets = <Wallet>[].obs;
@@ -60,10 +68,9 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   Future<void> _fetchOrders() async {
-    final orderService = Get.find<OrderService>();
     final fetchedOrders = <Order>[];
     for (final id in orderIds) {
-      final fetchedOrder = await orderService.getOrder(id);
+      final fetchedOrder = await _orderService.getOrder(id);
       if (fetchedOrder != null) {
         fetchedOrders.add(fetchedOrder);
       }
@@ -88,8 +95,7 @@ class OrderWalletPaymentController extends GetxController {
 
   Future<void> _fetchWallets() async {
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(ApiEndpoints.wallets);
+      final response = await _apiClient.getRequest(ApiEndpoints.wallets);
       final apiResponse = ApiResponse.fromResponse(
         response.data,
         Wallet.listFromDynamic,
@@ -128,8 +134,7 @@ class OrderWalletPaymentController extends GetxController {
 
     isPaying.value = true;
     try {
-      final orderService = Get.find<OrderService>();
-      final success = await orderService.batchPayWithWallet(
+      final success = await _orderService.batchPayWithWallet(
         orderIds,
         selectedWallet.value!.id,
       );

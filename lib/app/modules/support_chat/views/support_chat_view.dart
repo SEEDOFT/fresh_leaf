@@ -42,7 +42,7 @@ class SupportChatView extends GetView<SupportChatController> {
                       );
                     }
 
-                    if (messages.isEmpty) {
+                    if (messages.isEmpty && !controller.isOtherTyping.value) {
                       return Center(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.all(32),
@@ -101,16 +101,8 @@ class SupportChatView extends GetView<SupportChatController> {
                           (controller.isOtherTyping.value ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == messages.length) {
-                          final lastMsg = messages.isNotEmpty
-                              ? messages.last
-                              : null;
-                          final isLastFromAdmin =
-                              lastMsg != null &&
-                              lastMsg.senderId != controller.userProfile?.id;
                           return Align(
-                            alignment: isLastFromAdmin
-                                ? Alignment.centerLeft
-                                : Alignment.centerRight,
+                            alignment: Alignment.centerLeft,
                             child: SupportChatTypingIndicatorWidget(
                               scheme: scheme,
                               isDark: isDark,

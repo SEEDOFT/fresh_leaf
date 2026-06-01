@@ -7,16 +7,51 @@ import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/models/vendor_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
+import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 
 class VendorProfileController extends GetxController {
-  final ProductService _productService = Get.find<ProductService>();
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  VendorProfileController({
+    required ProductService productService,
+    required ApiClient apiClient,
+  }) : _productService = productService,
+       _apiClient = apiClient;
+
+  final ProductService _productService;
+  final ApiClient _apiClient;
 
   final RxBool isLoading = true.obs;
   final Rxn<VendorProfile> vendor = Rxn<VendorProfile>();
   final RxList<VendorInventory> products = <VendorInventory>[].obs;
   final RxBool isStartingChat = false.obs;
+  final Rxn<int> selectedCategoryId = Rxn<int>();
+
+  List<({int id, String name})> get productCategories {
+    final seen = <int>{};
+    final result = <({int id, String name})>[];
+    for (final item in products) {
+      final catId = item.product?.productCategoryId;
+      final catName = item.product?.productCategoryName;
+      if (catId != null && catName != null && seen.add(catId)) {
+        result.add((id: catId, name: catName));
+      }
+    }
+    return result;
+  }
+
+  List<VendorInventory> get filteredProducts {
+    final catId = selectedCategoryId.value;
+    if (catId == null) return products;
+    return products
+        .where((p) => p.product?.productCategoryId == catId)
+        .toList();
+  }
+
+  int? get category => selectedCategoryId.value;
+  set category(int? id) {
+    selectedCategoryId.value = id;
+  }
 
   late final int vendorId;
 
@@ -68,6 +103,31 @@ class VendorProfileController extends GetxController {
       Get.snackbar('error'.tr, 'failed_create_chat'.tr);
     } finally {
       isStartingChat.value = false;
+    }
+  }
+
+  Future<void> shareVendor() async {
+    final v = vendor.value;
+    if (v == null) return;
+    try {
+      final name = v.displayName;
+      final slug = ProductShareHelper.resolveSlug(title: name);
+      final deepLink = 'freshleaf://vendor/$slug';
+      final message = 'share_vendor_message_template'.trParams({
+        'name': name,
+        'link': deepLink,
+      });
+      await SharePlus.instance.share(
+        ShareParams(
+          text: message,
+          subject: name,
+        ),
+      );
+    } on Exception {
+      Get.snackbar(
+        'share_vendor'.tr,
+        'unable_share_vendor'.tr,
+      );
     }
   }
 }

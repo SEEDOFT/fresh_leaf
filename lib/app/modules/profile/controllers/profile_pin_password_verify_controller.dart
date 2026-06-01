@@ -10,11 +10,13 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePinPasswordVerifyController extends GetxController {
+  ProfilePinPasswordVerifyController({required ApiClient apiClient})
+    : _apiClient = apiClient;
   final passwordController = TextEditingController();
   final currentPinController = TextEditingController();
   final pinController = TextEditingController();
   final confirmPinController = TextEditingController();
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
 
   final RxBool isLoading = false.obs;
   final RxBool isPasswordVisible = false.obs;

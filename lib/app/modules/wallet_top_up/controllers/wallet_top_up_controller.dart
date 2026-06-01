@@ -10,6 +10,14 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WalletTopUpController extends GetxController {
+  WalletTopUpController({
+    required PaymentSessionService paymentSessionService,
+    required WalletController walletController,
+  }) : _paymentSessionService = paymentSessionService,
+       _walletController = walletController;
+
+  final PaymentSessionService _paymentSessionService;
+  final WalletController _walletController;
   final amountController = TextEditingController();
   final RxString selectedCurrency = 'USD'.obs;
   final RxDouble selectedAmount = 0.0.obs;
@@ -76,10 +84,9 @@ class WalletTopUpController extends GetxController {
     double amount,
   ) async {
     final typeCode = _resolveTypeCode(method);
-    final sessionService = Get.find<PaymentSessionService>();
     isLoading.value = true;
     try {
-      final session = await sessionService.createTopUpSession(
+      final session = await _paymentSessionService.createTopUpSession(
         amount: amount,
         currency: selectedCurrency.value,
         paymentMethodTypeCode: typeCode,
@@ -134,47 +141,33 @@ class WalletTopUpController extends GetxController {
     // Simulate payment processing
     await Future<void>.delayed(const Duration(seconds: 2));
 
-    // Update WalletController balance
-    if (Get.isRegistered<WalletController>()) {
-      final walletCtrl = Get.find<WalletController>();
-      if (selectedCurrency.value == 'USD') {
-        walletCtrl.usdBalance.value += amount;
-        walletCtrl.usdTransactions.insert(
-          0,
-          WalletTransaction(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
-            amount: amount,
-            date: DateTime.now(),
-            typeId: 1,
-            statusId: 2,
-          ),
-        );
-      } else {
-        walletCtrl.khrBalance.value += amount;
-        walletCtrl.khrTransactions.insert(
-          0,
-          WalletTransaction(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
-            amount: amount,
-            date: DateTime.now(),
-            typeId: 1,
-            statusId: 2,
-          ),
-        );
-      }
+    if (selectedCurrency.value == 'USD') {
+      _walletController.usdBalance.value += amount;
+      _walletController.usdTransactions.insert(
+        0,
+        WalletTransaction(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
+          amount: amount,
+          date: DateTime.now(),
+          typeId: 1,
+          statusId: 2,
+        ),
+      );
+    } else if (selectedCurrency.value == 'KHR') {
+      _walletController.khrBalance.value += amount;
+      _walletController.khrTransactions.insert(
+        0,
+        WalletTransaction(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
+          amount: amount,
+          date: DateTime.now(),
+          typeId: 1,
+          statusId: 2,
+        ),
+      );
     }
-
-    Get.back<void>();
-    final sym = selectedCurrency.value == 'KHR' ? '' : r'$';
-    final label = selectedCurrency.value == 'KHR' ? ' ៛' : '';
-    Get.snackbar(
-      'success'.tr,
-      'top_up_success'.trParams({
-        'amount': '$sym${amountController.text.trim()}$label',
-      }),
-    );
   }
 
   String _resolveTypeCode(PaymentMethod method) {

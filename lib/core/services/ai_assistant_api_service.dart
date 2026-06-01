@@ -8,7 +8,10 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class AiAssistantApiService extends GetxService {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  AiAssistantApiService({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
 
   Future<Map<String, dynamic>> createSession() async {
     final response = await _apiClient.postRequest(

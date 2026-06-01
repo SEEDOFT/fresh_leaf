@@ -6,17 +6,17 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class WishlistService extends GetxService {
-  WishlistService({required this.apiClient});
+  WishlistService({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
   Future<PaginatedResponse<VendorInventory>> getWishlist({int page = 1}) async {
-    final token = apiClient.storageService.token;
+    final token = _apiClient.storageService.token;
     if (token == null || token.isEmpty) {
       return PaginatedResponse.empty();
     }
     try {
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.wishlist,
         queryParameters: {'page': page},
       );
@@ -39,12 +39,12 @@ class WishlistService extends GetxService {
   }
 
   Future<bool> toggleWishlist(int vendorInventoryId) async {
-    final token = apiClient.storageService.token;
+    final token = _apiClient.storageService.token;
     if (token == null || token.isEmpty) {
       return false;
     }
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.wishlistToggle,
         data: {'vendor_inventory_id': vendorInventoryId},
       );

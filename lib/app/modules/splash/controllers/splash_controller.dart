@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 
 class SplashController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  SplashController({required LaunchRouteService launchRouteService})
+    : _launchRouteService = launchRouteService;
+
+  final LaunchRouteService _launchRouteService;
   late AnimationController animationController;
 
   late Animation<double> logoScale;
@@ -118,8 +122,7 @@ class SplashController extends GetxController
 
   Future<void> _startFlow() async {
     await Future<void>.delayed(const Duration(milliseconds: 120));
-    final launch = Get.find<LaunchRouteService>();
-    await Get.offAllNamed<void>(launch.targetRoute);
+    await Get.offAllNamed<void>(_launchRouteService.targetRoute);
   }
 
   @override

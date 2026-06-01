@@ -50,6 +50,13 @@ class ProfileView extends GetView<ProfileController> {
                 onTap: () async =>
                     await Get.toNamed<void>(AppRoutes.pinSecurity),
               ),
+              AppDivider(height: 16.scaled),
+              AppTile(
+                icon: Icons.location_on_outlined,
+                title: 'addresses'.tr,
+                subtitle: 'addresses_subtitle'.tr,
+                onTap: () async => await Get.toNamed(AppRoutes.addresses),
+              ),
             ],
           ),
           ProfileSectionCard(
@@ -68,31 +75,6 @@ class ProfileView extends GetView<ProfileController> {
                 subtitle: 'payment_methods_subtitle'.tr,
                 onTap: () async =>
                     await Get.toNamed<void>(AppRoutes.paymentMethods),
-              ),
-            ],
-          ),
-          ProfileSectionCard(
-            title: 'orders'.tr.toUpperCase(),
-            children: [
-              AppTile(
-                icon: Icons.favorite_border,
-                title: 'wishlist'.tr,
-                subtitle: 'wishlist_subtitle'.tr,
-                onTap: () async => await Get.toNamed(AppRoutes.wishlist),
-              ),
-              AppDivider(height: 16.scaled),
-              AppTile(
-                icon: Icons.shopping_bag_outlined,
-                title: 'orders'.tr,
-                subtitle: 'orders_subtitle'.tr,
-                onTap: controller.openOrders,
-              ),
-              AppDivider(height: 16.scaled),
-              AppTile(
-                icon: Icons.location_on_outlined,
-                title: 'addresses'.tr,
-                subtitle: 'addresses_subtitle'.tr,
-                onTap: () async => await Get.toNamed(AppRoutes.addresses),
               ),
             ],
           ),

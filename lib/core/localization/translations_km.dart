@@ -617,6 +617,7 @@ const Map<String, String> translationsKm = {
   'certified_organic': 'សរីរាង្គបញ្ជាក់',
   'pesticide_free': 'គ្មានជាតិគីមី',
   'naturally_grown': 'ដាំដុះបែបធម្មជាតិ',
+  'add_credit_debit_card': 'កាតឥណទាន / ឥណពន្ធ',
   'add_new_card': 'បន្ថែមកាតថ្មី',
   'add_delivery_address': 'បន្ថែមអាសយដ្ឋានដឹកជញ្ជូន',
 
@@ -677,6 +678,10 @@ const Map<String, String> translationsKm = {
   'unknown_date': 'កាលបរិច្ឆេទមិនស្គាល់',
   'ticket_status_open': 'បើក',
   'ticket_status_resolved': 'ដោះស្រាយរួច',
+  'messages_filter_all': 'ទាំងអស់',
+  'messages_filter_support': 'ជំនួយ',
+  'messages_filter_vendors': 'អ្នកលក់',
+  'messages_vendor_chat': 'ជជែកជាមួយអ្នកលក់',
 
   // Notifications
   'notification_title': 'ការជូនដំណឹង',
@@ -809,6 +814,97 @@ const Map<String, String> translationsKm = {
 
   // Vendor Profile
   'vendor_profile_placeholder': 'VendorProfile Widget',
+  'vendor_products': 'ផលិតផល',
+  'products_offered_by_vendor': 'ផលិតផលដែលផ្តល់ដោយអ្នកលក់នេះ',
+  'active_products': 'ផលិតផលសកម្ម',
+  'products': 'ផលិតផល',
+  'no_products_found': 'រកមិនឃើញផលិតផលទេ',
+  'chat_with_vendor': 'ជជែកជាមួយអ្នកលក់',
+  'vendor_not_found': 'រកមិនឃើញអ្នកលក់',
+  'business_hours': 'ម៉ោងបើក',
+  'always_open': 'បើកជានិច្ច',
+  'no_address': 'គ្មានអាសយដ្ឋាន',
+  'failed_create_chat': 'បរាជ័យក្នុងការបង្កើតការជជែក',
+  'share_vendor': 'ចែករំលែកអ្នកលក់',
+  'share_vendor_message_template':
+      'សូមពិនិត្យមើល {name} នៅលើ FreshLeaf!\n{link}',
+  'unable_share_vendor': 'មិនអាចចែករំលែកប្រវត្តិអ្នកលក់បានទេ',
+  'all_categories': 'ទាំងអស់',
+
+  // Generic / Common
+  'error': 'កំហុស',
+  'failed': 'បរាជ័យ',
+  'ok': 'យល់ព្រម',
+  'date': 'កាលបរិច្ឆេទ',
+  'type': 'ប្រភេទ',
+  'status_unknown': 'មិនស្គាល់',
+  'total_amount': 'ចំនួនសរុប',
+  'pending': 'កំពុងរង់ចាំ',
+  'cancelled': 'បានបោះបង់',
+
+  // Order statuses
+  'awaiting_payment': 'កំពុងរង់ចាំការទូទាត់',
+  'order_awaiting_payment': 'កំពុងរង់ចាំការទូទាត់',
+  'order_delivered': 'បានដឹកជញ្ជូន',
+  'order_payment_successful': 'ការទូទាត់បានជោគជ័យ',
+  'order_pending': 'កំពុងរង់ចាំ',
+  'order_preparing': 'កំពុងរៀបចំ',
+  'order_standard': 'ស្តង់ដារ',
+  'delivering': 'កំពុងដឹកជញ្ជូន',
+  'preparing': 'កំពុងរៀបចំ',
+
+  // Payment statuses
+  'payment_completed': 'បានបញ្ចប់',
+  'payment_pending': 'កំពុងរង់ចាំ',
+  'payment_refunded': 'បានសងប្រាក់វិញ',
+  'payment_successful': 'បានជោគជ័យ',
+
+  // Order actions
+  'cancel_order': 'បោះបង់ការបញ្ជាទិញ',
+  'confirm_receipt': 'បញ្ជាក់ការទទួល',
+  'pay_now': 'បង់ប្រាក់ឥឡូវនេះ',
+  'please_select_delivery_address': 'សូមជ្រើសរើសអាសយដ្ឋានដឹកជញ្ជូន',
+  'please_select_wallet': 'សូមជ្រើសរើសកាបូប',
+  'select_wallet': 'ជ្រើសរើសកាបូប',
+  'unable_create_order': 'មិនអាចបង្កើតការបញ្ជាទិញបានទេ',
+  'unable_process_payment': 'មិនអាចដំណើរការការទូទាត់បានទេ',
+  'failed_fetch_invoice_url': 'បរាជ័យក្នុងការទាញយក URL វិក្កយបត្រ',
+
+  // Transaction / Wallet
+  'transaction_details': 'ព័ត៌មានលម្អិតនៃប្រតិបត្តិការ',
+  'transaction_id': 'លេខសម្គាល់ប្រតិបត្តិការ',
+  'no_wallets_found': 'រកមិនឃើញកាបូបទេ',
+
+  // Messages / Support
+  'messages': 'សារ',
+  'messages_empty_subtitle': 'មិនទាន់មានការសន្ទនាទេ',
+  'no_conversation_provided': 'មិនមានការសន្ទនាទេ',
+  'no_messages_yet': 'មិនទាន់មានសារទេ',
+
+  // Vendor
+  'unknown_vendor': 'អ្នកលក់មិនស្គាល់',
+
+  // PIN
+  'confirm_new_pin': 'បញ្ជាក់ PIN ថ្មី',
+  'enter_current_pin': 'បញ្ចូល PIN បច្ចុប្បន្ន',
+  'enter_new_pin': 'បញ្ចូល PIN ថ្មី',
+  'enter_pin_to_continue': 'បញ្ចូល PIN ដើម្បីបន្ត',
+
+  // Cart / Wishlist
+  'enter_quantity': 'បញ្ចូលចំនួន',
+  'failed_to_add_to_cart': 'បរាជ័យក្នុងការបន្ថែមទៅកាត',
+  'failed_to_update_wishlist': 'បរាជ័យក្នុងការធ្វើបច្ចុប្បន្នភាពបញ្ជីប្រាថ្នា',
+
+  // Provinces
+  'all_provinces': 'គ្រប់ខេត្ត',
+  'filter_by_province': 'តម្រងតាមខេត្ត',
+  'battambang': 'បាត់ដំបង',
+  'kampong_cham': 'កំពង់ចាម',
+  'kampot': 'កំពត',
+  'kandal': 'កណ្តាល',
+  'phnom_penh': 'ភ្នំពេញ',
+  'siem_reap': 'សៀមរាប',
+  'takeo': 'តាកែវ',
 
   // Notifications
   'notification_default_title': 'ការជូនដំណឹង',

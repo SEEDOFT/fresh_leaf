@@ -15,12 +15,27 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
+  LoginController({
+    required ApiClient apiClient,
+    required StorageService storageService,
+    required NotificationService notificationService,
+    required ProfileController profileController,
+    required AppSettingsController appSettings,
+  }) : _apiClient = apiClient,
+       _storageService = storageService,
+       _notificationService = notificationService,
+       _profileController = profileController,
+       _appSettings = appSettings;
+
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final RxBool isLoading = false.obs;
   RxBool isPasswordVisible = false.obs;
-  final ApiClient _apiClient = Get.find<ApiClient>();
-  final StorageService _storageService = Get.find<StorageService>();
+  final ApiClient _apiClient;
+  final StorageService _storageService;
+  final NotificationService _notificationService;
+  final ProfileController _profileController;
+  final AppSettingsController _appSettings;
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -64,9 +79,7 @@ class LoginController extends GetxController {
 
         await _storageService.saveToken(token);
 
-        if (Get.isRegistered<NotificationService>()) {
-          await Get.find<NotificationService>().uploadToken();
-        }
+        await _notificationService.uploadToken();
 
         await _hydrateUserProfile(loginData: dataMap);
         await Get.offAllNamed<void>(AppRoutes.dashboard);
@@ -151,29 +164,21 @@ class LoginController extends GetxController {
 
   void _applyProfile(UserProfile profile, StorageService storage) {
     storage.userProfile = profile;
-    if (Get.isRegistered<ProfileController>()) {
-      Get.find<ProfileController>().setProfile(profile);
-    }
+    _profileController.setProfile(profile);
 
     // Sync preferences from backend to local app settings
-    if (Get.isRegistered<AppSettingsController>()) {
-      final settings = Get.find<AppSettingsController>();
-
-      // Update locale
-      if (profile.locale.isNotEmpty) {
-        unawaited(
-          settings.setLocale(Locale(profile.locale), syncToBackend: false),
-        );
-      }
-
-      // Update theme
-      final mode = switch (profile.theme) {
-        'light' => ThemeMode.light,
-        'dark' => ThemeMode.dark,
-        _ => ThemeMode.system,
-      };
-      unawaited(settings.setThemeMode(mode, syncToBackend: false));
+    if (profile.locale.isNotEmpty) {
+      unawaited(
+        _appSettings.setLocale(Locale(profile.locale), syncToBackend: false),
+      );
     }
+
+    final mode = switch (profile.theme) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => ThemeMode.system,
+    };
+    unawaited(_appSettings.setThemeMode(mode, syncToBackend: false));
   }
 
   String _extractAccessToken(Map<String, dynamic> dataMap) {

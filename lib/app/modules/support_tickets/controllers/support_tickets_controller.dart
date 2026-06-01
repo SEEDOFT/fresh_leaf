@@ -7,13 +7,36 @@ import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
+enum MessagesFilter {
+  all,
+  support,
+  vendors;
+
+  String get labelKey => switch (this) {
+    MessagesFilter.all => 'messages_filter_all',
+    MessagesFilter.support => 'messages_filter_support',
+    MessagesFilter.vendors => 'messages_filter_vendors',
+  };
+}
+
 class SupportTicketsController extends GetxController
     with PaginatedListMixin<ChatConversation> {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  SupportTicketsController({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
+
+  final Rx<MessagesFilter> selectedFilter = MessagesFilter.all.obs;
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    await refreshList();
+  }
+
+  Future<void> setFilter(MessagesFilter filter) async {
+    if (selectedFilter.value == filter) return;
+    selectedFilter.value = filter;
     await refreshList();
   }
 
@@ -22,7 +45,7 @@ class SupportTicketsController extends GetxController
     try {
       final response = await _apiClient.getRequest(
         ApiEndpoints.chatConversations,
-        queryParameters: {'page': page},
+        queryParameters: _queryParameters(page),
       );
       final apiResponse = ApiResponse.parsePaginated(
         response.data,
@@ -33,7 +56,7 @@ class SupportTicketsController extends GetxController
         return apiResponse.data;
       }
     } on Exception {
-      Get.snackbar('error'.tr, 'failed_load_tickets'.tr);
+      Get.snackbar('error'.tr, 'failed_load_messages'.tr);
     }
     return PaginatedResponse.empty();
   }
@@ -60,5 +83,18 @@ class SupportTicketsController extends GetxController
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Map<String, dynamic> _queryParameters(int page) {
+    final params = <String, dynamic>{'page': page};
+
+    return switch (selectedFilter.value) {
+      MessagesFilter.all => params,
+      MessagesFilter.support => params..['type'] = 'support',
+      MessagesFilter.vendors =>
+        params
+          ..['type'] = 'direct'
+          ..['participant_type'] = 'vendor',
+    };
   }
 }

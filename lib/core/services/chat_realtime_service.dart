@@ -8,7 +8,9 @@ import 'package:get/get.dart' hide FormData;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ChatRealtimeService extends GetxService {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  ChatRealtimeService({required ApiClient apiClient}) : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
   final StreamController<ChatMessage> _messageController =
       StreamController<ChatMessage>.broadcast();
   final StreamController<int> _typingController =

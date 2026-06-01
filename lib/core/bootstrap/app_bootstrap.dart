@@ -11,6 +11,7 @@ import 'package:fresh_leaf/core/services/ai_assistant_realtime_service.dart';
 import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/cart_service.dart';
+import 'package:fresh_leaf/core/services/chat_realtime_service.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
@@ -44,50 +45,46 @@ final class AppBootstrap {
 
     final apiClient = ApiClient(storageService: storage);
 
+    final productService = ProductService(apiClient: apiClient);
+    final cartService = CartService(apiClient: apiClient);
+    final orderService = OrderService(apiClient: apiClient);
+    final wishlistService = WishlistService(apiClient: apiClient);
+    final paymentSessionService = PaymentSessionService(apiClient: apiClient);
+    final notificationService = NotificationService(apiClient: apiClient);
+    final aiChatStorageService = AiChatStorageService();
+    final aiAssistantApiService = AiAssistantApiService(apiClient: apiClient);
+    final aiAssistantRealtimeService = AiAssistantRealtimeService(
+      apiClient: apiClient,
+    );
+    final chatRealtimeService = ChatRealtimeService(apiClient: apiClient);
+    final appSettingsController = AppSettingsController(
+      storageService: storage,
+    );
+    final wishlistController = WishlistController(
+      wishlistService: wishlistService,
+    );
+
     Get
       ..put<StorageService>(storage, permanent: true)
       ..put<SecureConfigService>(secureConfig, permanent: true)
       ..put<ApiClient>(apiClient, permanent: true)
-      ..put<ProductService>(
-        ProductService(apiClient: apiClient),
-        permanent: true,
-      )
-      ..put<CartService>(
-        CartService(apiClient: apiClient),
-        permanent: true,
-      )
-      ..put<OrderService>(
-        OrderService(apiClient: apiClient),
-        permanent: true,
-      )
-      ..put<WishlistService>(
-        WishlistService(apiClient: apiClient),
-        permanent: true,
-      )
-      ..put<PaymentSessionService>(
-        PaymentSessionService(apiClient: apiClient),
-        permanent: true,
-      )
-      ..put<NotificationService>(
-        NotificationService(apiClient: apiClient),
-        permanent: true,
-      )
-      ..put<AiChatStorageService>(AiChatStorageService(), permanent: true)
-      ..put<AiAssistantApiService>(AiAssistantApiService(), permanent: true)
+      ..put<ProductService>(productService, permanent: true)
+      ..put<CartService>(cartService, permanent: true)
+      ..put<OrderService>(orderService, permanent: true)
+      ..put<WishlistService>(wishlistService, permanent: true)
+      ..put<PaymentSessionService>(paymentSessionService, permanent: true)
+      ..put<NotificationService>(notificationService, permanent: true)
+      ..put<AiChatStorageService>(aiChatStorageService, permanent: true)
+      ..put<AiAssistantApiService>(aiAssistantApiService, permanent: true)
       ..put<AiAssistantRealtimeService>(
-        AiAssistantRealtimeService(),
+        aiAssistantRealtimeService,
         permanent: true,
       )
-      ..put<AppSettingsController>(
-        AppSettingsController(storageService: storage),
-        permanent: true,
-      )
-      ..put<WishlistController>(
-        WishlistController(wishlistService: Get.find<WishlistService>()),
-        permanent: true,
-      );
+      ..put<AppSettingsController>(appSettingsController, permanent: true)
+      ..put<WishlistController>(wishlistController, permanent: true)
+      ..put<ChatRealtimeService>(chatRealtimeService, permanent: true);
 
-    await Get.find<NotificationService>().init();
+    await notificationService.init();
   }
 
   static Future<String> _resolveInitialRoute() async {

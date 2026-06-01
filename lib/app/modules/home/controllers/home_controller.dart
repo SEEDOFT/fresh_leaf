@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart' as dio;
-import 'package:fresh_leaf/app/modules/profile/controllers/profile_controller.dart';
 import 'package:fresh_leaf/core/models/paginated_response.dart';
 import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
@@ -14,9 +13,20 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  final HomeRepository _homeRepository = HomeRepository();
-  final LocationRepository _locationRepository = LocationRepository();
-  final ProductService _productService = Get.find<ProductService>();
+  HomeController({
+    required ProductService productService,
+    required NotificationService notificationService,
+    required HomeRepository homeRepository,
+    required LocationRepository locationRepository,
+  }) : _productService = productService,
+       _notificationService = notificationService,
+       _homeRepository = homeRepository,
+       _locationRepository = locationRepository;
+
+  final HomeRepository _homeRepository;
+  final LocationRepository _locationRepository;
+  final ProductService _productService;
+  final NotificationService _notificationService;
 
   final RxString _searchQuery = ''.obs;
   final RxString locationName = ''.obs;
@@ -51,12 +61,7 @@ class HomeController extends GetxController {
     super.onInit();
     unawaited(loadHomeData());
     unawaited(fetchCurrentLocation());
-    if (Get.isRegistered<NotificationService>()) {
-      unawaited(Get.find<NotificationService>().getNotifications());
-    }
-    if (Get.isRegistered<ProfileController>()) {
-      Get.find<ProfileController>();
-    }
+    unawaited(_notificationService.getNotifications());
   }
 
   Future<void> loadHomeData() async {

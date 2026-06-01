@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fresh_leaf/app/modules/profile/controllers/profile_help_center_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -16,10 +15,11 @@ import 'package:get/get.dart';
 
 /// Service to handle Firebase Push Notifications and Local Notifications.
 class NotificationService extends GetxService {
-  NotificationService({required this.apiClient});
+  NotificationService({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  final ApiClient apiClient;
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  final ApiClient _apiClient;
+  VoidCallback? onRefreshUnreadCount;
+  late final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
   StreamSubscription<String>? _tokenRefreshSubscription;
@@ -170,10 +170,7 @@ class NotificationService extends GetxService {
           unawaited(_showLocalNotification(message));
         }
 
-        // Always try to refresh unread count if help center is open
-        if (Get.isRegistered<ProfileHelpCenterController>()) {
-          await Get.find<ProfileHelpCenterController>().refreshUnreadCount();
-        }
+        onRefreshUnreadCount?.call();
         return;
       }
 
@@ -377,7 +374,7 @@ class NotificationService extends GetxService {
     }
 
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.devices,
         data: {
           'device_token': token,
@@ -402,7 +399,7 @@ class NotificationService extends GetxService {
     final token = await getToken();
     if (token != null) {
       try {
-        await apiClient.deleteRequest(
+        await _apiClient.deleteRequest(
           ApiEndpoints.devices,
           data: {'device_token': token},
         );
@@ -434,7 +431,7 @@ class NotificationService extends GetxService {
     int page = 1,
   }) async {
     try {
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.notifications,
         queryParameters: {'page': page},
       );
@@ -463,7 +460,7 @@ class NotificationService extends GetxService {
   /// Mark a notification as read
   Future<bool> markAsRead(int notificationId) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.notificationsMarkRead.replaceAll(
           '{id}',
           notificationId.toString(),
@@ -501,7 +498,7 @@ class NotificationService extends GetxService {
   /// Mark all notifications as read
   Future<bool> markAllAsRead() async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.notificationsMarkAllRead,
       );
       final apiResponse = ApiResponse.parseMap(response.data);

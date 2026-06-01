@@ -7,8 +7,11 @@ import 'package:get/get.dart';
 
 class NotificationsController extends GetxController
     with PaginatedListMixin<AppNotification> {
-  final NotificationService _notificationService =
-      Get.find<NotificationService>();
+  NotificationsController({
+    required NotificationService notificationService,
+  }) : _notificationService = notificationService;
+
+  final NotificationService _notificationService;
 
   final RxString _activeFilter = 'all'.obs;
 

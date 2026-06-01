@@ -5,6 +5,10 @@ import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 
 class OnboardingController extends GetxController {
+  OnboardingController({required StorageService storageService})
+    : _storageService = storageService;
+
+  final StorageService _storageService;
   final pageController = PageController();
   RxInt currentPage = 0.obs;
   bool get isLastPage => currentPage.value == 2;
@@ -39,12 +43,11 @@ class OnboardingController extends GetxController {
   }
 
   Future<void> _markSeen() async {
-    await Get.find<StorageService>().saveOnboardingSeen(seen: true);
+    await _storageService.saveOnboardingSeen(seen: true);
   }
 
   Future<void> _goForward() async {
-    final storage = Get.find<StorageService>();
-    final token = storage.token;
+    final token = _storageService.token;
     if (token != null && token.isNotEmpty) {
       await Get.offAllNamed<void>(AppRoutes.dashboard);
     } else {

@@ -8,6 +8,14 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class OrderExternalPaymentController extends GetxController {
+  OrderExternalPaymentController({
+    required ApiClient apiClient,
+    required DashboardController dashboardController,
+  }) : _apiClient = apiClient,
+       _dashboardController = dashboardController;
+
+  final ApiClient _apiClient;
+  final DashboardController _dashboardController;
   final RxList<int> orderIds = <int>[].obs;
   final RxInt remainingSeconds = 300.obs; // 5 minutes
   final RxBool isProcessing = false.obs;
@@ -45,9 +53,8 @@ class OrderExternalPaymentController extends GetxController {
     _timer?.cancel();
 
     try {
-      final apiClient = Get.find<ApiClient>();
       for (final id in orderIds) {
-        await apiClient.postRequest(
+        await _apiClient.postRequest(
           '/orders/$id/simulate-external-payment',
         );
       }
@@ -61,12 +68,8 @@ class OrderExternalPaymentController extends GetxController {
               }),
       );
 
-      if (Get.isRegistered<DashboardController>()) {
-        unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
-        Get.find<DashboardController>().currentIndex = 3; // Orders tab
-      } else {
-        unawaited(Get.offAllNamed<void>(AppRoutes.orders));
-      }
+      unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
+      _dashboardController.currentIndex = 3; // Orders tab
     } on DioException catch (error) {
       Get.snackbar(
         'payment_failed'.tr,

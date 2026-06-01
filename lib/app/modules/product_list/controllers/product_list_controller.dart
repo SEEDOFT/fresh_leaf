@@ -7,7 +7,10 @@ import 'package:get/get.dart';
 
 class ProductListController extends GetxController
     with PaginatedListMixin<VendorInventory> {
-  final ProductService _productService = Get.find<ProductService>();
+  ProductListController({required ProductService productService})
+    : _productService = productService;
+
+  final ProductService _productService;
 
   List<VendorInventory> get products => items;
 

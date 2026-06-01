@@ -7,12 +7,14 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfileSecurityController extends GetxController {
+  ProfileSecurityController({required ApiClient apiClient})
+    : _apiClient = apiClient;
   final TextEditingController verifyPasswordController =
       TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
 
   final RxBool isLoading = false.obs;
   final RxBool isVerifyPasswordVisible = false.obs;

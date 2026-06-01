@@ -10,14 +10,19 @@ import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
 class ProfilePaymentController extends GetxController {
-  ProfilePaymentController();
+  ProfilePaymentController({
+    required ApiClient apiClient,
+    required ProfileController profileController,
+  }) : _apiClient = apiClient,
+       _profileController = profileController;
 
   final RxList<PaymentMethod> methods = <PaymentMethod>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool isRefreshing = false.obs;
   final RxString processingId = ''.obs;
   final RxString selectedMethodId = ''.obs;
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
+  final ProfileController _profileController;
 
   bool isPickerMode = false;
   bool returnOnSelect = true;
@@ -27,13 +32,11 @@ class ProfilePaymentController extends GetxController {
   void onInit() {
     super.onInit();
     _bindArgs();
-    if (Get.isRegistered<ProfileController>()) {
-      final cached = Get.find<ProfileController>().paymentMethods
-          .where(_isAllowedType)
-          .toList();
-      methods.assignAll(cached);
-      _ensureSelection();
-    }
+    final cached = _profileController.paymentMethods
+        .where(_isAllowedType)
+        .toList();
+    methods.assignAll(cached);
+    _ensureSelection();
   }
 
   @override

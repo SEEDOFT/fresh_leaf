@@ -2,10 +2,11 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/product_category.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:get/get.dart';
 
 class HomeRepository {
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  HomeRepository({required ApiClient apiClient}) : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
 
   Future<List<ProductCategory>> getCategories() async {
     try {

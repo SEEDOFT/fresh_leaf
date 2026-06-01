@@ -10,8 +10,17 @@ import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ProductDetailController extends GetxController {
+  ProductDetailController({
+    required this.wishlistController,
+    required ProductService productService,
+    required CartController cartController,
+  }) : _productService = productService,
+       _cartController = cartController;
+
   late VendorInventory product;
-  final WishlistController wishlistController = Get.find<WishlistController>();
+  final WishlistController wishlistController;
+  final ProductService _productService;
+  final CartController _cartController;
 
   final RxDouble quantity = 1.0.obs;
 
@@ -75,7 +84,7 @@ class ProductDetailController extends GetxController {
   Future<void> _preloadProduct() async {
     if (product.id == 0) return;
     try {
-      final updated = await Get.find<ProductService>().getProduct(product.id);
+      final updated = await _productService.getProduct(product.id);
       if (updated != null) {
         product = updated;
         update();
@@ -110,13 +119,7 @@ class ProductDetailController extends GetxController {
   bool get isFavorite => wishlistController.isFavorite(product.id);
 
   void addToCart() {
-    if (!Get.isRegistered<CartController>()) {
-      Get.snackbar('unavailable'.tr, 'cart_not_ready'.tr);
-      return;
-    }
-
-    final cart = Get.find<CartController>();
-    unawaited(cart.addToCart(product.id, quantity.value));
+    unawaited(_cartController.addToCart(product.id, quantity.value));
 
     Get.snackbar(
       'added_to_cart'.tr,

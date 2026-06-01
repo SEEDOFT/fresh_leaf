@@ -26,6 +26,10 @@ class WalletTopUpChannelOption {
 }
 
 class WalletTopUpPaymentController extends GetxController {
+  WalletTopUpPaymentController({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
+  final ApiClient _apiClient;
   final RxList<PaymentMethodType> types = <PaymentMethodType>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool isRefreshing = false.obs;
@@ -147,8 +151,7 @@ class WalletTopUpPaymentController extends GetxController {
 
   Future<void> _fetchPaymentTypes({required bool showError}) async {
     try {
-      final apiClient = Get.find<ApiClient>();
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.paymentMethodTypes,
       );
       final apiResponse = ApiResponse.parseList(response.data);

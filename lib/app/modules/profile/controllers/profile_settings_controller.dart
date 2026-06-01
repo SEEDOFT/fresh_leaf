@@ -5,8 +5,14 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileSettingsController extends GetxController {
-  final AppSettingsController _appSettings = Get.find<AppSettingsController>();
-  final AiChatStorageService _chatStorage = Get.find<AiChatStorageService>();
+  ProfileSettingsController({
+    required AppSettingsController appSettingsController,
+    required AiChatStorageService aiChatStorageService,
+  }) : _appSettings = appSettingsController,
+       _chatStorage = aiChatStorageService;
+
+  final AppSettingsController _appSettings;
+  final AiChatStorageService _chatStorage;
 
   RxBool get notificationsEnabled => _appSettings.notificationsEnabled;
   Rx<ThemeMode> get themeMode => _appSettings.themeMode;

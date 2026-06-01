@@ -12,6 +12,9 @@ import 'package:get/get.dart' hide Response;
 import 'package:latlong2/latlong.dart';
 
 class ProfileAddressEditController extends GetxController {
+  ProfileAddressEditController({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
   static const LatLng _defaultCenter = LatLng(11.5564, 104.9282);
   static const String _nominatimBaseUrl = 'https://nominatim.openstreetmap.org';
 
@@ -27,7 +30,7 @@ class ProfileAddressEditController extends GetxController {
   final TextEditingController provinceController = TextEditingController();
   final TextEditingController postalCodeController = TextEditingController();
 
-  final ApiClient _apiClient = Get.find<ApiClient>();
+  final ApiClient _apiClient;
   final Rx<LatLng> selectedPoint = _defaultCenter.obs;
   final RxString selectedLabel = 'default_selected_location'.tr.obs;
   final RxString searchQuery = ''.obs;

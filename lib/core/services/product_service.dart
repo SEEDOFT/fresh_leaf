@@ -7,9 +7,9 @@ import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class ProductService extends GetxService {
-  ProductService({required this.apiClient});
+  ProductService({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  final ApiClient apiClient;
+  final ApiClient _apiClient;
 
   Future<PaginatedResponse<VendorInventory>> getProducts({
     int? categoryId,
@@ -27,7 +27,7 @@ class ProductService extends GetxService {
       if (query != null) params['search'] = query;
       if (province != null) params['province'] = province;
 
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.products,
         queryParameters: params,
       );
@@ -48,7 +48,7 @@ class ProductService extends GetxService {
 
   Future<VendorInventory?> getProduct(int id) async {
     try {
-      final response = await apiClient.getRequest(
+      final response = await _apiClient.getRequest(
         ApiEndpoints.productById.replaceFirst('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
@@ -66,7 +66,7 @@ class ProductService extends GetxService {
     int id,
   ) async {
     try {
-      final response = await apiClient.getRequest('/vendors/$id');
+      final response = await _apiClient.getRequest('/vendors/$id');
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
@@ -95,7 +95,7 @@ class ProductService extends GetxService {
 
   Future<bool> createProduct(Map<String, dynamic> data) async {
     try {
-      final response = await apiClient.postRequest(
+      final response = await _apiClient.postRequest(
         ApiEndpoints.vendorProducts,
         data: data,
       );
