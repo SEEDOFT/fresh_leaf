@@ -61,7 +61,7 @@ class ProfileHelpCenterController extends GetxController {
   Future<void> _fetchUnreadCount() async {
     try {
       final response = await _apiClient.getRequest(
-        ApiEndpoints.supportUnreadCount,
+        ApiEndpoints.chatUnreadCount,
       );
       final data = response.data;
       if (data is Map<String, dynamic> && data['count'] != null) {

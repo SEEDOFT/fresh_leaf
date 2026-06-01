@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:fresh_leaf/core/config/app_config.dart';
-import 'package:fresh_leaf/core/models/support_message.dart';
+import 'package:fresh_leaf/core/models/chat_message.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class SupportRealtimeService extends GetxService {
+class ChatRealtimeService extends GetxService {
   final ApiClient _apiClient = Get.find<ApiClient>();
-  final StreamController<SupportMessage> _messageController =
-      StreamController<SupportMessage>.broadcast();
-  final StreamController<String> _typingController =
-      StreamController<String>.broadcast();
+  final StreamController<ChatMessage> _messageController =
+      StreamController<ChatMessage>.broadcast();
+  final StreamController<int> _typingController =
+      StreamController<int>.broadcast();
 
   WebSocketChannel? _socketChannel;
   StreamSubscription<dynamic>? _socketSubscription;
@@ -29,10 +29,10 @@ class SupportRealtimeService extends GetxService {
   String _socketId = '';
   String _activeChannel = '';
   bool _isConnected = false;
-  int? _currentTicketId;
+  int? _currentConversationId;
 
-  Stream<SupportMessage> get messages => _messageController.stream;
-  Stream<String> get typingEvents => _typingController.stream;
+  Stream<ChatMessage> get messages => _messageController.stream;
+  Stream<int> get typingEvents => _typingController.stream;
 
   String get socketId => _socketId;
   bool get isConnected => _isConnected;
@@ -69,10 +69,10 @@ class SupportRealtimeService extends GetxService {
     }
   }
 
-  Future<void> subscribeToTicket(int ticketId) async {
-    _currentTicketId = ticketId;
+  Future<void> subscribeToConversation(int conversationId) async {
+    _currentConversationId = conversationId;
     await connect();
-    final channelName = 'private-support.ticket.$ticketId';
+    final channelName = 'private-chat.conversation.$conversationId';
     if (_activeChannel == channelName && _isConnected) return;
 
     if (_socketId.isEmpty) throw const FormatException('Missing socket id');
@@ -96,8 +96,8 @@ class SupportRealtimeService extends GetxService {
   }
 
   Future<void> resubscribe() async {
-    if (_currentTicketId != null && _isConnected) {
-      await subscribeToTicket(_currentTicketId!);
+    if (_currentConversationId != null && _isConnected) {
+      await subscribeToConversation(_currentConversationId!);
     }
   }
 
@@ -128,14 +128,14 @@ class SupportRealtimeService extends GetxService {
       _reconnectAttempts = 0;
     } else if (event == 'pusher_internal:subscription_succeeded') {
       _subscriptionCompleter?.complete();
-    } else if (event == 'SupportMessageSent') {
+    } else if (event == 'ChatMessageSent') {
       final messageData =
           jsonDecode(data['data'] as String) as Map<String, dynamic>;
-      _messageController.add(SupportMessage.fromMap(messageData));
-    } else if (event == 'SupportTyping') {
+      _messageController.add(ChatMessage.fromMap(messageData));
+    } else if (event == 'ChatTyping') {
       final typingData =
           jsonDecode(data['data'] as String) as Map<String, dynamic>;
-      _typingController.add(typingData['sender_type'] as String);
+      _typingController.add(typingData['senderId'] as int);
     } else if (event == 'pusher:ping') {
       _sendRaw(<String, dynamic>{
         'event': 'pusher:pong',
@@ -170,7 +170,7 @@ class SupportRealtimeService extends GetxService {
       _reconnectAttempts++;
       try {
         await connect();
-        if (_currentTicketId != null) {
+        if (_currentConversationId != null) {
           await resubscribe();
         }
       } on Exception {
@@ -218,6 +218,7 @@ class SupportRealtimeService extends GetxService {
     unawaited(_socketSubscription?.cancel());
     unawaited(_socketChannel?.sink.close());
     unawaited(_messageController.close());
+    unawaited(_typingController.close());
     super.onClose();
   }
 }

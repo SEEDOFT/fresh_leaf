@@ -101,4 +101,19 @@ class OrderService extends GetxService {
       return false;
     }
   }
+
+  Future<String?> getInvoiceUrl(int id) async {
+    try {
+      final response = await apiClient.getRequest(
+        ApiEndpoints.orderInvoiceUrl.replaceAll('{id}', id.toString()),
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      if (apiResponse.isSuccess && response.statusCode == 200) {
+        return apiResponse.data['url'] as String?;
+      }
+      return null;
+    } on Exception {
+      return null;
+    }
+  }
 }

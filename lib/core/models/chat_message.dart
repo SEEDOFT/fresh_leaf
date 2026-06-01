@@ -1,58 +1,50 @@
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 
-class SupportMessage {
-  const SupportMessage({
+class ChatMessage {
+  const ChatMessage({
     required this.id,
-    required this.supportTicketId,
-    required this.senderType,
+    required this.conversationId,
     required this.senderId,
-    required this.message,
+    required this.content,
     this.filePath,
     this.createdAt,
   });
 
-  factory SupportMessage.fromMap(Map<String, dynamic> map) {
+  factory ChatMessage.fromMap(Map<String, dynamic> map) {
     final source = (map['data'] is Map<String, dynamic>)
         ? map['data'] as Map<String, dynamic>
         : map;
 
-    return SupportMessage(
+    return ChatMessage(
       id: toInt(source['id']),
-      supportTicketId: toInt(source['support_ticket_id']),
-      senderType: formatToString(source['sender_type']),
+      conversationId: toInt(source['conversation_id']),
       senderId: toInt(source['sender_id']),
-      message: formatToString(source['message']),
+      content: formatToString(source['content']),
       filePath: source['file_path'] as String?,
       createdAt: toNullableDateTime(source['created_at']),
     );
   }
 
   final int id;
-  final int supportTicketId;
-  final String senderType;
+  final int conversationId;
   final int senderId;
-  final String message;
+  final String content;
   final String? filePath;
   final DateTime? createdAt;
 
-  bool get isAdmin => senderType == 'admin';
-  bool get isUser => senderType == 'user';
-
-  SupportMessage copyWith({
+  ChatMessage copyWith({
     int? id,
-    int? supportTicketId,
-    String? senderType,
+    int? conversationId,
     int? senderId,
-    String? message,
+    String? content,
     String? filePath,
     DateTime? createdAt,
   }) {
-    return SupportMessage(
+    return ChatMessage(
       id: id ?? this.id,
-      supportTicketId: supportTicketId ?? this.supportTicketId,
-      senderType: senderType ?? this.senderType,
+      conversationId: conversationId ?? this.conversationId,
       senderId: senderId ?? this.senderId,
-      message: message ?? this.message,
+      content: content ?? this.content,
       filePath: filePath ?? this.filePath,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -60,10 +52,9 @@ class SupportMessage {
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'support_ticket_id': supportTicketId,
-    'sender_type': senderType,
+    'conversation_id': conversationId,
     'sender_id': senderId,
-    'message': message,
+    'content': content,
     'file_path': filePath,
     'created_at': createdAt?.toIso8601String(),
   };

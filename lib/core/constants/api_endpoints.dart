@@ -51,6 +51,7 @@ final class ApiEndpoints {
   static const String orderById = '/orders/{id}';
   static const String orderCancel = '/orders/{id}/cancel';
   static const String orderConfirmReceipt = '/orders/{id}/confirm-receipt';
+  static const String orderInvoiceUrl = '/orders/{id}/invoice/url';
 
   // AI Assistant
   static const String aiSuggestions = '/ai/suggestions';
@@ -60,13 +61,12 @@ final class ApiEndpoints {
   static const String aiChatHistory = '/ai/chat/history';
   static const String aiStatus = '/ai/status';
 
-  // Support Chat
-  static const String supportTickets = '/support/tickets';
-  static const String supportTicket = '/support/ticket';
-  static const String supportTyping = '/support/typing';
-  static const String supportMessage = '/support/message';
-  static const String supportMessages = '/support/messages';
-  static const String supportUnreadCount = '/support/unread-count';
+  // Chat
+  static const String chatConversations = '/conversations';
+  static const String chatConversation = '/conversations/{id}';
+  static const String chatTyping = '/conversations/typing';
+  static const String chatMessages = '/conversations/{id}/messages';
+  static const String chatUnreadCount = '/conversations/unread-count';
 
   // Favorites/Wishlist
   static const String wishlist = '/wishlist';

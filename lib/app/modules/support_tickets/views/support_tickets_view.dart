@@ -18,11 +18,11 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
     return AppScaffold(
       scrollable: false,
       padding: EdgeInsets.zero,
-      appBar: CustomAppBar(title: 'customer_support'.tr),
+      appBar: CustomAppBar(title: 'messages'.tr),
       floatingActionButton: FloatingActionButton(
         onPressed: controller.createNewTicket,
         backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.support_agent, color: Colors.white),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -50,29 +50,9 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                         alignment: Alignment.center,
                         children: [
                           Icon(
-                            Icons.support_agent_outlined,
+                            Icons.chat_bubble_outline,
                             size: 80,
                             color: AppColors.primary.withValues(alpha: 0.6),
-                          ),
-                          Positioned(
-                            bottom: 30,
-                            right: 30,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isDark ? Colors.black : Colors.white,
-                                  width: 3,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
                           ),
                         ],
                       ),
@@ -80,7 +60,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'how_can_we_help'.tr,
+                    'no_messages_yet'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
@@ -90,47 +70,12 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'support_tickets_empty_subtitle'.tr,
+                    'messages_empty_subtitle'.tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.5,
                       color: isDark ? Colors.white54 : Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'support_tickets_empty_hint'.tr,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      height: 1.5,
-                      color: isDark ? Colors.white54 : Colors.black54,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  ElevatedButton.icon(
-                    onPressed: controller.createNewTicket,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 0,
-                    ),
-                    icon: const Icon(Icons.chat_outlined),
-                    label: Text(
-                      'start_new_conversation'.tr,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                 ],
@@ -147,8 +92,9 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
             isLoadingMore: controller.isLoadingMore,
             hasMore: controller.hasMore,
             padding: const EdgeInsets.all(16),
-            itemBuilder: (context, index, ticket) {
-              final isOpen = ticket.status == 'open';
+            itemBuilder: (context, index, conversation) {
+              final isOpen = conversation.status == 'open';
+              final isSupport = conversation.type == 'support';
 
               return Card(
                 elevation: 0,
@@ -165,7 +111,7 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                   onTap: () async {
                     await Get.toNamed<void>(
                       AppRoutes.supportChat,
-                      arguments: {'ticket': ticket},
+                      arguments: {'conversation': conversation},
                     );
                     await controller.refreshList();
                   },
@@ -174,19 +120,19 @@ class SupportTicketsView extends GetView<SupportTicketsController> {
                         ? AppColors.primary.withValues(alpha: 0.1)
                         : Colors.grey.withValues(alpha: 0.1),
                     child: Icon(
-                      isOpen
-                          ? Icons.chat_bubble_outline
-                          : Icons.check_circle_outline,
+                      isSupport
+                          ? Icons.support_agent
+                          : Icons.chat_bubble_outline,
                       color: isOpen ? AppColors.primary : Colors.grey,
                     ),
                   ),
                   title: Text(
-                    'ticket_prefix'.trParams({'id': ticket.id.toString()}),
+                    isSupport ? 'customer_support'.tr : 'chat_with_vendor'.tr,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    ticket.createdAt != null
-                        ? formatDateTime(ticket.createdAt)
+                    conversation.createdAt != null
+                        ? formatDateTime(conversation.createdAt)
                         : 'unknown_date'.tr,
                   ),
                   trailing: Container(

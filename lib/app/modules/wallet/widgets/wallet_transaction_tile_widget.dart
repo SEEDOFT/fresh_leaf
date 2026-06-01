@@ -139,9 +139,9 @@ class WalletTransactionTileWidget extends StatelessWidget {
                             Text(
                               currency == 'USD'
                                   ? '${isCredit ? '+' : '-'}'
-                                      '$symbol$displayAmount'
+                                        '$symbol$displayAmount'
                                   : '${isCredit ? '+' : '-'}'
-                                      '$displayAmount $symbol',
+                                        '$displayAmount $symbol',
                               style: TextStyle(
                                 fontSize: 14.scaled,
                                 fontWeight: FontWeight.w700,

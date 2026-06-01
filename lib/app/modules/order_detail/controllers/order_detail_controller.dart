@@ -5,6 +5,7 @@ import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 class OrderDetailController extends GetxController {
   final OrderService _orderService = Get.find<OrderService>();
@@ -99,6 +100,27 @@ class OrderDetailController extends GetxController {
       await reloadOrder();
     } else {
       Get.snackbar('error'.tr, 'failed_confirm_receipt'.tr);
+    }
+    isUpdating.value = false;
+  }
+
+  Future<void> downloadInvoice() async {
+    if (order.value?.id == null) return;
+
+    isUpdating.value = true;
+    final url = await _orderService.getInvoiceUrl(order.value!.id);
+    if (url != null) {
+      final uri = Uri.parse(url);
+      if (await url_launcher.canLaunchUrl(uri)) {
+        await url_launcher.launchUrl(
+          uri,
+          mode: url_launcher.LaunchMode.externalApplication,
+        );
+      } else {
+        Get.snackbar('error'.tr, 'Could not open invoice URL');
+      }
+    } else {
+      Get.snackbar('error'.tr, 'failed_fetch_invoice_url'.tr);
     }
     isUpdating.value = false;
   }

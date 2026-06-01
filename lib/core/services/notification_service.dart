@@ -158,10 +158,10 @@ class NotificationService extends GetxService {
         );
       }
 
-      if (type == 'support_chat') {
+      if (type == 'chat') {
         if (kDebugMode) {
           debugPrint(
-            '[NotificationService] Handling support_chat notification',
+            '[NotificationService] Handling chat notification',
           );
         }
         // Only show notification if NOT currently on the support chat screen
@@ -299,9 +299,9 @@ class NotificationService extends GetxService {
       );
     }
 
-    if (type == 'support_chat') {
+    if (type == 'chat') {
       if (kDebugMode) {
-        debugPrint('[NotificationService] Navigating to support_tickets');
+        debugPrint('[NotificationService] Navigating to chat_conversations');
       }
       await Get.toNamed<void>(AppRoutes.supportTickets);
       return;

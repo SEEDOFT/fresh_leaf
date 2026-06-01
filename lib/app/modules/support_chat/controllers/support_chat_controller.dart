@@ -4,35 +4,34 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
-import 'package:fresh_leaf/core/models/support_message.dart';
-import 'package:fresh_leaf/core/models/support_ticket.dart';
+import 'package:fresh_leaf/core/models/chat_conversation.dart';
+import 'package:fresh_leaf/core/models/chat_message.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/chat_realtime_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
-import 'package:fresh_leaf/core/services/support_realtime_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SupportChatController extends GetxController {
   final ApiClient _apiClient = Get.find<ApiClient>();
-  final SupportRealtimeService _realtimeService = Get.put(
-    SupportRealtimeService(),
+  final ChatRealtimeService _realtimeService = Get.put(
+    ChatRealtimeService(),
   );
   final ImagePicker _imagePicker = ImagePicker();
 
-  final RxList<SupportMessage> messages = <SupportMessage>[].obs;
+  final RxList<ChatMessage> messages = <ChatMessage>[].obs;
   final RxBool isLoading = false.obs;
   final RxBool isSending = false.obs;
   final RxBool isUploading = false.obs;
   final RxDouble uploadProgress = 0.0.obs;
-  final RxBool isAdminTyping = false.obs;
-  final Rxn<SupportTicket> activeTicket = Rxn<SupportTicket>();
+  final RxBool isOtherTyping = false.obs;
+  final Rxn<ChatConversation> activeConversation = Rxn<ChatConversation>();
   final messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   final UserProfile? userProfile = Get.find<StorageService>().userProfile;
 
   static const int maxFileSizeBytes = 5 * 1024 * 1024;
-  static const String admin = 'admin';
 
   Timer? _typingTimer;
   DateTime _lastTypingSent = DateTime.now().subtract(
@@ -49,33 +48,51 @@ class SupportChatController extends GetxController {
     isLoading.value = true;
     try {
       final args = Get.arguments as Map<String, dynamic>?;
-      if (args != null && args['ticket'] is SupportTicket) {
-        activeTicket.value = args['ticket'] as SupportTicket;
+      if (args != null) {
+        if (args['conversation'] is ChatConversation) {
+          activeConversation.value = args['conversation'] as ChatConversation;
+        } else if (args['conversation_id'] != null) {
+          final convId = args['conversation_id'].toString();
+          final response = await _apiClient.getRequest(
+            ApiEndpoints.chatConversation.replaceAll('{id}', convId),
+          );
+          final apiResponse = ApiResponse.parseMap(response.data);
+          if (apiResponse.isSuccess) {
+            activeConversation.value = ChatConversation.fromMap(
+              apiResponse.data,
+            );
+          }
+        }
+      }
+
+      if (activeConversation.value != null) {
         await _loadMessages();
-        await _realtimeService.subscribeToTicket(activeTicket.value!.id);
+        await _realtimeService.subscribeToConversation(
+          activeConversation.value!.id,
+        );
 
         _realtimeService.messages.listen((msg) {
-          if (msg.supportTicketId == activeTicket.value?.id) {
+          if (msg.conversationId == activeConversation.value?.id) {
             if (!messages.any((m) => m.id == msg.id)) {
               messages.add(msg);
-              isAdminTyping.value = false;
+              isOtherTyping.value = false;
               _scrollToBottom();
             }
           }
         });
 
-        _realtimeService.typingEvents.listen((senderType) {
-          if (senderType == admin) {
-            isAdminTyping.value = true;
+        _realtimeService.typingEvents.listen((senderId) {
+          if (senderId != userProfile?.id) {
+            isOtherTyping.value = true;
             _typingTimer?.cancel();
             _typingTimer = Timer(const Duration(seconds: 3), () {
-              isAdminTyping.value = false;
+              isOtherTyping.value = false;
             });
           }
         });
       } else {
         Get
-          ..snackbar('error'.tr, 'no_ticket_provided'.tr)
+          ..snackbar('error'.tr, 'no_conversation_provided'.tr)
           ..back<void>();
       }
     } on Exception {
@@ -87,18 +104,20 @@ class SupportChatController extends GetxController {
   }
 
   Future<void> _loadMessages() async {
-    if (activeTicket.value == null) return;
+    if (activeConversation.value == null) return;
 
     try {
       final response = await _apiClient.getRequest(
-        ApiEndpoints.supportMessages,
-        queryParameters: {'ticket_id': activeTicket.value!.id},
+        ApiEndpoints.chatMessages.replaceAll(
+          '{id}',
+          activeConversation.value!.id.toString(),
+        ),
       );
       final apiResponse = ApiResponse.parseList(response.data);
 
       if (apiResponse.isSuccess) {
         messages.assignAll(
-          apiResponse.data.map(SupportMessage.fromMap),
+          apiResponse.data.map(ChatMessage.fromMap),
         );
       }
     } on Exception {
@@ -107,7 +126,7 @@ class SupportChatController extends GetxController {
   }
 
   void notifyTyping() {
-    if (activeTicket.value == null) return;
+    if (activeConversation.value == null) return;
 
     final now = DateTime.now();
     if (now.difference(_lastTypingSent).inSeconds > 2) {
@@ -115,8 +134,8 @@ class SupportChatController extends GetxController {
       try {
         unawaited(
           _apiClient.postRequest(
-            ApiEndpoints.supportTyping,
-            data: {'ticket_id': activeTicket.value!.id},
+            ApiEndpoints.chatTyping,
+            data: {'conversation_id': activeConversation.value!.id},
             options: dio.Options(
               headers: {
                 if (_realtimeService.socketId.isNotEmpty)
@@ -133,19 +152,21 @@ class SupportChatController extends GetxController {
 
   Future<void> sendMessage() async {
     final text = messageController.text.trim();
-    if (text.isEmpty || activeTicket.value == null) return;
+    if (text.isEmpty || activeConversation.value == null) return;
 
     isSending.value = true;
     messageController.clear();
 
     try {
       final formData = dio.FormData.fromMap({
-        'ticket_id': activeTicket.value!.id,
         'message': text,
       });
 
       final response = await _apiClient.postRequest(
-        ApiEndpoints.supportMessage,
+        ApiEndpoints.chatMessages.replaceAll(
+          '{id}',
+          activeConversation.value!.id.toString(),
+        ),
         data: formData,
         options: dio.Options(
           headers: {
@@ -158,7 +179,7 @@ class SupportChatController extends GetxController {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        final newMsg = SupportMessage.fromMap(apiResponse.data);
+        final newMsg = ChatMessage.fromMap(apiResponse.data);
         if (!messages.any((m) => m.id == newMsg.id)) {
           messages.add(newMsg);
         }
@@ -324,16 +345,18 @@ class SupportChatController extends GetxController {
 
     try {
       final formData = dio.FormData.fromMap({
-        'ticket_id': activeTicket.value!.id,
         'message': 'file attachment',
-        'file': await dio.MultipartFile.fromFile(
+        'attachment': await dio.MultipartFile.fromFile(
           image.path,
           filename: image.name,
         ),
       });
 
       final response = await _apiClient.postMultipart(
-        ApiEndpoints.supportMessage,
+        ApiEndpoints.chatMessages.replaceAll(
+          '{id}',
+          activeConversation.value!.id.toString(),
+        ),
         data: formData,
         options: dio.Options(
           headers: {
@@ -349,7 +372,7 @@ class SupportChatController extends GetxController {
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        final newMsg = SupportMessage.fromMap(apiResponse.data);
+        final newMsg = ChatMessage.fromMap(apiResponse.data);
         if (!messages.any((m) => m.id == newMsg.id)) {
           messages.add(newMsg);
         }

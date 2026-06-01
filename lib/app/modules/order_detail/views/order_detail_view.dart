@@ -135,6 +135,19 @@ class OrderDetailView extends GetView<OrderDetailController> {
                     foregroundColor: scheme.onPrimary,
                   ),
                 ],
+                if (order.statusId == 4 || order.statusId == 5) ...[
+                  const SizedBox(height: 12),
+                  PrimaryButton(
+                    onPressed: controller.isUpdating.value
+                        ? null
+                        : controller.downloadInvoice,
+                    label: 'Download Invoice',
+                    borderRadius: 14,
+                    height: 50,
+                    backgroundColor: scheme.surfaceContainerHighest,
+                    foregroundColor: scheme.onSurfaceVariant,
+                  ),
+                ],
               ],
             );
           },

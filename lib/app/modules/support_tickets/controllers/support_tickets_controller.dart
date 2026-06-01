@@ -2,13 +2,13 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/mixins/paginated_list_mixin.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
+import 'package:fresh_leaf/core/models/chat_conversation.dart';
 import 'package:fresh_leaf/core/models/paginated_response.dart';
-import 'package:fresh_leaf/core/models/support_ticket.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:get/get.dart';
 
 class SupportTicketsController extends GetxController
-    with PaginatedListMixin<SupportTicket> {
+    with PaginatedListMixin<ChatConversation> {
   final ApiClient _apiClient = Get.find<ApiClient>();
 
   @override
@@ -18,15 +18,15 @@ class SupportTicketsController extends GetxController
   }
 
   @override
-  Future<PaginatedResponse<SupportTicket>> fetchPage(int page) async {
+  Future<PaginatedResponse<ChatConversation>> fetchPage(int page) async {
     try {
       final response = await _apiClient.getRequest(
-        ApiEndpoints.supportTickets,
+        ApiEndpoints.chatConversations,
         queryParameters: {'page': page},
       );
       final apiResponse = ApiResponse.parsePaginated(
         response.data,
-        SupportTicket.fromMap,
+        ChatConversation.fromMap,
       );
 
       if (apiResponse.isSuccess) {
@@ -42,15 +42,16 @@ class SupportTicketsController extends GetxController
     isLoading.value = true;
     try {
       final response = await _apiClient.postRequest(
-        ApiEndpoints.supportTicket,
+        ApiEndpoints.chatConversations,
+        data: {'type': 'support'},
       );
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
-        final newTicket = SupportTicket.fromMap(apiResponse.data);
+        final newConversation = ChatConversation.fromMap(apiResponse.data);
         await Get.toNamed<void>(
           AppRoutes.supportChat,
-          arguments: {'ticket': newTicket},
+          arguments: {'conversation': newConversation},
         );
         await refreshList();
       }

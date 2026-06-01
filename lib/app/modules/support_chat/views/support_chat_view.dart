@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/support_chat/controllers/support_chat_controller.dart';
 import 'package:fresh_leaf/app/modules/support_chat/widgets/support_chat_widgets.dart';
-import 'package:fresh_leaf/core/models/support_message.dart';
+import 'package:fresh_leaf/core/models/chat_message.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
@@ -21,7 +21,11 @@ class SupportChatView extends GetView<SupportChatController> {
       child: AppScaffold(
         scrollable: false,
         padding: EdgeInsets.zero,
-        appBar: CustomAppBar(title: 'customer_support'.tr),
+        appBar: CustomAppBar(
+          title: controller.activeConversation.value?.type == 'support'
+              ? 'customer_support'.tr
+              : 'chat_with_vendor'.tr,
+        ),
         body: ColoredBox(
           color: isDark ? scheme.surface : const Color(0xFFE5DDD5),
           child: Column(
@@ -94,14 +98,15 @@ class SupportChatView extends GetView<SupportChatController> {
                       ),
                       itemCount:
                           messages.length +
-                          (controller.isAdminTyping.value ? 1 : 0),
+                          (controller.isOtherTyping.value ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == messages.length) {
                           final lastMsg = messages.isNotEmpty
                               ? messages.last
                               : null;
                           final isLastFromAdmin =
-                              lastMsg != null && !lastMsg.isUser;
+                              lastMsg != null &&
+                              lastMsg.senderId != controller.userProfile?.id;
                           return Align(
                             alignment: isLastFromAdmin
                                 ? Alignment.centerLeft
@@ -114,7 +119,7 @@ class SupportChatView extends GetView<SupportChatController> {
                         }
 
                         final msg = messages[index];
-                        final isMe = msg.isUser;
+                        final isMe = msg.senderId == controller.userProfile?.id;
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 8),
@@ -180,9 +185,9 @@ class SupportChatView extends GetView<SupportChatController> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       _buildAttachment(msg, isDark),
-                                      if (msg.message.isNotEmpty)
+                                      if (msg.content.isNotEmpty)
                                         Text(
-                                          msg.message,
+                                          msg.content,
                                           style: TextStyle(
                                             color: isDark
                                                 ? Colors.white
@@ -252,7 +257,7 @@ class SupportChatView extends GetView<SupportChatController> {
     );
   }
 
-  Widget _buildAttachment(SupportMessage msg, bool isDark) {
+  Widget _buildAttachment(ChatMessage msg, bool isDark) {
     if (msg.filePath == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),

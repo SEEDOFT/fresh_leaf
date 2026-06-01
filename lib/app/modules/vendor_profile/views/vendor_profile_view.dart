@@ -53,6 +53,27 @@ class VendorProfileView extends GetView<VendorProfileController> {
               stretch: true,
               backgroundColor: scheme.surface,
               iconTheme: IconThemeData(color: scheme.onSurface),
+              actions: [
+                Obx(
+                  () => IconButton(
+                    icon: controller.isStartingChat.value
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.chat_bubble_outline),
+                    onPressed: controller.isStartingChat.value
+                        ? null
+                        : controller.startChat,
+                    tooltip: 'chat_with_vendor'.tr,
+                    style: IconButton.styleFrom(
+                      backgroundColor: scheme.surface.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 stretchModes: const [
                   StretchMode.zoomBackground,
