@@ -15,7 +15,12 @@ class OrdersView extends GetView<OrdersController> {
     final scheme = Theme.of(context).colorScheme;
 
     return AppScaffold(
-      appBar: showAppBar ? CustomAppBar(title: 'orders'.tr) : null,
+      appBar: showAppBar
+          ? CustomAppBar(
+              title: 'orders'.tr,
+              showChatButton: true,
+            )
+          : null,
       safeAreaTop: !showAppBar,
       scrollable: false,
       padding: EdgeInsets.zero,

@@ -747,6 +747,7 @@ const Map<String, String> translationsEn = {
   'profile_default_last_name': 'Member',
 
   // Help Center
+  'support_chat': 'Support chat',
   'help_center_faqs': 'FAQs',
   'help_center_chat_with_support': 'Chat with support',
   'help_article_ordering_title': 'Ordering & delivery',

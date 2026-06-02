@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBack,
     this.centerTitle = false,
     this.showCartButton = false,
+    this.showChatButton = false,
     super.key,
   });
 
@@ -24,6 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBack;
   final bool centerTitle;
   final bool showCartButton;
+  final bool showChatButton;
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight.scaled);
@@ -56,6 +59,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         ...?actions,
+        if (showChatButton)
+          IconButton(
+            tooltip: 'support_chat'.tr,
+            icon: Icon(
+              Icons.chat_bubble_outline,
+              color: scheme.onSurface,
+            ),
+            onPressed: () => Get.toNamed<void>(AppRoutes.supportTickets),
+          ),
         if (showCartButton)
           Builder(
             builder: (context) {

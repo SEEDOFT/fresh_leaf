@@ -750,6 +750,7 @@ const Map<String, String> translationsKm = {
   'profile_default_last_name': 'សមាជិក',
 
   // Help Center
+  'support_chat': 'ជជែកជំនួយ',
   'help_center_faqs': 'សំណួរគេសួរញឹកញាប់',
   'help_center_chat_with_support': 'ជជែកជាមួយជំនួយ',
   'help_article_ordering_title': 'ការបញ្ជាទិញ និងដឹកជញ្ជូន',

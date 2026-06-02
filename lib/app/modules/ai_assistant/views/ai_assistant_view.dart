@@ -14,7 +14,7 @@ class AiAssistantView extends GetView<AiAssistantController> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: AppScaffold(
         scrollable: false,
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.zero,
         body: Column(
           children: [
             const AiAssistantAppBar(),
@@ -57,7 +57,7 @@ class AiAssistantView extends GetView<AiAssistantController> {
                       left: 20,
                       right: 20,
                       top: 16,
-                      bottom: 120,
+                      bottom: 80,
                     ),
                     itemCount: controller.messages.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 16),

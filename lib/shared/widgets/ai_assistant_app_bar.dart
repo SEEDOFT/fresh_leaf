@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/ai_assistant/controllers/ai_assistant_controller.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:get/get.dart';
 
@@ -59,6 +60,14 @@ class AiAssistantAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             Row(
               children: [
+                IconButton(
+                  tooltip: 'support_chat'.tr,
+                  icon: Icon(
+                    Icons.chat_bubble_outline,
+                    color: scheme.onSurface,
+                  ),
+                  onPressed: () => Get.toNamed<void>(AppRoutes.supportTickets),
+                ),
                 IconButton(
                   tooltip: 'view_history'.tr,
                   icon: Icon(Icons.history, color: scheme.onSurface),

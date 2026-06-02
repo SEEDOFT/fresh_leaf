@@ -25,7 +25,7 @@ class AiAssistantComposer extends StatelessWidget {
                     controller.isAiServiceAvailable.value &&
                     !controller.isLoading.value,
                 minLines: 1,
-                maxLines: 4,
+                maxLines: 6,
                 decoration: InputDecoration(
                   hintText: controller.isAiServiceAvailable.value
                       ? 'ai_prompt_hint'.tr

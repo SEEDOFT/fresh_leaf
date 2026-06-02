@@ -110,6 +110,20 @@ class HomeAppBarWidget extends GetView<HomeController> {
                   minHeight: AppSizes.s40,
                 ),
                 icon: Icon(
+                  Icons.chat_bubble_outline,
+                  size: AppSizes.s22,
+                  color: scheme.onSurface,
+                ),
+                onPressed: () async =>
+                    await Get.toNamed(AppRoutes.supportTickets),
+              ),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: AppSizes.s40,
+                  minHeight: AppSizes.s40,
+                ),
+                icon: Icon(
                   Icons.favorite_border_rounded,
                   size: AppSizes.s22,
                   color: scheme.onSurface,

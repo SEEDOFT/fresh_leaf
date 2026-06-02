@@ -279,9 +279,9 @@ class VendorProfileView extends GetView<VendorProfileController> {
                                     selected: isSelected,
                                     label: Text(label),
                                     onSelected: (_) {
-                                controller.category = index == 0
-                                    ? null
-                                    : categories[index - 1].id;
+                                      controller.category = index == 0
+                                          ? null
+                                          : categories[index - 1].id;
                                     },
                                     visualDensity: VisualDensity.compact,
                                   );

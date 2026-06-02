@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';
 import 'package:fresh_leaf/app/modules/search/widgets/search_widget.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
@@ -22,21 +23,40 @@ class SearchView extends GetView<SearchController> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'search'.tr,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                color: scheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'search_subtitle'.tr,
-              style: TextStyle(
-                color: scheme.onSurfaceVariant,
-                fontSize: 13,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'search'.tr,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                        color: scheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'search_subtitle'.tr,
+                      style: TextStyle(
+                        color: scheme.onSurfaceVariant,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  tooltip: 'support_chat'.tr,
+                  icon: Icon(
+                    Icons.chat_bubble_outline,
+                    color: scheme.onSurface,
+                  ),
+                  onPressed: () => Get.toNamed<void>(AppRoutes.supportTickets),
+                ),
+              ],
             ),
             const SizedBox(height: 14),
             Obx(
