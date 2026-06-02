@@ -281,7 +281,6 @@ final class AppPages {
     GetPage(
       name: AppRoutes.productDetail,
       page: () => const ProductDetailView(),
-      binding: ProductDetailBinding(),
       middlewares: _authOnly,
     ),
     GetPage(

@@ -73,21 +73,27 @@ void main() {
       final controller = AppSettingsController(storageService: mockStorage);
       controller.onInit();
 
-      await controller.setLocale(const Locale('en', 'US'), syncToBackend: false);
+      await controller.setLocale(
+        const Locale('en', 'US'),
+        syncToBackend: false,
+      );
 
       expect(controller.locale.value.languageCode, 'en');
       expect(controller.locale.value.countryCode, 'US');
       verify(mockStorage.saveLocale('en', 'US')).called(1);
     });
 
-    test('setNotificationsEnabled updates value and saves to storage', () async {
-      final controller = AppSettingsController(storageService: mockStorage);
-      controller.onInit();
+    test(
+      'setNotificationsEnabled updates value and saves to storage',
+      () async {
+        final controller = AppSettingsController(storageService: mockStorage);
+        controller.onInit();
 
-      await controller.setNotificationsEnabled(enabled: false);
+        await controller.setNotificationsEnabled(enabled: false);
 
-      expect(controller.notificationsEnabled.value, isFalse);
-      verify(mockStorage.saveNotificationsEnabled(enabled: false)).called(1);
-    });
+        expect(controller.notificationsEnabled.value, isFalse);
+        verify(mockStorage.saveNotificationsEnabled(enabled: false)).called(1);
+      },
+    );
   });
 }

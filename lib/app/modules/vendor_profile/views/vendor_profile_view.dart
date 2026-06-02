@@ -150,88 +150,66 @@ class VendorProfileView extends GetView<VendorProfileController> {
           body: Builder(
             builder: (context) => RefreshIndicator(
               onRefresh: controller.loadVendorProfile,
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics(),
-                ),
-                slivers: [
-                  SliverOverlapInjector(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                      context,
-                    ),
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollInfo) {
+                  if (scrollInfo.metrics.pixels >=
+                      scrollInfo.metrics.maxScrollExtent - 200) {
+                    unawaited(controller.loadMoreProducts());
+                  }
+                  return false;
+                },
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
                   ),
-                  // Vendor Business Details & Hours Card
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.all(AppSizes.s20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Description Block
-                          if (vendor.shopDescription != null &&
-                              vendor.shopDescription!.isNotEmpty) ...[
-                            Text(
-                              vendor.shopDescription!,
-                              style: TextStyle(
-                                fontSize: 14,
-                                height: 1.5,
-                                color: scheme.onSurfaceVariant,
-                              ),
-                            ),
-                            SizedBox(height: AppSizes.s16),
-                          ],
-                          // Open hours, Address & Status indicators
-                          Container(
-                            padding: EdgeInsets.all(AppSizes.s16),
-                            decoration: BoxDecoration(
-                              color: scheme.surfaceContainerLow,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: scheme.outlineVariant.withValues(
-                                  alpha: 0.5,
+                  slivers: [
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context,
+                      ),
+                    ),
+                    // Vendor Business Details & Hours Card
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(AppSizes.s20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Description Block
+                            if (vendor.shopDescription != null &&
+                                vendor.shopDescription!.isNotEmpty) ...[
+                              Text(
+                                vendor.shopDescription!,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  color: scheme.onSurfaceVariant,
                                 ),
                               ),
-                            ),
-                            child: Column(
-                              children: [
-                                _infoRow(
-                                  icon: Icons.inventory_2_outlined,
-                                  title: 'active_products'.tr,
-                                  value:
-                                      '${vendor.productCount} '
-                                      '${'products'.tr}',
-                                  scheme: scheme,
-                                ),
-                                Divider(
-                                  height: AppSizes.s24,
+                              SizedBox(height: AppSizes.s16),
+                            ],
+                            // Open hours, Address & Status indicators
+                            Container(
+                              padding: EdgeInsets.all(AppSizes.s16),
+                              decoration: BoxDecoration(
+                                color: scheme.surfaceContainerLow,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
                                   color: scheme.outlineVariant.withValues(
                                     alpha: 0.5,
                                   ),
                                 ),
-                                _infoRow(
-                                  icon: Icons.access_time_rounded,
-                                  title: 'business_hours'.tr,
-                                  value:
-                                      vendor.openingTime != null &&
-                                          vendor.closingTime != null
-                                      ? '${vendor.openingTime} - '
-                                            '${vendor.closingTime}'
-                                      : 'always_open'.tr,
-                                  scheme: scheme,
-                                ),
-                                Divider(
-                                  height: AppSizes.s24,
-                                  color: scheme.outlineVariant.withValues(
-                                    alpha: 0.5,
+                              ),
+                              child: Column(
+                                children: [
+                                  _infoRow(
+                                    icon: Icons.inventory_2_outlined,
+                                    title: 'active_products'.tr,
+                                    value:
+                                        '${vendor.productCount} '
+                                        '${'products'.tr}',
+                                    scheme: scheme,
                                   ),
-                                ),
-                                _infoRow(
-                                  icon: Icons.location_on_outlined,
-                                  title: 'location'.tr,
-                                  value: vendor.address ?? 'no_address'.tr,
-                                  scheme: scheme,
-                                ),
-                                if (vendor.contactPhone != null) ...[
                                   Divider(
                                     height: AppSizes.s24,
                                     color: scheme.outlineVariant.withValues(
@@ -239,135 +217,177 @@ class VendorProfileView extends GetView<VendorProfileController> {
                                     ),
                                   ),
                                   _infoRow(
-                                    icon: Icons.phone_outlined,
-                                    title: 'phone_number'.tr,
-                                    value: vendor.contactPhone!,
+                                    icon: Icons.access_time_rounded,
+                                    title: 'business_hours'.tr,
+                                    value:
+                                        vendor.openingTime != null &&
+                                            vendor.closingTime != null
+                                        ? '${vendor.openingTime} - '
+                                              '${vendor.closingTime}'
+                                        : 'always_open'.tr,
                                     scheme: scheme,
                                   ),
-                                ],
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: AppSizes.s24),
-                          AppSectionHeader(
-                            title: 'vendor_products'.tr,
-                            subtitle: 'products_offered_by_vendor'.tr,
-                          ),
-                          SizedBox(height: AppSizes.s12),
-                          Obx(() {
-                            final categories = controller.productCategories;
-                            if (categories.isEmpty) {
-                              return const SizedBox.shrink();
-                            }
-                            return SizedBox(
-                              height: 36,
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: categories.length + 1,
-                                separatorBuilder: (_, _) =>
-                                    const SizedBox(width: 8),
-                                itemBuilder: (context, index) {
-                                  final isSelected = index == 0
-                                      ? controller.selectedCategoryId.value ==
-                                            null
-                                      : controller.selectedCategoryId.value ==
-                                            categories[index - 1].id;
-                                  final label = index == 0
-                                      ? 'all_categories'.tr
-                                      : categories[index - 1].name;
-                                  return FilterChip(
-                                    selected: isSelected,
-                                    label: Text(label),
-                                    onSelected: (_) {
-                                      controller.category = index == 0
-                                          ? null
-                                          : categories[index - 1].id;
-                                    },
-                                    visualDensity: VisualDensity.compact,
-                                  );
-                                },
-                              ),
-                            );
-                          }),
-                          SizedBox(height: AppSizes.s16),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (items.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(AppSizes.s20),
-                          child: Text(
-                            'no_products_found'.tr,
-                            style: TextStyle(color: scheme.onSurfaceVariant),
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: AppSizes.s20),
-                      sliver: SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.70,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                            ),
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final product = items[index];
-                            return Obx(
-                              () => AppProductCard(
-                                title: product.displayTitle.tr,
-                                subtitle: product.displaySubtitle.tr,
-                                imageUrl: product.displayImageUrl,
-                                price: product.resolvedFinalPriceDisplay.usd > 0
-                                    ? product.resolvedFinalPriceDisplay.usd
-                                    : product.finalPrice,
-                                originalPrice:
-                                    product.resolvedPriceDisplay.usd > 0
-                                    ? product.resolvedPriceDisplay.usd
-                                    : product.price,
-                                priceKhr:
-                                    product.resolvedFinalPriceDisplay.hasKhr
-                                    ? product.resolvedFinalPriceDisplay.khr
-                                    : null,
-                                currencySymbol: r'$',
-                                isFavorite: wishlist.isFavorite(product.id),
-                                onFavoriteTap: () =>
-                                    wishlist.toggleWishlist(product),
-                                onTap: () async {
-                                  await Get.toNamed<void>(
-                                    AppRoutes.productDetail,
-                                    arguments: product,
-                                  );
-                                },
-                                onActionTap: () {
-                                  if (Get.isRegistered<CartController>()) {
-                                    unawaited(
-                                      Get.find<CartController>().addToCart(
-                                        product.id,
-                                        1,
+                                  Divider(
+                                    height: AppSizes.s24,
+                                    color: scheme.outlineVariant.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                  _infoRow(
+                                    icon: Icons.location_on_outlined,
+                                    title: 'location'.tr,
+                                    value: vendor.address ?? 'no_address'.tr,
+                                    scheme: scheme,
+                                  ),
+                                  if (vendor.contactPhone != null) ...[
+                                    Divider(
+                                      height: AppSizes.s24,
+                                      color: scheme.outlineVariant.withValues(
+                                        alpha: 0.5,
                                       ),
-                                    );
-                                  }
-                                },
+                                    ),
+                                    _infoRow(
+                                      icon: Icons.phone_outlined,
+                                      title: 'phone_number'.tr,
+                                      value: vendor.contactPhone!,
+                                      scheme: scheme,
+                                    ),
+                                  ],
+                                ],
                               ),
-                            );
-                          },
-                          childCount: items.length,
+                            ),
+                            SizedBox(height: AppSizes.s24),
+                            AppSectionHeader(
+                              title: 'vendor_products'.tr,
+                              subtitle: 'products_offered_by_vendor'.tr,
+                            ),
+                            SizedBox(height: AppSizes.s12),
+                            Obx(() {
+                              final categories = controller.productCategories;
+                              if (categories.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return SizedBox(
+                                height: 36,
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: categories.length + 1,
+                                  separatorBuilder: (_, _) =>
+                                      const SizedBox(width: 8),
+                                  itemBuilder: (context, index) {
+                                    final isSelected = index == 0
+                                        ? controller.selectedCategoryId.value ==
+                                              null
+                                        : controller.selectedCategoryId.value ==
+                                              categories[index - 1].id;
+                                    final label = index == 0
+                                        ? 'all_categories'.tr
+                                        : categories[index - 1].name;
+                                    return FilterChip(
+                                      selected: isSelected,
+                                      label: Text(label),
+                                      onSelected: (_) {
+                                        controller.category = index == 0
+                                            ? null
+                                            : categories[index - 1].id;
+                                      },
+                                      visualDensity: VisualDensity.compact,
+                                    );
+                                  },
+                                ),
+                              );
+                            }),
+                            SizedBox(height: AppSizes.s16),
+                          ],
                         ),
                       ),
                     ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: AppSizes.s32),
-                  ),
-                ],
+                    if (items.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(AppSizes.s20),
+                            child: Text(
+                              'no_products_found'.tr,
+                              style: TextStyle(color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: AppSizes.s20),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisExtent: 285,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                              ),
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final product = items[index];
+                              return Obx(
+                                () => AppProductCard(
+                                  title: product.displayTitle.tr,
+                                  subtitle: product.displaySubtitle.tr,
+                                  imageUrl: product.displayImageUrl,
+                                  price:
+                                      product.resolvedFinalPriceDisplay.usd > 0
+                                      ? product.resolvedFinalPriceDisplay.usd
+                                      : product.finalPrice,
+                                  originalPrice:
+                                      product.resolvedPriceDisplay.usd > 0
+                                      ? product.resolvedPriceDisplay.usd
+                                      : product.price,
+                                  priceKhr:
+                                      product.resolvedFinalPriceDisplay.hasKhr
+                                      ? product.resolvedFinalPriceDisplay.khr
+                                      : null,
+                                  currencySymbol: r'$',
+                                  badge: product.certificationType?.tr,
+                                  isFavorite: wishlist.isFavorite(product.id),
+                                  onFavoriteTap: () =>
+                                      wishlist.toggleWishlist(product),
+                                  onTap: () async {
+                                    await Get.toNamed<void>(
+                                      AppRoutes.productDetail,
+                                      arguments: product,
+                                    );
+                                  },
+                                  onActionTap: () {
+                                    if (Get.isRegistered<CartController>()) {
+                                      unawaited(
+                                        Get.find<CartController>().addToCart(
+                                          product.id,
+                                          1,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                            childCount: items.length,
+                          ),
+                        ),
+                      ),
+                    SliverToBoxAdapter(
+                      child: Obx(
+                        () => controller.isPaginating.value
+                            ? const Padding(
+                                padding: EdgeInsets.all(24),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : SizedBox(height: AppSizes.s32),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

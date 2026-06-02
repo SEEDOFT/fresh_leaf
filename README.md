@@ -78,9 +78,14 @@ cp .env.example .env.local
 Required keys:
 
 ```env
-API_URL=http://your-api-host/api/v1
+# IMPORTANT: When testing on a physical device or emulator, 
+# you MUST use your computer's local network IP address (e.g., 192.168.1.X).
+# Do not use 'localhost' or '127.0.0.1'.
+API_URL=http://192.168.1.X:8000/api/v1
+
+# Real-time WebSocket (Reverb) Configuration
 REVERB_WS_SCHEME=ws
-REVERB_WS_HOST=192.168.0.108
+REVERB_WS_HOST=192.168.1.X
 REVERB_WS_PORT=8080
 REVERB_APP_KEY=your_reverb_app_key
 REVERB_AUTH_ENDPOINT=/broadcasting/auth

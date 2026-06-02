@@ -250,11 +250,13 @@ class SupportChatView extends GetView<SupportChatController> {
   }
 
   Widget _buildAttachment(ChatMessage msg, bool isDark) {
-    if (msg.filePath == null) return const SizedBox.shrink();
+    final url = msg.fileUrl;
+    if (url == null || url.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: SupportChatAttachmentPreviewWidget(
-        filePath: msg.filePath!,
+        fileUrl: url,
+        fileName: msg.filePath?.split('/').last ?? 'file',
         isDark: isDark,
       ),
     );

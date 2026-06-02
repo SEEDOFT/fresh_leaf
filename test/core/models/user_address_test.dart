@@ -35,26 +35,29 @@ void main() {
       expect(address.updatedAt, isNotEmpty);
     });
 
-    test('falls back to alternative keys (line1, line2, latitude, longitude)', () {
-      final address = UserAddress.fromMap(<String, dynamic>{
-        'id': 2,
-        'label': 'Work',
-        'recipient_name': 'Jane',
-        'phone': '098765432',
-        'line1': '456 Oak Ave',
-        'line2': 'Suite 200',
-        'city': 'Siem Reap',
-        'province': 'Siem Reap',
-        'postal_code': '17259',
-        'latitude': 13.3633,
-        'longitude': 103.8564,
-      });
+    test(
+      'falls back to alternative keys (line1, line2, latitude, longitude)',
+      () {
+        final address = UserAddress.fromMap(<String, dynamic>{
+          'id': 2,
+          'label': 'Work',
+          'recipient_name': 'Jane',
+          'phone': '098765432',
+          'line1': '456 Oak Ave',
+          'line2': 'Suite 200',
+          'city': 'Siem Reap',
+          'province': 'Siem Reap',
+          'postal_code': '17259',
+          'latitude': 13.3633,
+          'longitude': 103.8564,
+        });
 
-      expect(address.addressLine1, '456 Oak Ave');
-      expect(address.addressLine2, 'Suite 200');
-      expect(address.lat, 13.3633);
-      expect(address.long, 103.8564);
-    });
+        expect(address.addressLine1, '456 Oak Ave');
+        expect(address.addressLine2, 'Suite 200');
+        expect(address.lat, 13.3633);
+        expect(address.long, 103.8564);
+      },
+    );
 
     test('defaults label to Address when empty', () {
       final address = UserAddress.fromMap(<String, dynamic>{

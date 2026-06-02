@@ -6,7 +6,6 @@ import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_divider.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/app_tile.dart';
-import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -15,12 +14,6 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      appBar: CustomAppBar(
-        title: 'profile'.tr,
-        showBackButton: false,
-        showChatButton: true,
-        centerTitle: true,
-      ),
       safeAreaTop: false,
       onRefresh: controller.refreshProfile,
       body: Column(
@@ -89,13 +82,6 @@ class ProfileView extends GetView<ProfileController> {
           ProfileSectionCard(
             title: 'support'.tr.toUpperCase(),
             children: [
-              AppTile(
-                icon: Icons.chat_bubble_outline,
-                title: 'help_center_chat_with_support'.tr,
-                onTap: () async =>
-                    await Get.toNamed<void>(AppRoutes.supportTickets),
-              ),
-              AppDivider(height: 16.scaled),
               AppTile(
                 icon: Icons.support_agent,
                 title: 'help_center'.tr,

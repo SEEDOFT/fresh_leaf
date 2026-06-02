@@ -147,29 +147,41 @@ void main() {
       expect(event.sequence, 7);
     });
 
-    test('fromPayload handles nested data key that is already Map<String, dynamic>', () {
-      final event = AiChatRealtimeEvent.fromPayload(
-        eventType: AiChatEventType.messageCompleted,
-        payload: <String, dynamic>{
-          'data': <String, dynamic>{
-            'session_id': 'sess_008',
-            'message_id': 'msg_008',
-            'role': 'assistant',
-            'timestamp': '2026-06-14T12:03:00Z',
-            'sequence': 8,
-            'text_chunk': '',
-            'full_text': 'Final message',
+    test(
+      'fromPayload handles nested data key that is already Map<String, dynamic>',
+      () {
+        final event = AiChatRealtimeEvent.fromPayload(
+          eventType: AiChatEventType.messageCompleted,
+          payload: <String, dynamic>{
+            'data': <String, dynamic>{
+              'session_id': 'sess_008',
+              'message_id': 'msg_008',
+              'role': 'assistant',
+              'timestamp': '2026-06-14T12:03:00Z',
+              'sequence': 8,
+              'text_chunk': '',
+              'full_text': 'Final message',
+            },
           },
-        },
-      );
-      expect(event.sequence, 8);
-      expect(event.fullText, 'Final message');
-    });
+        );
+        expect(event.sequence, 8);
+        expect(event.fullText, 'Final message');
+      },
+    );
 
     test('getter booleans return correct values', () {
       final started = AiChatRealtimeEvent.fromPayload(
         eventType: AiChatEventType.messageStarted,
-        payload: <String, dynamic>{'data': <String, dynamic>{'session_id': '', 'message_id': '', 'role': '', 'timestamp': '', 'sequence': 0, 'text_chunk': ''}},
+        payload: <String, dynamic>{
+          'data': <String, dynamic>{
+            'session_id': '',
+            'message_id': '',
+            'role': '',
+            'timestamp': '',
+            'sequence': 0,
+            'text_chunk': '',
+          },
+        },
       );
       expect(started.isStarted, isTrue);
       expect(started.isChunk, isFalse);
@@ -178,20 +190,47 @@ void main() {
 
       final chunk = AiChatRealtimeEvent.fromPayload(
         eventType: AiChatEventType.messageChunk,
-        payload: <String, dynamic>{'data': <String, dynamic>{'session_id': '', 'message_id': '', 'role': '', 'timestamp': '', 'sequence': 0, 'text_chunk': ''}},
+        payload: <String, dynamic>{
+          'data': <String, dynamic>{
+            'session_id': '',
+            'message_id': '',
+            'role': '',
+            'timestamp': '',
+            'sequence': 0,
+            'text_chunk': '',
+          },
+        },
       );
       expect(chunk.isStarted, isFalse);
       expect(chunk.isChunk, isTrue);
 
       final completed = AiChatRealtimeEvent.fromPayload(
         eventType: AiChatEventType.messageCompleted,
-        payload: <String, dynamic>{'data': <String, dynamic>{'session_id': '', 'message_id': '', 'role': '', 'timestamp': '', 'sequence': 0, 'text_chunk': ''}},
+        payload: <String, dynamic>{
+          'data': <String, dynamic>{
+            'session_id': '',
+            'message_id': '',
+            'role': '',
+            'timestamp': '',
+            'sequence': 0,
+            'text_chunk': '',
+          },
+        },
       );
       expect(completed.isCompleted, isTrue);
 
       final failed = AiChatRealtimeEvent.fromPayload(
         eventType: AiChatEventType.messageFailed,
-        payload: <String, dynamic>{'data': <String, dynamic>{'session_id': '', 'message_id': '', 'role': '', 'timestamp': '', 'sequence': 0, 'text_chunk': ''}},
+        payload: <String, dynamic>{
+          'data': <String, dynamic>{
+            'session_id': '',
+            'message_id': '',
+            'role': '',
+            'timestamp': '',
+            'sequence': 0,
+            'text_chunk': '',
+          },
+        },
       );
       expect(failed.isFailed, isTrue);
     });

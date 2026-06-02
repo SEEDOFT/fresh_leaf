@@ -184,8 +184,9 @@ void main() {
       });
 
       test('returns false on exception', () async {
-        when(mockClient.postRequest(any, data: anyNamed('data')))
-            .thenThrow(Exception('Failed'));
+        when(
+          mockClient.postRequest(any, data: anyNamed('data')),
+        ).thenThrow(Exception('Failed'));
 
         final service = CartService(apiClient: mockClient);
         final result = await service.addToCart(1, 1.0);

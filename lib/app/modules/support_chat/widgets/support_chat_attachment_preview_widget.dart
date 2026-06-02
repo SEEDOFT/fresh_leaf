@@ -4,28 +4,30 @@ import 'package:share_plus/share_plus.dart';
 
 class SupportChatAttachmentPreviewWidget extends StatelessWidget {
   const SupportChatAttachmentPreviewWidget({
-    required this.filePath,
+    required this.fileUrl,
+    required this.fileName,
     required this.isDark,
     super.key,
   });
 
-  final String filePath;
+  final String fileUrl;
+  final String fileName;
   final bool isDark;
 
   bool get isImage =>
-      filePath.endsWith('.jpg') ||
-      filePath.endsWith('.jpeg') ||
-      filePath.endsWith('.png');
+      fileName.endsWith('.jpg') ||
+      fileName.endsWith('.jpeg') ||
+      fileName.endsWith('.png');
 
   @override
   Widget build(BuildContext context) {
     if (isImage) {
       return GestureDetector(
-        onTap: () => _showFullScreenImage(context, filePath),
+        onTap: () => _showFullScreenImage(context, fileUrl),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
-            filePath,
+            fileUrl,
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 width: 50,
@@ -49,7 +51,7 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () => _downloadFile(filePath),
+      onTap: () => _downloadFile(fileUrl, fileName),
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -66,7 +68,7 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                filePath.split('/').last,
+                fileName,
                 style: TextStyle(
                   color: isDark ? Colors.white : Colors.black87,
                   fontSize: 13,
@@ -83,7 +85,7 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
 
   Future<void> _showFullScreenImage(
     BuildContext context,
-    String filePath,
+    String fileUrl,
   ) async {
     await showDialog<void>(
       context: context,
@@ -97,7 +99,7 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
                 minScale: 0.5,
                 maxScale: 4,
                 child: Image.network(
-                  filePath,
+                  fileUrl,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -119,9 +121,9 @@ class SupportChatAttachmentPreviewWidget extends StatelessWidget {
     );
   }
 
-  Future<void> _downloadFile(String filePath) async {
+  Future<void> _downloadFile(String fileUrl, String fileName) async {
     try {
-      await SharePlus.instance.share(ShareParams(uri: Uri.parse(filePath)));
+      await SharePlus.instance.share(ShareParams(uri: Uri.parse(fileUrl)));
     } on Exception {
       Get.snackbar(
         'register_error_title'.tr,

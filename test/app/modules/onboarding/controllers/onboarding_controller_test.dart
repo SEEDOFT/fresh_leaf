@@ -18,8 +18,9 @@ void main() {
 
     setUp(() {
       mockStorage = MockStorageService();
-      when(mockStorage.saveOnboardingSeen(seen: anyNamed('seen')))
-          .thenAnswer((_) async {});
+      when(
+        mockStorage.saveOnboardingSeen(seen: anyNamed('seen')),
+      ).thenAnswer((_) async {});
       controller = OnboardingController(storageService: mockStorage);
     });
 

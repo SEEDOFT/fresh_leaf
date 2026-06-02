@@ -65,16 +65,19 @@ void main() {
       expect(product.statusId, isNull);
     });
 
-    test('localizedName and localizedDescription return name and description', () {
-      final product = Product.fromMap(<String, dynamic>{
-        'id': 1,
-        'name': 'Banana',
-        'slug': 'banana',
-        'description': 'Yellow fruit',
-      });
+    test(
+      'localizedName and localizedDescription return name and description',
+      () {
+        final product = Product.fromMap(<String, dynamic>{
+          'id': 1,
+          'name': 'Banana',
+          'slug': 'banana',
+          'description': 'Yellow fruit',
+        });
 
-      expect(product.localizedName, 'Banana');
-      expect(product.localizedDescription, 'Yellow fruit');
-    });
+        expect(product.localizedName, 'Banana');
+        expect(product.localizedDescription, 'Yellow fruit');
+      },
+    );
   });
 }

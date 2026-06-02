@@ -44,12 +44,14 @@ void main() {
       box = GetStorage('test_profile_settings');
 
       mockStorage = MockStorageService();
-      when(mockStorage.saveOnboardingSeen(seen: anyNamed('seen')))
-          .thenAnswer((_) async {});
+      when(
+        mockStorage.saveOnboardingSeen(seen: anyNamed('seen')),
+      ).thenAnswer((_) async {});
       when(mockStorage.saveThemeMode(any)).thenAnswer((_) async {});
       when(mockStorage.saveLocale(any, any)).thenAnswer((_) async {});
-      when(mockStorage.saveNotificationsEnabled(enabled: anyNamed('enabled')))
-          .thenAnswer((_) async {});
+      when(
+        mockStorage.saveNotificationsEnabled(enabled: anyNamed('enabled')),
+      ).thenAnswer((_) async {});
 
       appSettings = AppSettingsController(storageService: mockStorage);
       chatStorage = AiChatStorageService(box: box);
@@ -76,9 +78,10 @@ void main() {
       expect(controller.locale.value, const Locale('km', 'KH'));
     });
 
-    testWidgets('clearAiHistory clears messages and shows snackbar',
-        (tester) async {
-      await chatStorage.saveMessages([AiChatMessage(role: 'user', text: 'hi')]);
+    testWidgets('clearAiHistory clears messages and shows snackbar', (
+      tester,
+    ) async {
+      await chatStorage.saveMessages([AiChatMessage(isUser: true, text: 'hi')]);
       await tester.pumpWidget(
         const GetMaterialApp(home: Text('')),
       );

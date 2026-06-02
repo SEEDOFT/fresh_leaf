@@ -125,18 +125,21 @@ void main() {
       expect(item.resolvedSubtotalDisplay.usd, 20.0);
     });
 
-    test('resolvedSubtotalDisplay computes from unit display when no subtotal display', () {
-      final item = CartItem(
-        id: 8,
-        vendorInventoryId: 80,
-        quantity: 3.0,
-        subtotal: 30.0,
-        unitPriceDisplay: MoneyDisplay(usd: 10.0, khr: 41000.0),
-      );
+    test(
+      'resolvedSubtotalDisplay computes from unit display when no subtotal display',
+      () {
+        final item = CartItem(
+          id: 8,
+          vendorInventoryId: 80,
+          quantity: 3.0,
+          subtotal: 30.0,
+          unitPriceDisplay: MoneyDisplay(usd: 10.0, khr: 41000.0),
+        );
 
-      expect(item.resolvedSubtotalDisplay.usd, 30.0);
-      expect(item.resolvedSubtotalDisplay.khr, 123000.0);
-    });
+        expect(item.resolvedSubtotalDisplay.usd, 30.0);
+        expect(item.resolvedSubtotalDisplay.khr, 123000.0);
+      },
+    );
 
     test('resolvedSubtotalDisplay falls back to fromCurrencyAmount', () {
       final item = CartItem(

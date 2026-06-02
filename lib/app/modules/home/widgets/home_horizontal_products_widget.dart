@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
@@ -64,46 +66,69 @@ class HomeHorizontalProductsWidget extends GetView<HomeController> {
 
     return SizedBox(
       height: AppSizes.s300,
-      child: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
-        scrollDirection: Axis.horizontal,
-        itemCount: pickedThisMorning.length,
-        separatorBuilder: (_, _) => SizedBox(width: AppSizes.s16),
-        itemBuilder: (context, index) {
-          final item = pickedThisMorning[index];
-
-          return SizedBox(
-            width: AppSizes.s200,
-            child: Obx(
-              () => AppProductCard(
-                title: item.displayTitle.tr,
-                subtitle: item.displaySubtitle.tr,
-                imageUrl: item.displayImageUrl,
-                price: item.resolvedFinalPriceDisplay.usd > 0
-                    ? item.resolvedFinalPriceDisplay.usd
-                    : item.finalPrice,
-                originalPrice: item.resolvedPriceDisplay.usd > 0
-                    ? item.resolvedPriceDisplay.usd
-                    : item.price,
-                priceKhr: item.resolvedFinalPriceDisplay.hasKhr
-                    ? item.resolvedFinalPriceDisplay.khr
-                    : null,
-                currencySymbol: r'$',
-                badge: item.certificationType?.tr,
-                isFavorite: wishlistController.isFavorite(item.id),
-                onFavoriteTap: () => wishlistController.toggleWishlist(item),
-                onTap: () async {
-                  await Get.toNamed<void>(
-                    AppRoutes.productDetail,
-                    arguments: item,
-                  );
-                },
-                onActionTap: () =>
-                    Get.find<CartController>().addToCart(item.id, 1),
-              ),
-            ),
-          );
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          if (scrollInfo.metrics.pixels >=
+              scrollInfo.metrics.maxScrollExtent - 200) {
+            unawaited(controller.loadMoreProducts());
+          }
+          return false;
         },
+        child: ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
+          scrollDirection: Axis.horizontal,
+          itemCount: pickedThisMorning.length + 1,
+          separatorBuilder: (_, _) => SizedBox(width: AppSizes.s16),
+          itemBuilder: (context, index) {
+            if (index == pickedThisMorning.length) {
+              return Obx(() {
+                if (controller.isPaginating.value) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              });
+            }
+
+            final item = pickedThisMorning[index];
+
+            return SizedBox(
+              width: AppSizes.s200,
+              child: Obx(
+                () => AppProductCard(
+                  title: item.displayTitle.tr,
+                  subtitle: item.displaySubtitle.tr,
+                  imageUrl: item.displayImageUrl,
+                  price: item.resolvedFinalPriceDisplay.usd > 0
+                      ? item.resolvedFinalPriceDisplay.usd
+                      : item.finalPrice,
+                  originalPrice: item.resolvedPriceDisplay.usd > 0
+                      ? item.resolvedPriceDisplay.usd
+                      : item.price,
+                  priceKhr: item.resolvedFinalPriceDisplay.hasKhr
+                      ? item.resolvedFinalPriceDisplay.khr
+                      : null,
+                  currencySymbol: r'$',
+                  badge: item.certificationType?.tr,
+                  isFavorite: wishlistController.isFavorite(item.id),
+                  onFavoriteTap: () => wishlistController.toggleWishlist(item),
+                  onTap: () async {
+                    await Get.toNamed<void>(
+                      AppRoutes.productDetail,
+                      arguments: item,
+                    );
+                  },
+                  onActionTap: () =>
+                      Get.find<CartController>().addToCart(item.id, 1),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

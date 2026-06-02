@@ -27,6 +27,10 @@ class VendorProfileController extends GetxController {
   final RxBool isStartingChat = false.obs;
   final Rxn<int> selectedCategoryId = Rxn<int>();
 
+  final RxInt currentPage = 1.obs;
+  final RxInt lastPage = 1.obs;
+  final RxBool isPaginating = false.obs;
+
   List<({int id, String name})> get productCategories {
     final seen = <int>{};
     final result = <({int id, String name})>[];
@@ -69,12 +73,38 @@ class VendorProfileController extends GetxController {
 
   Future<void> loadVendorProfile() async {
     isLoading.value = true;
+    currentPage.value = 1;
     try {
-      final result = await _productService.getVendorProfile(vendorId);
+      final result = await _productService.getVendorProfile(
+        vendorId,
+      );
       vendor.value = result.$1;
-      products.value = result.$2;
+      products.value = result.$2.items;
+      currentPage.value = result.$2.currentPage;
+      lastPage.value = result.$2.hasMore
+          ? result.$2.currentPage + 1
+          : result.$2.currentPage;
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> loadMoreProducts() async {
+    if (isPaginating.value || currentPage.value >= lastPage.value) return;
+    isPaginating.value = true;
+    try {
+      final nextPage = currentPage.value + 1;
+      final result = await _productService.getVendorProfile(
+        vendorId,
+        page: nextPage,
+      );
+      products.addAll(result.$2.items);
+      currentPage.value = result.$2.currentPage;
+      lastPage.value = result.$2.hasMore
+          ? result.$2.currentPage + 1
+          : result.$2.currentPage;
+    } finally {
+      isPaginating.value = false;
     }
   }
 

@@ -9,7 +9,6 @@ class HomeHeroCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final media = MediaQuery.of(context);
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final tagBackground = isDark
@@ -34,7 +33,7 @@ class HomeHeroCardWidget extends StatelessWidget {
                 url:
                     'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=1000',
                 height: AppSizes.s240,
-                width: media.size.width,
+                width: double.infinity,
               ),
               Container(
                 decoration: BoxDecoration(

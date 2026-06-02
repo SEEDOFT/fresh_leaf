@@ -1,7 +1,3 @@
-import 'dart:async';
-
-import 'package:fresh_leaf/core/constants/api_endpoints.dart';
-import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:get/get.dart';
 
@@ -18,24 +14,15 @@ class HelpArticle {
 }
 
 class ProfileHelpCenterController extends GetxController {
-  ProfileHelpCenterController({required ApiClient apiClient})
-    : _apiClient = apiClient;
+  ProfileHelpCenterController();
   final RxList<HelpArticle> articles = <HelpArticle>[].obs;
-  final RxInt unreadSupportCount = 0.obs;
-  final ApiClient _apiClient;
+  RxInt get unreadSupportCount =>
+      Get.find<NotificationService>().unreadChatCount;
 
   @override
   void onInit() {
     super.onInit();
     _seedArticles();
-    unawaited(_fetchUnreadCount());
-    Get.find<NotificationService>().onRefreshUnreadCount = refreshUnreadCount;
-  }
-
-  @override
-  void onClose() {
-    Get.find<NotificationService>().onRefreshUnreadCount = null;
-    super.onClose();
   }
 
   void _seedArticles() {
@@ -66,23 +53,5 @@ class ProfileHelpCenterController extends GetxController {
         category: 'ai',
       ),
     ]);
-  }
-
-  Future<void> _fetchUnreadCount() async {
-    try {
-      final response = await _apiClient.getRequest(
-        ApiEndpoints.chatUnreadCount,
-      );
-      final data = response.data;
-      if (data is Map<String, dynamic> && data['count'] != null) {
-        unreadSupportCount.value = data['count'] as int;
-      }
-    } on Exception {
-      //
-    }
-  }
-
-  Future<void> refreshUnreadCount() async {
-    await _fetchUnreadCount();
   }
 }

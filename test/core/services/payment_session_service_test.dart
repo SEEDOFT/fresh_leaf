@@ -75,8 +75,9 @@ void main() {
           paymentMethodId: 5,
         );
 
-        final captured = verify(mockClient.postRequest(any, data: captureAnyNamed('data')))
-            .captured;
+        final captured = verify(
+          mockClient.postRequest(any, data: captureAnyNamed('data')),
+        ).captured;
         expect((captured.first as Map)['payment_method_id'], 5);
       });
 
@@ -107,8 +108,9 @@ void main() {
           paymentMethodId: 0,
         );
 
-        final captured = verify(mockClient.postRequest(any, data: captureAnyNamed('data')))
-            .captured;
+        final captured = verify(
+          mockClient.postRequest(any, data: captureAnyNamed('data')),
+        ).captured;
         expect(
           (captured.first as Map).containsKey('payment_method_id'),
           isFalse,

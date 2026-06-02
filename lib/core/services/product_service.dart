@@ -62,34 +62,47 @@ class ProductService extends GetxService {
     }
   }
 
-  Future<(VendorProfile?, List<VendorInventory>)> getVendorProfile(
-    int id,
-  ) async {
+  Future<(VendorProfile?, PaginatedResponse<VendorInventory>)> getVendorProfile(
+    int id, {
+    int page = 1,
+    int perPage = 10,
+  }) async {
     try {
-      final response = await _apiClient.getRequest('/vendors/$id');
+      final response = await _apiClient.getRequest(
+        '/vendors/$id',
+        queryParameters: {
+          'page': page,
+          'per_page': perPage,
+        },
+      );
       final apiResponse = ApiResponse.parseMap(response.data);
 
       if (apiResponse.isSuccess) {
         final rawData = apiResponse.data;
         final vendorData = rawData['vendor'] as Map<String, dynamic>?;
-        final productsData = rawData['products'] as List<dynamic>?;
 
         final vendor = vendorData != null
             ? VendorProfile.fromMap(vendorData)
             : null;
-        final products = productsData != null
-            ? productsData
-                  .map(
-                    (e) => VendorInventory.fromMap(e as Map<String, dynamic>),
-                  )
-                  .toList()
-            : <VendorInventory>[];
 
-        return (vendor, products);
+        final productsPayload = rawData['products'];
+        final productsResponse = productsPayload != null
+            ? ApiResponse.parsePaginated(
+                {
+                  'status':
+                      rawData['status'] ??
+                      {'success': true, 'code': 200, 'message': 'OK'},
+                  'data': productsPayload,
+                },
+                VendorInventory.fromMap,
+              ).data
+            : PaginatedResponse<VendorInventory>.empty();
+
+        return (vendor, productsResponse);
       }
-      return (null, <VendorInventory>[]);
+      return (null, PaginatedResponse<VendorInventory>.empty());
     } on Exception {
-      return (null, <VendorInventory>[]);
+      return (null, PaginatedResponse<VendorInventory>.empty());
     }
   }
 

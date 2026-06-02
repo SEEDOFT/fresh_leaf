@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fresh_leaf/app/modules/support_tickets/controllers/support_tickets_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -18,7 +19,6 @@ class NotificationService extends GetxService {
   NotificationService({required ApiClient apiClient}) : _apiClient = apiClient;
 
   final ApiClient _apiClient;
-  VoidCallback? onRefreshUnreadCount;
   late final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
@@ -38,6 +38,7 @@ class NotificationService extends GetxService {
     _listenToMessages();
     _listenToTokenRefresh();
     await _handleInitialMessage();
+    unawaited(fetchUnreadChatCount());
 
     if (kDebugMode) {
       debugPrint('[NotificationService] Init complete');
@@ -158,7 +159,7 @@ class NotificationService extends GetxService {
         );
       }
 
-      if (type == 'chat') {
+      if (type == 'chat' || type == 'chat_message') {
         if (kDebugMode) {
           debugPrint(
             '[NotificationService] Handling chat notification',
@@ -170,7 +171,10 @@ class NotificationService extends GetxService {
           unawaited(_showLocalNotification(message));
         }
 
-        onRefreshUnreadCount?.call();
+        unawaited(fetchUnreadChatCount());
+        if (Get.isRegistered<SupportTicketsController>()) {
+          unawaited(Get.find<SupportTicketsController>().refreshList());
+        }
         return;
       }
 
@@ -182,6 +186,8 @@ class NotificationService extends GetxService {
           );
         }
         unawaited(_showLocalNotification(message));
+        unreadCount.value++;
+        unawaited(getNotifications());
       }
     });
 
@@ -296,7 +302,7 @@ class NotificationService extends GetxService {
       );
     }
 
-    if (type == 'chat') {
+    if (type == 'chat' && (route == null || route.isEmpty)) {
       if (kDebugMode) {
         debugPrint('[NotificationService] Navigating to chat_conversations');
       }
@@ -425,6 +431,22 @@ class NotificationService extends GetxService {
 
   final RxList<AppNotification> notifications = <AppNotification>[].obs;
   final RxInt unreadCount = 0.obs;
+  final RxInt unreadChatCount = 0.obs;
+
+  /// Fetch global unread chat count
+  Future<void> fetchUnreadChatCount() async {
+    try {
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.chatUnreadCount,
+      );
+      final apiResponse = ApiResponse.parseMap(response.data);
+      if (apiResponse.isSuccess && apiResponse.data['count'] != null) {
+        unreadChatCount.value = apiResponse.data['count'] as int;
+      }
+    } on Exception {
+      //
+    }
+  }
 
   /// Get database notifications for the user
   Future<PaginatedResponse<AppNotification>> getNotifications({

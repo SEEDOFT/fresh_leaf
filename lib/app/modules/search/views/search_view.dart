@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide SearchController;
 import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart';
 import 'package:fresh_leaf/app/modules/search/widgets/search_widget.dart';
-import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/shared/widgets/app_product_card.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
@@ -47,14 +46,6 @@ class SearchView extends GetView<SearchController> {
                       ),
                     ),
                   ],
-                ),
-                IconButton(
-                  tooltip: 'support_chat'.tr,
-                  icon: Icon(
-                    Icons.chat_bubble_outline,
-                    color: scheme.onSurface,
-                  ),
-                  onPressed: () => Get.toNamed<void>(AppRoutes.supportTickets),
                 ),
               ],
             ),

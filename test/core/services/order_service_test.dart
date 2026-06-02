@@ -18,7 +18,12 @@ void main() {
 
     group('getOrders', () {
       test('returns paginated orders on success', () async {
-        when(mockClient.getRequest(any, queryParameters: anyNamed('queryParameters'))).thenAnswer(
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => dio.Response<Map<String, dynamic>>(
             requestOptions: dio.RequestOptions(path: ''),
             statusCode: 200,
@@ -60,7 +65,12 @@ void main() {
       });
 
       test('returns empty on API failure', () async {
-        when(mockClient.getRequest(any, queryParameters: anyNamed('queryParameters'))).thenAnswer(
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => dio.Response<Map<String, dynamic>>(
             requestOptions: dio.RequestOptions(path: ''),
             statusCode: 200,
@@ -81,7 +91,12 @@ void main() {
       });
 
       test('returns empty on exception', () async {
-        when(mockClient.getRequest(any, queryParameters: anyNamed('queryParameters'))).thenThrow(Exception('Network error'));
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenThrow(Exception('Network error'));
 
         final service = OrderService(apiClient: mockClient);
         final result = await service.getOrders();
@@ -302,7 +317,9 @@ void main() {
                 'success': true,
                 'message': 'OK',
               },
-              'data': <String, dynamic>{'url': 'https://example.test/invoice/1'},
+              'data': <String, dynamic>{
+                'url': 'https://example.test/invoice/1',
+              },
             },
           ),
         );

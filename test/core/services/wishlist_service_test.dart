@@ -23,7 +23,12 @@ void main() {
 
     group('getWishlist', () {
       test('returns paginated items on success', () async {
-        when(mockClient.getRequest(any, queryParameters: anyNamed('queryParameters'))).thenAnswer(
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => dio.Response<Map<String, dynamic>>(
             requestOptions: dio.RequestOptions(path: ''),
             statusCode: 200,
@@ -62,7 +67,12 @@ void main() {
       });
 
       test('returns empty on exception', () async {
-        when(mockClient.getRequest(any, queryParameters: anyNamed('queryParameters'))).thenThrow(Exception('Error'));
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenThrow(Exception('Error'));
 
         final service = WishlistService(apiClient: mockClient);
         final result = await service.getWishlist();
@@ -94,8 +104,9 @@ void main() {
       });
 
       test('returns false on exception', () async {
-        when(mockClient.postRequest(any, data: anyNamed('data')))
-            .thenThrow(Exception('Failed'));
+        when(
+          mockClient.postRequest(any, data: anyNamed('data')),
+        ).thenThrow(Exception('Failed'));
 
         final service = WishlistService(apiClient: mockClient);
         final result = await service.toggleWishlist(1);

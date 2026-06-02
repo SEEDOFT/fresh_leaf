@@ -24,6 +24,7 @@ class AppSizes {
   static final double s48 = 48.scaled;
   static final double s56 = 56.scaled;
   static final double s64 = 64.scaled;
+  static final double s80 = 80.scaled;
   static final double s85 = 85.scaled;
   static final double s86 = 86.scaled;
   static final double s110 = 110.scaled;

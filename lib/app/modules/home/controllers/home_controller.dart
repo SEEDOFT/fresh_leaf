@@ -33,9 +33,14 @@ class HomeController extends GetxController {
   final RxString locationRegion = ''.obs;
   final RxBool isResolvingLocation = false.obs;
   final RxBool isLoadingProducts = false.obs;
+  final RxString selectedFilter = 'picked'.obs;
 
   final RxList<ProductCategory> categories = <ProductCategory>[].obs;
   final RxList<VendorInventory> pickedThisMorning = <VendorInventory>[].obs;
+
+  final RxInt currentPage = 1.obs;
+  final RxInt lastPage = 1.obs;
+  final RxBool isPaginating = false.obs;
 
   String get searchQuery => _searchQuery.value;
   set searchQuery(String value) => _searchQuery.value = value;
@@ -56,16 +61,32 @@ class HomeController extends GetxController {
     }).toList();
   }
 
+  List<VendorInventory> get filteredProductsByTab {
+    final list = filteredPickedThisMorning;
+    if (selectedFilter.value == 'top_rated') {
+      final sorted = List<VendorInventory>.from(list);
+      // For now, reverse to fake a different sort order
+      return sorted.reversed.toList();
+    } else if (selectedFilter.value == 'new') {
+      // Fake a different sort order
+      return List<VendorInventory>.from(list)
+        ..sort((a, b) => b.displayTitle.compareTo(a.displayTitle));
+    }
+    return list;
+  }
+
   @override
   void onInit() {
     super.onInit();
     unawaited(loadHomeData());
     unawaited(fetchCurrentLocation());
     unawaited(_notificationService.getNotifications());
+    unawaited(_notificationService.fetchUnreadChatCount());
   }
 
   Future<void> loadHomeData() async {
     isLoadingProducts.value = true;
+    currentPage.value = 1;
 
     try {
       final results = await Future.wait([
@@ -74,13 +95,41 @@ class HomeController extends GetxController {
       ]);
 
       categories.value = results[0] as List<ProductCategory>;
-      pickedThisMorning.value =
-          (results[1] as PaginatedResponse<VendorInventory>).items;
+
+      final paginatedProducts =
+          results[1] as PaginatedResponse<VendorInventory>;
+      pickedThisMorning.value = paginatedProducts.items;
+      currentPage.value = paginatedProducts.currentPage;
+      lastPage.value = paginatedProducts.hasMore
+          ? paginatedProducts.currentPage + 1
+          : paginatedProducts.currentPage;
     } on Exception {
       categories.value = [];
       pickedThisMorning.value = [];
     } finally {
       isLoadingProducts.value = false;
+    }
+  }
+
+  Future<void> loadMoreProducts() async {
+    if (isPaginating.value || currentPage.value >= lastPage.value) return;
+    isPaginating.value = true;
+
+    try {
+      final nextPage = currentPage.value + 1;
+      final response = await _productService.getProducts(
+        perPage: 10,
+        page: nextPage,
+      );
+      pickedThisMorning.addAll(response.items);
+      currentPage.value = response.currentPage;
+      lastPage.value = response.hasMore
+          ? response.currentPage + 1
+          : response.currentPage;
+    } on Exception {
+      // ignore
+    } finally {
+      isPaginating.value = false;
     }
   }
 

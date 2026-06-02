@@ -9,6 +9,7 @@ import 'package:fresh_leaf/core/models/chat_message.dart';
 import 'package:fresh_leaf/core/models/user_profile.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/chat_realtime_service.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -352,7 +353,7 @@ class SupportChatController extends GetxController {
 
     try {
       final formData = dio.FormData.fromMap({
-        'message': 'file attachment',
+        'message': '',
         'attachment': await dio.MultipartFile.fromFile(
           image.path,
           filename: image.name,
@@ -413,6 +414,9 @@ class SupportChatController extends GetxController {
     messageController.dispose();
     scrollController.dispose();
     _typingTimer?.cancel();
+    if (Get.isRegistered<NotificationService>()) {
+      unawaited(Get.find<NotificationService>().fetchUnreadChatCount());
+    }
     super.onClose();
   }
 }

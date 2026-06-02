@@ -27,7 +27,10 @@ void main() {
           'USD': '100.00',
           'KHR': '410000.00',
         },
-        'subtotal_display': <String, dynamic>{'USD': '80.00', 'KHR': '328000.00'},
+        'subtotal_display': <String, dynamic>{
+          'USD': '80.00',
+          'KHR': '328000.00',
+        },
         'discount_amount_display': <String, dynamic>{
           'USD': '10.00',
           'KHR': '41000.00',
@@ -36,7 +39,10 @@ void main() {
           'USD': '5.00',
           'KHR': '20500.00',
         },
-        'tax_amount_display': <String, dynamic>{'USD': '5.00', 'KHR': '20500.00'},
+        'tax_amount_display': <String, dynamic>{
+          'USD': '5.00',
+          'KHR': '20500.00',
+        },
         'items': <dynamic>[
           <String, dynamic>{
             'id': 1,
@@ -104,13 +110,54 @@ void main() {
     });
 
     test('status returns correct label based on statusId', () {
-      final base = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0);
-      final pending = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, statusId: 1);
-      final confirmed = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, statusId: 2);
-      final preparing = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, statusId: 3);
-      final delivered = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, statusId: 4);
-      final cancelled = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, statusId: 5);
-      final awaitingPayment = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, statusId: 6);
+      final base = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+      );
+      final pending = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        statusId: 1,
+      );
+      final confirmed = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        statusId: 2,
+      );
+      final preparing = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        statusId: 3,
+      );
+      final delivered = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        statusId: 4,
+      );
+      final cancelled = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        statusId: 5,
+      );
+      final awaitingPayment = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        statusId: 6,
+      );
 
       expect(base.status, 'order_pending');
       expect(pending.status, 'order_pending');
@@ -122,10 +169,34 @@ void main() {
     });
 
     test('paymentStatus returns correct label based on paymentStatusId', () {
-      final pending = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, paymentStatusId: 1);
-      final completed = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, paymentStatusId: 2);
-      final failed = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, paymentStatusId: 3);
-      final refunded = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, paymentStatusId: 4);
+      final pending = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        paymentStatusId: 1,
+      );
+      final completed = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        paymentStatusId: 2,
+      );
+      final failed = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        paymentStatusId: 3,
+      );
+      final refunded = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        paymentStatusId: 4,
+      );
 
       expect(pending.paymentStatus, 'payment_pending');
       expect(completed.paymentStatus, 'payment_completed');
@@ -134,12 +205,24 @@ void main() {
     });
 
     test('paymentStatus defaults to pending for unknown id', () {
-      final order = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, paymentStatusId: 99);
+      final order = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        paymentStatusId: 99,
+      );
       expect(order.paymentStatus, 'payment_pending');
     });
 
     test('orderType returns label based on orderTypeId', () {
-      final standard = Order(id: 1, orderNumber: 'FL-001', totalAmount: 10.0, subtotal: 10.0, orderTypeId: 1);
+      final standard = Order(
+        id: 1,
+        orderNumber: 'FL-001',
+        totalAmount: 10.0,
+        subtotal: 10.0,
+        orderTypeId: 1,
+      );
       expect(standard.orderType, 'order_standard');
     });
 
@@ -166,23 +249,26 @@ void main() {
       expect(order.resolvedTaxAmountDisplay.usd, 5.0);
     });
 
-    test('resolved display getters fall back to computed values when empty', () {
-      final order = Order(
-        id: 1,
-        orderNumber: 'FL-001',
-        totalAmount: 200.0,
-        subtotal: 180.0,
-        discountAmount: 20.0,
-        deliveryFee: 0.0,
-        taxAmount: 10.0,
-      );
+    test(
+      'resolved display getters fall back to computed values when empty',
+      () {
+        final order = Order(
+          id: 1,
+          orderNumber: 'FL-001',
+          totalAmount: 200.0,
+          subtotal: 180.0,
+          discountAmount: 20.0,
+          deliveryFee: 0.0,
+          taxAmount: 10.0,
+        );
 
-      expect(order.resolvedTotalAmountDisplay.usd, 200.0);
-      expect(order.resolvedSubtotalDisplay.usd, 180.0);
-      expect(order.resolvedDiscountAmountDisplay.usd, 20.0);
-      expect(order.resolvedDeliveryFeeDisplay.usd, 0.0);
-      expect(order.resolvedTaxAmountDisplay.usd, 10.0);
-    });
+        expect(order.resolvedTotalAmountDisplay.usd, 200.0);
+        expect(order.resolvedSubtotalDisplay.usd, 180.0);
+        expect(order.resolvedDiscountAmountDisplay.usd, 20.0);
+        expect(order.resolvedDeliveryFeeDisplay.usd, 0.0);
+        expect(order.resolvedTaxAmountDisplay.usd, 10.0);
+      },
+    );
   });
 
   group('OrderItem', () {

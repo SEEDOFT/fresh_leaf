@@ -70,7 +70,8 @@ import 'package:fresh_leaf/app/modules/profile/controllers/profile_wishlist_cont
 import 'package:fresh_leaf/app/modules/register/bindings/register_binding.dart';
 import 'package:fresh_leaf/app/modules/register/controllers/register_controller.dart';
 import 'package:fresh_leaf/app/modules/search/bindings/search_binding.dart';
-import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart' as search;
+import 'package:fresh_leaf/app/modules/search/controllers/search_controller.dart'
+    as search;
 import 'package:fresh_leaf/app/modules/splash/bindings/splash_binding.dart';
 import 'package:fresh_leaf/app/modules/splash/controllers/splash_controller.dart';
 import 'package:fresh_leaf/app/modules/support_chat/bindings/support_chat_binding.dart';

@@ -160,35 +160,41 @@ void main() {
       expect(inventory.displayImageUrl, 'https://example.test/img.png');
     });
 
-    test('displayImageUrl falls back to product image when no batch images', () {
-      final inventory = VendorInventory.fromMap(<String, dynamic>{
-        'id': 8,
-        'price': '5.00',
-        'stock_quantity': '1.00',
-        'product': <String, dynamic>{
-          'id': 2,
-          'name': 'Lettuce',
-          'slug': 'lettuce',
-          'description': 'Green lettuce',
-          'image_url': 'https://example.test/lettuce.png',
-        },
-        'price_display': <String, dynamic>{'USD': '5.00', 'KHR': '20500.00'},
-        'discounted_price_display': <String, dynamic>{},
-      });
+    test(
+      'displayImageUrl falls back to product image when no batch images',
+      () {
+        final inventory = VendorInventory.fromMap(<String, dynamic>{
+          'id': 8,
+          'price': '5.00',
+          'stock_quantity': '1.00',
+          'product': <String, dynamic>{
+            'id': 2,
+            'name': 'Lettuce',
+            'slug': 'lettuce',
+            'description': 'Green lettuce',
+            'image_url': 'https://example.test/lettuce.png',
+          },
+          'price_display': <String, dynamic>{'USD': '5.00', 'KHR': '20500.00'},
+          'discounted_price_display': <String, dynamic>{},
+        });
 
-      expect(inventory.displayImageUrl, 'https://example.test/lettuce.png');
-    });
+        expect(inventory.displayImageUrl, 'https://example.test/lettuce.png');
+      },
+    );
 
-    test('displayImageUrl falls back to empty string when nothing available', () {
-      final inventory = VendorInventory.fromMap(<String, dynamic>{
-        'id': 9,
-        'price': '3.00',
-        'stock_quantity': '1.00',
-        'price_display': <String, dynamic>{'USD': '3.00', 'KHR': '12300.00'},
-        'discounted_price_display': <String, dynamic>{},
-      });
+    test(
+      'displayImageUrl falls back to empty string when nothing available',
+      () {
+        final inventory = VendorInventory.fromMap(<String, dynamic>{
+          'id': 9,
+          'price': '3.00',
+          'stock_quantity': '1.00',
+          'price_display': <String, dynamic>{'USD': '3.00', 'KHR': '12300.00'},
+          'discounted_price_display': <String, dynamic>{},
+        });
 
-      expect(inventory.displayImageUrl, '');
-    });
+        expect(inventory.displayImageUrl, '');
+      },
+    );
   });
 }

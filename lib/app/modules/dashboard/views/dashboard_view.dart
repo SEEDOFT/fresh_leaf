@@ -101,7 +101,7 @@ class DashboardView extends GetView<DashboardController> {
                       selectedColor: navSelectedColor,
                       unselectedColor: navUnselectedColor,
                     ),
-                    label: 'ai_assistant'.tr,
+                    label: 'AI Assistant',
                   ),
                   BottomNavigationBarItem(
                     icon: BuildNavIcon(
