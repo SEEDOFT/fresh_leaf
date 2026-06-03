@@ -254,7 +254,10 @@ class OrderWalletPaymentController extends GetxController {
         if (Get.isRegistered<DashboardController>()) {
           Get.find<DashboardController>().currentIndex = 3;
         }
-        await Get.offAllNamed<void>(AppRoutes.dashboard);
+        if (Get.isRegistered<OrdersController>()) {
+          Get.find<OrdersController>().refreshList();
+        }
+        Get.until((route) => route.settings.name == AppRoutes.dashboard || route.isFirst);
       } else {
         throw Exception('Payment failed');
       }

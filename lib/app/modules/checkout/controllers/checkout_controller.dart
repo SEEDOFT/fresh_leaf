@@ -458,9 +458,9 @@ class CheckoutController extends GetxController {
 
     _dashboardController.currentIndex = 3;
     if (Get.isRegistered<OrdersController>()) {
-      unawaited(Get.find<OrdersController>().refreshList());
+      Get.find<OrdersController>().refreshList();
     }
-    unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
+    Get.until((route) => route.settings.name == AppRoutes.dashboard || route.isFirst);
 
     Get.snackbar(
       'order_confirmed'.tr,
