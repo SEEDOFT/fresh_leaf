@@ -268,6 +268,7 @@ class CheckoutController extends GetxController {
     }
 
     final hasPin = _storageService.userProfile?.setPin ?? false;
+    String? currentPin;
 
     if (!hasPin) {
       final success = await Get.toNamed<dynamic>(
@@ -283,11 +284,16 @@ class CheckoutController extends GetxController {
           setPin: true,
         );
       }
+      
+      final pinResult = await PinSecurityService.verifyPin();
+      if (pinResult == null) return;
+      currentPin = pinResult;
     } else {
-      final verified = await PinSecurityService.verifyPin();
-      if (!verified) {
+      final pinResult = await PinSecurityService.verifyPin();
+      if (pinResult == null) {
         return; // User failed or aborted PIN verification
       }
+      currentPin = pinResult;
     }
 
     isPlacingOrder.value = true;
@@ -304,7 +310,7 @@ class CheckoutController extends GetxController {
         throw Exception('Checkout returned empty');
       }
 
-      await _finalizeOrder(orderIds, option.typeCode);
+      await _finalizeOrder(orderIds, option.typeCode, currentPin);
     } on DioException catch (error) {
       Get.snackbar(
         'save_failed'.tr,
@@ -390,7 +396,7 @@ class CheckoutController extends GetxController {
     return null;
   }
 
-  Future<void> _finalizeOrder(List<int> orderIds, String typeCode) async {
+  Future<void> _finalizeOrder(List<int> orderIds, String typeCode, String? pin) async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
     final itemCount = totalItems;
     cart.clearCart();
@@ -399,7 +405,7 @@ class CheckoutController extends GetxController {
     if (typeCode.toLowerCase() == 'wallet') {
       await Get.offNamed<void>(
         AppRoutes.orderWalletPayment,
-        arguments: <String, dynamic>{'order_ids': orderIds},
+        arguments: <String, dynamic>{'order_ids': orderIds, 'pin': pin},
       );
       return;
     }

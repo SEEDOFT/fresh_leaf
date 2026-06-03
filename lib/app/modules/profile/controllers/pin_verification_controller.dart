@@ -85,9 +85,6 @@ class PinVerificationController extends GetxController {
   }
 
   Future<void> _completeVerification() async {
-    if (Get.isSnackbarOpen) {
-      await Get.closeCurrentSnackbar();
-    }
-    Get.back<bool>(result: true);
+    Get.back<String>(result: pin.value);
   }
 }

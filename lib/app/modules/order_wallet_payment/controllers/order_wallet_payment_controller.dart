@@ -9,6 +9,7 @@ import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
+import 'package:fresh_leaf/core/services/pin_security_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,8 @@ class OrderWalletPaymentController extends GetxController {
 
   final Rxn<Wallet> selectedWallet = Rxn<Wallet>();
 
+  String? pin;
+
   @override
   void onInit() {
     super.onInit();
@@ -40,6 +43,9 @@ class OrderWalletPaymentController extends GetxController {
         orderIds.assignAll(args['order_ids'] as List<int>);
       } else if (args['order_id'] != null) {
         orderIds.add(args['order_id'] as int);
+      }
+      if (args['pin'] != null) {
+        pin = args['pin'] as String;
       }
     }
   }
@@ -136,11 +142,18 @@ class OrderWalletPaymentController extends GetxController {
     }
     if (isPaying.value) return;
 
+    if (pin == null) {
+      final pinResult = await PinSecurityService.verifyPin();
+      if (pinResult == null) return;
+      pin = pinResult;
+    }
+
     isPaying.value = true;
     try {
       final success = await _orderService.batchPayWithWallet(
         orderIds,
         selectedWallet.value!.id,
+        pin!,
       );
 
       if (success) {

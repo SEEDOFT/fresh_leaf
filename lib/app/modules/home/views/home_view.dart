@@ -56,7 +56,7 @@ class HomeView extends GetView<HomeController> {
           ),
           SizedBox(height: AppSizes.s24),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSizes.s24),
+            padding: EdgeInsets.only(left: AppSizes.s24),
             child: Obx(() {
               final filter = controller.selectedFilter.value;
               return SingleChildScrollView(

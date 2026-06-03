@@ -10,12 +10,12 @@ class PinSecurityService {
     final requirePin = storage.pinOrderVerification;
 
     if (!requirePin) return true;
-
-    return verifyPin();
+    final pin = await verifyPin();
+    return pin != null;
   }
 
-  static Future<bool> verifyPin() async {
+  static Future<String?> verifyPin() async {
     final result = await Get.toNamed<dynamic>(AppRoutes.pinVerification);
-    return result == true;
+    return result is String ? result : null;
   }
 }
