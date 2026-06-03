@@ -21,7 +21,7 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
         }
 
         final orders = controller.orders;
-        if (orders.isEmpty) {
+        if (orders.isEmpty && !controller.isCheckout) {
           return Center(child: Text('order_not_found'.tr));
         }
 

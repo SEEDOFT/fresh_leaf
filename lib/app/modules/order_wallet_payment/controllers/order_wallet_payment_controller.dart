@@ -188,7 +188,7 @@ class OrderWalletPaymentController extends GetxController {
 
     isPaying.value = true;
     try {
-      bool success = false;
+      var success = false;
       if (isCheckout) {
         final cartService = Get.find<CartService>();
         final generatedOrderIds = await cartService.checkout(
@@ -202,7 +202,8 @@ class OrderWalletPaymentController extends GetxController {
           isCheckout = false;
           orderIds.assignAll(generatedOrderIds);
           Get.find<CartController>()
-              .clearCart(); // Clear local cart since backend cart is checked out
+              .clearCart(); // Clear 
+              // local cart since backend cart is checked out
 
           success = await _orderService.batchPayWithWallet(
             orderIds,
