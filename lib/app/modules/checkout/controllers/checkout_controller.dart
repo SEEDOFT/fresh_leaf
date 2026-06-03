@@ -300,6 +300,23 @@ class CheckoutController extends GetxController {
 
     isPlacingOrder.value = true;
     try {
+      if (option.typeCode.toLowerCase() == 'wallet') {
+        isPlacingOrder.value = false;
+        await Get.toNamed<void>(
+          AppRoutes.orderWalletPayment,
+          arguments: <String, dynamic>{
+            'is_checkout': true,
+            'address_id': int.tryParse(deliveryAddress.value!.id) ?? 0,
+            'method_id': option.method?.id,
+            'type_id': option.typeId,
+            'notes': noteController.text,
+            'amount_usd': cart.totalDisplay.value.usd,
+            'amount_khr': cart.totalDisplay.value.khr,
+          },
+        );
+        return;
+      }
+
       final orderIds = await _cartService.checkout(
         int.tryParse(deliveryAddress.value!.id) ?? 0,
         option.method?.id,
@@ -407,14 +424,6 @@ class CheckoutController extends GetxController {
     final itemCount = totalItems;
     cart.clearCart();
     noteController.clear();
-
-    if (typeCode.toLowerCase() == 'wallet') {
-      await Get.offNamed<void>(
-        AppRoutes.orderWalletPayment,
-        arguments: <String, dynamic>{'order_ids': orderIds, 'pin': pin},
-      );
-      return;
-    }
 
     final isExternalPayment =
         typeCode == PaymentMethodTypeCodes.aba ||

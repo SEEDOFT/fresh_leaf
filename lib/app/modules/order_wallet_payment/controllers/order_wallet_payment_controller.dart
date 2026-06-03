@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -8,6 +9,7 @@ import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
@@ -34,15 +36,23 @@ class OrderWalletPaymentController extends GetxController {
 
   String? pin;
 
+  bool isCheckout = false;
+  Map<String, dynamic>? checkoutArgs;
+
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
-      if (args['order_ids'] != null) {
-        orderIds.assignAll(args['order_ids'] as List<int>);
-      } else if (args['order_id'] != null) {
-        orderIds.add(args['order_id'] as int);
+      if (args['is_checkout'] == true) {
+        isCheckout = true;
+        checkoutArgs = args;
+      } else {
+        if (args['order_ids'] != null) {
+          orderIds.assignAll(args['order_ids'] as List<int>);
+        } else if (args['order_id'] != null) {
+          orderIds.add(args['order_id'] as int);
+        }
       }
       if (args['pin'] != null) {
         pin = args['pin'] as String;
@@ -53,7 +63,7 @@ class OrderWalletPaymentController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    if (orderIds.isNotEmpty) {
+    if (isCheckout || orderIds.isNotEmpty) {
       unawaited(_loadData());
     } else {
       Get.snackbar('register_error_title'.tr, 'order_error_invalid_id'.tr);
@@ -86,10 +96,19 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   double get totalAmount {
+    if (isCheckout && checkoutArgs != null) {
+      return (checkoutArgs!['amount_usd'] as num).toDouble();
+    }
     return orders.fold(0, (sum, order) => sum + order.totalAmount);
   }
 
   MoneyDisplay get totalDisplay {
+    if (isCheckout && checkoutArgs != null) {
+      return MoneyDisplay(
+        usd: (checkoutArgs!['amount_usd'] as num).toDouble(),
+        khr: (checkoutArgs!['amount_khr'] as num).toDouble(),
+      );
+    }
     if (orders.isEmpty) return MoneyDisplay.empty;
     double usd = 0;
     double khr = 0;
@@ -169,11 +188,35 @@ class OrderWalletPaymentController extends GetxController {
 
     isPaying.value = true;
     try {
-      final success = await _orderService.batchPayWithWallet(
-        orderIds,
-        selectedWallet.value!.id,
-        pin!,
-      );
+      bool success = false;
+      if (isCheckout) {
+        final cartService = Get.find<CartService>();
+        final generatedOrderIds = await cartService.checkout(
+          checkoutArgs!['address_id'] as int,
+          checkoutArgs!['method_id'] as int?,
+          checkoutArgs!['type_id'] as int,
+          1,
+          notes: checkoutArgs!['notes'] as String,
+        );
+        if (generatedOrderIds != null && generatedOrderIds.isNotEmpty) {
+          isCheckout = false;
+          orderIds.assignAll(generatedOrderIds);
+          Get.find<CartController>()
+              .clearCart(); // Clear local cart since backend cart is checked out
+
+          success = await _orderService.batchPayWithWallet(
+            orderIds,
+            selectedWallet.value!.id,
+            pin!,
+          );
+        }
+      } else {
+        success = await _orderService.batchPayWithWallet(
+          orderIds,
+          selectedWallet.value!.id,
+          pin!,
+        );
+      }
 
       if (success) {
         Get.snackbar(
@@ -205,6 +248,10 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   void cancelPayment() {
-    unawaited(Get.offNamed<void>(AppRoutes.orders));
+    if (isCheckout) {
+      Get.back<void>();
+    } else {
+      unawaited(Get.offNamed<void>(AppRoutes.orders));
+    }
   }
 }
