@@ -96,10 +96,15 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   double get totalAmount {
+    final isKhr = selectedWallet.value != null && selectedWallet.value!.currency.code == 'KHR';
+    
     if (isCheckout && checkoutArgs != null) {
-      return (checkoutArgs!['amount_usd'] as num).toDouble();
+      return isKhr 
+          ? (checkoutArgs!['amount_khr'] as num).toDouble()
+          : (checkoutArgs!['amount_usd'] as num).toDouble();
     }
-    return orders.fold(0, (sum, order) => sum + order.totalAmount);
+    
+    return orders.fold(0, (sum, order) => sum + (isKhr ? order.resolvedTotalAmountDisplay.khr : order.totalAmount));
   }
 
   MoneyDisplay get totalDisplay {
