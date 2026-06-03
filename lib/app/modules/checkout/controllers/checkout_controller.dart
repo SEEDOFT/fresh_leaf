@@ -64,7 +64,7 @@ class CheckoutController extends GetxController {
   final RxBool isLoadingPayments = false.obs;
   final RxString selectedOptionId = ''.obs;
   final RxBool isPlacingOrder = false.obs;
-  
+
   final RxInt selectedPaymentCurrencyId = MoneyDisplay.usdCurrencyId.obs;
 
   @override
@@ -460,7 +460,9 @@ class CheckoutController extends GetxController {
     if (Get.isRegistered<OrdersController>()) {
       Get.find<OrdersController>().refreshList();
     }
-    Get.until((route) => route.settings.name == AppRoutes.dashboard || route.isFirst);
+    Get.until(
+      (route) => route.settings.name == AppRoutes.dashboard || route.isFirst,
+    );
 
     Get.snackbar(
       'order_confirmed'.tr,

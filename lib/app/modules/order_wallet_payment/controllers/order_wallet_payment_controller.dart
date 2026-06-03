@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:fresh_leaf/app/modules/orders/controllers/orders_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -102,7 +103,7 @@ class OrderWalletPaymentController extends GetxController {
 
   double getAmountForWallet(Wallet? wallet) {
     if (wallet == null) return 0;
-    
+
     final isKhr = wallet.currency.code == 'KHR';
 
     if (isCheckout && checkoutArgs != null) {
@@ -218,7 +219,8 @@ class OrderWalletPaymentController extends GetxController {
           checkoutArgs!['type_id'] as int,
           1,
           notes: checkoutArgs!['notes'] as String? ?? '',
-          paymentCurrencyId: (checkoutArgs!['payment_currency_id'] as int?) ??
+          paymentCurrencyId:
+              (checkoutArgs!['payment_currency_id'] as int?) ??
               selectedWallet.value?.currency.id,
         );
         if (generatedOrderIds != null && generatedOrderIds.isNotEmpty) {
@@ -255,9 +257,12 @@ class OrderWalletPaymentController extends GetxController {
           Get.find<DashboardController>().currentIndex = 3;
         }
         if (Get.isRegistered<OrdersController>()) {
-          Get.find<OrdersController>().refreshList();
+          unawaited(Get.find<OrdersController>().refreshList());
         }
-        Get.until((route) => route.settings.name == AppRoutes.dashboard || route.isFirst);
+        Get.until(
+          (route) =>
+              route.settings.name == AppRoutes.dashboard || route.isFirst,
+        );
       } else {
         throw Exception('Payment failed');
       }
