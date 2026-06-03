@@ -81,7 +81,6 @@ class PinVerificationController extends GetxController {
   void _setError(String message) {
     hasError.value = true;
     pin.value = '';
-    Get.snackbar('invalid_pin'.tr, message);
   }
 
   Future<void> _completeVerification() async {

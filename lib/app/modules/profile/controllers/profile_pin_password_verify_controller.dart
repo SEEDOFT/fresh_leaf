@@ -24,6 +24,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
   final RxString mode = 'set'.obs;
   final RxString activePinField = 'new'.obs; // 'current', 'new', 'confirm'
   final RxInt pinLength = 0.obs;
+  final RxBool hasError = false.obs;
 
   bool get isResetMode => mode.value == 'reset';
   bool get isUpdateMode => mode.value == 'update';
@@ -132,6 +133,7 @@ class ProfilePinPasswordVerifyController extends GetxController {
 
     if (controller.text.length < 6) {
       controller.text += key;
+      hasError.value = false;
       pinLength.value = controller.text.length;
       if (controller.text.length == 6) {
         _advanceStep();
@@ -211,9 +213,9 @@ class ProfilePinPasswordVerifyController extends GetxController {
   }
 
   void _resetCurrentPinWithError(String message) {
+    hasError.value = true;
     currentPinController.clear();
     pinLength.value = 0;
-    Get.snackbar('invalid_pin'.tr, message);
   }
 
   Future<void> verifyPasswordFirst() async {

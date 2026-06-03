@@ -78,6 +78,7 @@ class ProfilePinPasswordVerifyView
                             children: [
                               PinDisplayWidget(
                                 pinLength: controller.pinLength.value,
+                                hasError: controller.hasError.value,
                               ),
                               const SizedBox(height: 48),
                               DialpadWidget(

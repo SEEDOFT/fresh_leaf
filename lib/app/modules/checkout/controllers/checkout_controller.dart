@@ -458,7 +458,7 @@ class CheckoutController extends GetxController {
 
     _dashboardController.currentIndex = 3;
     if (Get.isRegistered<OrdersController>()) {
-      Get.find<OrdersController>().refreshList();
+      unawaited(Get.find<OrdersController>().refreshList());
     }
     unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
 
