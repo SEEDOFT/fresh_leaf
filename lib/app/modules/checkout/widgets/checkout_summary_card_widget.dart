@@ -91,7 +91,6 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
                 onSelectionChanged: (newSelection) {
                   onCurrencySelected?.call(newSelection.first);
                 },
-                showSelectedIcon: true,
               ),
             ),
           ],

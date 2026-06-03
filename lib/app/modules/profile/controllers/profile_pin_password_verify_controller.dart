@@ -116,6 +116,9 @@ class ProfilePinPasswordVerifyController extends GetxController {
         if (!ok) return;
       }
 
+      if (Get.isSnackbarOpen) {
+        Get.closeAllSnackbars();
+      }
       Get.back(result: true);
     } finally {
       isLoading.value = false;

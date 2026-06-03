@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
@@ -67,8 +69,8 @@ class CheckoutController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _fetchPaymentTypes(showError: false);
-    fetchUserCards();
+    unawaited(_fetchPaymentTypes(showError: false));
+    unawaited(fetchUserCards());
   }
 
   set paymentCurrency(int id) {
