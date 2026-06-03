@@ -23,6 +23,8 @@ import 'package:fresh_leaf/core/services/wishlist_service.dart';
 import 'package:fresh_leaf/firebase_options.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final class AppBootstrap {
   AppBootstrap._();
@@ -32,6 +34,8 @@ final class AppBootstrap {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Phnom_Penh'));
     await _registerServices();
     return _resolveInitialRoute();
   }
