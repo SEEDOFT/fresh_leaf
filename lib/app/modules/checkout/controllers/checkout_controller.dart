@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:fresh_leaf/app/modules/orders/controllers/orders_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
@@ -455,8 +456,11 @@ class CheckoutController extends GetxController {
       return;
     }
 
-    Get.back<void>();
     _dashboardController.currentIndex = 3;
+    if (Get.isRegistered<OrdersController>()) {
+      Get.find<OrdersController>().refreshList();
+    }
+    unawaited(Get.offAllNamed<void>(AppRoutes.dashboard));
 
     Get.snackbar(
       'order_confirmed'.tr,

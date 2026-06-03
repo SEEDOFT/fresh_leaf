@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:fresh_leaf/app/modules/orders/controllers/orders_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
@@ -250,7 +252,10 @@ class OrderWalletPaymentController extends GetxController {
           borderRadius: 14,
           margin: const EdgeInsets.all(12),
         );
-        await Get.offNamed<void>(AppRoutes.orders);
+        if (Get.isRegistered<DashboardController>()) {
+          Get.find<DashboardController>().currentIndex = 3;
+        }
+        await Get.offAllNamed<void>(AppRoutes.dashboard);
       } else {
         throw Exception('Payment failed');
       }
