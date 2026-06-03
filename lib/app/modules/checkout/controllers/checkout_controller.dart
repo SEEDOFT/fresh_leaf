@@ -270,30 +270,32 @@ class CheckoutController extends GetxController {
     final hasPin = _storageService.userProfile?.setPin ?? false;
     String? currentPin;
 
-    if (!hasPin) {
-      final success = await Get.toNamed<dynamic>(
-        AppRoutes.pinPasswordVerification,
-        arguments: <String, dynamic>{'mode': 'set'},
-      );
-      if (success != true) {
-        return; // User aborted PIN setup
-      }
-
-      if (_storageService.userProfile != null) {
-        _storageService.userProfile = _storageService.userProfile!.copyWith(
-          setPin: true,
+    if (option.typeCode.toLowerCase() == 'cod') {
+      if (!hasPin) {
+        final success = await Get.toNamed<dynamic>(
+          AppRoutes.pinPasswordVerification,
+          arguments: <String, dynamic>{'mode': 'set'},
         );
+        if (success != true) {
+          return; // User aborted PIN setup
+        }
+
+        if (_storageService.userProfile != null) {
+          _storageService.userProfile = _storageService.userProfile!.copyWith(
+            setPin: true,
+          );
+        }
+        
+        final pinResult = await PinSecurityService.verifyPin();
+        if (pinResult == null) return;
+        currentPin = pinResult;
+      } else {
+        final pinResult = await PinSecurityService.verifyPin();
+        if (pinResult == null) {
+          return; // User failed or aborted PIN verification
+        }
+        currentPin = pinResult;
       }
-      
-      final pinResult = await PinSecurityService.verifyPin();
-      if (pinResult == null) return;
-      currentPin = pinResult;
-    } else {
-      final pinResult = await PinSecurityService.verifyPin();
-      if (pinResult == null) {
-        return; // User failed or aborted PIN verification
-      }
-      currentPin = pinResult;
     }
 
     isPlacingOrder.value = true;

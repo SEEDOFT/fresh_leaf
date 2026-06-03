@@ -143,6 +143,25 @@ class OrderWalletPaymentController extends GetxController {
     if (isPaying.value) return;
 
     if (pin == null) {
+      final storageService = Get.find<StorageService>();
+      final hasPin = storageService.userProfile?.setPin ?? false;
+
+      if (!hasPin) {
+        final success = await Get.toNamed<dynamic>(
+          AppRoutes.pinPasswordVerification,
+          arguments: <String, dynamic>{'mode': 'set'},
+        );
+        if (success != true) {
+          return; // User aborted PIN setup
+        }
+
+        if (storageService.userProfile != null) {
+          storageService.userProfile = storageService.userProfile!.copyWith(
+            setPin: true,
+          );
+        }
+      }
+
       final pinResult = await PinSecurityService.verifyPin();
       if (pinResult == null) return;
       pin = pinResult;
