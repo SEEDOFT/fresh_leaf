@@ -150,7 +150,7 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   bool get canPay {
-    if (orders.isEmpty || selectedWallet.value == null) return false;
+    if ((!isCheckout && orders.isEmpty) || selectedWallet.value == null) return false;
     return selectedWallet.value!.balance >= totalAmount;
   }
 
