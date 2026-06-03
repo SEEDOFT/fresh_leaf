@@ -285,7 +285,7 @@ class CheckoutController extends GetxController {
             setPin: true,
           );
         }
-        
+
         final pinResult = await PinSecurityService.verifyPin();
         if (pinResult == null) return;
         currentPin = pinResult;
@@ -398,7 +398,11 @@ class CheckoutController extends GetxController {
     return null;
   }
 
-  Future<void> _finalizeOrder(List<int> orderIds, String typeCode, String? pin) async {
+  Future<void> _finalizeOrder(
+    List<int> orderIds,
+    String typeCode,
+    String? pin,
+  ) async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
     final itemCount = totalItems;
     cart.clearCart();

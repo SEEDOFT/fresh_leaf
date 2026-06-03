@@ -73,11 +73,11 @@ class OrderService extends GetxService {
     }
   }
 
-  Future<bool> payWithWallet(int orderId, int walletId) async {
+  Future<bool> payWithWallet(int orderId, int walletId, String pin) async {
     try {
       final response = await _apiClient.postRequest(
         '${ApiEndpoints.orders}/$orderId/pay',
-        data: {'wallet_id': walletId},
+        data: {'wallet_id': walletId, 'pin': pin},
       );
       final apiResponse = ApiResponse.parseMap(response.data);
       return apiResponse.isSuccess;
@@ -86,13 +86,18 @@ class OrderService extends GetxService {
     }
   }
 
-  Future<bool> batchPayWithWallet(List<int> orderIds, int walletId) async {
+  Future<bool> batchPayWithWallet(
+    List<int> orderIds,
+    int walletId,
+    String pin,
+  ) async {
     try {
       final response = await _apiClient.postRequest(
         '${ApiEndpoints.orders}/batch-pay',
         data: {
           'order_ids': orderIds,
           'wallet_id': walletId,
+          'pin': pin,
         },
       );
       final apiResponse = ApiResponse.parseList(response.data);
