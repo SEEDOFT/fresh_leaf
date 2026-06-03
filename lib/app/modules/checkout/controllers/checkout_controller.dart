@@ -325,6 +325,7 @@ class CheckoutController extends GetxController {
             'notes': noteController.text,
             'amount_usd': cart.totalDisplay.value.usd,
             'amount_khr': cart.totalDisplay.value.khr,
+            'payment_currency_id': selectedPaymentCurrencyId.value,
           },
         );
         return;

@@ -217,7 +217,8 @@ class OrderWalletPaymentController extends GetxController {
           checkoutArgs!['type_id'] as int,
           1,
           notes: checkoutArgs!['notes'] as String? ?? '',
-          paymentCurrencyId: selectedWallet.value?.currency.id,
+          paymentCurrencyId: (checkoutArgs!['payment_currency_id'] as int?) ??
+              selectedWallet.value?.currency.id,
         );
         if (generatedOrderIds != null && generatedOrderIds.isNotEmpty) {
           isCheckout = false;

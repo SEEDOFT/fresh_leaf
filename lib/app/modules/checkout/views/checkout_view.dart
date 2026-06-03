@@ -99,9 +99,7 @@ class CheckoutView extends GetView<CheckoutController> {
               totalDisplay: controller.grandTotalDisplay,
               isPlacingOrder: controller.isPlacingOrder.value,
               onPlaceOrder: controller.placeOrder,
-              showCurrencySelection: controller.selectedOption?.typeCode
-                      .toLowerCase() !=
-                  'wallet',
+              showCurrencySelection: true,
               selectedPaymentCurrencyId:
                   controller.selectedPaymentCurrencyId.value,
               onCurrencySelected: (id) => controller.paymentCurrency = id,
