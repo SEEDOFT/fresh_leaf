@@ -61,6 +61,19 @@ class CheckoutController extends GetxController {
   final RxBool isLoadingPayments = false.obs;
   final RxString selectedOptionId = ''.obs;
   final RxBool isPlacingOrder = false.obs;
+  
+  final RxInt selectedPaymentCurrencyId = MoneyDisplay.usdCurrencyId.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _fetchPaymentTypes(showError: false);
+    fetchUserCards();
+  }
+
+  set paymentCurrency(int id) {
+    selectedPaymentCurrencyId.value = id;
+  }
 
   static const String creditDebitOptionId =
       'channel-${PaymentMethodTypeCodes.creditDebit}';
@@ -323,6 +336,7 @@ class CheckoutController extends GetxController {
         option.typeId,
         1, // Standard order type
         notes: noteController.text,
+        paymentCurrencyId: selectedPaymentCurrencyId.value,
       );
 
       if (orderIds == null || orderIds.isEmpty) {

@@ -99,7 +99,14 @@ class CheckoutView extends GetView<CheckoutController> {
               totalDisplay: controller.grandTotalDisplay,
               isPlacingOrder: controller.isPlacingOrder.value,
               onPlaceOrder: controller.placeOrder,
+              showCurrencySelection: controller.selectedOption?.typeCode
+                      .toLowerCase() !=
+                  'wallet',
+              selectedPaymentCurrencyId:
+                  controller.selectedPaymentCurrencyId.value,
+              onCurrencySelected: (id) => controller.paymentCurrency = id,
             ),
+            const SizedBox(height: 24),
           ],
         );
       }),

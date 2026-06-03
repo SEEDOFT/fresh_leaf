@@ -16,6 +16,9 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
     required this.subtotalDisplay,
     required this.discountDisplay,
     required this.totalDisplay,
+    this.showCurrencySelection = false,
+    this.selectedPaymentCurrencyId = 2,
+    this.onCurrencySelected,
     super.key,
   });
 
@@ -27,6 +30,9 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
   final MoneyDisplay subtotalDisplay;
   final MoneyDisplay discountDisplay;
   final MoneyDisplay totalDisplay;
+  final bool showCurrencySelection;
+  final int selectedPaymentCurrencyId;
+  final ValueChanged<int>? onCurrencySelected;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +72,29 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           ExchangeRateText(display: totalDisplay),
+          if (showCurrencySelection) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment<int>(
+                    value: MoneyDisplay.usdCurrencyId,
+                    label: Text('Pay in USD'),
+                  ),
+                  ButtonSegment<int>(
+                    value: MoneyDisplay.khrCurrencyId,
+                    label: Text('Pay in KHR'),
+                  ),
+                ],
+                selected: {selectedPaymentCurrencyId},
+                onSelectionChanged: (newSelection) {
+                  onCurrencySelected?.call(newSelection.first);
+                },
+                showSelectedIcon: true,
+              ),
+            ),
+          ],
           const SizedBox(height: 14),
           PrimaryButton(
             label: 'place_order'.tr,

@@ -96,15 +96,26 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   double get totalAmount {
-    final isKhr = selectedWallet.value != null && selectedWallet.value!.currency.code == 'KHR';
+    return getAmountForWallet(selectedWallet.value);
+  }
+
+  double getAmountForWallet(Wallet? wallet) {
+    if (wallet == null) return 0;
     
+    final isKhr = wallet.currency.code == 'KHR';
+
     if (isCheckout && checkoutArgs != null) {
-      return isKhr 
+      return isKhr
           ? (checkoutArgs!['amount_khr'] as num).toDouble()
           : (checkoutArgs!['amount_usd'] as num).toDouble();
     }
-    
-    return orders.fold(0, (sum, order) => sum + (isKhr ? order.resolvedTotalAmountDisplay.khr : order.totalAmount));
+
+    return orders.fold(
+      0,
+      (sum, order) =>
+          sum +
+          (isKhr ? order.resolvedTotalAmountDisplay.khr : order.totalAmount),
+    );
   }
 
   MoneyDisplay get totalDisplay {
@@ -155,8 +166,11 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   bool get canPay {
-    if ((!isCheckout && orders.isEmpty) || selectedWallet.value == null) return false;
-    // Add 0.01 to handle floating point precision issues (e.g. 5.0 vs 5.000000000000001)
+    if ((!isCheckout && orders.isEmpty) || selectedWallet.value == null) {
+      return false;
+    }
+    // Add 0.01 to handle floating point precision issues
+    // (e.g. 5.0 vs 5.000000000000001)
     return selectedWallet.value!.balance + 0.01 >= totalAmount;
   }
 
@@ -208,9 +222,8 @@ class OrderWalletPaymentController extends GetxController {
         if (generatedOrderIds != null && generatedOrderIds.isNotEmpty) {
           isCheckout = false;
           orderIds.assignAll(generatedOrderIds);
-          Get.find<CartController>()
-              .clearCart(); // Clear 
-              // local cart since backend cart is checked out
+          Get.find<CartController>().clearCart(); // Clear
+          // local cart since backend cart is checked out
 
           success = await _orderService.batchPayWithWallet(
             orderIds,

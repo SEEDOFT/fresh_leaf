@@ -84,8 +84,8 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                       ...controller.wallets.map((wallet) {
                         final isSelected =
                             controller.selectedWallet.value?.id == wallet.id;
-                        final hasEnough =
-                            wallet.balance >= controller.totalAmount;
+                        final hasEnough = wallet.balance + 0.01 >=
+                            controller.getAmountForWallet(wallet);
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),
