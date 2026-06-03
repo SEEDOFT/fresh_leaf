@@ -156,7 +156,8 @@ class OrderWalletPaymentController extends GetxController {
 
   bool get canPay {
     if ((!isCheckout && orders.isEmpty) || selectedWallet.value == null) return false;
-    return selectedWallet.value!.balance >= totalAmount;
+    // Add 0.01 to handle floating point precision issues (e.g. 5.0 vs 5.000000000000001)
+    return selectedWallet.value!.balance + 0.01 >= totalAmount;
   }
 
   Future<void> payOrder() async {
@@ -201,7 +202,8 @@ class OrderWalletPaymentController extends GetxController {
           checkoutArgs!['method_id'] as int?,
           checkoutArgs!['type_id'] as int,
           1,
-          notes: checkoutArgs!['notes'] as String,
+          notes: checkoutArgs!['notes'] as String? ?? '',
+          paymentCurrencyId: selectedWallet.value?.currency.id,
         );
         if (generatedOrderIds != null && generatedOrderIds.isNotEmpty) {
           isCheckout = false;

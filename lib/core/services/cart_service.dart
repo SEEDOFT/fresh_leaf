@@ -85,6 +85,7 @@ class CartService extends GetxService {
     int? paymentMethodId,
     int? paymentMethodTypeId,
     int orderTypeId, {
+    int? paymentCurrencyId,
     String? notes,
   }) async {
     try {
@@ -95,6 +96,7 @@ class CartService extends GetxService {
           'payment_method_id': paymentMethodId,
           'payment_method_type_id': paymentMethodTypeId,
           'order_type_id': orderTypeId,
+          if (paymentCurrencyId != null) 'payment_currency_id': paymentCurrencyId,
           'notes': notes != null && notes.isNotEmpty ? notes : null,
         },
       );
