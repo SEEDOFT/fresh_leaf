@@ -9,6 +9,7 @@ import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
@@ -94,6 +95,9 @@ class OrderWalletPaymentController extends GetxController {
   }
 
   Future<void> _fetchWallets() async {
+    final token = Get.find<StorageService>().token;
+    if (token == null || token.isEmpty) return;
+
     try {
       final response = await _apiClient.getRequest(ApiEndpoints.wallets);
       final apiResponse = ApiResponse.fromResponse(

@@ -3,6 +3,7 @@ import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/wallet.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
 
@@ -122,6 +123,9 @@ class WalletController extends GetxController {
   }
 
   Future<void> fetchWallets({bool showError = true}) async {
+    final token = Get.find<StorageService>().token;
+    if (token == null || token.isEmpty) return;
+
     if (isLoading.value) return;
 
     if (!hasLoadedWallets.value) {
