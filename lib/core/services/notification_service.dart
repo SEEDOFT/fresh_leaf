@@ -38,7 +38,6 @@ class NotificationService extends GetxService {
     _listenToMessages();
     _listenToTokenRefresh();
     await _handleInitialMessage();
-    unawaited(fetchUnreadChatCount());
 
     if (kDebugMode) {
       debugPrint('[NotificationService] Init complete');
@@ -379,6 +378,9 @@ class NotificationService extends GetxService {
       debugPrint('[NotificationService] Upload token: $tok');
     }
 
+    final authToken = Get.find<StorageService>().token;
+    if (authToken == null || authToken.isEmpty) return;
+
     try {
       final response = await _apiClient.postRequest(
         ApiEndpoints.devices,
@@ -436,6 +438,8 @@ class NotificationService extends GetxService {
   /// Fetch global unread chat count
   Future<void> fetchUnreadChatCount() async {
     try {
+      final token = Get.find<StorageService>().token;
+      if (token == null || token.isEmpty) return;
       final response = await _apiClient.getRequest(
         ApiEndpoints.chatUnreadCount,
       );
@@ -453,6 +457,8 @@ class NotificationService extends GetxService {
     int page = 1,
   }) async {
     try {
+      final token = Get.find<StorageService>().token;
+      if (token == null || token.isEmpty) return PaginatedResponse.empty();
       final response = await _apiClient.getRequest(
         ApiEndpoints.notifications,
         queryParameters: {'page': page},

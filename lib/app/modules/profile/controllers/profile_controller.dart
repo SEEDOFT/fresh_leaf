@@ -51,8 +51,12 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     _loadUser();
-    unawaited(refreshProfile());
-    unawaited(preloadSubModules());
+    final token = _storageService.token;
+    if (token != null && token.isNotEmpty) {
+      unawaited(refreshProfile());
+      unawaited(preloadSubModules());
+      unawaited(_notificationService.fetchUnreadChatCount());
+    }
   }
 
   void _loadUser() {
