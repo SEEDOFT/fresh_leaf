@@ -23,7 +23,7 @@ import 'package:fresh_leaf/core/services/wishlist_service.dart';
 import 'package:fresh_leaf/firebase_options.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 final class AppBootstrap {
