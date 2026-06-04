@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
+import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_widget.dart';
 import 'package:fresh_leaf/core/constants/app_sizes.dart';
@@ -47,7 +48,7 @@ class HomeView extends GetView<HomeController> {
         children: [
           const HomeAppBarWidget(),
           SizedBox(height: AppSizes.s24),
-          const HomeHeroCardWidget(),
+          const HomeActiveOrdersWidget(),
           SizedBox(height: AppSizes.s32),
           Obx(
             () => HomeCategoriesWidget(
@@ -97,7 +98,12 @@ class HomeView extends GetView<HomeController> {
             );
           }),
           SizedBox(height: AppSizes.s32),
-          const _HomePromotionalBannerWidget(),
+          GestureDetector(
+            onTap: () {
+              Get.find<DashboardController>().currentIndex = 2;
+            },
+            child: const HomeAIBannerWidget(),
+          ),
           SizedBox(height: AppSizes.s80), // extra space for FABs
         ],
       ),
@@ -134,65 +140,6 @@ class _FilterChip extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _HomePromotionalBannerWidget extends StatelessWidget {
-  const _HomePromotionalBannerWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: AppSizes.s24),
-      padding: EdgeInsets.all(AppSizes.s24),
-      decoration: BoxDecoration(
-        color: scheme.primaryContainer,
-        borderRadius: BorderRadius.circular(24),
-        image: const DecorationImage(
-          image: NetworkImage(
-            'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000',
-          ),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Fresh Produce\nDelivered Daily',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
-            ),
-          ),
-          SizedBox(height: AppSizes.s12),
-          Text(
-            'Get up to 20% off on all organic fruits and vegetables this week.',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 14,
-            ),
-          ),
-          SizedBox(height: AppSizes.s20),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: scheme.primary,
-              foregroundColor: scheme.onPrimary,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('Shop Now'),
-          ),
-        ],
       ),
     );
   }

@@ -26,15 +26,21 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
   OrderSortType get selectedSort => _selectedSort.value;
   set selectedSort(OrderSortType sortType) => _selectedSort.value = sortType;
 
+  static const _activeStatusIds = {1, 2, 3, 6, 7};
+
   List<Map<String, dynamic>> get statusFilters => const [
     {'id': 0, 'name': 'All'},
     {'id': 1, 'name': 'Pending'},
-    {'id': 2, 'name': 'Preparing'},
-    {'id': 3, 'name': 'Delivering'},
+    {'id': 2, 'name': 'Confirmed'},
+    {'id': 3, 'name': 'Preparing'},
+    {'id': 7, 'name': 'Out for Delivery'},
     {'id': 4, 'name': 'Delivered'},
     {'id': 5, 'name': 'Cancelled'},
     {'id': 6, 'name': 'Awaiting Payment'},
   ];
+
+  int get activeOrderCount =>
+      items.where((o) => _activeStatusIds.contains(o.statusId)).length;
 
   int get visibleOrderCount => filteredOrders.length;
 

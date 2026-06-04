@@ -851,7 +851,10 @@ const Map<String, String> translationsKm = {
   'order_pending': 'កំពុងរង់ចាំ',
   'order_preparing': 'កំពុងរៀបចំ',
   'order_standard': 'ស្តង់ដារ',
+  'order_out_for_delivery': 'កំពុងដឹកជញ្ជូន',
   'delivering': 'កំពុងដឹកជញ្ជូន',
+  'out_for_delivery': 'កំពុងដឹកជញ្ជូន',
+  'confirmed': 'បានបញ្ជាក់',
   'preparing': 'កំពុងរៀបចំ',
 
   // Payment statuses
@@ -909,4 +912,10 @@ const Map<String, String> translationsKm = {
 
   // Notifications
   'notification_default_title': 'ការជូនដំណឹង',
+
+  // Home active orders
+  'active_orders_title': '@count ការបញ្ជាទិញសកម្ម',
+  'no_active_orders': 'គ្មានការបញ្ជាទិញសកម្មទេ',
+  'tap_to_track': 'ចុចដើម្បីតាមដានការបញ្ជាទិញ',
+  'total_orders_placed': '@count ការបញ្ជាទិញ',
 };

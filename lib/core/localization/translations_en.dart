@@ -847,7 +847,10 @@ const Map<String, String> translationsEn = {
   'order_pending': 'Pending',
   'order_preparing': 'Preparing',
   'order_standard': 'Standard',
+  'order_out_for_delivery': 'Out for Delivery',
   'delivering': 'Delivering',
+  'out_for_delivery': 'Out for Delivery',
+  'confirmed': 'Confirmed',
   'preparing': 'Preparing',
 
   // Payment statuses
@@ -905,4 +908,10 @@ const Map<String, String> translationsEn = {
 
   // Notifications
   'notification_default_title': 'Notification',
+
+  // Home active orders
+  'active_orders_title': '@count Active Orders',
+  'no_active_orders': 'No Active Orders',
+  'tap_to_track': 'Tap to track your orders',
+  'total_orders_placed': '@count orders placed',
 };

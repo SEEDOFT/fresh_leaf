@@ -39,10 +39,12 @@ class OrdersControlsWidget extends StatelessWidget {
               switch (name) {
                 case 'Pending':
                   return 'pending'.tr;
+                case 'Confirmed':
+                  return 'confirmed'.tr;
                 case 'Preparing':
                   return 'preparing'.tr;
-                case 'Delivering':
-                  return 'delivering'.tr;
+                case 'Out for Delivery':
+                  return 'out_for_delivery'.tr;
                 case 'Delivered':
                   return 'delivered'.tr;
                 case 'Cancelled':

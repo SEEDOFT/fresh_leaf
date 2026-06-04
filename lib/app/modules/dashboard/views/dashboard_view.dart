@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/modules/dashboard/widgets/dashboard_widget.dart';
+import 'package:fresh_leaf/app/modules/orders/controllers/orders_controller.dart';
 import 'package:fresh_leaf/core/constants/svg_assets.dart';
+import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/exit_confirmation_sheet.dart';
 import 'package:get/get.dart';
@@ -82,6 +84,8 @@ class DashboardView extends GetView<DashboardController> {
                       isSelected: controller.currentIndex == 0,
                       selectedColor: navSelectedColor,
                       unselectedColor: navUnselectedColor,
+                      badgeCount:
+                          Get.find<NotificationService>().unreadCount.value,
                     ),
                     label: 'home'.tr,
                   ),
@@ -100,6 +104,8 @@ class DashboardView extends GetView<DashboardController> {
                       isSelected: controller.currentIndex == 2,
                       selectedColor: navSelectedColor,
                       unselectedColor: navUnselectedColor,
+                      badgeCount:
+                          Get.find<NotificationService>().unreadChatCount.value,
                     ),
                     label: 'AI Assistant',
                   ),
@@ -109,6 +115,7 @@ class DashboardView extends GetView<DashboardController> {
                       isSelected: controller.currentIndex == 3,
                       selectedColor: navSelectedColor,
                       unselectedColor: navUnselectedColor,
+                      badgeCount: Get.find<OrdersController>().activeOrderCount,
                     ),
                     label: 'orders'.tr,
                   ),

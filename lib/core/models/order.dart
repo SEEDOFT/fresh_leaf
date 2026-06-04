@@ -99,6 +99,7 @@ class Order {
       4 => 'order_delivered'.tr,
       5 => 'order_cancelled'.tr,
       6 => 'order_awaiting_payment'.tr,
+      7 => 'order_out_for_delivery'.tr,
       _ => 'order_pending'.tr,
     };
   }
