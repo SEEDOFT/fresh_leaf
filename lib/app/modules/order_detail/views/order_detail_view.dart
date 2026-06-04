@@ -101,7 +101,9 @@ class OrderDetailView extends GetView<OrderDetailController> {
                   ),
                 const SizedBox(height: 8),
                 PrimaryButton(
-                  onPressed: () {},
+                  onPressed: controller.isUpdating.value
+                      ? null
+                      : controller.reorderEverything,
                   label: 'reorder_everything'.tr,
                   borderRadius: 14,
                   height: 50,
@@ -135,7 +137,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
                     foregroundColor: scheme.onPrimary,
                   ),
                 ],
-                if (order.statusId == 4 || order.statusId == 5) ...[
+                if (order.statusId == 4) ...[
                   const SizedBox(height: 12),
                   PrimaryButton(
                     onPressed: controller.isUpdating.value

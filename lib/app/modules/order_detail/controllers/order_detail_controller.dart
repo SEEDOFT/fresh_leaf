@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
+import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
+import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
+import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/core/models/order.dart';
+import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/pin_security_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
@@ -90,6 +95,9 @@ class OrderDetailController extends GetxController {
     if (success) {
       Get.snackbar('success'.tr, 'order_cancel_success'.tr);
       await reloadOrder();
+      if (Get.isRegistered<WalletController>()) {
+        unawaited(Get.find<WalletController>().fetchWallets(showError: false));
+      }
     } else {
       Get.snackbar('error'.tr, 'failed_cancel_order'.tr);
     }
@@ -128,6 +136,45 @@ class OrderDetailController extends GetxController {
     } else {
       Get.snackbar('error'.tr, 'failed_fetch_invoice_url'.tr);
     }
+    isUpdating.value = false;
+  }
+
+  Future<void> reorderEverything() async {
+    final currentOrder = order.value;
+    if (currentOrder == null || currentOrder.items.isEmpty) return;
+
+    isUpdating.value = true;
+    if (!Get.isRegistered<CartController>()) {
+      CartBinding().dependencies();
+    }
+    final cartController = Get.find<CartController>();
+    final cartService = Get.find<CartService>();
+
+    var hasErrors = false;
+    var addedCount = 0;
+
+    for (final item in currentOrder.items) {
+      final inventory = item.vendorInventory;
+      if (inventory != null) {
+        final success = await cartService.addToCart(
+          inventory.id,
+          item.quantity,
+        );
+        if (success) {
+          addedCount++;
+        } else {
+          hasErrors = true;
+        }
+      }
+    }
+
+    if (addedCount > 0) {
+      await cartController.fetchCart();
+      unawaited(showCartPanel());
+    } else if (hasErrors) {
+      Get.snackbar('error'.tr, 'failed_to_add_to_cart'.tr);
+    }
+
     isUpdating.value = false;
   }
 }

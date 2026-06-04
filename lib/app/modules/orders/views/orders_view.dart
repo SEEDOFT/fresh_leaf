@@ -32,10 +32,8 @@ class OrdersView extends GetView<OrdersController> {
           Obx(
             () => OrdersControlsWidget(
               selectedStatusId: controller.selectedStatusId,
-              selectedSort: controller.selectedSort,
               onStatusChanged: (statusId) =>
                   controller.selectedStatusId = statusId,
-              onSortChanged: (sort) => controller.selectedSort = sort,
               scheme: scheme,
             ),
           ),
@@ -43,6 +41,8 @@ class OrdersView extends GetView<OrdersController> {
           Obx(
             () => OrdersSortSummaryChipWidget(
               label: _sortLabel(controller.selectedSort),
+              selectedSort: controller.selectedSort,
+              onSortChanged: (sort) => controller.selectedSort = sort,
               scheme: scheme,
             ),
           ),

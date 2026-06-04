@@ -74,6 +74,8 @@ class CheckoutController extends GetxController {
     unawaited(fetchUserCards());
   }
 
+  int get paymentCurrency => selectedPaymentCurrencyId.value;
+
   set paymentCurrency(int id) {
     selectedPaymentCurrencyId.value = id;
   }
@@ -458,22 +460,22 @@ class CheckoutController extends GetxController {
 
     _dashboardController.currentIndex = 3;
     if (Get.isRegistered<OrdersController>()) {
-      Get.find<OrdersController>().refreshList();
+      unawaited(Get.find<OrdersController>().refreshList());
     }
-    Get.until(
-      (route) => route.settings.name == AppRoutes.dashboard || route.isFirst,
-    );
-
-    Get.snackbar(
-      'order_confirmed'.tr,
-      (itemCount == 1 ? 'order_on_the_way_one' : 'order_on_the_way_other')
-          .trParams({'count': '$itemCount'}),
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Get.theme.colorScheme.surface,
-      colorText: Get.theme.colorScheme.onSurface,
-      borderRadius: 14,
-      margin: const EdgeInsets.all(12),
-    );
+    Get
+      ..until(
+        (route) => route.settings.name == AppRoutes.dashboard || route.isFirst,
+      )
+      ..snackbar(
+        'order_confirmed'.tr,
+        (itemCount == 1 ? 'order_on_the_way_one' : 'order_on_the_way_other')
+            .trParams({'count': '$itemCount'}),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Get.theme.colorScheme.surface,
+        colorText: Get.theme.colorScheme.onSurface,
+        borderRadius: 14,
+        margin: const EdgeInsets.all(12),
+      );
   }
 
   @override
