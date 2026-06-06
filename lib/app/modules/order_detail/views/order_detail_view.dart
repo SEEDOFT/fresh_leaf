@@ -101,9 +101,8 @@ class OrderDetailView extends GetView<OrderDetailController> {
                   ),
                 const SizedBox(height: 8),
                 PrimaryButton(
-                  onPressed: controller.isUpdating.value
-                      ? null
-                      : controller.reorderEverything,
+                  onPressed: controller.reorderEverything,
+                  isLoading: controller.isUpdating.value,
                   label: 'reorder_everything'.tr,
                   borderRadius: 14,
                   height: 50,
@@ -112,9 +111,8 @@ class OrderDetailView extends GetView<OrderDetailController> {
                   // 1 is PENDING
                   const SizedBox(height: 12),
                   PrimaryButton(
-                    onPressed: controller.isUpdating.value
-                        ? null
-                        : controller.cancelOrder,
+                    onPressed: controller.cancelOrder,
+                    isLoading: controller.isUpdating.value,
                     label: 'cancel_order'.tr,
                     borderRadius: 14,
                     height: 50,
@@ -127,9 +125,8 @@ class OrderDetailView extends GetView<OrderDetailController> {
                   // 3 is PREPARING
                   const SizedBox(height: 12),
                   PrimaryButton(
-                    onPressed: controller.isUpdating.value
-                        ? null
-                        : controller.confirmReceipt,
+                    onPressed: controller.confirmReceipt,
+                    isLoading: controller.isUpdating.value,
                     label: 'confirm_receipt'.tr,
                     borderRadius: 14,
                     height: 50,
@@ -140,9 +137,8 @@ class OrderDetailView extends GetView<OrderDetailController> {
                 if (order.statusId == 4) ...[
                   const SizedBox(height: 12),
                   PrimaryButton(
-                    onPressed: controller.isUpdating.value
-                        ? null
-                        : controller.downloadInvoice,
+                    onPressed: controller.downloadInvoice,
+                    isLoading: controller.isUpdating.value,
                     label: 'Download Invoice',
                     borderRadius: 14,
                     height: 50,
