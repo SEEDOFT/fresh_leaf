@@ -275,7 +275,7 @@ void main() {
         );
 
         final service = OrderService(apiClient: mockClient);
-        final result = await service.payWithWallet(1, 1);
+        final result = await service.payWithWallet(1, 1, '123456');
 
         expect(result, isTrue);
       });
@@ -299,7 +299,7 @@ void main() {
         );
 
         final service = OrderService(apiClient: mockClient);
-        final result = await service.batchPayWithWallet([1, 2], 1);
+        final result = await service.batchPayWithWallet([1, 2], 1, '123456');
 
         expect(result, isTrue);
       });

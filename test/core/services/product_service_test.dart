@@ -168,7 +168,12 @@ void main() {
 
     group('getVendorProfile', () {
       test('returns vendor and products on success', () async {
-        when(mockClient.getRequest(any)).thenAnswer(
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => dio.Response<Map<String, dynamic>>(
             requestOptions: dio.RequestOptions(path: ''),
             statusCode: 200,
@@ -206,12 +211,17 @@ void main() {
 
         expect(vendor, isNotNull);
         expect(vendor!.name, 'Green Farm');
-        expect(products.length, 1);
-        expect(products.first.id, 10);
+        expect(products.items.length, 1);
+        expect(products.items.first.id, 10);
       });
 
       test('returns null vendor when vendor key missing', () async {
-        when(mockClient.getRequest(any)).thenAnswer(
+        when(
+          mockClient.getRequest(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => dio.Response<Map<String, dynamic>>(
             requestOptions: dio.RequestOptions(path: ''),
             statusCode: 200,
@@ -230,7 +240,7 @@ void main() {
         final (vendor, products) = await service.getVendorProfile(1);
 
         expect(vendor, isNull);
-        expect(products, isEmpty);
+        expect(products.items, isEmpty);
       });
     });
 

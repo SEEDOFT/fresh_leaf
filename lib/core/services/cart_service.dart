@@ -96,7 +96,7 @@ class CartService extends GetxService {
           'payment_method_id': paymentMethodId,
           'payment_method_type_id': paymentMethodTypeId,
           'order_type_id': orderTypeId,
-          'payment_currency_id': ?paymentCurrencyId,
+          'payment_currency_id': paymentCurrencyId,
           'notes': notes != null && notes.isNotEmpty ? notes : null,
         },
       );
@@ -111,7 +111,7 @@ class CartService extends GetxService {
         if (ids.isNotEmpty) return ids;
       }
       return null;
-    } on Exception {
+    } catch (e) {
       return null;
     }
   }
