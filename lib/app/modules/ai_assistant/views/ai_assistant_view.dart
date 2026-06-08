@@ -80,6 +80,7 @@ class AiAssistantView extends GetView<AiAssistantController> {
               ),
             ),
             AiAssistantComposer(controller: controller),
+            const SizedBox(height: 10),
           ],
         ),
       ),
