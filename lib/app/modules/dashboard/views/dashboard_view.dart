@@ -40,99 +40,104 @@ class DashboardView extends GetView<DashboardController> {
             ),
           ),
         ),
-        bottomNavigationBar: Obx(
-          () => DecoratedBox(
-            decoration: BoxDecoration(
-              color: navBackgroundColor,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(24.scaled),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: scheme.shadow.withValues(alpha: 0.20),
-                  blurRadius: 20.scaled,
-                  offset: Offset(0, -4.scaled),
+        bottomNavigationBar: MediaQuery.viewInsetsOf(context).bottom > 0
+            ? const SizedBox.shrink()
+            : Obx(
+                () => DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: navBackgroundColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24.scaled),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: scheme.shadow.withValues(alpha: 0.20),
+                        blurRadius: 20.scaled,
+                        offset: Offset(0, -4.scaled),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24.scaled),
+                    ),
+                    child: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      backgroundColor: navBackgroundColor,
+                      selectedItemColor: navSelectedColor,
+                      selectedIconTheme: IconThemeData(color: navSelectedColor),
+                      unselectedItemColor: navUnselectedColor,
+                      selectedLabelStyle: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.scaled,
+                      ),
+                      unselectedLabelStyle: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12.scaled,
+                      ),
+                      showUnselectedLabels: true,
+                      elevation: 0,
+                      currentIndex: controller.currentIndex,
+                      onTap: (index) => controller.currentIndex = index,
+                      items: [
+                        BottomNavigationBarItem(
+                          icon: BuildNavIcon(
+                            svgAsset: SvgAssets.home,
+                            isSelected: controller.currentIndex == 0,
+                            selectedColor: navSelectedColor,
+                            unselectedColor: navUnselectedColor,
+                            badgeCount: Get.find<NotificationService>()
+                                .unreadCount
+                                .value,
+                          ),
+                          label: 'home'.tr,
+                        ),
+                        BottomNavigationBarItem(
+                          icon: BuildNavIcon(
+                            svgAsset: SvgAssets.search,
+                            isSelected: controller.currentIndex == 1,
+                            selectedColor: navSelectedColor,
+                            unselectedColor: navUnselectedColor,
+                          ),
+                          label: 'search'.tr,
+                        ),
+                        BottomNavigationBarItem(
+                          icon: BuildNavIcon(
+                            svgAsset: SvgAssets.gemini,
+                            isSelected: controller.currentIndex == 2,
+                            selectedColor: navSelectedColor,
+                            unselectedColor: navUnselectedColor,
+                            badgeCount: Get.find<NotificationService>()
+                                .unreadChatCount
+                                .value,
+                          ),
+                          label: 'AI Assistant',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: BuildNavIcon(
+                            svgAsset: SvgAssets.order,
+                            isSelected: controller.currentIndex == 3,
+                            selectedColor: navSelectedColor,
+                            unselectedColor: navUnselectedColor,
+                            badgeCount:
+                                Get.find<OrdersController>().activeOrderCount,
+                          ),
+                          label: 'orders'.tr,
+                        ),
+                        BottomNavigationBarItem(
+                          icon: BuildNavIcon(
+                            svgAsset: SvgAssets.profile,
+                            isSelected: controller.currentIndex == 4,
+                            selectedColor: navSelectedColor,
+                            unselectedColor: navUnselectedColor,
+                          ),
+                          label: 'profile'.tr,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(24.scaled),
               ),
-              child: BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: navBackgroundColor,
-                selectedItemColor: navSelectedColor,
-                selectedIconTheme: IconThemeData(color: navSelectedColor),
-                unselectedItemColor: navUnselectedColor,
-                selectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.scaled,
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.scaled,
-                ),
-                showUnselectedLabels: true,
-                elevation: 0,
-                currentIndex: controller.currentIndex,
-                onTap: (index) => controller.currentIndex = index,
-                items: [
-                  BottomNavigationBarItem(
-                    icon: BuildNavIcon(
-                      svgAsset: SvgAssets.home,
-                      isSelected: controller.currentIndex == 0,
-                      selectedColor: navSelectedColor,
-                      unselectedColor: navUnselectedColor,
-                      badgeCount:
-                          Get.find<NotificationService>().unreadCount.value,
-                    ),
-                    label: 'home'.tr,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: BuildNavIcon(
-                      svgAsset: SvgAssets.search,
-                      isSelected: controller.currentIndex == 1,
-                      selectedColor: navSelectedColor,
-                      unselectedColor: navUnselectedColor,
-                    ),
-                    label: 'search'.tr,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: BuildNavIcon(
-                      svgAsset: SvgAssets.gemini,
-                      isSelected: controller.currentIndex == 2,
-                      selectedColor: navSelectedColor,
-                      unselectedColor: navUnselectedColor,
-                      badgeCount:
-                          Get.find<NotificationService>().unreadChatCount.value,
-                    ),
-                    label: 'AI Assistant',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: BuildNavIcon(
-                      svgAsset: SvgAssets.order,
-                      isSelected: controller.currentIndex == 3,
-                      selectedColor: navSelectedColor,
-                      unselectedColor: navUnselectedColor,
-                      badgeCount: Get.find<OrdersController>().activeOrderCount,
-                    ),
-                    label: 'orders'.tr,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: BuildNavIcon(
-                      svgAsset: SvgAssets.profile,
-                      isSelected: controller.currentIndex == 4,
-                      selectedColor: navSelectedColor,
-                      unselectedColor: navUnselectedColor,
-                    ),
-                    label: 'profile'.tr,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
