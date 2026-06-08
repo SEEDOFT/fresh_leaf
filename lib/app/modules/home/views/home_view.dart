@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
-import 'package:fresh_leaf/app/modules/dashboard/controllers/dashboard_controller.dart';
 import 'package:fresh_leaf/app/modules/home/controllers/home_controller.dart';
 import 'package:fresh_leaf/app/modules/home/widgets/home_widget.dart';
 import 'package:fresh_leaf/core/constants/app_sizes.dart';
@@ -16,7 +15,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      onRefresh: controller.refreshHome,
+      scrollable: false,
       padding: EdgeInsets.symmetric(vertical: AppSizes.s20),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
@@ -43,69 +42,94 @@ class HomeView extends GetView<HomeController> {
           }),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const HomeAppBarWidget(),
-          SizedBox(height: AppSizes.s24),
-          const HomeActiveOrdersWidget(),
-          SizedBox(height: AppSizes.s32),
-          Obx(
-            () => HomeCategoriesWidget(
-              categories: controller.categories.toList(),
-            ),
-          ),
-          SizedBox(height: AppSizes.s24),
-          Padding(
-            padding: EdgeInsets.only(left: AppSizes.s24),
-            child: Obx(() {
-              final filter = controller.selectedFilter.value;
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _FilterChip(
-                      title: 'picked_this_morning'.tr,
-                      isActive: filter == 'picked',
-                      onTap: () => controller.selectedFilter.value = 'picked',
-                    ),
-                    SizedBox(width: AppSizes.s8),
-                    _FilterChip(
-                      title: 'Top Rated',
-                      isActive: filter == 'top_rated',
-                      onTap: () =>
-                          controller.selectedFilter.value = 'top_rated',
-                    ),
-                    SizedBox(width: AppSizes.s8),
-                    _FilterChip(
-                      title: 'New Arrivals',
-                      isActive: filter == 'new',
-                      onTap: () => controller.selectedFilter.value = 'new',
-                    ),
-                  ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return RefreshIndicator(
+            onRefresh: controller.refreshHome,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const HomeAppBarWidget(),
+                      SizedBox(height: AppSizes.s24),
+                      const HomeActiveOrdersWidget(),
+                      SizedBox(height: AppSizes.s32),
+                      Obx(
+                        () => HomeCategoriesWidget(
+                          categories: controller.categories.toList(),
+                        ),
+                      ),
+                      SizedBox(height: AppSizes.s24),
+                      Padding(
+                        padding: EdgeInsets.only(left: AppSizes.s24),
+                        child: Obx(() {
+                          final filter = controller.selectedFilter.value;
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                _FilterChip(
+                                  title: 'picked_this_morning'.tr,
+                                  isActive: filter == 'picked',
+                                  onTap: () => controller.selectedFilter.value =
+                                      'picked',
+                                ),
+                                SizedBox(width: AppSizes.s8),
+                                _FilterChip(
+                                  title: 'Top Rated',
+                                  isActive: filter == 'top_rated',
+                                  onTap: () => controller.selectedFilter.value =
+                                      'top_rated',
+                                ),
+                                SizedBox(width: AppSizes.s8),
+                                _FilterChip(
+                                  title: 'New Arrivals',
+                                  isActive: filter == 'new',
+                                  onTap: () =>
+                                      controller.selectedFilter.value = 'new',
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ),
+                      SizedBox(height: AppSizes.s16),
+                      Obx(() {
+                        if (controller.isLoadingProducts.value) {
+                          return const ProductHorizontalSkeleton();
+                        }
+                        final products = controller.filteredProductsByTab;
+                        return HomeHorizontalProductsWidget(
+                          pickedThisMorning: products,
+                        );
+                      }),
+                      SizedBox(height: AppSizes.s32),
+                      const HomePromotionCarouselWidget(),
+                    ],
+                  ),
                 ),
-              );
-            }),
-          ),
-          SizedBox(height: AppSizes.s16),
-          Obx(() {
-            if (controller.isLoadingProducts.value) {
-              return const ProductHorizontalSkeleton();
-            }
-            final products = controller.filteredProductsByTab;
-            return HomeHorizontalProductsWidget(
-              pickedThisMorning: products,
-            );
-          }),
-          SizedBox(height: AppSizes.s32),
-          GestureDetector(
-            onTap: () {
-              Get.find<DashboardController>().currentIndex = 2;
-            },
-            child: const HomeAIBannerWidget(),
-          ),
-          SizedBox(height: AppSizes.s80), // extra space for FABs
-        ],
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const HomeAIBannerWidget(),
+                        SizedBox(height: AppSizes.s16),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
