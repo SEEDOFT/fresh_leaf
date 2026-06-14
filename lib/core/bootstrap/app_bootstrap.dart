@@ -32,9 +32,13 @@ final class AppBootstrap {
 
   static Future<String> initialize() async {
     await GetStorage.init();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } on Exception catch (_) {
+      // Firebase already initialized natively (common on Android)
+    }
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Asia/Phnom_Penh'));
     await _registerServices();
