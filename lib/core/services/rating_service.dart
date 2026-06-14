@@ -36,11 +36,11 @@ class RatingService extends GetxService {
         );
       }
 
-      final data = apiResponse.data['data'] as Map<String, dynamic>? ?? {};
+      final data = apiResponse.data;
       final averageRating = (data['average_rating'] as num?)?.toDouble() ?? 0.0;
       final ratingsCount = data['ratings_count'] as int? ?? 0;
 
-      final ratingsData = (data['ratings'] as Map<String, dynamic>?) ?? {};
+      final ratingsData = data['ratings'];
       final ratingsPaginated = PaginatedResponse<VendorInventoryRating>.fromMap(
         ratingsData,
         VendorInventoryRating.fromMap,

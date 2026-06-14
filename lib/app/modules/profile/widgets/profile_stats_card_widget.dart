@@ -123,25 +123,6 @@ class ProfileStatsCard extends StatelessWidget {
               ],
             ),
           ),
-          // Hide the Status Card for now
-          // Container(
-          //   padding: EdgeInsets.symmetric(
-          //     horizontal: 12.scaled,
-          //     vertical: 8.scaled,
-          //   ),
-          //   decoration: BoxDecoration(
-          //     color: scheme.secondaryContainer,
-          //     borderRadius: BorderRadius.circular(16.scaled),
-          //   ),
-          //   child: Text(
-          //     'organic_club'.tr,
-          //     style: TextStyle(
-          //       fontWeight: FontWeight.w800,
-          //       color: scheme.onSecondaryContainer,
-          //       fontSize: 12.scaled,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

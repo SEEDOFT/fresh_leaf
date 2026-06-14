@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/helpers/app_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class WalletBalanceCardWidget extends StatelessWidget {
   const WalletBalanceCardWidget({
@@ -22,7 +21,6 @@ class WalletBalanceCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<WalletController>();
     final scheme = Theme.of(context).colorScheme;
-    final isUsd = currency == 'USD';
 
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -87,10 +85,12 @@ class WalletBalanceCardWidget extends StatelessWidget {
           Obx(
             () {
               final isVisible = controller.isBalanceVisible.value;
-              final amountText = isUsd
-                  ? '$symbol${formatPrice(balance.value)}'
-                  : '${NumberFormat('#,###').format(balance.value)} $symbol';
-              final hiddenText = isUsd ? '$symbol••••••' : '•••••• $symbol';
+              final amountText = AppFormatter.formatCurrency(
+                balance.value,
+                symbol,
+              );
+              final isKhr = symbol == '៛' || symbol.contains('KHR');
+              final hiddenText = isKhr ? '•••••• $symbol' : '$symbol••••••';
               return Text(
                 isVisible ? amountText : hiddenText,
                 style: TextStyle(

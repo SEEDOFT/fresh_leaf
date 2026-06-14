@@ -55,13 +55,19 @@ class WalletTopUpController extends GetxController {
   Future<void> openPaymentSelection() async {
     final amountText = amountController.text.trim();
     if (amountText.isEmpty) {
-      Get.snackbar('invalid_amount'.tr, 'enter_amount'.tr);
+      Get.snackbar(
+        'validation_invalid_amount'.tr,
+        'validation_amount_required'.tr,
+      );
       return;
     }
 
     final amount = double.tryParse(amountText);
     if (amount == null || amount <= 0) {
-      Get.snackbar('invalid_amount'.tr, 'enter_valid_amount'.tr);
+      Get.snackbar(
+        'validation_invalid_amount'.tr,
+        'validation_invalid_amount'.tr,
+      );
       return;
     }
 

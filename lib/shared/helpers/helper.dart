@@ -1,19 +1,17 @@
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
+import 'package:fresh_leaf/shared/helpers/app_formatter.dart';
 
 String formatPrice(double price) {
-  final formatter = NumberFormat('#,##0.00');
-  return formatter.format(price);
+  return AppFormatter.formatNumber(price);
 }
 
 String formatPriceNoDecimals(double price) {
-  final formatter = NumberFormat('#,##0');
-  return formatter.format(price);
+  return AppFormatter.formatNumber(price);
 }
 
 String formatDateTime(DateTime? value, {String defaultValue = ''}) {
   if (value == null) return defaultValue;
-  return DateFormat('hh:mm a, dd MMM yyyy').format(value.toLocal());
+  return AppFormatter.formatDate(value);
 }
 
 String formatToString(dynamic value, {String defaultValue = ''}) {
@@ -105,11 +103,11 @@ int toInt(dynamic value, {int defaultValue = 0}) {
     }
     if (value is bool) return value ? 1 : 0;
     if (value is String) {
-      final trimmed = value.trim();
-      if (trimmed.isEmpty) return defaultValue;
-      final intVal = int.tryParse(trimmed);
+      final normalized = value.trim();
+      if (normalized.isEmpty) return defaultValue;
+      final intVal = int.tryParse(normalized);
       if (intVal != null) return intVal;
-      final cleaned = trimmed.replaceAll(',', '');
+      final cleaned = normalized.replaceAll(',', '');
       final doubleVal = double.tryParse(cleaned);
       if (doubleVal != null) return doubleVal.toInt();
       return defaultValue;

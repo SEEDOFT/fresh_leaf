@@ -8,11 +8,13 @@ class ProfileAddressesListItem extends StatelessWidget {
     required this.isDeleting,
     required this.onEdit,
     required this.onDelete,
+    this.isDefault = false,
     super.key,
   });
 
   final UserAddress address;
   final bool isDeleting;
+  final bool isDefault;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -33,8 +35,20 @@ class ProfileAddressesListItem extends StatelessWidget {
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: scheme.outline.withValues(alpha: 0.2),
+          color: isDefault
+              ? scheme.primary.withValues(alpha: 0.6)
+              : scheme.outline.withValues(alpha: 0.2),
+          width: isDefault ? 1.5 : 1,
         ),
+        boxShadow: isDefault
+            ? [
+                BoxShadow(
+                  color: scheme.primary.withValues(alpha: 0.12),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                ),
+              ]
+            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,6 +74,28 @@ class ProfileAddressesListItem extends StatelessWidget {
                   ),
                 ),
               ),
+              if (isDefault) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'default'.tr,
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: scheme.onPrimaryContainer,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              ],
               const Spacer(),
               Icon(
                 Icons.location_on_outlined,

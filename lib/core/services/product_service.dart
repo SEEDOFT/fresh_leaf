@@ -15,6 +15,7 @@ class ProductService extends GetxService {
     int? categoryId,
     String? query,
     String? province,
+    String? filter,
     int page = 1,
     int perPage = 15,
   }) async {
@@ -26,6 +27,7 @@ class ProductService extends GetxService {
       if (categoryId != null) params['category_id'] = categoryId;
       if (query != null) params['search'] = query;
       if (province != null) params['province'] = province;
+      if (filter != null) params['filter'] = filter;
 
       final response = await _apiClient.getRequest(
         ApiEndpoints.products,
@@ -43,6 +45,25 @@ class ProductService extends GetxService {
       return PaginatedResponse.empty();
     } on Exception {
       return PaginatedResponse.empty();
+    }
+  }
+
+  Future<List<VendorInventory>> getProductBySlug(String slug) async {
+    try {
+      final response = await _apiClient.getRequest(
+        ApiEndpoints.productBySlug.replaceFirst('{slug}', slug),
+      );
+      final apiResponse = ApiResponse.parsePaginated(
+        response.data,
+        VendorInventory.fromMap,
+      );
+
+      if (apiResponse.isSuccess) {
+        return apiResponse.data.items;
+      }
+      return [];
+    } on Exception {
+      return [];
     }
   }
 

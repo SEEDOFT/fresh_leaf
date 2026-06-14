@@ -10,6 +10,29 @@ class OrderService extends GetxService {
 
   final ApiClient _apiClient;
 
+  Future<Map<int, int>> getOrderCounts() async {
+    try {
+      final response = await _apiClient.getRequest(ApiEndpoints.orderCounts);
+      final apiResponse = ApiResponse.parseMap(response.data);
+
+      if (apiResponse.isSuccess && response.statusCode == 200) {
+        final data = apiResponse.data;
+        final counts = <int, int>{};
+        for (final entry in data.entries) {
+          final key = int.tryParse(entry.key) ?? 0;
+          final value = entry.value;
+          if (value is num) {
+            counts[key] = value.toInt();
+          }
+        }
+        return counts;
+      }
+      return {};
+    } on Exception {
+      return {};
+    }
+  }
+
   Future<PaginatedResponse<Order>> getOrders({int page = 1}) async {
     try {
       final response = await _apiClient.getRequest(

@@ -6,6 +6,7 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/chat_conversation.dart';
 import 'package:fresh_leaf/core/theme/app_colors.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/widgets/app_avatar.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:fresh_leaf/shared/widgets/paginated_list_view.dart';
@@ -192,17 +193,17 @@ class _MessageConversationCard extends StatelessWidget {
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
         onTap: onTap,
-        leading: CircleAvatar(
+        leading: AppAvatar(
+          radius: 18,
+          imageUrl: imageUrl,
+          name: isSupport ? null : conversation.displayTitle,
+          fallbackIcon: isSupport
+              ? Icons.support_agent
+              : Icons.storefront_outlined,
           backgroundColor: isOpen
               ? AppColors.primary.withValues(alpha: 0.1)
               : Colors.grey.withValues(alpha: 0.1),
-          backgroundImage: imageUrl == null ? null : NetworkImage(imageUrl),
-          child: imageUrl == null
-              ? Icon(
-                  isSupport ? Icons.support_agent : Icons.storefront_outlined,
-                  color: isOpen ? AppColors.primary : Colors.grey,
-                )
-              : null,
+          foregroundColor: isOpen ? AppColors.primary : Colors.grey,
         ),
         title: Row(
           children: [

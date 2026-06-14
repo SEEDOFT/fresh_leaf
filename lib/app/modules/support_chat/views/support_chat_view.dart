@@ -124,14 +124,26 @@ class SupportChatView extends GetView<SupportChatController> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 if (!isMe) ...[
-                                  const CircleAvatar(
-                                    radius: 14,
-                                    backgroundColor: AppColors.primary,
-                                    child: Icon(
-                                      Icons.headset_mic,
-                                      size: 16,
-                                      color: Colors.white,
-                                    ),
+                                  SupportChatUserAvatarWidget(
+                                    scheme: scheme,
+                                    imageUrl: controller
+                                        .activeConversation
+                                        .value
+                                        ?.otherParticipant
+                                        ?.displayImage,
+                                    name: controller
+                                        .activeConversation
+                                        .value
+                                        ?.otherParticipant
+                                        ?.fullName,
+                                    fallbackIcon:
+                                        controller
+                                                .activeConversation
+                                                .value
+                                                ?.type ==
+                                            'support'
+                                        ? Icons.headset_mic
+                                        : Icons.person_outline,
                                   ),
                                   const SizedBox(width: 8),
                                 ],
@@ -222,10 +234,11 @@ class SupportChatView extends GetView<SupportChatController> {
                                 if (isMe) ...[
                                   const SizedBox(width: 8),
                                   SupportChatUserAvatarWidget(
-                                    userProfile: controller.userProfile,
-                                    imageUrl:
-                                        controller.userProfile?.image ?? '',
                                     scheme: scheme,
+                                    imageUrl: controller.userProfile?.image,
+                                    name:
+                                        '${controller.userProfile?.firstName}'
+                                        ' ${controller.userProfile?.lastName}',
                                   ),
                                 ],
                               ],

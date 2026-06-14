@@ -29,14 +29,6 @@ class CheckoutView extends GetView<CheckoutController> {
               ),
             ),
             const SizedBox(height: 14),
-            Obx(
-              () => CheckoutPaymentMethodsWidget(
-                options: controller.paymentOptions,
-                selectedOptionId: controller.selectedOptionId.value,
-                onSelect: controller.selectPaymentOption,
-              ),
-            ),
-            const SizedBox(height: 14),
             Container(
               width: screenWidth - 32,
               padding: const EdgeInsets.all(16),
@@ -88,6 +80,12 @@ class CheckoutView extends GetView<CheckoutController> {
                   ),
                 ),
               ),
+            ),
+            const SizedBox(height: 14),
+            CheckoutPaymentMethodsWidget(
+              options: controller.paymentOptions,
+              selectedOptionId: controller.selectedOptionId.value,
+              onSelect: controller.selectPaymentOption,
             ),
             const SizedBox(height: 14),
             CheckoutSummaryCardWidget(

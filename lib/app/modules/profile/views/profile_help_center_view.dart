@@ -86,16 +86,6 @@ class _SupportShortcuts extends GetView<ProfileHelpCenterController> {
             );
           }),
         ),
-        // const SizedBox(width: 10),
-        // Expanded(
-        //   child: _SupportButton(
-        //     icon: Icons.smart_toy_outlined,
-        //     label: 'Virtual AI assistant',
-        //     color: scheme.secondary,
-        //     onTap: () => Get.toNamed<void>('/ai_assistant'),
-        //     width: media.size.width,
-        //   ),
-        // ),
       ],
     );
   }

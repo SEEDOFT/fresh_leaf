@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/shared/helpers/helper.dart';
+import 'package:fresh_leaf/shared/helpers/app_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
 import 'package:fresh_leaf/shared/widgets/rating_stars_widget.dart';
@@ -78,7 +78,7 @@ class AppProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 3,
+              flex: 7,
               child: Stack(
                 children: [
                   AppNetworkImage(
@@ -136,43 +136,53 @@ class AppProductCard extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 5,
               child: Padding(
-                padding: EdgeInsets.all(12.scaled),
+                padding: EdgeInsets.all(10.scaled),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 15.scaled,
-                        fontWeight: FontWeight.bold,
-                        color: scheme.onSurface,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (subtitle != null) ...[
-                      SizedBox(height: 2.scaled),
-                      Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 12.scaled,
-                          color: scheme.onSurfaceVariant,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 15.scaled,
+                              fontWeight: FontWeight.bold,
+                              color: scheme.onSurface,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                    if (averageRating != null && averageRating! > 0) ...[
-                      SizedBox(height: 4.scaled),
-                      RatingStarsWidget(
-                        rating: averageRating!,
-                        size: 12,
-                        count: ratingsCount,
-                      ),
-                    ],
-                    const Spacer(),
+                        if (subtitle != null) ...[
+                          SizedBox(height: 2.scaled),
+                          Flexible(
+                            child: Text(
+                              subtitle!,
+                              style: TextStyle(
+                                fontSize: 11.scaled,
+                                color: scheme.onSurfaceVariant,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                        if (averageRating != null && averageRating! > 0) ...[
+                          SizedBox(height: 4.scaled),
+                          RatingStarsWidget(
+                            rating: averageRating!,
+                            size: 11,
+                            count: ratingsCount,
+                          ),
+                        ],
+                      ],
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -185,10 +195,12 @@ class AppProductCard extends StatelessWidget {
                               if (originalPrice != null &&
                                   originalPrice! > price)
                                 Text(
-                                  '${currencySymbol ?? r'$'}'
-                                  '${formatPrice(originalPrice!)}',
+                                  AppFormatter.formatCurrency(
+                                    originalPrice!,
+                                    currencySymbol ?? r'$',
+                                  ),
                                   style: TextStyle(
-                                    fontSize: 11.scaled,
+                                    fontSize: 10.scaled,
                                     decoration: TextDecoration.lineThrough,
                                     color: scheme.onSurfaceVariant.withValues(
                                       alpha: 0.6,
@@ -197,10 +209,12 @@ class AppProductCard extends StatelessWidget {
                                   maxLines: 1,
                                 ),
                               Text(
-                                '${currencySymbol ?? r'$'}'
-                                '${formatPrice(price)}',
+                                AppFormatter.formatCurrency(
+                                  price,
+                                  currencySymbol ?? r'$',
+                                ),
                                 style: TextStyle(
-                                  fontSize: 16.scaled,
+                                  fontSize: 15.scaled,
                                   fontWeight: FontWeight.bold,
                                   color: scheme.primary,
                                 ),
@@ -208,9 +222,12 @@ class AppProductCard extends StatelessWidget {
                               ),
                               if (priceKhr != null)
                                 Text(
-                                  '${formatPriceNoDecimals(priceKhr!)} ៛',
+                                  AppFormatter.formatCurrency(
+                                    priceKhr!,
+                                    '៛',
+                                  ),
                                   style: TextStyle(
-                                    fontSize: 11.scaled,
+                                    fontSize: 10.scaled,
                                     fontWeight: FontWeight.w600,
                                     color: scheme.onSurfaceVariant,
                                   ),
@@ -294,7 +311,10 @@ class AppProductCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              '${currencySymbol ?? r'$'}${formatPrice(price)}',
+                              AppFormatter.formatCurrency(
+                                price,
+                                currencySymbol ?? r'$',
+                              ),
                               style: TextStyle(
                                 color: scheme.primary,
                                 fontWeight: FontWeight.w800,
@@ -304,8 +324,10 @@ class AppProductCard extends StatelessWidget {
                                 originalPrice! > price) ...[
                               SizedBox(width: 8.scaled),
                               Text(
-                                '${currencySymbol ?? r'$'}'
-                                '${formatPrice(originalPrice!)}',
+                                AppFormatter.formatCurrency(
+                                  originalPrice!,
+                                  currencySymbol ?? r'$',
+                                ),
                                 style: TextStyle(
                                   fontSize: 11.scaled,
                                   decoration: TextDecoration.lineThrough,
@@ -319,7 +341,10 @@ class AppProductCard extends StatelessWidget {
                         ),
                         if (priceKhr != null)
                           Text(
-                            '${formatPriceNoDecimals(priceKhr!)} ៛',
+                            AppFormatter.formatCurrency(
+                              priceKhr!,
+                              '៛',
+                            ),
                             style: TextStyle(
                               fontSize: 11.scaled,
                               fontWeight: FontWeight.w600,

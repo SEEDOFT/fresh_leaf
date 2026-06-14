@@ -111,7 +111,7 @@ class DashboardView extends GetView<DashboardController> {
                                 .unreadChatCount
                                 .value,
                           ),
-                          label: 'AI Assistant',
+                          label: 'ai_assistant'.tr,
                         ),
                         BottomNavigationBarItem(
                           icon: BuildNavIcon(

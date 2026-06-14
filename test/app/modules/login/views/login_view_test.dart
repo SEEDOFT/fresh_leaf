@@ -125,7 +125,9 @@ void main() {
       Get.testMode = false;
     });
 
-    test('login failure does not save token', () async {
+    testWidgets('login failure does not save token', (tester) async {
+      Get.testMode = true;
+
       when(mockApiClient.postRequest(any, data: anyNamed('data'))).thenAnswer(
         (_) async => dio.Response<Map<String, dynamic>>(
           requestOptions: dio.RequestOptions(path: ''),
@@ -140,13 +142,27 @@ void main() {
         ),
       );
 
+      Get.put(loginController);
+      await tester.pumpWidget(
+        GetMaterialApp(
+          getPages: [
+            GetPage(name: AppRoutes.login, page: () => const LoginView()),
+          ],
+          initialRoute: AppRoutes.login,
+        ),
+      );
+      await tester.pump();
+
       loginController.phoneController.text = '012 345 678';
       loginController.passwordController.text = 'wrong';
 
       await loginController.login();
+      await tester.pumpAndSettle(const Duration(seconds: 4));
 
       verifyNever(mockStorageService.saveToken(any));
       expect(loginController.isLoading.value, isFalse);
+
+      Get.testMode = false;
     });
 
     test('password visibility toggle works', () {
@@ -157,8 +173,21 @@ void main() {
       expect(loginController.isPasswordVisible.value, isFalse);
     });
 
-    test('empty fields shows validation', () async {
+    testWidgets('empty fields shows validation', (tester) async {
+      Get.put(loginController);
+      await tester.pumpWidget(
+        GetMaterialApp(
+          getPages: [
+            GetPage(name: AppRoutes.login, page: () => const LoginView()),
+          ],
+          initialRoute: AppRoutes.login,
+        ),
+      );
+      await tester.pump();
+
       await loginController.login();
+      await tester.pumpAndSettle(const Duration(seconds: 4));
+
       expect(loginController.isLoading.value, isFalse);
     });
   });

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
+import 'package:fresh_leaf/shared/helpers/app_formatter.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class WalletTransactionTileWidget extends StatelessWidget {
   const WalletTransactionTileWidget({
@@ -27,9 +27,8 @@ class WalletTransactionTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isCredit = tx.isCredit;
-    final displayAmount = currency == 'USD'
-        ? formatPrice(tx.amount)
-        : NumberFormat('#,###').format(tx.amount);
+    final formattedAmount = AppFormatter.formatCurrency(tx.amount, symbol);
+    final displayAmount = isCredit ? '+$formattedAmount' : '-$formattedAmount';
 
     return IntrinsicHeight(
       child: Row(
@@ -137,11 +136,7 @@ class WalletTransactionTileWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              currency == 'USD'
-                                  ? '${isCredit ? '+' : '-'}'
-                                        '$symbol$displayAmount'
-                                  : '${isCredit ? '+' : '-'}'
-                                        '$displayAmount $symbol',
+                              displayAmount,
                               style: TextStyle(
                                 fontSize: 14.scaled,
                                 fontWeight: FontWeight.w700,
@@ -187,9 +182,6 @@ class WalletTransactionTileWidget extends StatelessWidget {
     String displayAmount,
   ) {
     final isCredit = tx.isCredit;
-    final amountText = currency == 'USD'
-        ? '${isCredit ? '+' : '-'}$symbol$displayAmount'
-        : '${isCredit ? '+' : '-'}$displayAmount $symbol';
     final amountColor = isCredit ? Colors.green.shade700 : scheme.onSurface;
 
     unawaited(
@@ -240,7 +232,7 @@ class WalletTransactionTileWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          amountText,
+                          displayAmount,
                           style: TextStyle(
                             fontSize: 24.scaled,
                             fontWeight: FontWeight.w800,

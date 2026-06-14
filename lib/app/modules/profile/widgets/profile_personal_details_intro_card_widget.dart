@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/app/modules/profile/controllers/profile_personal_details_controller.dart';
+import 'package:fresh_leaf/shared/widgets/app_avatar.dart';
 import 'package:get/get.dart';
 
 class PersonalDetailsIntroCard extends StatelessWidget {
@@ -7,6 +9,8 @@ class PersonalDetailsIntroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final controller = Get.find<ProfilePersonalDetailsController>();
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -16,10 +20,13 @@ class PersonalDetailsIntroCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: scheme.surfaceContainerHighest,
-            child: Icon(Icons.person_outline, color: scheme.onSurface),
+          Obx(
+            () => AppAvatar(
+              imageUrl: controller.image.value,
+              name:
+                  '${controller.firstNameController.text}'
+                  ' ${controller.lastNameController.text}',
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -39,21 +39,23 @@ void main() {
                 'message': 'OK',
               },
               'data': <String, dynamic>{
-                'data': <dynamic>[
-                  <String, dynamic>{
-                    'vendor_inventory': <String, dynamic>{
-                      'id': 1,
-                      'price': '10.00',
-                      'stock_quantity': '5.00',
-                      'price_display': <String, dynamic>{
-                        'USD': '10.00',
-                        'KHR': '41000.00',
+                'wishlists': <String, dynamic>{
+                  'data': <dynamic>[
+                    <String, dynamic>{
+                      'vendor_inventory': <String, dynamic>{
+                        'id': 1,
+                        'price': '10.00',
+                        'stock_quantity': '5.00',
+                        'price_display': <String, dynamic>{
+                          'USD': '10.00',
+                          'KHR': '41000.00',
+                        },
+                        'discounted_price_display': <String, dynamic>{},
                       },
-                      'discounted_price_display': <String, dynamic>{},
                     },
-                  },
-                ],
-                'current_page': 1,
+                  ],
+                  'current_page': 1,
+                },
               },
             },
           ),

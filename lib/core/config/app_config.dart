@@ -8,6 +8,11 @@ final class AppConfig {
 
   static const apiUrl = String.fromEnvironment(
     'API_URL',
+    defaultValue: 'https://api.freshleaf.dev/api/v1',
+  );
+
+  static const baseAssetUrl = String.fromEnvironment(
+    'BASE_ASSET_URL',
     defaultValue: 'https://api.freshleaf.dev',
   );
 

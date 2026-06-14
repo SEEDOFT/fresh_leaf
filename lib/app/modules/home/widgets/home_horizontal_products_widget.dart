@@ -65,7 +65,7 @@ class HomeHorizontalProductsWidget extends GetView<HomeController> {
     }
 
     return SizedBox(
-      height: AppSizes.s300,
+      height: AppSizes.s320,
       child: NotificationListener<ScrollNotification>(
         onNotification: (scrollInfo) {
           if (scrollInfo.metrics.pixels >=

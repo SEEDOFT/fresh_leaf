@@ -36,16 +36,16 @@ class ProductListView extends GetView<ProductListController> {
                       final double itemHeight;
                       if (screenWidth < 360) {
                         crossAxisCount = 1;
-                        itemHeight = 260;
+                        itemHeight = 270;
                       } else if (screenWidth < 700) {
                         crossAxisCount = 2;
-                        itemHeight = 285;
+                        itemHeight = 300;
                       } else if (screenWidth < 1024) {
                         crossAxisCount = 3;
-                        itemHeight = 305;
+                        itemHeight = 320;
                       } else {
                         crossAxisCount = 4;
-                        itemHeight = 320;
+                        itemHeight = 330;
                       }
 
                       const double spacing = 16;

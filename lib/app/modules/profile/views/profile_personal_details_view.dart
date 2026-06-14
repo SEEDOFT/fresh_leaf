@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/profile/controllers/profile_personal_details_controller.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_personal_widget.dart';
 import 'package:fresh_leaf/app/modules/profile/widgets/profile_widget.dart';
+import 'package:fresh_leaf/shared/widgets/app_avatar.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -80,11 +81,9 @@ class _AvatarBlock extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Obx(
       () {
-        ImageProvider? avatar;
+        ImageProvider? avatarProvider;
         if (controller.pickedImagePath.isNotEmpty) {
-          avatar = FileImage(File(controller.pickedImagePath.value));
-        } else if (controller.image.value.isNotEmpty) {
-          avatar = NetworkImage(controller.image.value);
+          avatarProvider = FileImage(File(controller.pickedImagePath.value));
         }
 
         return Column(
@@ -92,17 +91,13 @@ class _AvatarBlock extends StatelessWidget {
             Stack(
               alignment: Alignment.bottomRight,
               children: [
-                CircleAvatar(
+                AppAvatar(
                   radius: 54,
-                  backgroundColor: scheme.surfaceContainerHighest,
-                  backgroundImage: avatar,
-                  child: avatar == null
-                      ? Icon(
-                          Icons.person_rounded,
-                          size: 46,
-                          color: scheme.onSurfaceVariant,
-                        )
-                      : null,
+                  imageProvider: avatarProvider,
+                  imageUrl: controller.image.value,
+                  name:
+                      '${controller.firstNameController.text} '
+                      '${controller.lastNameController.text}',
                 ),
                 Positioned(
                   bottom: 4,

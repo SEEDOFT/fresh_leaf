@@ -50,7 +50,7 @@ class RegisterController extends GetxController {
         phoneController.text.isEmpty ||
         passwordController.text.isEmpty ||
         passwordConfirmController.text.isEmpty) {
-      Get.snackbar('register_error_title'.tr, 'register_error_fill_fields'.tr);
+      Get.snackbar('register_error_title'.tr, 'validation_fill_all_fields'.tr);
       return;
     }
 
@@ -60,7 +60,7 @@ class RegisterController extends GetxController {
     if (normalizedPhone.isEmpty) {
       Get.snackbar(
         'register_error_title'.tr,
-        'register_error_invalid_phone'.tr,
+        'validation_invalid_phone'.tr,
       );
       return;
     }
@@ -68,7 +68,7 @@ class RegisterController extends GetxController {
     if (passwordController.text != passwordConfirmController.text) {
       Get.snackbar(
         'register_error_title'.tr,
-        'register_error_password_mismatch'.tr,
+        'validation_password_mismatch'.tr,
       );
       return;
     }

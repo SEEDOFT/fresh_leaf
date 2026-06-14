@@ -75,6 +75,13 @@ class HomeView extends GetView<HomeController> {
                             child: Row(
                               children: [
                                 _FilterChip(
+                                  title: 'all'.tr,
+                                  isActive: filter == 'all',
+                                  onTap: () =>
+                                      controller.selectedFilter.value = 'all',
+                                ),
+                                SizedBox(width: AppSizes.s8),
+                                _FilterChip(
                                   title: 'picked_this_morning'.tr,
                                   isActive: filter == 'picked',
                                   onTap: () => controller.selectedFilter.value =
@@ -82,14 +89,14 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 SizedBox(width: AppSizes.s8),
                                 _FilterChip(
-                                  title: 'Top Rated',
+                                  title: 'top_rated'.tr,
                                   isActive: filter == 'top_rated',
                                   onTap: () => controller.selectedFilter.value =
                                       'top_rated',
                                 ),
                                 SizedBox(width: AppSizes.s8),
                                 _FilterChip(
-                                  title: 'New Arrivals',
+                                  title: 'new_arrivals'.tr,
                                   isActive: filter == 'new',
                                   onTap: () =>
                                       controller.selectedFilter.value = 'new',
@@ -130,8 +137,7 @@ class HomeView extends GetView<HomeController> {
                         ),
                         SizedBox(height: AppSizes.s16),
                         Text(
-                          'FreshLeaf Organics\nFresh, organic produce '
-                          'delivered to your door.',
+                          'app_description_footer'.tr,
                           style: TextStyle(
                             fontSize: 12,
                             color: scheme.onSurfaceVariant.withValues(
@@ -142,7 +148,7 @@ class HomeView extends GetView<HomeController> {
                         ),
                         SizedBox(height: AppSizes.s8),
                         Text(
-                          'FreshLeaf \nv0.1.0',
+                          'app_version_label'.tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 11,
@@ -163,15 +169,16 @@ class HomeView extends GetView<HomeController> {
                               text: TextSpan(
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: scheme.onSurfaceVariant
-                                      .withValues(alpha: 0.4),
+                                  color: scheme.onSurfaceVariant.withValues(
+                                    alpha: 0.4,
+                                  ),
                                 ),
                                 children: [
                                   TextSpan(text: '$wd $d'),
                                   WidgetSpan(
                                     baseline: TextBaseline.alphabetic,
-                                    alignment: PlaceholderAlignment
-                                        .aboveBaseline,
+                                    alignment:
+                                        PlaceholderAlignment.aboveBaseline,
                                     child: Text(
                                       ord,
                                       style: TextStyle(
@@ -193,8 +200,9 @@ class HomeView extends GetView<HomeController> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 11,
-                              color: scheme.onSurfaceVariant
-                                  .withValues(alpha: 0.4),
+                              color: scheme.onSurfaceVariant.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
                           ),
                         ),

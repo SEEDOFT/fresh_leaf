@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/controllers/product_detail_controller.dart';
+import 'package:fresh_leaf/shared/widgets/app_avatar.dart';
 import 'package:fresh_leaf/shared/widgets/rating_stars_widget.dart';
 import 'package:get/get.dart';
 
@@ -112,17 +113,9 @@ class _RatingReviewTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
+              AppAvatar(
                 radius: 14,
-                backgroundColor: scheme.primaryContainer,
-                child: Text(
-                  userName.isNotEmpty ? userName[0].toUpperCase() : '?',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: scheme.onPrimaryContainer,
-                  ),
-                ),
+                name: userName,
               ),
               const SizedBox(width: 8),
               Expanded(

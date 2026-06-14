@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_leaf/shared/widgets/app_avatar.dart';
 import 'package:get/get.dart';
 
 class SecurityOverviewCard extends StatelessWidget {
@@ -16,10 +17,10 @@ class SecurityOverviewCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 24,
+          AppAvatar(
+            fallbackIcon: Icons.shield_outlined,
             backgroundColor: scheme.surfaceContainerHighest,
-            child: Icon(Icons.shield_outlined, color: scheme.onSurface),
+            foregroundColor: scheme.onSurface,
           ),
           const SizedBox(width: 12),
           Expanded(

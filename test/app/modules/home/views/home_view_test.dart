@@ -192,7 +192,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(
-      find.textContaining('FreshLeaf Organics'),
+      find.text('app_description_footer'),
       findsOneWidget,
     );
 

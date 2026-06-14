@@ -53,7 +53,7 @@ class LoginController extends GetxController {
         phoneController.text,
       );
       if (normalizedPhone.isEmpty) {
-        Get.snackbar('error'.tr, 'enter_valid_phone'.tr);
+        Get.snackbar('error'.tr, 'validation_invalid_phone'.tr);
         return;
       }
 

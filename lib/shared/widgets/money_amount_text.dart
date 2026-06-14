@@ -9,6 +9,7 @@ class MoneyAmountText extends StatelessWidget {
     this.textAlign = TextAlign.end,
     this.primaryStyle,
     this.secondaryStyle,
+    this.selectedCurrencyId,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class MoneyAmountText extends StatelessWidget {
   final TextAlign textAlign;
   final TextStyle? primaryStyle;
   final TextStyle? secondaryStyle;
+  final int? selectedCurrencyId;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,34 @@ class MoneyAmountText extends StatelessWidget {
     final money = display;
     final prefix = amount < 0 ? '-' : '';
     final fallbackText = '\$${formatPrice(amount.abs())}';
-    final primaryText = money == null || money.isEmpty
-        ? '$prefix$fallbackText'
-        : '$prefix${money.primaryText}';
-    final rawSecondaryText = money?.secondaryText;
+
+    if (money == null || money.isEmpty) {
+      return Text(
+        '$prefix$fallbackText',
+        textAlign: textAlign,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: primaryStyle,
+      );
+    }
+
+    final showSingleCurrency =
+        selectedCurrencyId != null && selectedCurrencyId! > 0;
+
+    if (showSingleCurrency) {
+      final isUsd = selectedCurrencyId == MoneyDisplay.usdCurrencyId;
+      final text = isUsd ? money.usdText : money.khrText;
+      return Text(
+        '$prefix$text',
+        textAlign: textAlign,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: primaryStyle,
+      );
+    }
+
+    final primaryText = '$prefix${money.primaryText}';
+    final rawSecondaryText = money.secondaryText;
     final secondaryText = rawSecondaryText == null
         ? null
         : '$prefix$rawSecondaryText';

@@ -40,12 +40,15 @@ class OrderWalletPaymentController extends GetxController {
 
   bool isCheckout = false;
   Map<String, dynamic>? checkoutArgs;
+  int? paymentCurrencyId;
 
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments;
     if (args != null && args is Map<String, dynamic>) {
+      paymentCurrencyId = args['payment_currency_id'] as int?;
+
       if (args['is_checkout'] == true) {
         isCheckout = true;
         checkoutArgs = args;
@@ -118,6 +121,15 @@ class OrderWalletPaymentController extends GetxController {
           sum +
           (isKhr ? order.resolvedTotalAmountDisplay.khr : order.totalAmount),
     );
+  }
+
+  MoneyDisplay get totalDisplaySelected {
+    final raw = totalDisplay;
+    if (paymentCurrencyId == null) return raw;
+    return switch (paymentCurrencyId) {
+      MoneyDisplay.khrCurrencyId => MoneyDisplay(usd: 0, khr: raw.khr),
+      _ => MoneyDisplay(usd: raw.usd, khr: 0),
+    };
   }
 
   MoneyDisplay get totalDisplay {

@@ -150,7 +150,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
                   PrimaryButton(
                     onPressed: controller.downloadInvoice,
                     isLoading: controller.isUpdating.value,
-                    label: 'Download Invoice',
+                    label: 'download_invoice'.tr,
                     borderRadius: 14,
                     height: 50,
                     backgroundColor: scheme.surfaceContainerHighest,

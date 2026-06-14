@@ -88,7 +88,7 @@ class LoginFormContent extends StatelessWidget {
                     ),
                     SizedBox(height: 32.scaled),
                     AppTextField(
-                      label: 'phone_number'.tr,
+                      label: 'phone'.tr,
                       controller: controller.phoneController,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [

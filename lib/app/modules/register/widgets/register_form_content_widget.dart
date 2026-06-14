@@ -164,8 +164,8 @@ class RegisterFormContent extends StatelessWidget {
               ),
               SizedBox(height: fieldGap),
               AppTextField(
-                label: 'phone_number'.tr,
-                hintText: 'phone_hint'.tr,
+                label: 'phone'.tr,
+                hintText: 'placeholder_phone'.tr,
                 controller: controller.phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [

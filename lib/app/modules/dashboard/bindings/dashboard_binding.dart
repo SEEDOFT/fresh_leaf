@@ -48,7 +48,10 @@ class DashboardBinding extends Bindings {
       () => OrdersController(orderService: Get.find<OrderService>()),
     );
     _lazy(
-      () => SearchController(homeController: Get.find<HomeController>()),
+      () => SearchController(
+        homeController: Get.find<HomeController>(),
+        productService: Get.find<ProductService>(),
+      ),
     );
     if (!Get.isRegistered<WalletController>()) {
       Get.put(

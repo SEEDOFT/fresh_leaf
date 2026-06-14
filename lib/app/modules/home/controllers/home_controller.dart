@@ -33,7 +33,7 @@ class HomeController extends GetxController {
   final RxString locationRegion = ''.obs;
   final RxBool isResolvingLocation = false.obs;
   final RxBool isLoadingProducts = false.obs;
-  final RxString selectedFilter = 'picked'.obs;
+  final RxString selectedFilter = 'all'.obs;
 
   final RxString clockWeekday = ''.obs;
   final RxString clockDay = ''.obs;
@@ -69,17 +69,9 @@ class HomeController extends GetxController {
   }
 
   List<VendorInventory> get filteredProductsByTab {
-    final list = filteredPickedThisMorning;
-    if (selectedFilter.value == 'top_rated') {
-      final sorted = List<VendorInventory>.from(list);
-      // For now, reverse to fake a different sort order
-      return sorted.reversed.toList();
-    } else if (selectedFilter.value == 'new') {
-      // Fake a different sort order
-      return List<VendorInventory>.from(list)
-        ..sort((a, b) => b.displayTitle.compareTo(a.displayTitle));
-    }
-    return list;
+    // Note: We now filter on the server,
+    // but we keep this helper for local search over the results
+    return filteredPickedThisMorning;
   }
 
   @override
@@ -89,6 +81,10 @@ class HomeController extends GetxController {
     _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       _updateClock();
     });
+
+    // Reset pagination and reload when filter changes
+    ever(selectedFilter, (_) => loadHomeData());
+
     unawaited(loadHomeData());
     unawaited(fetchCurrentLocation());
     unawaited(_notificationService.getNotifications());
@@ -138,8 +134,8 @@ class HomeController extends GetxController {
     final hour12 = now.hour == 0
         ? 12
         : now.hour > 12
-            ? now.hour - 12
-            : now.hour;
+        ? now.hour - 12
+        : now.hour;
     final amPm = now.hour < 12 ? 'AM' : 'PM';
     final minute = now.minute.toString().padLeft(2, '0');
     final second = now.second.toString().padLeft(2, '0');
@@ -157,7 +153,10 @@ class HomeController extends GetxController {
     try {
       final results = await Future.wait([
         _homeRepository.getCategories(),
-        _productService.getProducts(perPage: 10),
+        _productService.getProducts(
+          perPage: 10,
+          filter: selectedFilter.value == 'all' ? null : selectedFilter.value,
+        ),
       ]);
 
       categories.value = results[0] as List<ProductCategory>;
@@ -186,6 +185,7 @@ class HomeController extends GetxController {
       final response = await _productService.getProducts(
         perPage: 10,
         page: nextPage,
+        filter: selectedFilter.value == 'all' ? null : selectedFilter.value,
       );
       pickedThisMorning.addAll(response.items);
       currentPage.value = response.currentPage;

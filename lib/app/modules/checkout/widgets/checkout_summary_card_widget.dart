@@ -39,6 +39,9 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final scheme = Theme.of(context).colorScheme;
 
+    final showSingleCurrency =
+        showCurrencySelection && selectedPaymentCurrencyId > 0;
+
     return AppCard(
       width: screenWidth - 32,
       child: Column(
@@ -47,6 +50,9 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
             label: 'subtotal'.tr,
             amount: subtotal,
             amountDisplay: subtotalDisplay,
+            selectedCurrencyId: showSingleCurrency
+                ? selectedPaymentCurrencyId
+                : null,
           ),
           if (discount > 0) ...[
             const SizedBox(height: 8),
@@ -55,6 +61,9 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
               amount: -discount,
               amountDisplay: discountDisplay,
               isDiscount: true,
+              selectedCurrencyId: showSingleCurrency
+                  ? selectedPaymentCurrencyId
+                  : null,
             ),
           ],
           Padding(
@@ -69,22 +78,27 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
             amount: total,
             amountDisplay: totalDisplay,
             emphasize: true,
+            selectedCurrencyId: showSingleCurrency
+                ? selectedPaymentCurrencyId
+                : null,
           ),
-          const SizedBox(height: 6),
-          ExchangeRateText(display: totalDisplay),
+          if (!showSingleCurrency) ...[
+            const SizedBox(height: 6),
+            ExchangeRateText(display: totalDisplay),
+          ],
           if (showCurrencySelection) ...[
             const SizedBox(height: 16),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: SegmentedButton<int>(
-                segments: const [
+                segments: [
                   ButtonSegment<int>(
                     value: MoneyDisplay.usdCurrencyId,
-                    label: Text('Pay in USD'),
+                    label: Text('pay_in_usd'.tr),
                   ),
                   ButtonSegment<int>(
                     value: MoneyDisplay.khrCurrencyId,
-                    label: Text('Pay in KHR'),
+                    label: Text('pay_in_khr'.tr),
                   ),
                 ],
                 selected: {selectedPaymentCurrencyId},

@@ -27,12 +27,6 @@ class WalletTopUpPaymentView extends GetView<WalletTopUpPaymentController> {
                 physics: const AlwaysScrollableScrollPhysics(
                   parent: BouncingScrollPhysics(),
                 ),
-                // padding: EdgeInsets.fromLTRB(
-                //   20.scaled,
-                //   8.scaled,
-                //   20.scaled,
-                //   20.scaled,
-                // ),
                 children: [
                   Container(
                     padding: EdgeInsets.all(16.scaled),

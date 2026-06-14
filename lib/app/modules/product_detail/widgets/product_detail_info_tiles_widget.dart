@@ -35,13 +35,6 @@ class InfoTilesWidget extends StatelessWidget {
             icon: Icons.place_outlined,
           ),
         ),
-        // Expanded(
-        //   child: InfoTileWidget(
-        //     title: 'storage'.tr,
-        //     value: storage,
-        //     icon: Icons.kitchen_outlined,
-        //   ),
-        // ),
       ],
     );
   }

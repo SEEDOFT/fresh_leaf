@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/models/app_notification.dart';
+import 'package:get/get.dart';
 
 class NotificationCard extends StatelessWidget {
   const NotificationCard({
@@ -110,10 +111,16 @@ class NotificationCard extends StatelessWidget {
   String _formatTimeAgo(DateTime? date) {
     if (date == null) return '';
     final diff = DateTime.now().difference(date);
-    if (diff.inDays > 0) return '${diff.inDays}d ago';
-    if (diff.inHours > 0) return '${diff.inHours}h ago';
-    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
-    return 'Just now';
+    if (diff.inDays > 0) {
+      return 'days_ago'.trParams({'count': diff.inDays.toString()});
+    }
+    if (diff.inHours > 0) {
+      return 'hours_ago'.trParams({'count': diff.inHours.toString()});
+    }
+    if (diff.inMinutes > 0) {
+      return 'minutes_ago'.trParams({'count': diff.inMinutes.toString()});
+    }
+    return 'just_now'.tr;
   }
 
   Color _chipColor(ColorScheme scheme) {

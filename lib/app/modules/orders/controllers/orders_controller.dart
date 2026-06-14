@@ -19,6 +19,7 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
 
   final RxInt _selectedStatusId = 0.obs;
   final Rx<OrderSortType> _selectedSort = OrderSortType.newest.obs;
+  final RxMap<int, int> _apiStatusCounts = <int, int>{}.obs;
 
   int get selectedStatusId => _selectedStatusId.value;
   set selectedStatusId(int id) => _selectedStatusId.value = id;
@@ -42,13 +43,7 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
   int get activeOrderCount =>
       items.where((o) => _activeStatusIds.contains(o.statusId)).length;
 
-  Map<int, int> get statusCounts {
-    final counts = <int, int>{};
-    for (final id in [1, 2, 3, 7, 6]) {
-      counts[id] = items.where((o) => o.statusId == id).length;
-    }
-    return counts;
-  }
+  Map<int, int> get statusCounts => _apiStatusCounts;
 
   int get visibleOrderCount => filteredOrders.length;
 
@@ -100,6 +95,12 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
   void onInit() {
     super.onInit();
     unawaited(loadInitial());
+    unawaited(_fetchCounts());
+  }
+
+  @override
+  Future<void> refreshList() async {
+    await Future.wait([loadInitial(), _fetchCounts()]);
   }
 
   @override
@@ -113,17 +114,22 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
     return _orderService.getOrder(order.id);
   }
 
+  Future<void> _fetchCounts() async {
+    final counts = await _orderService.getOrderCounts();
+    _apiStatusCounts.assignAll(counts);
+  }
+
   String _groupLabel(DateTime orderDate) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final target = DateTime(orderDate.year, orderDate.month, orderDate.day);
     final dayDiff = today.difference(target).inDays;
 
-    if (dayDiff == 0) return 'Today';
-    if (dayDiff > 0 && dayDiff <= 7) return 'This Week';
+    if (dayDiff == 0) return 'today'.tr;
+    if (dayDiff > 0 && dayDiff <= 7) return 'this_week'.tr;
     if (orderDate.year == now.year && orderDate.month == now.month) {
-      return 'This Month';
+      return 'this_month'.tr;
     }
-    return 'Earlier';
+    return 'earlier'.tr;
   }
 }

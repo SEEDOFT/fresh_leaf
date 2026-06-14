@@ -21,18 +21,23 @@ class WishlistService extends GetxService {
         queryParameters: {'page': page},
       );
 
-      final apiResponse = ApiResponse.parsePaginated(
-        response.data,
+      // Backend: { status, data: { wishlists: { data: [...], ... } } }
+      final raw = response.data;
+      if (raw is! Map<String, dynamic>) return PaginatedResponse.empty();
+      final dataValue = raw['data'];
+      if (dataValue is! Map) return PaginatedResponse.empty();
+      final wishlistsData = dataValue['wishlists'];
+
+      if (wishlistsData == null) return PaginatedResponse.empty();
+
+      final paginated = PaginatedResponse<VendorInventory>.fromMap(
+        wishlistsData,
         (map) {
           final inventory = map['vendor_inventory'] as Map<String, dynamic>;
           return VendorInventory.fromMap(inventory);
         },
       );
-
-      if (apiResponse.isSuccess) {
-        return apiResponse.data;
-      }
-      return PaginatedResponse.empty();
+      return paginated;
     } on Exception {
       return PaginatedResponse.empty();
     }

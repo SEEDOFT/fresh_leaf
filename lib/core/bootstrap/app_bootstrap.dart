@@ -12,6 +12,7 @@ import 'package:fresh_leaf/core/services/ai_chat_storage_service.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:fresh_leaf/core/services/chat_realtime_service.dart';
+import 'package:fresh_leaf/core/services/deep_link_service.dart';
 import 'package:fresh_leaf/core/services/network_service.dart';
 import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
@@ -67,6 +68,7 @@ final class AppBootstrap {
     );
     final ratingService = RatingService(apiClient: apiClient);
     final chatRealtimeService = ChatRealtimeService(apiClient: apiClient);
+    final deepLinkService = DeepLinkService(productService: productService);
     final appSettingsController = AppSettingsController(
       storageService: storage,
     );
@@ -93,7 +95,8 @@ final class AppBootstrap {
       ..put<AppSettingsController>(appSettingsController, permanent: true)
       ..put<WishlistController>(wishlistController, permanent: true)
       ..put<RatingService>(ratingService, permanent: true)
-      ..put<ChatRealtimeService>(chatRealtimeService, permanent: true);
+      ..put<ChatRealtimeService>(chatRealtimeService, permanent: true)
+      ..put<DeepLinkService>(deepLinkService, permanent: true);
 
     await notificationService.init();
   }

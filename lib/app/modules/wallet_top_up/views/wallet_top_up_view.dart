@@ -26,12 +26,6 @@ class WalletTopUpView extends GetView<WalletTopUpController> {
           Expanded(
             child: ListView(
               physics: const BouncingScrollPhysics(),
-              // padding: EdgeInsets.fromLTRB(
-              //   5.scaled,
-              //   5.scaled,
-              //   5.scaled,
-              //   5.scaled,
-              // ),
               children: [
                 WalletTopUpForTopUpSectionCardWidget(
                   isProminent: true,

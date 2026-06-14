@@ -244,35 +244,35 @@ class ProfilePaymentAddController extends GetxController {
     required bool requiresDetails,
   }) {
     if (selectedType == null || (selectedType.id ?? 0) <= 0) {
-      return 'payment_method_type_required'.tr;
+      return 'validation_payment_method_type_required'.tr;
     }
 
     if (requiresDetails) {
       if (holder.isEmpty) {
-        return 'card_holder_required'.tr;
+        return 'validation_card_holder_required'.tr;
       }
 
       if (!isKeepingExistingCard) {
         if (cardDigits.length < 12) {
-          return 'card_number_invalid'.tr;
+          return 'validation_card_number_invalid'.tr;
         }
         if (enteredCvv.length < 3 || enteredCvv.length > 4) {
-          return 'cvv_invalid'.tr;
+          return 'validation_cvv_invalid'.tr;
         }
       } else if ((_editingMethod?.cvv ?? '').isEmpty) {
         if (enteredCvv.length < 3 || enteredCvv.length > 4) {
-          return 'cvv_invalid'.tr;
+          return 'validation_cvv_invalid'.tr;
         }
       }
 
       if (expiryDigits.length != 4) {
-        return 'expiry_format_invalid'.tr;
+        return 'validation_expiry_format_invalid'.tr;
       }
 
       final month = int.tryParse(expiryDigits.substring(0, 2)) ?? 0;
       final year = int.tryParse(expiryDigits.substring(2)) ?? -1;
       if (month < 1 || month > 12) {
-        return 'expiry_month_invalid'.tr;
+        return 'validation_expiry_month_invalid'.tr;
       }
 
       final fullYear = 2000 + year;
@@ -280,20 +280,20 @@ class ProfilePaymentAddController extends GetxController {
       final currentMonthStart = DateTime(now.year, now.month);
       final expiryMonthStart = DateTime(fullYear, month);
       if (expiryMonthStart.isBefore(currentMonthStart)) {
-        return 'card_expired'.tr;
+        return 'validation_card_expired'.tr;
       }
 
       if (billingAddress.isEmpty) {
-        return 'enter_address_line_1'.tr;
+        return 'validation_address_line_1_required'.tr;
       }
       if (billingCity.isEmpty) {
-        return 'enter_city'.tr;
+        return 'validation_city_required'.tr;
       }
       if (billingState.isEmpty) {
-        return 'enter_province'.tr;
+        return 'validation_province_required'.tr;
       }
       if (billingZipCode.isEmpty) {
-        return 'enter_postal_code'.tr;
+        return 'validation_postal_code_required'.tr;
       }
     }
 

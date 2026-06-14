@@ -22,23 +22,6 @@ class WalletView extends GetView<WalletController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Padding(
-          //   padding: EdgeInsets.fromLTRB(
-          //     20.scaled,
-          //     8.scaled,
-          //     20.scaled,
-          //     4.scaled,
-          //   ),
-          //   child: Text(
-          //     'wallet_currency'.tr,
-          //     style: TextStyle(
-          //       fontSize: 12.scaled,
-          //       fontWeight: FontWeight.w600,
-          //       color: scheme.onSurfaceVariant,
-          //       letterSpacing: 0.25,
-          //     ),
-          //   ),
-          // ),
           Container(
             margin: EdgeInsets.fromLTRB(
               20.scaled,

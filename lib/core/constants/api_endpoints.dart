@@ -35,6 +35,7 @@ final class ApiEndpoints {
   // Products
   static const String products = '/products';
   static const String productById = '/products/{id}';
+  static const String productBySlug = '/products/by-slug/{slug}';
   static const String vendorProducts = '/products';
   static const String productCategories = '/products/categories';
   static const String productSearch = '/products/search';
@@ -48,6 +49,7 @@ final class ApiEndpoints {
 
   // Orders
   static const String orders = '/orders';
+  static const String orderCounts = '/orders/counts';
   static const String orderById = '/orders/{id}';
   static const String orderCancel = '/orders/{id}/cancel';
   static const String orderConfirmReceipt = '/orders/{id}/confirm-receipt';

@@ -174,7 +174,7 @@ class CheckoutController extends GetxController {
       );
     }
 
-    return items;
+    return items.where((o) => o.typeCode.toLowerCase() == 'wallet').toList();
   }
 
   CheckoutPaymentOption? get selectedOption {
@@ -399,6 +399,7 @@ class CheckoutController extends GetxController {
     final current = selectedOptionId.value;
     final exists = options.any((option) => option.id == current);
     if (current.isNotEmpty && exists) return;
+    selectedOptionId.value = options.first.id;
   }
 
   Future<void> _pickCreditDebitMethod() async {

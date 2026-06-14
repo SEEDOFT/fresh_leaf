@@ -33,10 +33,17 @@ class AppNetworkImage extends StatelessWidget {
 
     var displayUrl = url;
     if (!displayUrl.startsWith('http') && !displayUrl.startsWith('data:')) {
-      if (displayUrl.startsWith('/')) {
-        displayUrl = '${AppConfig.apiUrl}$displayUrl';
+      // Remove leading slash if present to avoid double slashes
+      final cleanPath = displayUrl.startsWith('/')
+          ? displayUrl.substring(1)
+          : displayUrl;
+
+      // If it doesn't look like it's in public/images or public/assets, assume it's in storage
+      if (!cleanPath.startsWith('images/') &&
+          !cleanPath.startsWith('assets/')) {
+        displayUrl = '${AppConfig.baseAssetUrl}/storage/$cleanPath';
       } else {
-        displayUrl = '${AppConfig.apiUrl}/storage/$displayUrl';
+        displayUrl = '${AppConfig.baseAssetUrl}/$cleanPath';
       }
     }
 

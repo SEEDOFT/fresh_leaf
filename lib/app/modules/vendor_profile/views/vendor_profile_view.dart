@@ -21,136 +21,50 @@ class VendorProfileView extends GetView<VendorProfileController> {
     return AppScaffold(
       scrollable: false,
       padding: EdgeInsets.zero,
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return RefreshIndicator(
+            onRefresh: controller.loadVendorProfile,
+            child: Obx(() {
+              final vendor = controller.vendor.value;
+              final isLoading = controller.isLoading.value;
 
-        final vendor = controller.vendor.value;
-        if (vendor == null) {
-          return Center(
-            child: Text('vendor_not_found'.tr),
-          );
-        }
-
-        final items = controller.filteredProducts;
-        final hasBanner =
-            vendor.storeFrontImage != null &&
-            vendor.storeFrontImage!.isNotEmpty;
-
-        return NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar(
-                expandedHeight: 200,
-                pinned: true,
-                backgroundColor: scheme.surface,
-                iconTheme: IconThemeData(color: scheme.onSurface),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.share_outlined),
-                    onPressed: controller.shareVendor,
-                    tooltip: 'share_vendor'.tr,
-                    style: IconButton.styleFrom(
-                      backgroundColor: scheme.surface.withValues(alpha: 0.7),
+              // Ensure we always return something scrollable with AlwaysScrollableScrollPhysics
+              // so the RefreshIndicator can be triggered even when empty or loading.
+              if (isLoading && vendor == null) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: ClampingScrollPhysics(),
+                  ),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  Obx(
-                    () => IconButton(
-                      icon: controller.isStartingChat.value
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.chat_bubble_outline),
-                      onPressed: controller.isStartingChat.value
-                          ? null
-                          : controller.startChat,
-                      tooltip: 'chat_with_vendor'.tr,
-                      style: IconButton.styleFrom(
-                        backgroundColor: scheme.surface.withValues(alpha: 0.7),
-                      ),
+                );
+              }
+
+              if (vendor == null) {
+                return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: ClampingScrollPhysics(),
+                  ),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    child: Center(
+                      child: Text('vendor_not_found'.tr),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      if (hasBanner)
-                        Image.network(
-                          vendor.storeFrontImage!,
-                          fit: BoxFit.cover,
-                        )
-                      else
-                        Container(
-                          decoration: LinearGradient(
-                            colors: [
-                              scheme.primaryContainer,
-                              scheme.tertiaryContainer,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ).toDecoration(),
-                        ),
-                      Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black54,
-                              Colors.transparent,
-                              Colors.black54,
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: AppSizes.s16,
-                        left: AppSizes.s20,
-                        right: AppSizes.s20,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                vendor.displayName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            if (vendor.isVerified) ...[
-                              const SizedBox(width: 6),
-                              const Icon(
-                                Icons.verified,
-                                size: 22,
-                                color: Colors.blueAccent,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-          body: Builder(
-            builder: (context) => RefreshIndicator(
-              onRefresh: controller.loadVendorProfile,
-              child: NotificationListener<ScrollNotification>(
+                );
+              }
+
+              final items = controller.filteredProducts;
+              final hasBanner =
+                  vendor.storeFrontImage != null &&
+                  vendor.storeFrontImage!.isNotEmpty;
+
+              return NotificationListener<ScrollNotification>(
                 onNotification: (scrollInfo) {
                   if (scrollInfo.metrics.pixels >=
                       scrollInfo.metrics.maxScrollExtent - 200) {
@@ -160,12 +74,112 @@ class VendorProfileView extends GetView<VendorProfileController> {
                 },
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
+                    parent: ClampingScrollPhysics(),
                   ),
                   slivers: [
-                    SliverOverlapInjector(
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context,
+                    SliverAppBar(
+                      expandedHeight: 200,
+                      pinned: true,
+                      backgroundColor: scheme.surface,
+                      iconTheme: IconThemeData(color: scheme.onSurface),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.share_outlined),
+                          onPressed: controller.shareVendor,
+                          tooltip: 'share_vendor'.tr,
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                scheme.surface.withValues(alpha: 0.7),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Obx(
+                          () => IconButton(
+                            icon: controller.isStartingChat.value
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.chat_bubble_outline),
+                            onPressed: controller.isStartingChat.value
+                                ? null
+                                : controller.startChat,
+                            tooltip: 'chat_with_vendor'.tr,
+                            style: IconButton.styleFrom(
+                              backgroundColor:
+                                  scheme.surface.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            if (hasBanner)
+                              Image.network(
+                                vendor.storeFrontImage!,
+                                fit: BoxFit.cover,
+                              )
+                            else
+                              Container(
+                                decoration: LinearGradient(
+                                  colors: [
+                                    scheme.primaryContainer,
+                                    scheme.tertiaryContainer,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ).toDecoration(),
+                              ),
+                            Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black54,
+                                    Colors.transparent,
+                                    Colors.black54,
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: AppSizes.s16,
+                              left: AppSizes.s20,
+                              right: AppSizes.s20,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      vendor.displayName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  if (vendor.isVerified) ...[
+                                    const SizedBox(width: 6),
+                                    const Icon(
+                                      Icons.verified,
+                                      size: 22,
+                                      color: Colors.blueAccent,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     // Vendor Business Details & Hours Card
@@ -248,7 +262,7 @@ class VendorProfileView extends GetView<VendorProfileController> {
                                     ),
                                     _infoRow(
                                       icon: Icons.phone_outlined,
-                                      title: 'phone_number'.tr,
+                                      title: 'phone'.tr,
                                       value: vendor.contactPhone!,
                                       scheme: scheme,
                                     ),
@@ -322,7 +336,7 @@ class VendorProfileView extends GetView<VendorProfileController> {
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
-                                mainAxisExtent: 285,
+                                mainAxisExtent: 300,
                                 crossAxisSpacing: 16,
                                 mainAxisSpacing: 16,
                               ),
@@ -390,11 +404,11 @@ class VendorProfileView extends GetView<VendorProfileController> {
                     ),
                   ],
                 ),
-              ),
-            ),
-          ),
-        );
-      }),
+              );
+            }),
+          );
+        },
+      ),
     );
   }
 

@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_leaf/core/models/user_profile.dart';
+import 'package:fresh_leaf/shared/widgets/app_avatar.dart';
 
 class SupportChatUserAvatarWidget extends StatelessWidget {
   const SupportChatUserAvatarWidget({
-    required this.userProfile,
-    required this.imageUrl,
     required this.scheme,
+    this.imageUrl,
+    this.name,
+    this.fallbackIcon,
+    this.radius = 14,
     super.key,
   });
 
-  final UserProfile? userProfile;
-  final String imageUrl;
+  final String? imageUrl;
+  final String? name;
+  final IconData? fallbackIcon;
+  final double radius;
   final ColorScheme scheme;
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 14,
-      backgroundColor: scheme.primaryContainer,
-      backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-      child: imageUrl.isEmpty
-          ? Text(
-              (userProfile?.firstName.isNotEmpty ?? false)
-                  ? userProfile!.firstName[0]
-                  : 'M',
-              style: TextStyle(
-                fontSize: 10,
-                color: scheme.onPrimaryContainer,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-          : null,
+    return AppAvatar(
+      imageUrl: imageUrl,
+      name: name,
+      fallbackIcon: fallbackIcon,
+      radius: radius,
     );
   }
 }

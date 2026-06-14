@@ -43,20 +43,6 @@ class CartSummaryWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                // const Icon(
-                //   Icons.local_shipping_outlined,
-                //   size: 18,
-                //   color: AppColors.accentBrown,
-                // ),
-                // const SizedBox(width: 6),
-                // Text(
-                //   'delivery_eta'.tr,
-                //   style: TextStyle(
-                //     fontSize: 12,
-                //     color: scheme.onSurfaceVariant,
-                //     fontWeight: FontWeight.w600,
-                //   ),
-                // ),
                 const Spacer(),
                 Text(
                   (itemCount == 1 ? 'items_count_one' : 'items_count_other')

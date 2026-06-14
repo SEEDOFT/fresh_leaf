@@ -13,6 +13,7 @@ class SummaryRow extends StatelessWidget {
     this.mutedColor,
     this.primaryColor,
     this.amountDisplay,
+    this.selectedCurrencyId,
     super.key,
   });
 
@@ -24,6 +25,7 @@ class SummaryRow extends StatelessWidget {
   final Color? mutedColor;
   final Color? primaryColor;
   final MoneyDisplay? amountDisplay;
+  final int? selectedCurrencyId;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,7 @@ class SummaryRow extends StatelessWidget {
         MoneyAmountText(
           amount: amount,
           display: amountDisplay,
+          selectedCurrencyId: selectedCurrencyId,
           primaryStyle: TextStyle(
             fontSize: emphasize ? 19 : 15,
             fontWeight: FontWeight.w800,

@@ -50,7 +50,7 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              controller.totalDisplay.combinedText,
+                              controller.totalDisplaySelected.primaryText,
                               style: Theme.of(context).textTheme.headlineMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,

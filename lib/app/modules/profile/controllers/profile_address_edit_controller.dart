@@ -434,25 +434,25 @@ class ProfileAddressEditController extends GetxController {
 
   String? _validate() {
     if (labelController.text.trim().isEmpty) {
-      return 'enter_label'.tr;
+      return 'validation_label_required'.tr;
     }
     if (recipientNameController.text.trim().isEmpty) {
-      return 'enter_recipient_name'.tr;
+      return 'validation_recipient_name_required'.tr;
     }
     if (_sanitizePhone(phoneController.text).isEmpty) {
-      return 'enter_valid_phone'.tr;
+      return 'validation_invalid_phone'.tr;
     }
     if (line1Controller.text.trim().isEmpty) {
-      return 'enter_address_line_1'.tr;
+      return 'validation_address_line_1_required'.tr;
     }
     if (cityController.text.trim().isEmpty) {
-      return 'enter_city'.tr;
+      return 'validation_city_required'.tr;
     }
     if (provinceController.text.trim().isEmpty) {
-      return 'enter_province'.tr;
+      return 'validation_province_required'.tr;
     }
     if (postalCodeController.text.trim().isEmpty) {
-      return 'enter_postal_code'.tr;
+      return 'validation_postal_code_required'.tr;
     }
     return null;
   }

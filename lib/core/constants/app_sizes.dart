@@ -33,6 +33,7 @@ class AppSizes {
   static final double s240 = 240.scaled;
   static final double s280 = 280.scaled;
   static final double s300 = 300.scaled;
+  static final double s320 = 320.scaled;
 
   // Semantic Aliases for common use cases
   static double get p4 => s4;

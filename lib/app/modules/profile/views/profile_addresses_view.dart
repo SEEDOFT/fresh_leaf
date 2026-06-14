@@ -179,6 +179,7 @@ class AddressesView extends GetView<ProfileAddressesController> {
               borderRadius: BorderRadius.circular(18),
               child: ProfileAddressesListItem(
                 address: item,
+                isDefault: addresses.indexOf(item) == 0,
                 isDeleting: deletingId == item.id,
                 onEdit: () => controller.openEditAddress(item),
                 onDelete: () => controller.requestDeleteAddress(item),
