@@ -42,6 +42,14 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
   int get activeOrderCount =>
       items.where((o) => _activeStatusIds.contains(o.statusId)).length;
 
+  Map<int, int> get statusCounts {
+    final counts = <int, int>{};
+    for (final id in [1, 2, 3, 7, 6]) {
+      counts[id] = items.where((o) => o.statusId == id).length;
+    }
+    return counts;
+  }
+
   int get visibleOrderCount => filteredOrders.length;
 
   List<Order> get filteredOrders {

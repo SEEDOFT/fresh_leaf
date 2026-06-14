@@ -32,6 +32,21 @@ class NotificationsController extends GetxController
     return _notificationService.getNotifications(page: page);
   }
 
+  Map<String, int> get unreadCounts {
+    final all = items.where((n) => !n.isRead).length;
+    final order = items
+        .where((n) => !n.isRead && n.typeCode == 'ORDER_UPDATE')
+        .length;
+    final promo = items
+        .where((n) => !n.isRead && n.typeCode == 'PROMOTION')
+        .length;
+    final system = items
+        .where((n) => !n.isRead && n.typeCode == 'SYSTEM')
+        .length;
+
+    return {'all': all, 'order': order, 'promo': promo, 'system': system};
+  }
+
   List<AppNotification> get filtered {
     if (_activeFilter.value == 'all') return notifications;
 

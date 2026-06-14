@@ -56,7 +56,7 @@ class WishlistItemCard extends StatelessWidget {
                 children: [
                   AppNetworkImage(
                     url: item.displayImageUrl,
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width,
                     height: imageHeight,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(22),

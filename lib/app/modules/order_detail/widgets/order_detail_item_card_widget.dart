@@ -8,12 +8,14 @@ class OrderDetailItemCard extends StatelessWidget {
     required this.item,
     required this.width,
     required this.onOpenProduct,
+    this.onRate,
     super.key,
   });
 
   final OrderItem item;
   final double width;
   final VoidCallback onOpenProduct;
+  final VoidCallback? onRate;
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +104,26 @@ class OrderDetailItemCard extends StatelessWidget {
               ),
             ),
           ),
+          if (onRate != null) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              width: width - 28,
+              child: FilledButton.icon(
+                onPressed: onRate,
+                icon: const Icon(Icons.star_rate_rounded, size: 16),
+                label: Text(
+                  'rate_product'.tr,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                style: FilledButton.styleFrom(
+                  minimumSize: Size(width - 28, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

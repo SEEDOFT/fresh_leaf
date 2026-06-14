@@ -96,6 +96,17 @@ class OrderDetailView extends GetView<OrderDetailController> {
                             );
                           }
                         },
+                        onRate: (order.statusId == 4 && !item.hasRated)
+                            ? () async {
+                                final rated = await showRatingBottomSheet(
+                                  orderItemId: item.id,
+                                  productName: item.productNameSnapshot,
+                                );
+                                if (rated == true) {
+                                  await controller.reloadOrder();
+                                }
+                              }
+                            : null,
                       ),
                     ),
                   ),

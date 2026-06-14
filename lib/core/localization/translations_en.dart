@@ -60,6 +60,22 @@ const Map<String, String> translationsEn = {
   'ai_smart_suggestions': 'AI Smart\nSuggestions',
   'ai_smart_suggestions_subtitle':
       'Curating your basket based on\ncooking habits',
+  'promo_poster_badge_1': 'WEEKEND DEAL',
+  'promo_poster_title_1': 'Fresh Greens\nBundle',
+  'promo_poster_subtitle_1': 'Save 20% on selected leafy greens this week.',
+  'promo_poster_badge_2': 'FREE DELIVERY',
+  'promo_poster_title_2': 'Local Harvest\nAt Your Door',
+  'promo_poster_subtitle_2': r'Free delivery on baskets over $25 today.',
+  'promo_poster_badge_3': 'LIMITED STOCK',
+  'promo_poster_title_3': 'Seasonal Fruit\nMix',
+  'promo_poster_subtitle_3': 'Bright citrus and farm-picked fruit while fresh.',
+  'promo_perks_title': 'Fresh perks today',
+  'promo_perk_delivery_title': 'Fast Delivery',
+  'promo_perk_delivery_subtitle': 'Same-day baskets',
+  'promo_perk_verified_title': 'Verified Vendors',
+  'promo_perk_verified_subtitle': 'Trusted local farms',
+  'promo_perk_fresh_title': 'Packed Fresh',
+  'promo_perk_fresh_subtitle': 'Handled with care',
   'limited_edition': 'LIMITED EDITION',
   'seasonal_organic_harvest': 'Seasonal\nOrganic\nHarvest',
   'explore_selection': 'Explore Selection',
@@ -914,4 +930,24 @@ const Map<String, String> translationsEn = {
   'no_active_orders': 'No Active Orders',
   'tap_to_track': 'Tap to track your orders',
   'total_orders_placed': '@count orders placed',
+
+  // App description
+  'freshleaf_description':
+      'FreshLeaf is a fresh produce marketplace connecting you directly '
+      'with local farmers. We bring farm-fresh fruits, vegetables, '
+      'and organic products straight to your doorstep — harvested '
+      'at peak ripeness and delivered with care.',
+
+  // Ratings / Reviews
+  'ratings': 'Ratings',
+  'load_more': 'Load More',
+  'rate_product': 'Rate Product',
+  'your_rating': 'Your Rating',
+  'write_a_review': 'Write a Review',
+  'review_placeholder': 'Share your thoughts about this product...',
+  'submit': 'Submit',
+  'please_select_rating': 'Please select a rating',
+  'rating_submitted': 'Rating submitted successfully',
+  'failed_submit_rating': 'Failed to submit rating',
+  'ago': 'ago',
 };

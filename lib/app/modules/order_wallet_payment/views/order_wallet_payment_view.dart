@@ -185,7 +185,7 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
               ),
               child: SafeArea(
                 child: SizedBox(
-                  width: double.infinity,
+                  width: MediaQuery.of(context).size.width,
                   child: FilledButton(
                     onPressed: controller.canPay
                         ? () => controller.payOrder()

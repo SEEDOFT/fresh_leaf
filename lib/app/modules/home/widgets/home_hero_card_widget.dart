@@ -33,7 +33,7 @@ class HomeHeroCardWidget extends StatelessWidget {
                 url:
                     'https://images.unsplash.com/photo-1595841696677-6489ff3f8cd1?q=80&w=1000',
                 height: AppSizes.s240,
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width,
               ),
               Container(
                 decoration: BoxDecoration(

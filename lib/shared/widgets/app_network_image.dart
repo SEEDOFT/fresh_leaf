@@ -22,10 +22,17 @@ class AppNetworkImage extends StatelessWidget {
     final radius = borderRadius ?? BorderRadius.zero;
     final scheme = Theme.of(context).colorScheme;
 
+    if (url.isEmpty) {
+      return _ImageSkeleton(
+        height: height,
+        width: width,
+        borderRadius: radius,
+        color: scheme.surfaceContainerHighest,
+      );
+    }
+
     var displayUrl = url;
-    if (displayUrl.isNotEmpty &&
-        !displayUrl.startsWith('http') &&
-        !displayUrl.startsWith('data:')) {
+    if (!displayUrl.startsWith('http') && !displayUrl.startsWith('data:')) {
       if (displayUrl.startsWith('/')) {
         displayUrl = '${AppConfig.apiUrl}$displayUrl';
       } else {
@@ -37,6 +44,7 @@ class AppNetworkImage extends StatelessWidget {
       borderRadius: radius,
       child: Image.network(
         displayUrl,
+        key: ValueKey(displayUrl),
         height: height,
         width: width,
         fit: fit,
@@ -55,10 +63,6 @@ class AppNetworkImage extends StatelessWidget {
             width: width,
             borderRadius: radius,
             color: scheme.surfaceContainerHighest,
-            child: Icon(
-              Icons.broken_image,
-              color: scheme.onSurfaceVariant,
-            ),
           );
         },
       ),
@@ -72,14 +76,12 @@ class _ImageSkeleton extends StatelessWidget {
     this.width,
     this.borderRadius,
     this.color,
-    this.child,
   });
 
   final double? height;
   final double? width;
   final BorderRadius? borderRadius;
   final Color? color;
-  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +92,6 @@ class _ImageSkeleton extends StatelessWidget {
         color: color,
         borderRadius: borderRadius ?? BorderRadius.zero,
       ),
-      child: child != null ? Center(child: child) : null,
     );
   }
 }

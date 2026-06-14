@@ -54,7 +54,7 @@ class NotificationsView extends GetView<NotificationsController> {
       padding: EdgeInsets.zero,
       body: Column(
         children: [
-          const SizedBox(height: 6),
+          const SizedBox(height: 14),
           Obx(
             () => AppFilterBar(
               filters: filterOptions.map((e) => e['value']! as String).toList(),
@@ -69,6 +69,11 @@ class NotificationsView extends GetView<NotificationsController> {
               iconBuilder: (value) =>
                   filterOptions.firstWhere((e) => e['value'] == value)['icon']!
                       as IconData,
+              badgeTextBuilder: (value) {
+                final count = controller.unreadCounts[value];
+                if (count == null || count == 0) return null;
+                return count > 99 ? '99+' : count.toString();
+              },
             ),
           ),
           Expanded(

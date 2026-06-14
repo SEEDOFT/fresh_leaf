@@ -13,10 +13,12 @@ class AiAssistantApiService extends GetxService {
 
   final ApiClient _apiClient;
 
-  Future<Map<String, dynamic>> createSession() async {
+  Future<Map<String, dynamic>> createSession({String? sessionId}) async {
     final response = await _apiClient.postRequest(
       ApiEndpoints.aiChatSessions,
-      data: <String, dynamic>{},
+      data: <String, dynamic>{
+        if (sessionId != null && sessionId.isNotEmpty) 'session_id': sessionId,
+      },
     );
     final apiResponse = ApiResponse.parseMap(response.data);
     return _extractDataMap(apiResponse.data);
@@ -67,7 +69,10 @@ class AiAssistantApiService extends GetxService {
       return AiChatMessage(
         text: text.isNotEmpty ? text : formatToString(item['error']),
         isUser: role == 'user',
-        isStreaming: status == 'queued' || status == 'streaming',
+        isStreaming:
+            status == 'queued' ||
+            status == 'streaming' ||
+            status == 'processing',
         sessionId: sessionId,
         messageId: formatToString(item['message_id']).isNotEmpty
             ? formatToString(item['message_id'])

@@ -21,7 +21,7 @@ class OrderService extends GetxService {
         Order.fromMap,
       );
 
-      if (apiResponse.isSuccess) {
+      if (apiResponse.isSuccess && response.statusCode == 200) {
         return apiResponse.data;
       }
       return PaginatedResponse.empty();
@@ -37,7 +37,7 @@ class OrderService extends GetxService {
       );
       final apiResponse = ApiResponse.parseMap(response.data);
 
-      if (apiResponse.isSuccess) {
+      if (apiResponse.isSuccess && response.statusCode == 200) {
         final data = apiResponse.data['data'] ?? apiResponse.data;
         if (data is Map<String, dynamic> && data.isNotEmpty) {
           return Order.fromMap(data);
@@ -55,7 +55,7 @@ class OrderService extends GetxService {
         ApiEndpoints.orderCancel.replaceAll('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
-      return apiResponse.isSuccess;
+      return apiResponse.isSuccess && response.statusCode == 200;
     } on Exception {
       return false;
     }
@@ -67,7 +67,7 @@ class OrderService extends GetxService {
         ApiEndpoints.orderConfirmReceipt.replaceAll('{id}', id.toString()),
       );
       final apiResponse = ApiResponse.parseMap(response.data);
-      return apiResponse.isSuccess;
+      return apiResponse.isSuccess && response.statusCode == 200;
     } on Exception {
       return false;
     }
@@ -80,7 +80,7 @@ class OrderService extends GetxService {
         data: {'wallet_id': walletId, 'pin': pin},
       );
       final apiResponse = ApiResponse.parseMap(response.data);
-      return apiResponse.isSuccess;
+      return apiResponse.isSuccess && response.statusCode == 200;
     } on Exception {
       return false;
     }
@@ -101,7 +101,7 @@ class OrderService extends GetxService {
         },
       );
       final apiResponse = ApiResponse.parseList(response.data);
-      return apiResponse.isSuccess;
+      return apiResponse.isSuccess && response.statusCode == 200;
     } on Exception {
       return false;
     }

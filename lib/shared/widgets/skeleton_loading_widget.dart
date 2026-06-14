@@ -115,8 +115,8 @@ class ProductCardSkeleton extends StatelessWidget {
           Expanded(
             flex: 3,
             child: SkeletonBox(
-              width: double.infinity,
-              height: double.infinity,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(20.scaled),
               ),

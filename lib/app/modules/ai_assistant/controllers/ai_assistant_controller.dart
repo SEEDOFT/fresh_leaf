@@ -37,6 +37,7 @@ class AiAssistantController extends GetxController {
   StreamSubscription<AiChatRealtimeEvent>? _realtimeSubscription;
   Completer<bool>? _realtimeInitCompleter;
   Timer? _streamWatchdog;
+  Timer? _historyPollTimer;
   Timer? _persistDebounceTimer;
   Timer? _scrollDebounceTimer;
 
@@ -44,6 +45,8 @@ class AiAssistantController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     _hydrateMessages();
+    _restoreSessionFromCachedMessages();
+    _resumePendingStreamFromMessages();
     await checkAiServiceStatus();
     await _initializeRealtimeChat(showError: false);
   }
@@ -86,6 +89,9 @@ class AiAssistantController extends GetxController {
         final session = await _apiService.createSession();
         _sessionId = session['session_id'] as String?;
         _historyLoaded = false;
+      } else if (!_historyLoaded) {
+        final session = await _apiService.createSession(sessionId: _sessionId);
+        _sessionId = session['session_id'] as String?;
       }
 
       _realtimeSubscription ??= _realtimeService.events.listen(
@@ -106,6 +112,7 @@ class AiAssistantController extends GetxController {
         );
         if (history.isNotEmpty) {
           messages.assignAll(history);
+          _resumePendingStreamFromMessages();
         }
         _historyLoaded = true;
         _scheduleAutoScroll(animated: false);
@@ -171,13 +178,23 @@ class AiAssistantController extends GetxController {
     await _persistMessages();
     _scheduleAutoScroll();
     _restartStreamWatchdog();
+    _startHistoryPolling();
 
     isLoading.value = true;
     try {
-      await _apiService.sendMessage(
+      final result = await _apiService.sendMessage(
         sessionId: sessionId,
         prompt: prompt,
       );
+      final lastIndex = _latestAssistantStreamingIndex();
+      if (lastIndex >= 0 && result.assistantMessageId.isNotEmpty) {
+        messages[lastIndex] = messages[lastIndex].copyWith(
+          messageId: result.assistantMessageId,
+          sessionId: result.sessionId.isNotEmpty ? result.sessionId : sessionId,
+          status: result.status.isNotEmpty ? result.status : 'streaming',
+        );
+        _queuePersistMessages();
+      }
     } on Exception catch (error) {
       final errorText = _apiService.parseError(
         error,
@@ -192,11 +209,12 @@ class AiAssistantController extends GetxController {
         );
       }
       _stopStreamWatchdog();
+      _stopHistoryPolling();
       await _persistMessages();
       _scheduleAutoScroll();
       Get.snackbar('fetch_failed'.tr, errorText);
     } finally {
-      isLoading.value = false;
+      isLoading.value = _latestAssistantStreamingIndex() >= 0;
     }
   }
 
@@ -245,6 +263,7 @@ class AiAssistantController extends GetxController {
     await _realtimeSubscription?.cancel();
     _realtimeSubscription = null;
     _stopStreamWatchdog();
+    _stopHistoryPolling();
     _persistDebounceTimer?.cancel();
     _scrollDebounceTimer?.cancel();
     unawaited(_realtimeService.disconnect());
@@ -260,6 +279,33 @@ class AiAssistantController extends GetxController {
     if (loaded.isNotEmpty) {
       messages.assignAll(loaded);
     }
+  }
+
+  void _restoreSessionFromCachedMessages() {
+    for (var index = messages.length - 1; index >= 0; index--) {
+      final sessionId = messages[index].sessionId;
+      if (sessionId != null && sessionId.isNotEmpty) {
+        _sessionId = sessionId;
+        return;
+      }
+    }
+  }
+
+  void _resumePendingStreamFromMessages() {
+    final streamingIndex = _latestAssistantStreamingIndex();
+    if (streamingIndex < 0) {
+      isLoading.value = false;
+      _stopHistoryPolling();
+      return;
+    }
+
+    final message = messages[streamingIndex];
+    if (message.sessionId != null && message.sessionId!.isNotEmpty) {
+      _sessionId = message.sessionId;
+    }
+    isLoading.value = true;
+    _restartStreamWatchdog();
+    _startHistoryPolling();
   }
 
   void _scheduleAutoScroll({bool animated = true}) {
@@ -314,16 +360,19 @@ class AiAssistantController extends GetxController {
     if (event.isStarted || event.isChunk) {
       _upsertStreamingMessage(event);
       _restartStreamWatchdog();
+      _startHistoryPolling();
       _queuePersistMessages();
       _queueAutoScroll();
       return;
     } else if (event.isCompleted) {
       _completeStreamingMessage(event);
       _stopStreamWatchdog();
+      _stopHistoryPolling();
       unawaited(_syncFinalAssistantMessage(event));
     } else if (event.isFailed) {
       _failStreamingMessage(event);
       _stopStreamWatchdog();
+      _stopHistoryPolling();
     }
 
     unawaited(_persistMessages());
@@ -493,8 +542,12 @@ class AiAssistantController extends GetxController {
       final synced = await _syncLatestAssistantFromHistory(
         index: lastIndex,
         preferredMessageId: messages[lastIndex].messageId ?? '',
+        allowStreaming: true,
       );
       if (synced) {
+        if (_latestAssistantStreamingIndex() >= 0) {
+          _restartStreamWatchdog();
+        }
         return;
       }
 
@@ -511,6 +564,45 @@ class AiAssistantController extends GetxController {
   void _stopStreamWatchdog() {
     _streamWatchdog?.cancel();
     _streamWatchdog = null;
+  }
+
+  void _startHistoryPolling() {
+    if (_historyPollTimer != null) {
+      return;
+    }
+
+    _historyPollTimer = Timer.periodic(
+      const Duration(seconds: 2),
+      (_) => unawaited(_syncPendingAssistantFromHistory()),
+    );
+  }
+
+  void _stopHistoryPolling() {
+    _historyPollTimer?.cancel();
+    _historyPollTimer = null;
+  }
+
+  Future<void> _syncPendingAssistantFromHistory() async {
+    final streamingIndex = _latestAssistantStreamingIndex();
+    if (streamingIndex < 0) {
+      isLoading.value = false;
+      _stopHistoryPolling();
+      return;
+    }
+
+    final synced = await _syncLatestAssistantFromHistory(
+      index: streamingIndex,
+      preferredMessageId: messages[streamingIndex].messageId ?? '',
+      allowStreaming: true,
+    );
+
+    if (!synced || _latestAssistantStreamingIndex() >= 0) {
+      return;
+    }
+
+    isLoading.value = false;
+    _stopStreamWatchdog();
+    _stopHistoryPolling();
   }
 
   void _queuePersistMessages() {
@@ -561,6 +653,7 @@ class AiAssistantController extends GetxController {
   Future<bool> _syncLatestAssistantFromHistory({
     required String preferredMessageId,
     required int index,
+    bool allowStreaming = false,
   }) async {
     final sessionId = _sessionId;
     if (sessionId == null || sessionId.isEmpty || index < 0) {
@@ -573,23 +666,38 @@ class AiAssistantController extends GetxController {
         history: history,
         preferredMessageId: preferredMessageId,
       );
-      if (finalAssistant == null || finalAssistant.text.trim().isEmpty) {
+      if (finalAssistant == null) {
+        return false;
+      }
+
+      final hasFinalText = finalAssistant.text.trim().isNotEmpty;
+      final isStillStreaming =
+          finalAssistant.isStreaming ||
+          finalAssistant.status == 'queued' ||
+          finalAssistant.status == 'streaming' ||
+          finalAssistant.status == 'processing';
+      if (!hasFinalText && (!allowStreaming || !isStillStreaming)) {
         return false;
       }
 
       final current = messages[index];
-      if (current.text == finalAssistant.text && !current.isStreaming) {
+      if (current.text == finalAssistant.text &&
+          current.isStreaming == finalAssistant.isStreaming &&
+          current.status == finalAssistant.status) {
         return true;
       }
 
       messages[index] = current.copyWith(
         text: finalAssistant.text,
-        isStreaming: false,
+        isStreaming: isStillStreaming,
         sessionId: finalAssistant.sessionId,
         messageId: finalAssistant.messageId,
         sequence: finalAssistant.sequence,
         status: finalAssistant.status,
       );
+      if (!isStillStreaming) {
+        isLoading.value = false;
+      }
       _queuePersistMessages();
       _queueAutoScroll();
       return true;

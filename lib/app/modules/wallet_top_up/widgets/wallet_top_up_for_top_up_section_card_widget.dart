@@ -19,7 +19,7 @@ class WalletTopUpForTopUpSectionCardWidget extends StatelessWidget {
     final padding = isProminent ? 18.scaled : 14.scaled;
 
     return Container(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: scheme.surfaceContainerHighest.withValues(alpha: baseAlpha),

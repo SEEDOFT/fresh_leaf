@@ -68,7 +68,7 @@ class OrderDeliveryInfoCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
                 imageUrl: order.preparationProofPhoto!,
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width,
                 height: 200,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(

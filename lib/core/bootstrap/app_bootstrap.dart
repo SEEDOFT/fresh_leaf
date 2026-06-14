@@ -17,6 +17,7 @@ import 'package:fresh_leaf/core/services/notification_service.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
+import 'package:fresh_leaf/core/services/rating_service.dart';
 import 'package:fresh_leaf/core/services/secure_config_service.dart';
 import 'package:fresh_leaf/core/services/storage_service.dart';
 import 'package:fresh_leaf/core/services/wishlist_service.dart';
@@ -60,6 +61,7 @@ final class AppBootstrap {
     final aiAssistantRealtimeService = AiAssistantRealtimeService(
       apiClient: apiClient,
     );
+    final ratingService = RatingService(apiClient: apiClient);
     final chatRealtimeService = ChatRealtimeService(apiClient: apiClient);
     final appSettingsController = AppSettingsController(
       storageService: storage,
@@ -86,6 +88,7 @@ final class AppBootstrap {
       )
       ..put<AppSettingsController>(appSettingsController, permanent: true)
       ..put<WishlistController>(wishlistController, permanent: true)
+      ..put<RatingService>(ratingService, permanent: true)
       ..put<ChatRealtimeService>(chatRealtimeService, permanent: true);
 
     await notificationService.init();

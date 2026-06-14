@@ -154,6 +154,7 @@ class OrderItem {
     required this.quantity,
     required this.subtotal,
     this.vendorInventory,
+    this.hasRated = false,
     this.unitPriceSnapshotDisplay = MoneyDisplay.empty,
     this.subtotalDisplay = MoneyDisplay.empty,
   });
@@ -168,6 +169,7 @@ class OrderItem {
         map['unit_price_snapshot_display'],
       ),
       subtotalDisplay: MoneyDisplay.fromMap(map['subtotal_display']),
+      hasRated: map['has_rated'] as bool? ?? false,
       vendorInventory: map['vendor_inventory'] != null
           ? VendorInventory.fromMap(
               map['vendor_inventory'] as Map<String, dynamic>,
@@ -180,6 +182,7 @@ class OrderItem {
   final String productNameSnapshot;
   final double quantity;
   final double subtotal;
+  final bool hasRated;
   final VendorInventory? vendorInventory;
   final MoneyDisplay unitPriceSnapshotDisplay;
   final MoneyDisplay subtotalDisplay;

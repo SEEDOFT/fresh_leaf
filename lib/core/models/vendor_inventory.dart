@@ -41,6 +41,8 @@ class VendorInventory {
     this.currencySymbol,
     this.product,
     this.discountPercentage = 0.0,
+    this.averageRating = 0.0,
+    this.ratingsCount = 0,
     this.priceDisplay = MoneyDisplay.empty,
     this.discountedPriceDisplay = MoneyDisplay.empty,
   });
@@ -112,6 +114,8 @@ class VendorInventory {
           ? Product.fromMap(map['product'] as Map<String, dynamic>)
           : null,
       discountPercentage: toDouble(map['discount_percentage']),
+      averageRating: (map['average_rating'] as num?)?.toDouble() ?? 0.0,
+      ratingsCount: map['ratings_count'] as int? ?? 0,
       priceDisplay: MoneyDisplay.fromMap(map['price_display']),
       discountedPriceDisplay: MoneyDisplay.fromMap(
         map['discounted_price_display'],
@@ -156,6 +160,8 @@ class VendorInventory {
   final String? currencySymbol;
   final Product? product;
   final double discountPercentage;
+  final double averageRating;
+  final int ratingsCount;
   final MoneyDisplay priceDisplay;
   final MoneyDisplay discountedPriceDisplay;
 

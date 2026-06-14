@@ -5,19 +5,20 @@ import 'package:get/get.dart';
 
 class OrdersControlsWidget extends StatelessWidget {
   const OrdersControlsWidget({
+    required this.controller,
     required this.selectedStatusId,
     required this.onStatusChanged,
     required this.scheme,
     super.key,
   });
 
+  final OrdersController controller;
   final int selectedStatusId;
   final ValueChanged<int> onStatusChanged;
   final ColorScheme scheme;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<OrdersController>();
     return Row(
       children: [
         Expanded(
@@ -50,6 +51,13 @@ class OrdersControlsWidget extends StatelessWidget {
                 default:
                   return 'tag_all'.tr;
               }
+            },
+            badgeTextBuilder: (filterId) {
+              if (filterId == 0) return null;
+              if (filterId == 4 || filterId == 5) return null;
+              final count = controller.statusCounts[filterId] ?? 0;
+              if (count == 0) return null;
+              return count > 99 ? '99+' : count.toString();
             },
           ),
         ),

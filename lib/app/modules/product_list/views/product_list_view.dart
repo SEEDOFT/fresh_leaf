@@ -85,6 +85,8 @@ class ProductListView extends GetView<ProductListController> {
                                   ? product.resolvedFinalPriceDisplay.khr
                                   : null,
                               currencySymbol: r'$',
+                              averageRating: product.averageRating,
+                              ratingsCount: product.ratingsCount,
                               isFavorite: wishlistController.isFavorite(
                                 product.id,
                               ),

@@ -75,7 +75,7 @@ class CheckoutSummaryCardWidget extends StatelessWidget {
           if (showCurrencySelection) ...[
             const SizedBox(height: 16),
             SizedBox(
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width,
               child: SegmentedButton<int>(
                 segments: const [
                   ButtonSegment<int>(

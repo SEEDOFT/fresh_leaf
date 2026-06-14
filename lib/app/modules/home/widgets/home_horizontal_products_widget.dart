@@ -114,6 +114,8 @@ class HomeHorizontalProductsWidget extends GetView<HomeController> {
                       : null,
                   currencySymbol: r'$',
                   badge: item.certificationType?.tr,
+                  averageRating: item.averageRating,
+                  ratingsCount: item.ratingsCount,
                   isFavorite: wishlistController.isFavorite(item.id),
                   onFavoriteTap: () => wishlistController.toggleWishlist(item),
                   onTap: () async {

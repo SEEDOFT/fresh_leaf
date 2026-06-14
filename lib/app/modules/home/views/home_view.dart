@@ -14,6 +14,7 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return AppScaffold(
       scrollable: false,
       padding: EdgeInsets.symmetric(vertical: AppSizes.s20),
@@ -120,7 +121,83 @@ class HomeView extends GetView<HomeController> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const HomeAIBannerWidget(),
+                        SizedBox(height: AppSizes.s32),
+                        Divider(
+                          height: 1,
+                          indent: 24,
+                          endIndent: 24,
+                          color: scheme.outlineVariant.withValues(alpha: 0.3),
+                        ),
+                        SizedBox(height: AppSizes.s16),
+                        Text(
+                          'FreshLeaf Organics\nFresh, organic produce '
+                          'delivered to your door.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: scheme.onSurfaceVariant.withValues(
+                              alpha: 0.6,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: AppSizes.s8),
+                        Text(
+                          'FreshLeaf \nv0.1.0',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: scheme.onSurfaceVariant.withValues(
+                              alpha: 0.4,
+                            ),
+                          ),
+                        ),
+                        Obx(
+                          () {
+                            final wd = controller.clockWeekday.value;
+                            final d = controller.clockDay.value;
+                            final ord = controller.clockOrdinal.value;
+                            final my = controller.clockMonthYear.value;
+                            return RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: scheme.onSurfaceVariant
+                                      .withValues(alpha: 0.4),
+                                ),
+                                children: [
+                                  TextSpan(text: '$wd $d'),
+                                  WidgetSpan(
+                                    baseline: TextBaseline.alphabetic,
+                                    alignment: PlaceholderAlignment
+                                        .aboveBaseline,
+                                    child: Text(
+                                      ord,
+                                      style: TextStyle(
+                                        fontSize: 7,
+                                        color: scheme.onSurfaceVariant
+                                            .withValues(alpha: 0.4),
+                                      ),
+                                    ),
+                                  ),
+                                  TextSpan(text: ' $my'),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        Obx(
+                          () => Text(
+                            controller.clockTime.value,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: scheme.onSurfaceVariant
+                                  .withValues(alpha: 0.4),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: AppSizes.s16),
                       ],
                     ),

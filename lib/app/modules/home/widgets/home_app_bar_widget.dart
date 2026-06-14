@@ -93,26 +93,6 @@ class HomeAppBarWidget extends GetView<HomeController> {
               ),
             ),
           ),
-          Column(
-            children: [
-              Text(
-                'FreshLeaf',
-                style: TextStyle(
-                  fontSize: AppSizes.s16,
-                  fontWeight: FontWeight.w900,
-                  color: scheme.onSurface,
-                ),
-              ),
-              Text(
-                'home_brand_subtitle'.tr,
-                style: TextStyle(
-                  fontSize: AppSizes.s14,
-                  fontWeight: FontWeight.w600,
-                  color: scheme.onSurface,
-                ),
-              ),
-            ],
-          ),
           Row(
             children: [
               Obx(() {

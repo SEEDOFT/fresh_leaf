@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/product_detail/controllers/product_detail_controller.dart';
 import 'package:fresh_leaf/app/modules/product_detail/widgets/product_detail_widgets.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
+import 'package:fresh_leaf/core/services/rating_service.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -11,13 +13,19 @@ class ProductDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final tag = Get.arguments?.hashCode.toString();
+    final args = Get.arguments;
+    final tag = switch (args) {
+      final VendorInventory v => 'product_${v.id}',
+      final Map<String, dynamic> m => 'product_${m['id']}',
+      _ => null,
+    };
     return GetBuilder<ProductDetailController>(
       tag: tag,
       init: ProductDetailController(
         wishlistController: Get.find(),
         productService: Get.find(),
         cartController: Get.find(),
+        ratingService: Get.find<RatingService>(),
       ),
       builder: (controller) {
         return AppScaffold(
@@ -98,6 +106,8 @@ class ProductDetailView extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 ProductDetailVendorCard(product: controller.product!),
+                const SizedBox(height: 24),
+                ProductDetailRatingCard(tag: tag),
                 const SizedBox(height: 24),
                 Obx(
                   () => QuantityRowWidget(

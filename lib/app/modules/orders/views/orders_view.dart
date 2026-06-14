@@ -29,8 +29,10 @@ class OrdersView extends GetView<OrdersController> {
         children: [
           if (!showAppBar) const OrdersTabTitleWidget(),
           if (!showAppBar) const SizedBox(height: 10),
+          const SizedBox(height: 20),
           Obx(
             () => OrdersControlsWidget(
+              controller: controller,
               selectedStatusId: controller.selectedStatusId,
               onStatusChanged: (statusId) =>
                   controller.selectedStatusId = statusId,

@@ -25,7 +25,7 @@ class WalletBalanceCardWidget extends StatelessWidget {
     final isUsd = currency == 'USD';
 
     return Container(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(20.scaled),
       decoration: BoxDecoration(
         gradient: LinearGradient(

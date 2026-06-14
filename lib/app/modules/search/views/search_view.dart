@@ -229,6 +229,8 @@ class SearchView extends GetView<SearchController> {
                           ? item.resolvedFinalPriceDisplay.khr
                           : null,
                       currencySymbol: r'$',
+                      averageRating: item.averageRating,
+                      ratingsCount: item.ratingsCount,
                       layout: AppProductCardLayout.list,
                       isFavorite: wishlistController.isFavorite(item.id),
                       onFavoriteTap: () =>

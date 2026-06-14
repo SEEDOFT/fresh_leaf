@@ -84,4 +84,10 @@ final class ApiEndpoints {
   // Search
   static const String search = '/products/search';
   static const String searchSuggestions = '/products/search/suggestions';
+
+  // Ratings
+  static const String ratingStore = '/ratings';
+  static const String ratingByVendorInventory =
+      '/ratings/vendor-inventory/{id}';
+  static const String userRatings = '/ratings/user';
 }

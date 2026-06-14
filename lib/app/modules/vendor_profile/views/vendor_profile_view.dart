@@ -348,6 +348,8 @@ class VendorProfileView extends GetView<VendorProfileController> {
                                       : null,
                                   currencySymbol: r'$',
                                   badge: product.certificationType?.tr,
+                                  averageRating: product.averageRating,
+                                  ratingsCount: product.ratingsCount,
                                   isFavorite: wishlist.isFavorite(product.id),
                                   onFavoriteTap: () =>
                                       wishlist.toggleWishlist(product),

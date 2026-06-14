@@ -177,7 +177,7 @@ class ProfilePaymentAddForm extends StatelessWidget {
                     ],
                   )
                 : Container(
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: scheme.primaryContainer.withValues(alpha: 0.3),

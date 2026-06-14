@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/app_network_image.dart';
+import 'package:fresh_leaf/shared/widgets/rating_stars_widget.dart';
 
 enum AppProductCardLayout { grid, list }
 
@@ -14,6 +15,8 @@ class AppProductCard extends StatelessWidget {
     this.priceKhr,
     this.currencySymbol,
     this.subtitle,
+    this.averageRating,
+    this.ratingsCount,
     this.badge,
     this.onTap,
     this.onActionTap,
@@ -32,6 +35,8 @@ class AppProductCard extends StatelessWidget {
   final double? priceKhr;
   final String? currencySymbol;
   final String? subtitle;
+  final double? averageRating;
+  final int? ratingsCount;
   final String? badge;
   final VoidCallback? onTap;
   final VoidCallback? onActionTap;
@@ -48,10 +53,13 @@ class AppProductCard extends StatelessWidget {
     if (layout == AppProductCardLayout.list) {
       return _buildListLayout(scheme);
     }
-    return _buildGridLayout(scheme);
+    return _buildGridLayout(context: context, scheme: scheme);
   }
 
-  Widget _buildGridLayout(ColorScheme scheme) {
+  Widget _buildGridLayout({
+    required BuildContext context,
+    required ColorScheme scheme,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -75,7 +83,7 @@ class AppProductCard extends StatelessWidget {
                 children: [
                   AppNetworkImage(
                     url: imageUrl,
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(20.scaled),
                     ),
@@ -154,6 +162,14 @@ class AppProductCard extends StatelessWidget {
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                    if (averageRating != null && averageRating! > 0) ...[
+                      SizedBox(height: 4.scaled),
+                      RatingStarsWidget(
+                        rating: averageRating!,
+                        size: 12,
+                        count: ratingsCount,
                       ),
                     ],
                     const Spacer(),
@@ -261,6 +277,14 @@ class AppProductCard extends StatelessWidget {
                           color: scheme.onSurfaceVariant,
                           fontSize: 12.scaled,
                         ),
+                      ),
+                    ],
+                    if (averageRating != null && averageRating! > 0) ...[
+                      SizedBox(height: 4.scaled),
+                      RatingStarsWidget(
+                        rating: averageRating!,
+                        size: 12,
+                        count: ratingsCount,
                       ),
                     ],
                     SizedBox(height: 8.scaled),

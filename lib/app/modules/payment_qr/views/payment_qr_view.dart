@@ -23,7 +23,7 @@ class PaymentQrView extends GetView<PaymentQrController> {
           child: Column(
             children: [
               Container(
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: scheme.surface,
@@ -58,7 +58,7 @@ class PaymentQrView extends GetView<PaymentQrController> {
               ),
               const SizedBox(height: 14),
               Container(
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: controller.isExpired
@@ -82,7 +82,7 @@ class PaymentQrView extends GetView<PaymentQrController> {
               ),
               const Spacer(),
               SizedBox(
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
                   onPressed: controller.isChecking.value || controller.isExpired
                       ? null

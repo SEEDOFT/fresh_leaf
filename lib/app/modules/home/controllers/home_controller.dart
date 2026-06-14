@@ -35,6 +35,13 @@ class HomeController extends GetxController {
   final RxBool isLoadingProducts = false.obs;
   final RxString selectedFilter = 'picked'.obs;
 
+  final RxString clockWeekday = ''.obs;
+  final RxString clockDay = ''.obs;
+  final RxString clockOrdinal = ''.obs;
+  final RxString clockMonthYear = ''.obs;
+  final RxString clockTime = ''.obs;
+  Timer? _clockTimer;
+
   final RxList<ProductCategory> categories = <ProductCategory>[].obs;
   final RxList<VendorInventory> pickedThisMorning = <VendorInventory>[].obs;
 
@@ -78,10 +85,69 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _updateClock();
+    _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _updateClock();
+    });
     unawaited(loadHomeData());
     unawaited(fetchCurrentLocation());
     unawaited(_notificationService.getNotifications());
     unawaited(_notificationService.fetchUnreadChatCount());
+  }
+
+  @override
+  void onClose() {
+    _clockTimer?.cancel();
+    super.onClose();
+  }
+
+  String _capitalize(String s) => '${s[0].toUpperCase()}${s.substring(1)}';
+
+  void _updateClock() {
+    final now = DateTime.now().toLocal();
+    const weekdays = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday',
+    ];
+    final months = [
+      'january',
+      'february',
+      'march',
+      'april',
+      'may',
+      'june',
+      'july',
+      'august',
+      'september',
+      'october',
+      'november',
+      'december',
+    ];
+    final day = now.day;
+    final suffix = switch (day) {
+      1 || 21 || 31 => 'st',
+      2 || 22 => 'nd',
+      3 || 23 => 'rd',
+      _ => 'th',
+    };
+    final hour12 = now.hour == 0
+        ? 12
+        : now.hour > 12
+            ? now.hour - 12
+            : now.hour;
+    final amPm = now.hour < 12 ? 'AM' : 'PM';
+    final minute = now.minute.toString().padLeft(2, '0');
+    final second = now.second.toString().padLeft(2, '0');
+    clockWeekday.value = _capitalize(weekdays[now.weekday - 1]);
+    clockDay.value = day.toString();
+    clockOrdinal.value = suffix;
+    clockMonthYear.value = '${_capitalize(months[now.month - 1])}, ${now.year}';
+    clockTime.value = '$hour12:$minute:$second $amPm';
   }
 
   Future<void> loadHomeData() async {

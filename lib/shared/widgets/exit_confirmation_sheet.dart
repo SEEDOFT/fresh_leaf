@@ -62,7 +62,7 @@ Future<bool> showExitConfirmationSheet(BuildContext context) {
             ),
             SizedBox(height: 28.scaled),
             SizedBox(
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width,
               height: 52.scaled,
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(sheetContext, true),
@@ -85,7 +85,7 @@ Future<bool> showExitConfirmationSheet(BuildContext context) {
             ),
             SizedBox(height: 12.scaled),
             SizedBox(
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width,
               height: 52.scaled,
               child: TextButton(
                 onPressed: () => Navigator.pop(sheetContext, false),

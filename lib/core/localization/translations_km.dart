@@ -60,6 +60,23 @@ const Map<String, String> translationsKm = {
   'ai_smart_suggestions': 'ការណែនាំឆ្លាតវៃ\nដោយ AI',
   'ai_smart_suggestions_subtitle':
       'រៀបចំកន្ត្រករបស់អ្នកតាម\nទម្លាប់ចម្អិនអាហារ',
+  'promo_poster_badge_1': 'ការផ្តល់ជូនចុងសប្តាហ៍',
+  'promo_poster_title_1': 'កញ្ចប់បន្លែបៃតង\nស្រស់',
+  'promo_poster_subtitle_1': 'បញ្ចុះតម្លៃ 20% លើបន្លែស្លឹកជ្រើសរើសសប្តាហ៍នេះ។',
+  'promo_poster_badge_2': 'ដឹកជញ្ជូនឥតគិតថ្លៃ',
+  'promo_poster_title_2': 'ផលិតផលក្នុងស្រុក\nដល់មុខផ្ទះអ្នក',
+  'promo_poster_subtitle_2':
+      r'ដឹកជញ្ជូនឥតគិតថ្លៃសម្រាប់កន្ត្រកលើស $25 ថ្ងៃនេះ។',
+  'promo_poster_badge_3': 'ស្តុកមានកំណត់',
+  'promo_poster_title_3': 'កញ្ចប់ផ្លែឈើ\nតាមរដូវ',
+  'promo_poster_subtitle_3': 'ផ្លែក្រូច និងផ្លែឈើពីចម្ការនៅពេលនៅស្រស់។',
+  'promo_perks_title': 'អត្ថប្រយោជន៍ស្រស់ថ្ងៃនេះ',
+  'promo_perk_delivery_title': 'ដឹកជញ្ជូនលឿន',
+  'promo_perk_delivery_subtitle': 'កន្ត្រកថ្ងៃដដែល',
+  'promo_perk_verified_title': 'អ្នកលក់ផ្ទៀងផ្ទាត់',
+  'promo_perk_verified_subtitle': 'កសិដ្ឋានក្នុងស្រុក',
+  'promo_perk_fresh_title': 'វេចខ្ចប់ស្រស់',
+  'promo_perk_fresh_subtitle': 'ថែរក្សាយ៉ាងយកចិត្តទុកដាក់',
   'limited_edition': 'ជម្រើសមានកំណត់',
   'seasonal_organic_harvest': 'ការប្រមូលផល\nសរីរាង្គ\nតាមរដូវ',
   'explore_selection': 'មើលជម្រើស',
@@ -918,4 +935,24 @@ const Map<String, String> translationsKm = {
   'no_active_orders': 'គ្មានការបញ្ជាទិញសកម្មទេ',
   'tap_to_track': 'ចុចដើម្បីតាមដានការបញ្ជាទិញ',
   'total_orders_placed': '@count ការបញ្ជាទិញ',
+
+  // App description
+  'freshleaf_description':
+      'FreshLeaf គឺជាទីផ្សារបន្លែផ្លែឈើស្រស់ដែលភ្ជាប់អ្នកដោយផ្ទាល់ '
+      'ជាមួយកសិករក្នុងស្រុក។ យើងនាំយកផ្លែឈើ បន្លែ និងផលិតផលសរីរាង្គ '
+      'ស្រស់ៗពីកសិដ្ឋាន មកដល់មាត់ទ្វាររបស់អ្នក — ប្រមូលផលនៅពេលទុំពេញ '
+      'និងបញ្ជូនដោយយកចិត្តទុកដាក់។',
+
+  // Ratings / Reviews
+  'ratings': 'ការវាយតម្លៃ',
+  'load_more': 'មើលបន្ថែម',
+  'rate_product': 'វាយតម្លៃផលិតផល',
+  'your_rating': 'ការវាយតម្លៃរបស់អ្នក',
+  'write_a_review': 'សរសេរការពិនិត្យ',
+  'review_placeholder': 'ចែករំលែកគំនិតរបស់អ្នកអំពីផលិតផលនេះ...',
+  'submit': 'ដាក់ស្នើ',
+  'please_select_rating': 'សូមជ្រើសរើសការវាយតម្លៃ',
+  'rating_submitted': 'ការវាយតម្លៃត្រូវបានដាក់ស្នើដោយជោគជ័យ',
+  'failed_submit_rating': 'ការដាក់ស្នើការវាយតម្លៃបរាជ័យ',
+  'ago': 'មុន',
 };

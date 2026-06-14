@@ -4,7 +4,9 @@ import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/core/controllers/wishlist_controller.dart';
 import 'package:fresh_leaf/core/models/money_display.dart';
 import 'package:fresh_leaf/core/models/vendor_inventory.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory_rating.dart';
 import 'package:fresh_leaf/core/services/product_service.dart';
+import 'package:fresh_leaf/core/services/rating_service.dart';
 import 'package:fresh_leaf/shared/helpers/product_share_helper.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -14,16 +16,24 @@ class ProductDetailController extends GetxController {
     required this.wishlistController,
     required ProductService productService,
     required CartController cartController,
+    required RatingService ratingService,
   }) : _productService = productService,
-       _cartController = cartController;
+       _cartController = cartController,
+       _ratingService = ratingService;
 
   VendorInventory? product;
   final WishlistController wishlistController;
   final ProductService _productService;
   final CartController _cartController;
+  final RatingService _ratingService;
 
   final RxDouble quantity = 1.0.obs;
   final RxBool isLoading = true.obs;
+  final RxDouble averageRating = 0.0.obs;
+  final RxInt ratingsCount = 0.obs;
+  final RxList<VendorInventoryRating> ratings = <VendorInventoryRating>[].obs;
+  final RxBool isLoadingRatings = false.obs;
+  final RxBool hasMoreRatings = true.obs;
 
   String get title => product?.displayTitle ?? '';
   String get subtitle => product?.displaySubtitle ?? '';
@@ -42,7 +52,7 @@ class ProductDetailController extends GetxController {
     if (images.isEmpty) {
       images.add('');
     }
-    return images.toSet().toList();
+    return images.where((url) => url.trim().isNotEmpty).toSet().toList();
   }
 
   List<String> get tags =>
@@ -105,11 +115,36 @@ class ProductDetailController extends GetxController {
       final updated = await _productService.getProduct(id);
       if (updated != null) {
         product = updated;
+        averageRating.value = updated.averageRating;
+        ratingsCount.value = updated.ratingsCount;
       }
-    } on Exception catch (_) {
+      unawaited(loadRatings());
+    } on Exception {
       // Keep existing product if API fails
     } finally {
       isLoading.value = false;
+      update();
+    }
+  }
+
+  Future<void> loadRatings() async {
+    final id = product?.id;
+    if (id == null || id == 0 || !hasMoreRatings.value) return;
+
+    isLoadingRatings.value = true;
+    try {
+      final page = (ratings.length ~/ 15) + 1;
+      final result = await _ratingService.getRatings(id, page: page);
+      if (result.ratings.items.isNotEmpty) {
+        ratings.addAll(result.ratings.items);
+      }
+      hasMoreRatings.value = result.ratings.nextPageUrl != null;
+      averageRating.value = result.averageRating;
+      ratingsCount.value = result.ratingsCount;
+    } on Exception {
+      // Keep existing state on failure
+    } finally {
+      isLoadingRatings.value = false;
       update();
     }
   }
@@ -150,6 +185,7 @@ class ProductDetailController extends GetxController {
       'added_to_cart'.tr,
       'added_to_cart_message'.trParams({'title': title.tr}),
       snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 1),
     );
   }
 

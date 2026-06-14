@@ -54,7 +54,7 @@ class OrderExternalPaymentView extends GetView<OrderExternalPaymentController> {
               const SizedBox(height: 48),
               Obx(
                 () => SizedBox(
-                  width: double.infinity,
+                  width: MediaQuery.of(context).size.width,
                   height: 50,
                   child: ElevatedButton(
                     onPressed: controller.isProcessing.value

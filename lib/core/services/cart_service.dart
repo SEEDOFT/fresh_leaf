@@ -111,7 +111,7 @@ class CartService extends GetxService {
         if (ids.isNotEmpty) return ids;
       }
       return null;
-    } catch (e) {
+    } on Exception {
       return null;
     }
   }
