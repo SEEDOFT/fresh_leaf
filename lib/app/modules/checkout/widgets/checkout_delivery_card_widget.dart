@@ -48,35 +48,15 @@ class CheckoutDeliveryCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'delivery_address'.tr,
+                      (address != null && address!.label.isNotEmpty)
+                          ? address!.label
+                          : 'delivery_address'.tr,
                       style: TextStyle(
                         color: scheme.onSurfaceVariant,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    if (address != null) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: scheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          'default'.tr,
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: scheme.onPrimaryContainer,
-                            height: 1.3,
-                          ),
-                        ),
-                      ),
-                    ],
                   ],
                 ),
                 const SizedBox(height: 6),

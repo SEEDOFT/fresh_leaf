@@ -223,8 +223,10 @@ class CheckoutController extends GetxController {
     );
     if (routeResult is UserAddress) {
       deliveryAddress.value = routeResult;
+      deliveryAddress.refresh();
     } else if (routeResult is Map<String, dynamic>) {
       deliveryAddress.value = UserAddress.fromMap(routeResult);
+      deliveryAddress.refresh();
     }
   }
 
