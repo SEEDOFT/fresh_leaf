@@ -4,6 +4,7 @@ import 'package:fresh_leaf/app/modules/cart/bindings/cart_binding.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/views/cart_panel_view.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:fresh_leaf/core/services/order_service.dart';
@@ -75,8 +76,6 @@ class OrderDetailController extends GetxController {
     final hasItems = order.value?.items.isNotEmpty ?? false;
     if (!hasItems) {
       isLoadingDetails.value = true;
-    } else {
-      isUpdating.value = true;
     }
 
     final updatedOrder = await _orderService.getOrder(idToLoad);
@@ -84,7 +83,6 @@ class OrderDetailController extends GetxController {
       order.value = updatedOrder;
     }
     isLoadingDetails.value = false;
-    isUpdating.value = false;
   }
 
   Future<void> cancelOrder() async {
@@ -116,6 +114,18 @@ class OrderDetailController extends GetxController {
       Get.snackbar('error'.tr, 'failed_confirm_receipt'.tr);
     }
     isUpdating.value = false;
+  }
+
+  Future<void> payForOrder() async {
+    final currentOrder = order.value;
+    if (currentOrder == null) return;
+
+    await Get.toNamed<dynamic>(
+      AppRoutes.orderWalletPayment,
+      arguments: <String, dynamic>{
+        'order_id': currentOrder.id,
+      },
+    );
   }
 
   Future<void> downloadInvoice() async {

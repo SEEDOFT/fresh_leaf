@@ -131,7 +131,21 @@ class OrderDetailView extends GetView<OrderDetailController> {
                     foregroundColor: scheme.onErrorContainer,
                   ),
                 ],
-                if (order.statusId == 4) ...[
+                if (order.statusId == 6) ...[
+                  // 6 is AWAITING_PAYMENT
+                  const SizedBox(height: 12),
+                  PrimaryButton(
+                    onPressed: controller.payForOrder,
+                    isLoading: controller.isUpdating.value,
+                    label: 'pay_now'.tr,
+                    borderRadius: 14,
+                    height: 50,
+                    backgroundColor: scheme.primary,
+                    foregroundColor: scheme.onPrimary,
+                  ),
+                ],
+                if (order.statusId == 4 &&
+                    order.consumerConfirmedDate == null) ...[
                   const SizedBox(height: 12),
                   PrimaryButton(
                     onPressed: controller.confirmReceipt,
@@ -142,6 +156,9 @@ class OrderDetailView extends GetView<OrderDetailController> {
                     backgroundColor: scheme.primary,
                     foregroundColor: scheme.onPrimary,
                   ),
+                ],
+                if (order.statusId == 4 ||
+                    order.consumerConfirmedDate != null) ...[
                   const SizedBox(height: 12),
                   PrimaryButton(
                     onPressed: controller.downloadInvoice,
