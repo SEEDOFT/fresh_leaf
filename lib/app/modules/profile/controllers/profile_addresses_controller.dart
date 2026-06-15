@@ -30,6 +30,7 @@ class ProfileAddressesController extends GetxController {
 
   bool returnOnSelect = false;
   String mode = 'view';
+  String selectedAddressId = '';
 
   @override
   void onInit() {
@@ -38,6 +39,7 @@ class ProfileAddressesController extends GetxController {
     if (map is Map<String, dynamic>) {
       mode = map['mode']?.toString() ?? 'view';
       returnOnSelect = map['return_on_select'] == true;
+      selectedAddressId = map['selected_id']?.toString() ?? '';
     }
     savedAddresses.assignAll(_profileController.addresses);
   }

@@ -219,6 +219,7 @@ class CheckoutController extends GetxController {
       arguments: <String, dynamic>{
         'mode': 'pick',
         'return_on_select': true,
+        'selected_id': deliveryAddress.value?.id,
       },
     );
     if (routeResult is UserAddress) {

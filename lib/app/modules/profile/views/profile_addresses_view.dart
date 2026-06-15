@@ -180,6 +180,10 @@ class AddressesView extends GetView<ProfileAddressesController> {
               child: ProfileAddressesListItem(
                 address: item,
                 isDefault: addresses.indexOf(item) == 0,
+                isSelected:
+                    controller.returnOnSelect &&
+                    controller.selectedAddressId == item.id,
+                isSelectionMode: controller.returnOnSelect,
                 isDeleting: deletingId == item.id,
                 onEdit: () => controller.openEditAddress(item),
                 onDelete: () => controller.requestDeleteAddress(item),

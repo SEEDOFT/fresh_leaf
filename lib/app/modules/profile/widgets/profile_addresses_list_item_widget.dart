@@ -9,12 +9,16 @@ class ProfileAddressesListItem extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     this.isDefault = false,
+    this.isSelected = false,
+    this.isSelectionMode = false,
     super.key,
   });
 
   final UserAddress address;
   final bool isDeleting;
   final bool isDefault;
+  final bool isSelected;
+  final bool isSelectionMode;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -27,6 +31,7 @@ class ProfileAddressesListItem extends StatelessWidget {
       address.province,
       address.postalCode,
     ].where((value) => value.trim().isNotEmpty).join(', ');
+    final isHighlighted = isSelectionMode ? isSelected : isDefault;
 
     return Container(
       width: media.size.width,
@@ -35,12 +40,12 @@ class ProfileAddressesListItem extends StatelessWidget {
         color: scheme.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isDefault
+          color: isHighlighted
               ? scheme.primary.withValues(alpha: 0.6)
               : scheme.outline.withValues(alpha: 0.2),
-          width: isDefault ? 1.5 : 1,
+          width: isHighlighted ? 1.5 : 1,
         ),
-        boxShadow: isDefault
+        boxShadow: isHighlighted
             ? [
                 BoxShadow(
                   color: scheme.primary.withValues(alpha: 0.12),
