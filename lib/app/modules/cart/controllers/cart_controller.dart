@@ -92,6 +92,15 @@ class CartController extends GetxController {
     }
   }
 
+  Future<void> removeItem(int index) async {
+    final current = items[index];
+    final success = await _cartService.removeCartItem(current.id);
+    if (success) {
+      items.removeAt(index);
+      await fetchCart();
+    }
+  }
+
   void clearCart() {
     items.clear();
     totalDisplay.value = MoneyDisplay.empty;

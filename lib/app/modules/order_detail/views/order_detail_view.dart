@@ -131,9 +131,7 @@ class OrderDetailView extends GetView<OrderDetailController> {
                     foregroundColor: scheme.onErrorContainer,
                   ),
                 ],
-                if (order.statusId == 4 || // 4 is DELIVERED
-                    order.statusId == 3) ...[
-                  // 3 is PREPARING
+                if (order.statusId == 4) ...[
                   const SizedBox(height: 12),
                   PrimaryButton(
                     onPressed: controller.confirmReceipt,
@@ -144,8 +142,6 @@ class OrderDetailView extends GetView<OrderDetailController> {
                     backgroundColor: scheme.primary,
                     foregroundColor: scheme.onPrimary,
                   ),
-                ],
-                if (order.statusId == 4) ...[
                   const SizedBox(height: 12),
                   PrimaryButton(
                     onPressed: controller.downloadInvoice,

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/checkout/controllers/checkout_controller.dart';
 import 'package:fresh_leaf/app/modules/checkout/widgets/checkout_widget.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/widgets/app_scaffold.dart';
 import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -52,7 +55,19 @@ class CheckoutView extends GetView<CheckoutController> {
                   ...controller.cart.items.map(
                     (item) => Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: CheckoutItemRowWidget(item: item),
+                      child: CheckoutItemRowWidget(
+                        item: item,
+                        onTap: () {
+                          if (item.vendorInventory != null) {
+                            unawaited(
+                              Get.toNamed<void>(
+                                AppRoutes.productDetail,
+                                arguments: item.vendorInventory,
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],

@@ -29,8 +29,10 @@ class VendorProfileView extends GetView<VendorProfileController> {
               final vendor = controller.vendor.value;
               final isLoading = controller.isLoading.value;
 
-              // Ensure we always return something scrollable with AlwaysScrollableScrollPhysics
-              // so the RefreshIndicator can be triggered even when empty or loading.
+              // Ensure we always return something scrollable with
+              // AlwaysScrollableScrollPhysics
+              // so the RefreshIndicator can be
+              //triggered even when empty or loading.
               if (isLoading && vendor == null) {
                 return SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(
@@ -88,8 +90,9 @@ class VendorProfileView extends GetView<VendorProfileController> {
                           onPressed: controller.shareVendor,
                           tooltip: 'share_vendor'.tr,
                           style: IconButton.styleFrom(
-                            backgroundColor:
-                                scheme.surface.withValues(alpha: 0.7),
+                            backgroundColor: scheme.surface.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 4),
@@ -109,8 +112,9 @@ class VendorProfileView extends GetView<VendorProfileController> {
                                 : controller.startChat,
                             tooltip: 'chat_with_vendor'.tr,
                             style: IconButton.styleFrom(
-                              backgroundColor:
-                                  scheme.surface.withValues(alpha: 0.7),
+                              backgroundColor: scheme.surface.withValues(
+                                alpha: 0.7,
+                              ),
                             ),
                           ),
                         ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/cart/controllers/cart_controller.dart';
 import 'package:fresh_leaf/app/modules/cart/widgets/cart_widget.dart';
@@ -121,7 +123,15 @@ class CartView extends GetView<CartController> {
                               onPlus: () =>
                                   controller.increaseQuantity(originalIndex),
                               onRemove: () =>
-                                  controller.items.removeAt(originalIndex),
+                                  controller.removeItem(originalIndex),
+                              onTap: () {
+                                if (item.vendorInventory != null) {
+                                  unawaited(Get.toNamed<void>(
+                                    AppRoutes.productDetail,
+                                    arguments: item.vendorInventory,
+                                  ));
+                                }
+                              },
                             ),
                           );
                         }),

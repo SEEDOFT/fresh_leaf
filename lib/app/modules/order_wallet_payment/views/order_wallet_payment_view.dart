@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/order_wallet_payment/controllers/order_wallet_payment_controller.dart';
+import 'package:fresh_leaf/shared/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 
 class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
@@ -8,12 +9,9 @@ class OrderWalletPaymentView extends GetView<OrderWalletPaymentController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('wallet_payment'.tr),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: controller.cancelPayment,
-        ),
+      appBar: CustomAppBar(
+        title: 'wallet_payment'.tr,
+        onBack: controller.cancelPayment,
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
