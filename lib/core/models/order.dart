@@ -18,6 +18,7 @@ class Order {
     this.deliveryDate,
     this.deliverySlot,
     this.notes,
+    this.consumerConfirmedDate,
     this.createdAt,
     this.preparationProofPhoto,
     this.deliveryCompanyName,
@@ -55,6 +56,9 @@ class Order {
           : null,
       deliverySlot: map['delivery_slot'] as String?,
       notes: map['notes'] as String?,
+      consumerConfirmedDate: map['consumer_confirmed_date'] != null
+          ? DateTime.tryParse(map['consumer_confirmed_date'].toString())
+          : null,
       createdAt: toNullableDateTime(map['created_at']),
       preparationProofPhoto: map['preparation_proof_photo'] as String?,
       deliveryCompanyName: map['delivery_company_name'] as String?,
@@ -80,6 +84,7 @@ class Order {
   final DateTime? deliveryDate;
   final String? deliverySlot;
   final String? notes;
+  final DateTime? consumerConfirmedDate;
   final DateTime? createdAt;
   final String? preparationProofPhoto;
   final String? deliveryCompanyName;
