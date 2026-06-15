@@ -34,6 +34,7 @@ class OrdersView extends GetView<OrdersController> {
             () => OrdersControlsWidget(
               controller: controller,
               selectedStatusId: controller.selectedStatusId,
+              statusCounts: Map.from(controller.statusCounts),
               onStatusChanged: (statusId) =>
                   controller.selectedStatusId = statusId,
               scheme: scheme,
@@ -67,49 +68,63 @@ class OrdersView extends GetView<OrdersController> {
                           ),
                         ],
                       )
-                    : controller.filteredOrders.isEmpty
-                    ? ListView(
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: const OrdersEmptyStateWidget(filtered: true),
-                          ),
-                        ],
-                      )
-                    : AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 280),
-                        switchInCurve: Curves.easeOutCubic,
-                        switchOutCurve: Curves.easeInCubic,
-                        child: OrdersListWidget(
-                          key: ValueKey<String>(
-                            '${controller.selectedStatusId}'
-                            '-${controller.selectedSort.name}'
-                            '-${controller.filteredOrders.length}',
-                          ),
-                          groupedOrders: controller.groupedFilteredOrders,
-                          scheme: scheme,
-                          onLoadMore: controller.loadMore,
-                          isLoadingMore: controller.isLoadingMore,
-                          hasMore: controller.hasMore,
-                          onOrderTap: (order) async {
-                            final detailedOrder = await controller
-                                .preloadOrderDetail(order);
-                            if (detailedOrder == null) {
-                              Get.snackbar(
-                                'fetch_failed'.tr,
-                                'order_not_found'.tr,
-                              );
-                              return;
-                            }
-                            await Get.toNamed<void>(
-                              AppRoutes.orderDetail,
-                              arguments: detailedOrder,
+                    : PageView.builder(
+                        controller: controller.pageController,
+                        onPageChanged: controller.onPageChanged,
+                        itemCount: controller.statusFilters.length,
+                        itemBuilder: (context, index) {
+                          final statusId =
+                              controller.statusFilters[index]['id'] as int;
+                          final list = controller.getOrdersForStatus(statusId);
+                          final grouped = controller.getGroupedOrdersForStatus(
+                            list,
+                          );
+
+                          if (list.isEmpty) {
+                            return ListView(
+                              physics: const AlwaysScrollableScrollPhysics(
+                                parent: BouncingScrollPhysics(),
+                              ),
+                              children: [
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.6,
+                                  child: const OrdersEmptyStateWidget(
+                                    filtered: true,
+                                  ),
+                                ),
+                              ],
                             );
-                          },
-                        ),
+                          }
+
+                          return OrdersListWidget(
+                            key: ValueKey<String>(
+                              '$statusId'
+                              '-${controller.selectedSort.name}'
+                              '-${list.length}',
+                            ),
+                            groupedOrders: grouped,
+                            scheme: scheme,
+                            onLoadMore: controller.loadMore,
+                            isLoadingMore: controller.isLoadingMore,
+                            hasMore: controller.hasMore,
+                            onOrderTap: (order) async {
+                              final detailedOrder = await controller
+                                  .preloadOrderDetail(order);
+                              if (detailedOrder == null) {
+                                Get.snackbar(
+                                  'fetch_failed'.tr,
+                                  'order_not_found'.tr,
+                                );
+                                return;
+                              }
+                              await Get.toNamed<void>(
+                                AppRoutes.orderDetail,
+                                arguments: detailedOrder,
+                              );
+                            },
+                          );
+                        },
                       ),
               ),
             ),

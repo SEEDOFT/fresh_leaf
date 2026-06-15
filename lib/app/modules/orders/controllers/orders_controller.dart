@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:fresh_leaf/core/mixins/paginated_list_mixin.dart';
 import 'package:fresh_leaf/core/models/order.dart';
 import 'package:fresh_leaf/core/models/paginated_response.dart';
@@ -22,7 +23,29 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
   final RxMap<int, int> _apiStatusCounts = <int, int>{}.obs;
 
   int get selectedStatusId => _selectedStatusId.value;
-  set selectedStatusId(int id) => _selectedStatusId.value = id;
+  set selectedStatusId(int id) {
+    if (_selectedStatusId.value == id) return;
+    _selectedStatusId.value = id;
+    final index = statusFilters.indexWhere((e) => e['id'] == id);
+    if (index != -1 &&
+        pageController.hasClients &&
+        pageController.page?.round() != index) {
+      unawaited(
+        pageController.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        ),
+      );
+    }
+  }
+
+  void onPageChanged(int index) {
+    final id = statusFilters[index]['id'] as int;
+    if (_selectedStatusId.value != id) {
+      _selectedStatusId.value = id;
+    }
+  }
 
   OrderSortType get selectedSort => _selectedSort.value;
   set selectedSort(OrderSortType sortType) => _selectedSort.value = sortType;
@@ -45,13 +68,14 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
 
   Map<int, int> get statusCounts => _apiStatusCounts;
 
+  List<Order> get filteredOrders => getOrdersForStatus(selectedStatusId);
+
   int get visibleOrderCount => filteredOrders.length;
 
-  List<Order> get filteredOrders {
-    final currentId = _selectedStatusId.value;
-    final list = currentId == 0
+  List<Order> getOrdersForStatus(int statusId) {
+    final list = statusId == 0
         ? List<Order>.from(items)
-        : items.where((order) => order.statusId == currentId).toList();
+        : items.where((order) => order.statusId == statusId).toList();
 
     switch (_selectedSort.value) {
       case OrderSortType.newest:
@@ -73,7 +97,7 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
     return list;
   }
 
-  Map<String, List<Order>> get groupedFilteredOrders {
+  Map<String, List<Order>> getGroupedOrdersForStatus(List<Order> filteredList) {
     final groups = <String, List<Order>>{
       'Today': <Order>[],
       'This Week': <Order>[],
@@ -81,7 +105,7 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
       'Earlier': <Order>[],
     };
 
-    for (final order in filteredOrders) {
+    for (final order in filteredList) {
       final orderDate = order.createdAt ?? DateTime(1970);
       final section = _groupLabel(orderDate);
       groups[section]!.add(order);
@@ -91,11 +115,26 @@ class OrdersController extends GetxController with PaginatedListMixin<Order> {
     return groups;
   }
 
+  late final PageController pageController;
+
   @override
   void onInit() {
     super.onInit();
+    pageController = PageController(
+      initialPage:
+          statusFilters.indexWhere((e) => e['id'] == _selectedStatusId.value) ==
+              -1
+          ? 0
+          : statusFilters.indexWhere((e) => e['id'] == _selectedStatusId.value),
+    );
     unawaited(loadInitial());
     unawaited(_fetchCounts());
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
   }
 
   @override

@@ -104,6 +104,10 @@ class SearchController extends GetxController {
     }
   }
 
+  Future<void> refreshData() async {
+    await _performSearch();
+  }
+
   String displayLabelForTag(String value) {
     switch (value) {
       case 'Organic':

@@ -7,6 +7,7 @@ class OrdersControlsWidget extends StatelessWidget {
   const OrdersControlsWidget({
     required this.controller,
     required this.selectedStatusId,
+    required this.statusCounts,
     required this.onStatusChanged,
     required this.scheme,
     super.key,
@@ -14,6 +15,7 @@ class OrdersControlsWidget extends StatelessWidget {
 
   final OrdersController controller;
   final int selectedStatusId;
+  final Map<int, int> statusCounts;
   final ValueChanged<int> onStatusChanged;
   final ColorScheme scheme;
 
@@ -55,7 +57,7 @@ class OrdersControlsWidget extends StatelessWidget {
             badgeTextBuilder: (filterId) {
               if (filterId == 0) return null;
               if (filterId == 4 || filterId == 5) return null;
-              final count = controller.statusCounts[filterId] ?? 0;
+              final count = statusCounts[filterId] ?? 0;
               if (count == 0) return null;
               return count > 99 ? '99+' : count.toString();
             },
