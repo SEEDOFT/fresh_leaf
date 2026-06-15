@@ -76,25 +76,10 @@ class WalletTopUpPaymentController extends GetxController {
 
   List<WalletTopUpChannelOption> get channelOptions {
     final items = <WalletTopUpChannelOption>[];
-    final creditType = _findType(PaymentMethodTypeCodes.creditDebit);
-    items.add(
-      WalletTopUpChannelOption(
-        id: 'channel-${PaymentMethodTypeCodes.creditDebit}',
-        label: creditType?.name?.trim().isNotEmpty ?? false
-            ? creditType!.name!.trim()
-            : 'credit_debit_card'.tr,
-        typeCode: PaymentMethodTypeCodes.creditDebit,
-        type: creditType,
-      ),
-    );
 
     for (final type in types) {
       final code = (type.code ?? '').toLowerCase();
-      if (code.isEmpty || code == PaymentMethodTypeCodes.creditDebit) {
-        continue;
-      }
-      if (code != PaymentMethodTypeCodes.aba &&
-          code != PaymentMethodTypeCodes.acleda) {
+      if (code != PaymentMethodTypeCodes.aba) {
         continue;
       }
       final alreadyExists = items.any((option) => option.typeCode == code);
@@ -221,13 +206,6 @@ class WalletTopUpPaymentController extends GetxController {
       billingZipCode: '',
       isDefault: false,
     );
-  }
-
-  PaymentMethodType? _findType(String code) {
-    for (final type in types) {
-      if ((type.code ?? '').toLowerCase() == code) return type;
-    }
-    return null;
   }
 
   Future<PaymentMethod?> _openSavedCards() async {

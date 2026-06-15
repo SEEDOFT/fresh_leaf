@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
+import 'package:fresh_leaf/core/constants/api_endpoints.dart';
 import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
+import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
-import 'package:fresh_leaf/core/models/payment_session.dart';
+// import 'package:fresh_leaf/core/models/payment_session.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class WalletTopUpController extends GetxController {
   WalletTopUpController({
     required PaymentSessionService paymentSessionService,
     required WalletController walletController,
+    required ApiClient apiClient,
   }) : _paymentSessionService = paymentSessionService,
-       _walletController = walletController;
+       _walletController = walletController,
+       _apiClient = apiClient;
 
   final PaymentSessionService _paymentSessionService;
   final WalletController _walletController;
+  final ApiClient _apiClient;
   final amountController = TextEditingController();
   final RxString selectedCurrency = 'USD'.obs;
   final RxDouble selectedAmount = 0.0.obs;
@@ -89,89 +95,48 @@ class WalletTopUpController extends GetxController {
     PaymentMethod method,
     double amount,
   ) async {
-    final typeCode = _resolveTypeCode(method);
     isLoading.value = true;
     try {
-      final session = await _paymentSessionService.createTopUpSession(
-        amount: amount,
-        currency: selectedCurrency.value,
-        paymentMethodTypeCode: typeCode,
-        paymentMethodId: (method.id ?? 0) > 0 ? method.id : null,
-      );
-      final shouldContinue = await _handleSessionForTopUp(
-        session: session,
-        typeCode: typeCode,
-      );
-      if (!shouldContinue) return;
       await _applyTopUpResult(method: method, amount: amount);
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<bool> _handleSessionForTopUp({
-    required PaymentSession session,
-    required String typeCode,
-  }) async {
-    final isRedirectType =
-        typeCode == PaymentMethodTypeCodes.aba ||
-        typeCode == PaymentMethodTypeCodes.acleda;
-    if (!isRedirectType) return true;
-
-    final redirected = await _tryOpenRedirect(session.redirectUrl);
-    if (redirected) {
-      Get.snackbar('success'.tr, 'redirecting_to_bank_app'.tr);
-    }
-
-    final paid = await Get.toNamed<dynamic>(
-      AppRoutes.paymentQr,
-      arguments: <String, dynamic>{
-        'session': session.toMap(),
-      },
-    );
-    return paid == true;
-  }
-
-  Future<bool> _tryOpenRedirect(String? url) async {
-    if ((url ?? '').isEmpty) return false;
-    final uri = Uri.tryParse(url!);
-    if (uri == null) return false;
-    if (!await canLaunchUrl(uri)) return false;
-    return launchUrl(uri, mode: LaunchMode.externalApplication);
-  }
-
   Future<void> _applyTopUpResult({
     required PaymentMethod method,
     required double amount,
   }) async {
-    // Simulate payment processing
-    await Future<void>.delayed(const Duration(seconds: 2));
-
-    if (selectedCurrency.value == 'USD') {
-      _walletController.usdBalance.value += amount;
-      _walletController.usdTransactions.insert(
-        0,
-        WalletTransaction(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
-          amount: amount,
-          date: DateTime.now(),
-          typeId: 1,
-          statusId: 2,
-        ),
+    try {
+      final response = await _apiClient.postRequest(
+        ApiEndpoints.walletTopUpSeed,
+        data: {
+          'amount': amount,
+          'currency': selectedCurrency.value,
+        },
       );
-    } else if (selectedCurrency.value == 'KHR') {
-      _walletController.khrBalance.value += amount;
-      _walletController.khrTransactions.insert(
-        0,
-        WalletTransaction(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          title: '${'top_up_mock'.tr} (${method.label ?? 'Card'})',
-          amount: amount,
-          date: DateTime.now(),
-          typeId: 1,
-          statusId: 2,
-        ),
+      final apiResponse = ApiResponse.parseMap(response.data);
+      if (apiResponse.isSuccess) {
+        await _walletController.fetchWallets();
+        await Get.offNamed<void>(
+          AppRoutes.walletTopUpSuccess,
+          arguments: <String, dynamic>{
+            'amount': amount,
+            'currency': selectedCurrency.value,
+          },
+        );
+      } else {
+        throw Exception(apiResponse.status.message);
+      }
+    } on Exception {
+      Get.snackbar(
+        'top_up_failed'.tr,
+        'unable_process_payment'.tr,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Get.theme.colorScheme.errorContainer,
+        colorText: Get.theme.colorScheme.onErrorContainer,
+        borderRadius: 14,
+        margin: const EdgeInsets.all(12),
       );
     }
   }

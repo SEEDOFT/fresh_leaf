@@ -11,7 +11,7 @@ String formatPriceNoDecimals(double price) {
 
 String formatDateTime(DateTime? value, {String defaultValue = ''}) {
   if (value == null) return defaultValue;
-  return AppFormatter.formatDate(value);
+  return AppFormatter.formatDateTime(value);
 }
 
 String formatToString(dynamic value, {String defaultValue = ''}) {

@@ -69,14 +69,6 @@ class ProfileView extends GetView<ProfileController> {
                 subtitle: 'wallet_subtitle'.tr,
                 onTap: () async => await Get.toNamed<void>(AppRoutes.wallet),
               ),
-              AppDivider(height: 16.scaled),
-              AppTile(
-                icon: Icons.credit_card,
-                title: 'payment_methods'.tr,
-                subtitle: 'payment_methods_subtitle'.tr,
-                onTap: () async =>
-                    await Get.toNamed<void>(AppRoutes.paymentMethods),
-              ),
             ],
           ),
           ProfileSectionCard(

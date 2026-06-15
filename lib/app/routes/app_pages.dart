@@ -80,6 +80,9 @@ import 'package:fresh_leaf/app/modules/wallet_top_up/bindings/wallet_top_up_bind
 import 'package:fresh_leaf/app/modules/wallet_top_up/views/wallet_top_up_view.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up_payment/bindings/wallet_top_up_payment_binding.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up_payment/views/wallet_top_up_payment_view.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up_success/bindings/wallet_top_up_success_binding.dart';
+import 'package:fresh_leaf/app/modules/wallet_top_up_success/views/wallet_top_up_success_view.dart';
+import 'package:fresh_leaf/app/modules/wallet_transactions/views/wallet_transactions_view.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:get/get.dart';
 
@@ -322,6 +325,17 @@ final class AppPages {
       name: AppRoutes.walletTopUpPayment,
       page: () => const WalletTopUpPaymentView(),
       binding: WalletTopUpPaymentBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.walletTopUpSuccess,
+      page: () => const WalletTopUpSuccessView(),
+      binding: WalletTopUpSuccessBinding(),
+      middlewares: _authOnly,
+    ),
+    GetPage(
+      name: AppRoutes.walletTransactions,
+      page: () => const WalletTransactionsView(),
       middlewares: _authOnly,
     ),
     GetPage(

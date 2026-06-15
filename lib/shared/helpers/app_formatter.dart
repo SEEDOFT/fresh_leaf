@@ -31,4 +31,10 @@ class AppFormatter {
     }
     return DateFormat('MMM dd, yyyy').format(date);
   }
+
+  /// Formats a date and time to a detailed string
+  /// (e.g., 10:30 AM, 15 Jun 2026).
+  static String formatDateTime(DateTime date) {
+    return DateFormat('hh:mm a, dd MMM yyyy').format(date);
+  }
 }

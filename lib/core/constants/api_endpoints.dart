@@ -28,6 +28,7 @@ final class ApiEndpoints {
   static const String paymentMethod = '/payment-methods/{id}';
   static const String paymentMethodTypes = '/payment-method-types';
   static const String walletTopUpSessions = '/wallets/top-up/sessions';
+  static const String walletTopUpSeed = '/wallets/top-up-seed';
   static const String checkoutSessions = '/checkout/sessions';
   static const String paymentSession = '/payments/sessions/{id}';
   static const String devices = '/devices';

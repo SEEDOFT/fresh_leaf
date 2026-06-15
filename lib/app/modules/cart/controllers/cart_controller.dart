@@ -80,6 +80,9 @@ class CartController extends GetxController {
       final success = await _cartService.removeCartItem(current.id);
       if (success) {
         items.removeAt(index);
+        await fetchCart();
+      } else {
+        Get.snackbar('Error', 'Failed to remove item. Backend returned false.');
       }
       return;
     }
@@ -93,11 +96,17 @@ class CartController extends GetxController {
   }
 
   Future<void> removeItem(int index) async {
-    final current = items[index];
-    final success = await _cartService.removeCartItem(current.id);
-    if (success) {
-      items.removeAt(index);
-      await fetchCart();
+    try {
+      final current = items[index];
+      final success = await _cartService.removeCartItem(current.id);
+      if (success) {
+        items.removeAt(index);
+        await fetchCart();
+      } else {
+        Get.snackbar('Error', 'Failed to remove item. Backend returned false.');
+      }
+    } on Exception catch (e) {
+      Get.snackbar('Error', 'Exception while removing item: $e');
     }
   }
 

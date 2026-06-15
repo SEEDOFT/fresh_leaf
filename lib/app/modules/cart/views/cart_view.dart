@@ -126,10 +126,12 @@ class CartView extends GetView<CartController> {
                                   controller.removeItem(originalIndex),
                               onTap: () {
                                 if (item.vendorInventory != null) {
-                                  unawaited(Get.toNamed<void>(
-                                    AppRoutes.productDetail,
-                                    arguments: item.vendorInventory,
-                                  ));
+                                  unawaited(
+                                    Get.toNamed<void>(
+                                      AppRoutes.productDetail,
+                                      arguments: item.vendorInventory,
+                                    ),
+                                  );
                                 }
                               },
                             ),

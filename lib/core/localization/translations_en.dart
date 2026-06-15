@@ -602,7 +602,10 @@ const Map<String, String> translationsEn = {
   'wallet_empty_hint': 'Your wallet activity will appear here.',
   'unable_load_wallets': 'Unable to load wallets',
   'top_up': 'Top Up',
-  'choose_payment_method': 'Choose payment method',
+  'done': 'Done',
+  'top_up_successful': 'Top Up Successful',
+  'wallet_seeded_successfully': 'Wallet seeded successfully.',
+  'choose_payment_method': 'Choose Payment Method',
   'enter_amount': 'Enter Amount',
   'enter_valid_amount': 'Please enter a valid amount',
   'amount': 'Amount',
@@ -770,47 +773,65 @@ const Map<String, String> translationsEn = {
   'help_center_chat_with_support': 'Chat with support',
   'help_article_ordering_title': 'Ordering & Delivery',
   'help_article_ordering_subtitle':
-      'How delivery windows work, contactless delivery, and delays.',
+      'FreshLeaf delivers fresh organic produce across Phnom Penh. '
+      'Orders placed before 2 PM qualify for same-day delivery. '
+      'Track your order in real-time from farm to doorstep.',
   'help_article_payments_title': 'Payments & Refunds',
   'help_article_payments_subtitle':
-      'Payment methods, charges, refunds, and failed payments.',
+      'Pay with Wallet (KHR/USD), Cash on Delivery, or bank transfer. '
+      'Wallet top-ups via ABA PayWay or Bakong. '
+      'Refunds processed within 3–5 business days'
+      ' to your original payment method.',
   'help_article_account_title': 'Account & Security',
   'help_article_account_subtitle':
-      'Resetting passwords, PIN security, and phone/email updates.',
+      'Sign in with phone number via OTP. '
+      'Set a 4-digit PIN to protect order actions. '
+      'Update phone or email from Profile → Personal Details.',
   'help_article_addresses_title': 'Addresses & Maps',
   'help_article_addresses_subtitle':
-      'How to pin your location and manage saved addresses.',
+      'Pin your exact delivery location on the map for accurate drop-off. '
+      'Save multiple addresses (Home, Work)'
+      ' and set a default for faster checkout.',
   'help_article_ai_title': 'AI Assistant',
   'help_article_ai_subtitle':
-      'What data is used and how responses are generated.',
+      'Get personalized product suggestions based on your order history '
+      'and seasonal availability.'
+      ' Ask about recipes, nutrition, or order status.',
 
   // Privacy
   'privacy_data_collect_heading': 'Data We Collect',
   'privacy_data_collect_body':
-      'We store your name, email, phone, saved addresses, and '
-      'order history to deliver your purchases and improve recommendations.',
+      'We collect your name, phone number, delivery addresses, '
+      'order history, and wallet balance to provide FreshLeaf services. '
+      'Location data is only used when you pin an address on the map.',
   'privacy_how_we_use_heading': 'How We Use It',
   'privacy_how_we_use_body':
-      'Data is used for account access, payments, delivery '
-      'routing, AI Assistant personalization, and fraud prevention.',
+      'Your data powers account access, secure payments, delivery routing, '
+      'AI-powered product recommendations, and fraud prevention. '
+      'We never use your data for unrelated advertising.',
   'privacy_sharing_heading': 'Sharing',
   'privacy_sharing_body':
-      'We only share necessary details with payment processors, '
-      'delivery partners, and analytics providers.'
-      ' We do not sell personal data.',
+      'We share order details with partner farms and delivery riders '
+      'to fulfill your order. Payment data goes to ABA/Bakong for processing. '
+      'We do not sell your personal data to third parties.',
   'privacy_security_heading': 'Security',
   'privacy_security_body':
-      'Tokens are stored securely; PIN protects order access; '
-      'all network calls go through HTTPS.',
+      'All traffic is encrypted over HTTPS. Auth tokens are stored securely '
+      'on device. Your 4-digit PIN is required for order confirmations '
+      'and wallet transactions. We never store your payment card details.',
   'privacy_controls_heading': 'Your Controls',
   'privacy_controls_body':
-      'Update profile details, addresses, and PIN in the Profile '
-      'tab. Contact support to delete your account or export data.',
+      'Manage profile, addresses, and PIN in the Profile tab. '
+      'Request data export or account deletion via Support Chat. '
+      'Opt out of AI recommendations in Settings.',
   'privacy_tos_heading': 'Terms of Service (Summary)',
   'privacy_tos_body':
-      'Using FreshLeaf requires a valid account, accurate '
-      'delivery information, and compliance with local regulations. '
-      'Orders may be cancelled if payment fails or address is unreachable.',
+      'By using FreshLeaf, you agree to provide accurate delivery info '
+      'and comply with Cambodian regulations. Orders may be cancelled '
+      'if payment fails or the address is unreachable. '
+      'FreshLeaf Organics reserves the'
+      ' right to modify prices and availability. '
+      'Disputes are resolved under Cambodian law in Phnom Penh courts.',
 
   // Home
   'home_featured_farmer': 'Featured Farmer',

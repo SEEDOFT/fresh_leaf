@@ -40,5 +40,7 @@ final class AppRoutes {
   static const wallet = '/wallet';
   static const walletTopUp = '/wallet_top_up';
   static const walletTopUpPayment = '/wallet_top_up_payment';
+  static const walletTopUpSuccess = '/wallet_top_up_success';
+  static const walletTransactions = '/wallet_transactions';
   static const paymentQr = '/payment_qr';
 }

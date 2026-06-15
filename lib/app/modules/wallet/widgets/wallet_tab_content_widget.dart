@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/modules/wallet/widgets/wallet_balance_card_widget.dart';
 import 'package:fresh_leaf/app/modules/wallet/widgets/wallet_transaction_tile_widget.dart';
+import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/shared/helpers/responsive_helper.dart';
 import 'package:fresh_leaf/shared/widgets/paginated_list_view.dart';
 import 'package:get/get.dart';
@@ -63,7 +64,8 @@ class WalletTabContentWidget extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () =>
+                          Get.toNamed<void>(AppRoutes.walletTransactions),
                       child: Text('see_all'.tr),
                     ),
                   ],
