@@ -37,6 +37,9 @@ class OrdersListWidget extends StatelessWidget {
         return false;
       },
       child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         itemCount: sectionKeys.length + 1,
         itemBuilder: (context, sectionIndex) {

@@ -51,53 +51,55 @@ class OrdersView extends GetView<OrdersController> {
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: Obx(
-              () => RefreshIndicator(
-                onRefresh: controller.refreshList,
-                child: controller.isLoading.value
-                    ? const OrdersLoadingWidget()
-                    : controller.items.isEmpty
-                    ? ListView(
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: const OrdersEmptyStateWidget(),
-                          ),
-                        ],
-                      )
-                    : PageView.builder(
-                        controller: controller.pageController,
-                        onPageChanged: controller.onPageChanged,
-                        itemCount: controller.statusFilters.length,
-                        itemBuilder: (context, index) {
-                          final statusId =
-                              controller.statusFilters[index]['id'] as int;
-                          final list = controller.getOrdersForStatus(statusId);
-                          final grouped = controller.getGroupedOrdersForStatus(
-                            list,
-                          );
+            child: Obx(() {
+              if (controller.isLoading.value && controller.items.isEmpty) {
+                return const OrdersLoadingWidget();
+              }
 
-                          if (list.isEmpty) {
-                            return ListView(
-                              physics: const AlwaysScrollableScrollPhysics(
-                                parent: BouncingScrollPhysics(),
-                              ),
-                              children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.6,
-                                  child: const OrdersEmptyStateWidget(
-                                    filtered: true,
-                                  ),
+              if (controller.items.isEmpty) {
+                return RefreshIndicator(
+                  onRefresh: controller.refreshList,
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: const OrdersEmptyStateWidget(),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return PageView.builder(
+                controller: controller.pageController,
+                onPageChanged: controller.onPageChanged,
+                itemCount: controller.statusFilters.length,
+                itemBuilder: (context, index) {
+                  final statusId = controller.statusFilters[index]['id'] as int;
+                  final list = controller.getOrdersForStatus(statusId);
+                  final grouped = controller.getGroupedOrdersForStatus(list);
+
+                  return RefreshIndicator(
+                    onRefresh: controller.refreshList,
+                    child: list.isEmpty
+                        ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
+                                child: const OrdersEmptyStateWidget(
+                                  filtered: true,
                                 ),
-                              ],
-                            );
-                          }
-
-                          return OrdersListWidget(
+                              ),
+                            ],
+                          )
+                        : OrdersListWidget(
                             key: ValueKey<String>(
                               '$statusId'
                               '-${controller.selectedSort.name}'
@@ -123,11 +125,11 @@ class OrdersView extends GetView<OrdersController> {
                                 arguments: detailedOrder,
                               );
                             },
-                          );
-                        },
-                      ),
-              ),
-            ),
+                          ),
+                  );
+                },
+              );
+            }),
           ),
         ],
       ),
