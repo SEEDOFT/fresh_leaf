@@ -37,10 +37,7 @@ void main() {
           'product_count': 30,
         },
         'discount_percentage': '10.00',
-        'price_display': <String, dynamic>{
-          'USD': '10.00',
-          'KHR': '41000.00',
-        },
+        'price_display': <String, dynamic>{'USD': '10.00', 'KHR': '41000.00'},
         'discounted_price_display': <String, dynamic>{
           'USD': '9.00',
           'KHR': '36900.00',
@@ -63,8 +60,8 @@ void main() {
       expect(inventory.vendorIsVerified, isTrue);
       expect(inventory.vendorProductCount, 30);
       expect(inventory.discountPercentage, 10.0);
-      expect(inventory.priceDisplay.usdText, r'$10.00');
-      expect(inventory.discountedPriceDisplay.usdText, r'$9.00');
+      expect(inventory.priceDisplay.usdText, r'$10');
+      expect(inventory.discountedPriceDisplay.usdText, r'$9');
     });
 
     test('handles missing optional fields', () {
@@ -126,10 +123,7 @@ void main() {
         'id': 6,
         'price': '10.00',
         'stock_quantity': '1.00',
-        'price_display': <String, dynamic>{
-          'USD': '10.00',
-          'KHR': '41000.00',
-        },
+        'price_display': <String, dynamic>{'USD': '10.00', 'KHR': '41000.00'},
         'discounted_price_display': <String, dynamic>{},
       });
 
@@ -157,14 +151,34 @@ void main() {
       expect(inventory.displayTitle, 'Carrot');
       expect(inventory.displaySubtitle, 'Bag');
       expect(inventory.displayDescription, 'Fresh carrot');
-      expect(inventory.displayImageUrl, 'https://example.test/img.png');
+      expect(inventory.displayImageUrl, 'https://example.test/product.png');
+    });
+
+    test('displayImageUrl uses batch image when product image is empty', () {
+      final inventory = VendorInventory.fromMap(<String, dynamic>{
+        'id': 8,
+        'price': '5.00',
+        'stock_quantity': '1.00',
+        'batch_images': <dynamic>['https://example.test/batch.png'],
+        'product': <String, dynamic>{
+          'id': 2,
+          'name': 'Lettuce',
+          'slug': 'lettuce',
+          'description': 'Green lettuce',
+          'image_url': '',
+        },
+        'price_display': <String, dynamic>{'USD': '5.00', 'KHR': '20500.00'},
+        'discounted_price_display': <String, dynamic>{},
+      });
+
+      expect(inventory.displayImageUrl, 'https://example.test/batch.png');
     });
 
     test(
       'displayImageUrl falls back to product image when no batch images',
       () {
         final inventory = VendorInventory.fromMap(<String, dynamic>{
-          'id': 8,
+          'id': 9,
           'price': '5.00',
           'stock_quantity': '1.00',
           'product': <String, dynamic>{
@@ -186,7 +200,7 @@ void main() {
       'displayImageUrl falls back to empty string when nothing available',
       () {
         final inventory = VendorInventory.fromMap(<String, dynamic>{
-          'id': 9,
+          'id': 10,
           'price': '3.00',
           'stock_quantity': '1.00',
           'price_display': <String, dynamic>{'USD': '3.00', 'KHR': '12300.00'},

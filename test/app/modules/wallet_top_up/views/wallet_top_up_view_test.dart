@@ -56,8 +56,8 @@ void main() {
     Get.put<WalletController>(walletController);
 
     final topUpController = WalletTopUpController(
-      paymentSessionService: mockPaymentSessionService,
       walletController: walletController,
+      apiClient: mockApiClient,
     );
     Get.put<WalletTopUpController>(topUpController);
 
@@ -88,7 +88,9 @@ void main() {
     expect(find.text('continue_to_payment'.tr), findsOneWidget);
   });
 
-  testWidgets('continue button is disabled when amount is zero', (tester) async {
+  testWidgets('continue button is disabled when amount is zero', (
+    tester,
+  ) async {
     await pumpTopUpView(tester);
 
     final controller = Get.find<WalletTopUpController>();

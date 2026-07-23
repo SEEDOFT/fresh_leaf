@@ -2,26 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/constants/api_endpoints.dart';
-import 'package:fresh_leaf/core/constants/payment_method_type_codes.dart';
 import 'package:fresh_leaf/core/models/api_response.dart';
 import 'package:fresh_leaf/core/models/payment_method.dart';
-// import 'package:fresh_leaf/core/models/payment_session.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
-import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart';
-// import 'package:url_launcher/url_launcher.dart';
 
 class WalletTopUpController extends GetxController {
   WalletTopUpController({
-    required PaymentSessionService paymentSessionService,
     required WalletController walletController,
     required ApiClient apiClient,
-  }) : _paymentSessionService = paymentSessionService,
-       _walletController = walletController,
+  }) : _walletController = walletController,
        _apiClient = apiClient;
 
-  final PaymentSessionService _paymentSessionService;
   final WalletController _walletController;
   final ApiClient _apiClient;
   final amountController = TextEditingController();
@@ -139,12 +132,6 @@ class WalletTopUpController extends GetxController {
         margin: const EdgeInsets.all(12),
       );
     }
-  }
-
-  String _resolveTypeCode(PaymentMethod method) {
-    final code = (method.paymentMethodType?.code ?? '').trim().toLowerCase();
-    if (code.isNotEmpty) return code;
-    return PaymentMethodTypeCodes.creditDebit;
   }
 
   void _syncAmountFromInput() {

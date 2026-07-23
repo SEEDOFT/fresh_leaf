@@ -134,6 +134,7 @@ class MockProductService extends _i1.Mock implements _i7.ProductService {
     int? categoryId,
     String? query,
     String? province,
+    String? filter,
     int? page = 1,
     int? perPage = 15,
   }) =>
@@ -142,6 +143,7 @@ class MockProductService extends _i1.Mock implements _i7.ProductService {
               #categoryId: categoryId,
               #query: query,
               #province: province,
+              #filter: filter,
               #page: page,
               #perPage: perPage,
             }),
@@ -153,6 +155,7 @@ class MockProductService extends _i1.Mock implements _i7.ProductService {
                       #categoryId: categoryId,
                       #query: query,
                       #province: province,
+                      #filter: filter,
                       #page: page,
                       #perPage: perPage,
                     }),
@@ -166,6 +169,7 @@ class MockProductService extends _i1.Mock implements _i7.ProductService {
                       #categoryId: categoryId,
                       #query: query,
                       #province: province,
+                      #filter: filter,
                       #page: page,
                       #perPage: perPage,
                     }),
@@ -173,6 +177,20 @@ class MockProductService extends _i1.Mock implements _i7.ProductService {
                 ),
           )
           as _i8.Future<_i3.PaginatedResponse<_i9.VendorInventory>>);
+
+  @override
+  _i8.Future<List<_i9.VendorInventory>> getProductBySlug(String? slug) =>
+      (super.noSuchMethod(
+            Invocation.method(#getProductBySlug, [slug]),
+            returnValue: _i8.Future<List<_i9.VendorInventory>>.value(
+              <_i9.VendorInventory>[],
+            ),
+            returnValueForMissingStub:
+                _i8.Future<List<_i9.VendorInventory>>.value(
+                  <_i9.VendorInventory>[],
+                ),
+          )
+          as _i8.Future<List<_i9.VendorInventory>>);
 
   @override
   _i8.Future<_i9.VendorInventory?> getProduct(int? id) =>
@@ -746,6 +764,17 @@ class MockOrderService extends _i1.Mock implements _i16.OrderService {
             returnValueForMissingStub: false,
           )
           as bool);
+
+  @override
+  _i8.Future<Map<int, int>> getOrderCounts() =>
+      (super.noSuchMethod(
+            Invocation.method(#getOrderCounts, []),
+            returnValue: _i8.Future<Map<int, int>>.value(<int, int>{}),
+            returnValueForMissingStub: _i8.Future<Map<int, int>>.value(
+              <int, int>{},
+            ),
+          )
+          as _i8.Future<Map<int, int>>);
 
   @override
   _i8.Future<_i3.PaginatedResponse<_i17.Order>> getOrders({int? page = 1}) =>

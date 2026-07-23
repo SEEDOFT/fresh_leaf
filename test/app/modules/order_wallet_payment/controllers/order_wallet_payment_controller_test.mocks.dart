@@ -107,6 +107,17 @@ class MockOrderService extends _i1.Mock implements _i6.OrderService {
           as bool);
 
   @override
+  _i7.Future<Map<int, int>> getOrderCounts() =>
+      (super.noSuchMethod(
+            Invocation.method(#getOrderCounts, []),
+            returnValue: _i7.Future<Map<int, int>>.value(<int, int>{}),
+            returnValueForMissingStub: _i7.Future<Map<int, int>>.value(
+              <int, int>{},
+            ),
+          )
+          as _i7.Future<Map<int, int>>);
+
+  @override
   _i7.Future<_i3.PaginatedResponse<_i8.Order>> getOrders({int? page = 1}) =>
       (super.noSuchMethod(
             Invocation.method(#getOrders, [], {#page: page}),

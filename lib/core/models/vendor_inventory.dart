@@ -196,9 +196,12 @@ class VendorInventory {
   String get displaySubtitle => packagingTypeName ?? '';
   String get displayDescription => product?.localizedDescription ?? '';
   String get displayImageUrl {
+    if (product?.imageUrl != null && product!.imageUrl!.isNotEmpty) {
+      return product!.imageUrl!;
+    }
     if (batchImages != null && batchImages!.isNotEmpty) {
       return batchImages!.first;
     }
-    return product?.imageUrl ?? '';
+    return '';
   }
 }

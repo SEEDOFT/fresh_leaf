@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:fresh_leaf/core/config/app_config.dart';
 import 'package:fresh_leaf/core/models/chat_message.dart';
 import 'package:fresh_leaf/core/services/api_client.dart';
+import 'package:fresh_leaf/shared/helpers/helper.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -137,7 +138,9 @@ class ChatRealtimeService extends GetxService {
     } else if (event == 'ChatTyping') {
       final typingData =
           jsonDecode(data['data'] as String) as Map<String, dynamic>;
-      _typingController.add(typingData['senderId'] as int);
+      _typingController.add(
+        toInt(typingData['senderId'] ?? typingData['sender_id']),
+      );
     } else if (event == 'pusher:ping') {
       _sendRaw(<String, dynamic>{
         'event': 'pusher:pong',

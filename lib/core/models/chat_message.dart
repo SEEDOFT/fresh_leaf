@@ -13,9 +13,11 @@ class ChatMessage {
   });
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
-    final source = (map['data'] is Map<String, dynamic>)
-        ? map['data'] as Map<String, dynamic>
-        : map;
+    final source = (map['message'] is Map<String, dynamic>)
+        ? map['message'] as Map<String, dynamic>
+        : (map['data'] is Map<String, dynamic>)
+            ? map['data'] as Map<String, dynamic>
+            : map;
 
     final path = source['file_path'] as String?;
     final url = source['file_url'] as String?;

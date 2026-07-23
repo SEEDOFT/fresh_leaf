@@ -1,12 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fresh_leaf/app/modules/wallet/controllers/wallet_controller.dart';
 import 'package:fresh_leaf/app/modules/wallet_top_up/controllers/wallet_top_up_controller.dart';
+import 'package:fresh_leaf/core/services/api_client.dart';
 import 'package:fresh_leaf/core/services/payment_session_service.dart';
 import 'package:get/get.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'wallet_top_up_controller_test.mocks.dart';
+
+class FakeApiClient extends Fake implements ApiClient {}
 
 @GenerateNiceMocks([
   MockSpec<PaymentSessionService>(),
@@ -24,8 +27,8 @@ void main() {
       mockPaymentSessionService = MockPaymentSessionService();
       mockWalletController = MockWalletController();
       controller = WalletTopUpController(
-        paymentSessionService: mockPaymentSessionService,
         walletController: mockWalletController,
+        apiClient: FakeApiClient(),
       );
     });
 

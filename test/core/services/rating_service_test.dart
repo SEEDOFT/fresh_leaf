@@ -36,23 +36,21 @@ void main() {
                 'message': 'OK',
               },
               'data': <String, dynamic>{
-                'data': <String, dynamic>{
-                  'average_rating': 4.5,
-                  'ratings_count': 10,
-                  'ratings': <String, dynamic>{
-                    'data': <dynamic>[
-                      <String, dynamic>{
-                        'id': 1,
-                        'user_id': 100,
-                        'user_name': 'Alice',
-                        'vendor_inventory_id': 42,
-                        'rating': 5,
-                        'review': 'Great!',
-                        'created_at': '2025-01-01T00:00:00.000',
-                      },
-                    ],
-                    'current_page': 1,
-                  },
+                'average_rating': 4.5,
+                'ratings_count': 10,
+                'ratings': <String, dynamic>{
+                  'data': <dynamic>[
+                    <String, dynamic>{
+                      'id': 1,
+                      'user_id': 100,
+                      'user_name': 'Alice',
+                      'vendor_inventory_id': 42,
+                      'rating': 5,
+                      'review': 'Great!',
+                      'created_at': '2025-01-01T00:00:00.000',
+                    },
+                  ],
+                  'current_page': 1,
                 },
               },
             },
@@ -177,10 +175,7 @@ void main() {
         );
 
         final service = RatingService(apiClient: mockClient);
-        final result = await service.submitRating(
-          orderItemId: 1,
-          rating: 5,
-        );
+        final result = await service.submitRating(orderItemId: 1, rating: 5);
 
         expect(result, isFalse);
       });

@@ -8,6 +8,7 @@ import 'package:fresh_leaf/app/routes/app_routes.dart';
 import 'package:fresh_leaf/core/models/cart_item.dart';
 import 'package:fresh_leaf/core/models/cart_snapshot.dart';
 import 'package:fresh_leaf/core/models/money_display.dart';
+import 'package:fresh_leaf/core/models/vendor_inventory.dart';
 import 'package:fresh_leaf/core/services/cart_service.dart';
 import 'package:get/get.dart';
 import 'package:mockito/annotations.dart';
@@ -15,9 +16,7 @@ import 'package:mockito/mockito.dart';
 
 import 'cart_view_test.mocks.dart';
 
-@GenerateNiceMocks([
-  MockSpec<CartService>(),
-])
+@GenerateNiceMocks([MockSpec<CartService>()])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -38,10 +37,8 @@ void main() {
   }) async {
     when(mockCartService.getCartSnapshot()).thenAnswer(
       (_) async =>
-          snapshot ?? const CartSnapshot(
-            items: [],
-            totalDisplay: MoneyDisplay.empty,
-          ),
+          snapshot ??
+          const CartSnapshot(items: [], totalDisplay: MoneyDisplay.empty),
     );
 
     final controller = CartController(cartService: mockCartService);
@@ -78,6 +75,14 @@ void main() {
         vendorInventoryId: 10,
         quantity: 2.0,
         subtotal: 10.0,
+        vendorInventory: VendorInventory(
+          id: 10,
+          price: 5.0,
+          stockQuantity: 20.0,
+          vendorId: 1,
+          vendorName: 'Green Farm',
+          vendorBusinessName: 'Green Basket',
+        ),
         subtotalDisplay: const MoneyDisplay(usd: 10.0, khr: 41000.0),
       );
 
@@ -93,6 +98,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.byType(CartSummaryWidget), findsOneWidget);
+      expect(find.text('Green Basket'), findsOneWidget);
+      expect(find.text('Green Farm'), findsNothing);
     });
   });
 }

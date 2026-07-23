@@ -72,27 +72,45 @@ cd android && ./gradlew tasks
 Create local config from example:
 
 ```bash
+# macOS/Linux
 cp .env.example .env.local
+
+# Windows (PowerShell)
+copy .env.example .env.local
 ```
 
 Required keys:
 
 ```env
 # IMPORTANT: When testing on a physical device or emulator, 
-# you MUST use your computer's local network IP address (e.g., 192.168.1.X).
+# you MUST use your computer's local network IP address (e.g., 10.167.215.105).
 # Do not use 'localhost' or '127.0.0.1'.
-API_URL=http://192.168.1.X:8000/api/v1
+API_URL=http://<YOUR_LOCAL_IP>:8000/api/v1
+BASE_ASSET_URL=http://<YOUR_LOCAL_IP>:8000
 
 # Real-time WebSocket (Reverb) Configuration
 REVERB_WS_SCHEME=ws
-REVERB_WS_HOST=192.168.1.X
+REVERB_WS_HOST=<YOUR_LOCAL_IP>
 REVERB_WS_PORT=8080
-REVERB_APP_KEY=your_reverb_app_key
+REVERB_APP_KEY=d5523147baec470b2d6ea306a75d3b0dd8d1265b7808b0304d7f067d42d78977
 REVERB_AUTH_ENDPOINT=/broadcasting/auth
+
+# Firebase Configuration
+# (Add the rest of your Firebase keys as defined in your .env.example)
 ```
+
+> [!NOTE]
+> Make sure `REVERB_WS_HOST` does **not** contain `http://`, `ws://`, or a port number (e.g., use `10.167.215.105` and specify the port `8080` separately in `REVERB_WS_PORT`).
 
 ## 3) Run the App
 
+Before running the Flutter app, ensure the backend server is running and bound to the same local IP:
+```bash
+# In the FreshLeafApi directory
+composer run dev -- --host=<YOUR_LOCAL_IP> --port=8000
+```
+
+Once the backend is up, start the Flutter app:
 ```bash
 fvm flutter run --dart-define-from-file=.env.local
 ```

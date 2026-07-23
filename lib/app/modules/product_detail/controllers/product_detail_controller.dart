@@ -42,12 +42,12 @@ class ProductDetailController extends GetxController {
   List<String> get allImages {
     if (product == null) return [''];
     final images = <String>[];
+    if (product!.batchImages != null && product!.batchImages!.isNotEmpty) {
+      images.addAll(product!.batchImages!);
+    }
     if (product!.product?.imageUrl != null &&
         product!.product!.imageUrl!.isNotEmpty) {
       images.add(product!.product!.imageUrl!);
-    }
-    if (product!.batchImages != null && product!.batchImages!.isNotEmpty) {
-      images.addAll(product!.batchImages!);
     }
     if (images.isEmpty) {
       images.add('');

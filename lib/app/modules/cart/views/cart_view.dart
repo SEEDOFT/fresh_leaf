@@ -84,6 +84,7 @@ class CartView extends GetView<CartController> {
                     final entry = entries[index];
                     final vendorItems = entry.value;
                     final vendorName =
+                        vendorItems.first.vendorInventory?.vendorBusinessName ??
                         vendorItems.first.vendorInventory?.vendorName ??
                         'Vendor';
 

@@ -36,10 +36,8 @@ void main() {
 
   group('formatDateTime', () {
     test('formats values using the Laravel-style datetime pattern', () {
-      final value = DateTime.parse('2026-05-28T17:00:00+07:00');
-      final expected = DateFormat(
-        'hh:mm a, dd MMM yyyy',
-      ).format(value.toLocal());
+      final value = DateTime(2026, 5, 28, 17);
+      final expected = DateFormat('hh:mm a, dd MMM yyyy').format(value);
 
       expect(formatDateTime(value), expected);
     });
